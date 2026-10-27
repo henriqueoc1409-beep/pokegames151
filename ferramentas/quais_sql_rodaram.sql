@@ -29,6 +29,7 @@ from (values
   ('30_aposta_reserva_lider',   exists (select 1 from pg_proc where proname = 'round_champion')),
   ('31_liga_pokemon',           to_regclass('public.leagues') is not null),
   ('32_chance_lendarios',       exists (select 1 from game_config where active and config ? 'league_legend_pct')),
+  ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
   ('48_cacada_escolha',          to_regclass('public.hunt_entries') is not null),
   ('47_itens_tm_hm',             to_regclass('public.pk_items') is not null),
