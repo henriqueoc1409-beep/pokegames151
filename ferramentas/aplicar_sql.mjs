@@ -49,10 +49,31 @@ export async function aplicar(db, root, { soListar = false, log = console.log } 
   return { rodados, pulados: pular };
 }
 
+// confere o formato do endereço do Session pooler do Supabase (nunca mostra a senha)
+export function conferirEndereco(url) {
+  const p = [], txt = url.trim();
+  if (txt !== url) p.push("tem espaço ou quebra de linha sobrando no começo ou no fim.");
+  if (/\[|\]/.test(txt)) p.push("ainda tem colchetes [ ]: troque [YOUR-PASSWORD] pela senha, sem os colchetes.");
+  if ((txt.match(/@/g) || []).length !== 1) p.push(`tem ${(txt.match(/@/g) || []).length} símbolos @, mas deve ter só 1 (logo depois da senha). Se a senha tem @, troque por uma só com letras e números.`);
+  if (!/^postgres(ql)?:\/\//.test(txt)) p.push("deve começar com postgresql://");
+  let u = null; try { u = new URL(txt); } catch { p.push("não é um endereço válido (copie de novo do Supabase: Connect → Direct → Session pooler)."); }
+  if (u) {
+    if (!u.hostname.endsWith(".pooler.supabase.com")) p.push(`o servidor é "${u.hostname}", mas deveria terminar em ".pooler.supabase.com" (use o Session pooler).`);
+    if (u.port && u.port !== "5432") p.push(`a porta é ${u.port}, mas o Session pooler usa 5432.`);
+    if (!decodeURIComponent(u.username).startsWith("postgres.")) p.push(`o usuário é "${decodeURIComponent(u.username)}", mas no Session pooler deve ser "postgres.<código do projeto>".`);
+    if (!u.password) p.push("está sem a senha (depois de postgres.<código>: vem a senha e depois o @).");
+    else if (/[^A-Za-z0-9]/.test(decodeURIComponent(u.password))) p.push("a senha tem símbolos; troque por uma só com letras e números para evitar erro.");
+  }
+  return p;
+}
+
 // rodando direto pela linha de comando
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const url = process.env.SUPABASE_DB_URL;
   if (!url) { console.error("Falta o segredo SUPABASE_DB_URL (endereço do banco do Supabase)."); process.exit(1); }
+  // confere o endereço antes de tentar entrar, com mensagens claras e sem nunca mostrar a senha
+  const problemas = conferirEndereco(url);
+  if (problemas.length) { console.error("❌ O endereço do banco (segredo SUPABASE_DB_URL) está com problema:\n - " + problemas.join("\n - ")); process.exit(1); }
   const { default: pg } = await import("pg");
   const client = new pg.Client({ connectionString: url, ssl: { rejectUnauthorized: false } });
   await client.connect();
