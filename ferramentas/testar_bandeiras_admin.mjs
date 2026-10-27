@@ -1,0 +1,46 @@
+// Testa o arquivo 37 (bandeiras cadastradas pelo admin) com dados de TESTE:
+// só admin cria, desenho conferido, aparece na loja, jogador compra, trocar desenho, apagar só se ninguém tem.
+// Uso (na pasta ferramentas, uma vez: npm i @electric-sql/pglite@0.3.15):  node testar_bandeiras_admin.mjs ..
+import { PGlite } from "@electric-sql/pglite";
+import { citext } from "@electric-sql/pglite/contrib/citext";
+import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
+import fs from "fs"; import path from "path";
+const root = process.argv[2];
+const db = new PGlite({ extensions: { citext, pgcrypto } });
+await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
+for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort()) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+let ok = 0, fail = 0;
+const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
+const sys = async (q, p = []) => (await db.query(q, p)).rows;
+const as = async (uid, q, p = []) => { await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${uid}', false);`); try { return { rows: (await db.query(q, p)).rows }; } catch (e) { return { error: e.message }; } finally { await db.exec("reset role;"); } };
+const A = "11111111-1111-1111-1111-111111111111", ADM = "99999999-9999-9999-9999-999999999999";
+for (const [u, n] of [[A, "ana"], [ADM, "chefe"]]) await sys(`insert into auth.users(id, email, raw_user_meta_data) values ($1, $2, $3)`, [u, n + "@t.l", JSON.stringify({ username: n })]);
+await sys(`insert into user_roles(user_id, role) values ($1, 'admin') on conflict do nothing`, [ADM]);
+for (const [u, n] of [[A, "Ana"], [ADM, "Chefe"]]) await as(u, `select public.create_character($1, 'mago')`, [n]);
+const DATA = { rows: ["aabb", "aabb", "b..b", "abba", "abba"], pal: { a: "#FF0000", b: "#0000FF" } };
+const save = (who, id, name, price, data) => as(who, `select * from public.admin_save_flag($1, $2, $3, $4)`, [id, name, price, JSON.stringify(data)]);
+console.log("\nCriar");
+check("jogador comum não cria", /administrador/.test((await save(A, null, "Minha", 100, DATA)).error || ""));
+const c = await save(ADM, null, "Bandeira Teste", 300, DATA);
+check("admin cria", !c.error && c.rows[0].slot === "vila_bandeira" && c.rows[0].price === 300, c.error);
+const ID = c.rows?.[0]?.id;
+check("aparece na loja para o jogador", (await as(A, `select count(*)::int n from shop_items where id = $1`, [ID])).rows[0].n === 1);
+console.log("\nDesenho conferido");
+check("linhas de tamanhos diferentes recusam", /inválido/.test((await save(ADM, null, "X Teste", 1, { rows: ["aaaa", "aaa", "aaaa", "aaaa"], pal: { a: "#FF0000" } })).error || ""));
+check("letra sem cor recusa", /inválido/.test((await save(ADM, null, "X Teste", 1, { rows: ["aaaz", "aaaa", "aaaa", "aaaa"], pal: { a: "#FF0000" } })).error || ""));
+check("cor fora do formato recusa", /inválido/.test((await save(ADM, null, "X Teste", 1, { rows: ["aaaa", "aaaa", "aaaa", "aaaa"], pal: { a: "red" } })).error || ""));
+check("maior que 120 recusa", /inválido/.test((await save(ADM, null, "X Teste", 1, { rows: Array(121).fill("aaaa"), pal: { a: "#FF0000" } })).error || ""));
+check("nome curto recusa", /2 a 60/.test((await save(ADM, null, "X", 1, DATA)).error || ""));
+console.log("\nComprar, trocar e apagar");
+await sys(`update characters set coins = 500 where user_id = $1`, [A]);
+const b = await as(A, `select outfit from public.buy_item($1)`, [ID]);
+check("jogador compra e hasteia", !b.error && b.rows[0].outfit.vila_bandeira === ID, b.error);
+const u = await save(ADM, ID, "Bandeira Teste Nova", 250, { ...DATA, pal: { a: "#00FF00", b: "#0000FF" } });
+check("admin troca nome, preço e desenho", !u.error && u.rows[0].name === "Bandeira Teste Nova" && u.rows[0].data.pal.a === "#00FF00", u.error);
+check("não apaga bandeira que alguém tem", /já tem/.test((await as(ADM, `select public.admin_delete_flag($1)`, [ID])).error || ""));
+const c2 = await save(ADM, null, "Bandeira Sobra", 100, DATA);
+check("apaga bandeira que ninguém tem", !(await as(ADM, `select public.admin_delete_flag($1)`, [c2.rows[0].id])).error && (await sys(`select count(*)::int n from shop_items where id = $1`, [c2.rows[0].id]))[0].n === 0);
+check("só apaga bandeiras (não outros itens)", /inexistente/.test((await as(ADM, `select public.admin_delete_flag((select id from shop_items where slot = 'chapeu' limit 1))`)).error || ""));
+check("fica na Auditoria", (await sys(`select count(*)::int n from admin_audit_log where action in ('bandeira', 'bandeira_apagada')`))[0].n === 4);
+console.log(`\n${ok} testes passaram, ${fail} falharam.`);
+process.exit(fail ? 1 : 0);

@@ -1,0 +1,33 @@
+# Testes automáticos do Pokegames: rodam em toda proposta de mudança (pull request) e antes de publicar.
+# Montam o banco do zero num PostgreSQL de mentira (PGlite) e jogam como jogadores comuns.
+name: Testes
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  site:
+    name: Site (JavaScript e chave pública)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node ferramentas/conferir_site.mjs
+  banco:
+    name: Banco (${{ matrix.teste }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        teste: [testar_banco_sem_postgres, testar_robo_sql, testar_pokemon, testar_itens, testar_cacada_escolha, testar_casas_npc, testar_rocket, testar_liga, testar_arena, testar_guerras]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix ferramentas --no-audit --no-fund
+      - run: node ferramentas/${{ matrix.teste }}.mjs .

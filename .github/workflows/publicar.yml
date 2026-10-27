@@ -1,0 +1,39 @@
+# Publicação automática do Pokegames. Roda quando uma mudança entra no ramo principal (main):
+#   1) os testes; 2) espera o dono aprovar no GitHub (ambiente "producao");
+#   3) roda no Supabase só os SQL novos, com cópia de segurança antes (ferramentas/aplicar_sql.mjs);
+#   4) publica a pasta deploy no Cloudflare Pages (o mesmo endereço de sempre).
+# Os segredos (endereço do banco e chave do Cloudflare) ficam só no ambiente "producao" do GitHub.
+name: Publicar o jogo
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: publicar
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  testes:
+    uses: ./.github/workflows/testes.yml
+  publicar:
+    name: Banco e site
+    needs: testes
+    runs-on: ubuntu-latest
+    environment: producao
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix ferramentas --no-audit --no-fund
+      - name: Rodar os SQL novos no Supabase (com cópia de segurança antes)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: node ferramentas/aplicar_sql.mjs
+      - name: Publicar o site no Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy deploy --project-name=${{ vars.CLOUDFLARE_PROJECT }} --branch=main --commit-dirty=true

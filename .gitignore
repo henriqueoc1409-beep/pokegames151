@@ -1,0 +1,13 @@
+# dependências das ferramentas (o npm instala de novo)
+node_modules/
+# fotos e imagens pessoais do dono e prévias (não fazem parte do jogo)
+imagens/
+/*.png
+/*.jpg
+# arquivos de sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+# segredos nunca vão para o GitHub
+.env
+*.env

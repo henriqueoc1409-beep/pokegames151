@@ -1,0 +1,25 @@
+Claude, estou desenvolvendo um jogo em um arquivo único (HTML, CSS e Vanilla JS) integrado com Supabase. Preciso que você implemente duas novas mecânicas para mim. Como sou leigo, por favor me dê o passo a passo exato (ex: "busque por X" e "substitua por Y") e os códigos completos.
+
+Aqui estão as duas mecânicas:
+
+1. CLIMA DINÂMICO (Frontend)
+Quero um sistema onde o clima do mapa muda a cada 4 horas (Limpo, Chuva ou Nevoeiro).
+
+Crie uma função currentWeather() que usa o tzNowParts() e um seed matemático baseado na data/hora para definir o clima (para ser o mesmo clima para todos os jogadores naquela hora).
+
+Crie uma função drawWeather(ctx, type) que desenha partículas de chuva caindo ou uma névoa na tela usando o Canvas (afetando o ctx).
+
+Atualize a função loop(t) para salvar o tempo (W.time = t) e forçar a atualização contínua da tela (W.dirty = true) sempre que o clima não estiver limpo, garantindo que a animação da chuva/névoa flua.
+
+Atualize a função drawWorld() para chamar o drawWeather no final, pintando o clima por cima do mapa e dos personagens.
+
+2. ENCONTROS DE POKÉMON ALEATÓRIOS E DIFÍCEIS (Backend SQL + Frontend)
+Atualmente, quando o jogador anda no mapa, o jogo chama rpc("pk_sync") para verificar eventos e encontros.
+
+Quero que o Pokémon selvagem que aparece seja gerado de forma totalmente aleatória (diferente a cada encontro/casa), aumentando muito a gama de Pokémon que aparecem para dar mais diversão.
+
+Quero que o sistema inclua propositalmente Pokémon muito difíceis de capturar (lendários ou com taxa de captura baixíssima) para aumentar a dificuldade do jogo.
+
+Como o encontro é gerado no banco de dados, escreva para mim o código SQL de atualização (CREATE OR REPLACE FUNCTION pk_sync...) que eu devo rodar no painel do Supabase para aplicar essa nova lógica de sorteio de encontros.
+
+Me indique também se preciso alterar algo no encounterModal() ou no pkAfterMove() no JavaScript.

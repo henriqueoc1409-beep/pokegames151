@@ -1,0 +1,68 @@
+-- MARCAR OS SQL QUE JÁ RODARAM (rode UMA VEZ só, no SQL Editor do Supabase, antes de ligar o robô de publicação).
+-- Cria a tabela public.sql_aplicados, onde o robô (ferramentas/aplicar_sql.mjs) anota cada arquivo que rodou,
+-- e marca como "já rodado" todo arquivo cuja marca já existe no banco (a mesma conferência do quais_sql_rodaram.sql).
+-- Não muda nada do jogo. No fim mostra a lista: confira se bate com o que você lembra de ter rodado.
+-- Se algum arquivo aparecer como "não" mas você já rodou, avise antes de ligar o robô (senão ele roda de novo).
+create table if not exists public.sql_aplicados (
+  arquivo     text primary key,
+  aplicado_em timestamptz not null default now(),
+  origem      text not null default 'robo'      -- 'marcado' = já estava rodado quando o robô foi ligado
+);
+alter table public.sql_aplicados enable row level security;
+revoke all on public.sql_aplicados from anon, authenticated;
+
+insert into public.sql_aplicados (arquivo, origem)
+select arquivo || '.sql', 'marcado'
+from (values
+  ('03_tornar_admin',           to_regclass('public.user_roles') is not null),
+  ('05_pokedex_pt',             to_regclass('public.characters') is not null),
+  ('01_jogo',                   to_regclass('public.characters') is not null),
+  ('02_pokemon',                exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'pokemon')),
+  ('04_versao2',                to_regclass('public.board_nodes') is not null),
+  ('06_herois_mercado',         exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'characters' and column_name = 'skill_date')),
+  ('07_social',                 to_regclass('public.duels') is not null),
+  ('08_pousadas_skins',         to_regclass('public.properties') is not null),
+  ('09_vila_boss_times',        exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'characters' and column_name = 'team')),
+  ('10_brabo_titulos_convites', to_regclass('public.invites') is not null),
+  ('11_vila_10_construcoes',    exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'villages' and column_name = 'orchard_level')),
+  ('12_ranking_detalhado',      exists (select 1 from pg_proc where proname = 'round_board')),
+  ('13_mapa_novo',              exists (select 1 from public.game_config where active and config ? 'map_meta')),
+  ('14_recomecar_do_zero',      exists (select 1 from public.event_log where message like 'Tudo do zero!%')),
+  ('15_trava_ranking_chat',     to_regclass('public.chat_messages') is not null),
+  ('16_pokemon_gen1',           to_regclass('public.pk_moves') is not null),
+  ('17_colecao_pokemon',        to_regclass('public.monsters') is not null),
+  ('18_batalhas_pokemon',       to_regclass('public.battles') is not null),
+  ('21_precos_pix_admin',       to_regclass('public.contributions') is not null),
+  ('22_avisos_enquetes',        to_regclass('public.posts') is not null),
+  ('23_desempate_duelo',        exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'duels' and column_name = 'c_started_at')),
+  ('24_arena_pokemon',          to_regclass('public.arena_battles') is not null),
+  ('25_vila_guerras',           to_regclass('public.wars') is not null),
+  ('26_imagem_jornal',          to_regclass('public.post_images') is not null),
+  ('27_dados_gen2',             to_regclass('public.gen2_species') is not null),
+  ('30_aposta_reserva_lider',   exists (select 1 from pg_proc where proname = 'round_champion')),
+  ('31_liga_pokemon',           to_regclass('public.leagues') is not null),
+  ('32_chance_lendarios',       exists (select 1 from game_config where active and config ? 'league_legend_pct')),
+  ('48_cacada_escolha',          to_regclass('public.hunt_entries') is not null),
+  ('47_itens_tm_hm',             to_regclass('public.pk_items') is not null),
+  ('46_cacada',                  to_regclass('public.hunts') is not null),
+  ('45_treinador_fixo',          exists (select 1 from pg_proc where proname = 'npc_fight' and prosrc like '%me.node %%')),
+  ('44_equipe_rocket',           to_regclass('public.rocket_raids') is not null),
+  ('43_treinadores_npc',         to_regclass('public.npc_fights') is not null),
+  ('42_casas_novas_mineracao',   exists (select 1 from pg_proc where proname = 'house_extra')),
+  ('41_jornal_permanente',       exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'posts' and column_name = 'archived')),
+  ('40_sac_estagiarios',         to_regclass('public.sac_agents') is not null),
+  ('39_sac_chupika',             to_regclass('public.sac_tickets') is not null),
+  ('38_quiz_surpresa',           to_regclass('public.quizzes') is not null),
+  ('37_bandeiras_pelo_admin',    exists (select 1 from pg_proc where proname = 'admin_save_flag')),
+  ('36_bandeiras_missao_pinguim', exists (select 1 from shop_items where id = 'vila_bandeira_missao')),
+  ('35_nome_itens_bandeira_verde', exists (select 1 from pg_proc where proname = 'admin_set_item_name')),
+  ('34_presentes_admin',        to_regclass('public.gifts') is not null),
+  ('33_bandeira_vila',          exists (select 1 from shop_items where id = 'vila_bandeira_tricolor')),
+  ('29_aposta_batalha',         exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'battles' and column_name = 'bet_paid_out')),
+  ('28_liberar_gen2',           exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'pokemon' and column_name = 'base_form2'))
+) as t(arquivo, rodou)
+where rodou
+on conflict (arquivo) do nothing;
+
+select replace(arquivo, '.sql', '') as arquivo, origem, to_char(aplicado_em at time zone 'America/Sao_Paulo', 'DD/MM HH24:MI') as quando
+from public.sql_aplicados order by arquivo;

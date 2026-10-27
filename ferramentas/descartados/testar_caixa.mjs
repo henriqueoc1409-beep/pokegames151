@@ -1,0 +1,46 @@
+// Testa o arquivo 19 (Caixa da Obra, itens em reais e roupas novas) com dados de TESTE.
+// Uso (na pasta ferramentas, uma vez: npm i @electric-sql/pglite@0.3.15):  node testar_caixa.mjs ..
+import { PGlite } from "@electric-sql/pglite";
+import { citext } from "@electric-sql/pglite/contrib/citext";
+import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
+import fs from "fs"; import path from "path";
+const root = process.argv[2];
+const db = new PGlite({ extensions: { citext, pgcrypto } });
+await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
+for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql")).sort()) if (f !== "14_recomecar_do_zero.sql") await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+let ok = 0, fail = 0;
+const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
+const sys = async (q, p = []) => (await db.query(q, p)).rows;
+const as = async (uid, q, p = []) => { await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${uid}', false);`); try { return { rows: (await db.query(q, p)).rows }; } catch (e) { return { error: e.message }; } finally { await db.exec("reset role;"); } };
+const ADM = "99999999-9999-9999-9999-999999999999", ANA = "11111111-1111-1111-1111-111111111111";
+for (const [id, n] of [[ADM, "chefe"], [ANA, "ana"]]) { await sys(`insert into auth.users(id, email, raw_user_meta_data) values ($1,$2,$3)`, [id, n + "@t.l", JSON.stringify({ username: n })]); await as(id, `select public.create_character($1,'mago')`, [n === "ana" ? "Ana" : "Chefe"]); }
+await sys(`insert into user_roles(user_id, role) values ($1, 'admin') on conflict do nothing`, [ADM]);
+await sys(`update characters set coins = 5000, level = 10 where user_id = $1`, [ANA]);
+console.log("\nRoupas novas");
+check("31 roupas novas no catálogo (43 de Pokémon no total)", (await sys(`select count(*)::int n from shop_items where slot like 'pk\\_%' and id not like 'pk_torcida%'`))[0].n === 43);
+check("7 itens em reais", (await sys(`select count(*)::int n from shop_items where price_brl is not null`))[0].n === 7);
+let r = await as(ANA, `select public.pk_cosmetic_buy('pk_gorro_natal')`); check("compra item em moedas (gorro de Natal)", !r.error, r.error);
+r = await as(ANA, `select public.pk_cosmetic_buy('pk_aureola')`); check("item em reais não sai por moedas (roupa de Pokémon)", /Caixa da Obra|só sai por PIX/.test(r.error || ""), r.error);
+r = await as(ANA, `select public.buy_item('pk_aureola')`); check("item em reais não sai pela loja do herói", /Caixa da Obra|só sai por PIX/.test(r.error || ""), r.error);
+console.log("\nCaixa da Obra");
+r = await as(ANA, `select public.admin_add_donation($1, 10, 'oi', '{}')`, [ANA]); check("jogador comum não registra doação", /administrador/.test(r.error || ""), r.error);
+r = await as(ANA, `insert into donations(donor_name, amount, created_by) values ('x', 1, '${ANA}')`); check("ninguém grava doação pelo navegador", !!r.error);
+r = await as(ADM, `select row_to_json(public.admin_add_donation($1, 12.5, 'Valeu demais, Ana! Vai virar o mapa novo.', '{pk_aureola,pk_aura_fogo}')) d`, [ANA]);
+check("admin registra R$ 12,50 com mensagem e 2 itens", !r.error && +r.rows[0].d.amount === 12.5, r.error);
+const owned = (await sys(`select owned_items from characters where user_id = $1`, [ANA]))[0].owned_items;
+check("Ana ganhou a Auréola e a Aura de fogo", owned.includes("pk_aureola") && owned.includes("pk_aura_fogo"));
+await as(ADM, `select public.admin_add_donation($1, 5, '', '{pk_aureola}')`, [ANA]);
+check("item repetido não duplica no inventário", (await sys(`select owned_items from characters where user_id = $1`, [ANA]))[0].owned_items.filter(x => x === "pk_aureola").length === 1);
+r = await as(ANA, `select count(*)::int n, sum(amount) t from donations`); check("todos veem o mural do caixa (2 doações, R$ 17,50)", r.rows?.[0]?.n === 2 && +r.rows[0].t === 17.5, JSON.stringify(r));
+const m = (await sys(`select (public.pk_new_monster($1, 25, 10)).id`, [ANA]))[0].id;
+r = await as(ANA, `select public.mon_equip($1, 'pk_cabeca', 'pk_aureola')`, [m]); check("Ana veste a Auréola no Pikachu", !r.error, r.error);
+r = await as(ADM, `select public.admin_add_donation($1, 0, 'x', '{}')`, [ANA]); check("valor zero é recusado", !!r.error);
+r = await as(ADM, `select public.admin_add_donation($1, 5, 'x', '{nao_existe}')`, [ANA]); check("item inexistente é recusado", /inexistente/.test(r.error || ""), r.error);
+await as(ANA, `select public.donation_thanks_seen()`);
+check("agradecimento marcado como visto só para a Ana", (await sys(`select bool_and(thanked) t from donations where user_id = $1`, [ANA]))[0].t === true);
+const id = (await sys(`select id from donations order by id limit 1`))[0].id;
+r = await as(ANA, `select public.admin_delete_donation($1)`, [id]); check("jogador comum não apaga doação", !!r.error);
+r = await as(ADM, `select public.admin_delete_donation($1)`, [id]); check("admin apaga doação lançada errado", !r.error && (await sys(`select count(*)::int n from donations`))[0].n === 1, r.error);
+check("ficou registrado na auditoria", (await sys(`select count(*)::int n from admin_audit_log where action like 'doacao%'`))[0].n === 3);
+console.log(`\n${ok} testes passaram, ${fail} falharam.`);
+process.exit(fail ? 1 : 0);

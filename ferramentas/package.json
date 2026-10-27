@@ -1,0 +1,10 @@
+{
+  "name": "pokegames-ferramentas",
+  "private": true,
+  "description": "Ferramentas do Pokegames: testes do banco (PGlite) e robô que roda os SQL novos no Supabase.",
+  "type": "module",
+  "dependencies": {
+    "@electric-sql/pglite": "0.3.15",
+    "pg": "8.13.1"
+  }
+}

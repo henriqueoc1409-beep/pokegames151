@@ -1,0 +1,102 @@
+# 100 descrições originais em português da 2ª geração (152 a 251), escritas para o Pokegames.
+# Formato: número|texto. Sem o nome do Pokémon (é o modo Descrição do desafio).
+152|A folha grande na cabeça solta um perfume doce que acalma quem está por perto. Adora tomar sol nos dias quentes.
+153|Em volta do pescoço nascem brotos que soltam um aroma de especiarias. Quem sente o cheiro fica com vontade de brigar.
+154|O perfume da flor no pescoço é tão forte que desarma brigas. Por onde passa, as plantas crescem mais rápido.
+155|É tímido e vive encolhido. Quando se assusta, as chamas das costas acendem de repente para espantar o perigo.
+156|O calor que sai do corpo é tão forte que deixa o ar tremendo. Usa o fogo das costas para intimidar quem chega perto.
+157|Quando fica furioso, esfrega os pelos e solta explosões de fogo. Esconde-se atrás de uma cortina de calor.
+158|Tem mandíbulas fortes e morde tudo o que vê, até o próprio treinador, sem maldade: é só brincadeira.
+159|Se perde um dente, outro nasce no lugar. Abre a boca enorme para assustar e balança o corpo antes de atacar.
+160|Abre a boca gigante para intimidar. Apesar do corpo pesado, nada muito rápido e não larga a presa.
+161|Fica de pé na ponta da cauda para enxergar longe. Quando vê perigo, guincha alto para avisar o bando.
+162|O corpo é tão comprido e fino que ele se enfia em tocas estreitas. Ninguém sabe onde fica a cabeça e onde fica a cauda.
+163|Tem um relógio interno que nunca atrasa. Sempre dobra a cabeça para o mesmo lado na mesma hora.
+164|Os olhos enxergam no escuro como se fosse dia. Gira a cabeça para trás sem mexer o corpo.
+165|Vive em bandos e é muito medroso. Sozinho, mal sai do ninho; junto dos amigos, fica corajoso.
+166|As estrelas no céu deixam ele mais forte. As pintas nas costas mudam de tamanho conforme as estrelas.
+167|Tece teias com fios finíssimos e espera em silêncio. Sente pelas vibrações dos fios o que caiu na armadilha.
+168|Os fios que solta pela boca são tão resistentes que aguentam peso. Ataca de surpresa quem passa perto.
+169|Quatro asas deixam o voo silencioso e muito rápido. Voa a noite inteira sem cansar, quase sem fazer barulho.
+170|As antenas soltam luzes para se comunicar no fundo escuro do mar. Também dão choques em quem ameaça.
+171|Ilumina o fundo do oceano como um farol. Pescadores contam que a luz dele aparece nas noites sem lua.
+172|Ainda não controla bem a eletricidade e às vezes leva choque dos próprios golpes. É muito curioso.
+173|Dizem que aparece nas noites de muitas estrelas cadentes. Dança em roda com outros iguais sob a lua.
+174|O corpo macio e redondo quica como uma bolinha. Adora cantar, mas ainda desafina bastante.
+175|Dizem que a casca de ovo onde vive guarda a felicidade. Pessoas gentis atraem a sorte que ele espalha.
+176|Só aparece para quem é bondoso. Espalha uma poeira brilhante que deixa as pessoas felizes.
+177|Pula de galho em galho porque as asas ainda são pequenas. Fica olhando fixo para o horizonte por horas.
+178|Dizem que um olho vê o passado e o outro vê o futuro. Passa o dia parado, olhando para o sol.
+179|A lã fofa junta eletricidade estática. Quando está carregado, os pelos ficam arrepiados e brilham.
+180|A pele sem pelos deixa a eletricidade escapar em faíscas. Usa luvas de borracha naturais para não se queimar.
+181|A ponta da cauda brilha tão forte que pode ser vista de muito longe. Antigamente era usado como farol.
+182|Dança ao sol para chamar a chuva. As flores da cabeça ficam mais bonitas depois de uma tempestade.
+183|A cauda funciona como boia e o pelo não deixa a água entrar. Mesmo correnteza forte não consegue derrubar.
+184|Escuta tudo o que acontece no fundo do rio com as orelhas longas. Faz bolhas de ar para respirar embaixo d'água.
+185|Finge ser uma árvore para não ser notado. Se chove, sai correndo: não suporta água.
+186|O cacho na cabeça mostra que é o líder. Quando ele grita, todos os outros vêm correndo.
+187|É tão leve que o vento leva para longe. Prende-se ao chão com os pés quando a ventania é forte.
+188|Abre a flor da cabeça quando a temperatura sobe e flutua no ar quente. Segue as correntes de vento.
+189|Viaja por cima das nuvens soltando sementes pelo caminho. Dá voltas ao mundo levado pela brisa.
+190|A cauda tem uma mão na ponta tão ágil que faz tudo sozinha. Passa o dia no alto das árvores.
+191|Cai do céu de repente e fica parado no chão. Tenta crescer rápido absorvendo a luz do dia.
+192|Vira o rosto sempre na direção do sol. Quando anoitece, para de se mexer e espera amanhecer.
+193|Bate as asas tão rápido que fica parado no ar. Enxerga para todos os lados sem virar a cabeça.
+194|Vive em águas frias e lamacentas. Sai à noite para procurar comida, sempre com cara de quem não entendeu nada.
+195|Não presta atenção em nada e nada sem destino. Bate a cabeça nos barcos e nem percebe.
+196|Os pelos finos sentem até a menor mudança no ar. Adivinha o próximo movimento de quem está à frente.
+197|Os anéis do corpo brilham na escuridão. Quando se irrita, solta um suor venenoso pelos poros.
+198|Dizem que dá azar quem o vê à noite. Junta objetos brilhantes que encontra pelo caminho.
+199|Uma mordida na cabeça deixou ele muito inteligente. Fica pensativo e calmo, como um sábio.
+200|Assusta as pessoas com gritos no meio da noite e se diverte com o susto. Some no escuro sem deixar rastro.
+201|Parece uma letra antiga. Existem muitas formas diferentes, e juntas parecem escrever uma mensagem.
+202|Aguenta qualquer golpe sem reclamar e devolve com a mesma força. Esconde a cauda preta a qualquer custo.
+203|A cauda tem um cérebro próprio que fica de guarda enquanto a cabeça dorme. Os dois lados nunca brigam.
+204|Pendura-se nos galhos e se fecha numa casca dura. Se alguém mexe, explode pedaços da casca.
+205|A casca é tão dura quanto metal. Fica parado o dia todo e só abre para comer.
+206|Cava túneis complicados com a cauda em forma de broca. Foge voando baixinho quando é descoberto.
+207|Plana sem fazer barulho e ataca de cima. Agarra o rosto de quem passa com as garras.
+208|O corpo virou algo mais duro que diamante depois de viver no fundo da terra por muito tempo.
+209|A cara assusta, mas é carinhoso e brincalhão. Muita gente adora ter um por perto.
+210|A mandíbula é tão pesada que ele vive com a cara fechada. Na verdade é medroso e gosta de carinho.
+211|Engole água para inchar o corpo e solta espinhos venenosos em todas as direções.
+212|As pinças têm desenhos que parecem olhos e assustam quem ataca. O corpo de metal é muito resistente.
+213|Guarda frutas dentro da casca e elas viram um suco doce com o tempo. Esconde-se debaixo das pedras.
+214|Tem força suficiente para jogar longe alguém muito mais pesado. O chifre é a sua arma e o seu orgulho.
+215|As garras afiadas arranham as árvores para marcar território. É esperto e rouba ovos dos ninhos.
+216|Lambe as patas porque elas guardam mel. Cada um tem um gosto de mel diferente.
+217|Sente o cheiro de comida a quilômetros. Marca as árvores da floresta com as garras para dizer que são suas.
+218|O corpo é feito de magma quente. Se parar de se mexer, esfria e endurece.
+219|A casca racha quando esfria, e o calor de dentro escapa em chamas. Vive perto de vulcões.
+220|Fuça o chão com o nariz para achar comida. O pelo grosso aguenta o frio mais forte.
+221|O pelo comprido cobre os olhos, mas ele não precisa enxergar: sente tudo pelo focinho.
+222|Os galhos da cabeça quebram fácil, mas crescem de novo. Só vive em mares limpos e quentes.
+223|Mira e acerta jatos de água em presas que voam. Gosta de grudar em peixes maiores para viajar.
+224|Agarra o adversário com os tentáculos e não solta. Solta tinta para fugir quando está em perigo.
+225|Carrega comida no rabo e entrega para quem estiver perdido na neve. É muito generoso.
+226|Desliza pelo mar como se voasse. Às vezes salta para fora d'água e plana por um bom tempo.
+227|As penas são afiadas como lâminas e caem quando ficam velhas. As pessoas usam para fazer facas.
+228|Uiva para se comunicar com o bando. O uivo dá arrepios em quem escuta de longe.
+229|O fogo que sai da boca tem cheiro de enxofre. Antigamente diziam que ele trazia notícias ruins.
+230|Dorme no fundo do mar e só acorda quando chega uma tempestade. Cria redemoinhos ao nadar.
+231|Usa a tromba para se refrescar com água. Rola no chão para brincar com os amigos.
+232|A pele é dura como armadura. Enrola o corpo e rola em alta velocidade para atacar.
+233|Foi criado para explorar lugares que ninguém consegue ir. Aprende sozinho coisas novas.
+234|Os chifres curvos criam ilusões em quem olha por muito tempo. Os antigos usavam para fazer amuletos.
+235|Pinta desenhos em todo lugar com a cauda. Cada um tem um estilo próprio e nunca repete o traço.
+236|Treina todos os dias para ficar mais forte. Ninguém sabe que tipo de lutador ele vai virar.
+237|Gira sobre a cabeça como um pião e acerta chutes enquanto rodopia.
+238|Testa tudo encostando os lábios. Quando gosta, fica dançando de felicidade.
+239|Quando o céu fica nublado, sai correndo de alegria. Entre os chifres corre uma corrente elétrica.
+240|Cada vez que respira, solta faíscas de fogo. Quando está saudável, as chamas ficam amarelas.
+241|O leite dele é muito nutritivo. Crianças doentes melhoram bem rápido quando tomam.
+242|Sente a tristeza dos outros e corre para ajudar. O ovo que carrega espalha alegria.
+243|Dizem que caiu do céu junto com um raio. Corre tão rápido que vira um borrão amarelo.
+244|Nasceu do fogo de um vulcão. Quando ruge, a terra treme e os vulcões acordam.
+245|Corre pelo mundo purificando as águas sujas. Dizem que é a encarnação do vento do norte.
+246|Nasce embaixo da terra e come o solo para crescer. Só sai quando já está bem grande.
+247|O casulo é tão duro que solta gás com força quando está pronto para evoluir.
+248|É tão forte que derruba montanhas. Anda pelos campos procurando um adversário à altura.
+249|Dizem que vive no fundo do mar e que um bater de asas causa uma tempestade de vários dias.
+250|As penas brilham com sete cores diferentes. Dizem que quem o vê terá felicidade para sempre.
+251|Viaja no tempo e aparece só em florestas em paz. Onde passa, as plantas florescem.

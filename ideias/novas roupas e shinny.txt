@@ -1,0 +1,25 @@
+Claude, estou desenvolvendo um jogo com renderização procedural de pixel art no Canvas (Vanilla JS). Quero expandir a customização dos Heróis em 8-bit e dos Pokémon, que atualmente têm poucas opções. Como sou leigo, me dê o passo a passo exato do que substituir e os códigos completos.
+
+Aqui estão as melhorias que quero implementar:
+
+1. EXPANDIR OS HERÓIS (Novos Pixels e Slots)
+
+Atualize a função avatarPixels(ch) e as constantes do topo (BODY, HATS, etc.).
+
+Crie uma nova categoria de Cabelos (HAIRS) com pelo menos 4 estilos diferentes (curto, longo, moicano, careca/brilho) que sejam pintados antes ou depois do chapéu.
+
+Crie uma categoria de Olhos/Rosto para dar expressão (ex: olhos bravos, óculos de sol, tapa-olho).
+
+Adicione pelo menos mais 3 chapéus novos e criativos na variável HATS (ex: coroa de flores, cartola mágica, elmo com chifres).
+
+2. ANIMAÇÃO DE RESPIRAÇÃO/CAMINHADA NO MAPA
+
+Na função drawChars(ctx) e no loop principal, adicione uma lógica para que os avatares dos heróis façam uma animação de "idle" (respirando: o corpo sobe e desce 1 pixel a cada 1 segundo) ou balancem ligeiramente ao se mover. Use a variável W.time para criar esse loop suave no Canvas.
+
+3. POKÉMON SHINY E ITENS SEGURADOS
+
+Atualize a função pkDraw(cv, species, outfit, back).
+
+Crie uma lógica de Pokémon Shiny: se o objeto do Pokémon tiver uma propriedade is_shiny: true, aplique um filtro no ctx (como hue-rotate) para mudar a paleta de cores da sprite original do Pokémon antes de desenhar as roupas por cima.
+
+Adicione um novo slot em PK_SLOTS chamado pk_mao (Item Segurado), e posicione-o em PK_ANCHORS para que o Pokémon possa segurar itens (ex: uma varinha, uma flor, uma espadinha).
