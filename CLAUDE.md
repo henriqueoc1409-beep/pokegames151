@@ -8,7 +8,7 @@ RPG de tabuleiro multiplayer no navegador para um grupo de amigos (cerca de 150 
 
 - **Dono:** Karneiro (carneirohenrique@hotmail.com), administrador do jogo. **Não é programador.** Explique tudo em português do Brasil, passo a passo, sem jargão, e diga exatamente onde clicar no Supabase e no Netlify.
 - **Site em produção:** https://pokegames-3iz.pages.dev (Cloudflare Pages, desde 22/10/2026). O antigo https://pokegames151.netlify.app (Netlify) não é mais o principal. Link direto do SAC: https://pokegames-3iz.pages.dev/?abrir=sac
-- **Banco:** Supabase, projeto `vcklnekgzjjxnrdyypqm`, região São Paulo.
+- **Banco:** Supabase, projeto `vcklnekgzjjxnrdyypqm` (nome "Pokegame"), região Canadá (`ca-central-1`), plano gratuito.
 - **Publicação automática (montada em 26/10/2026):** o código fica no GitHub (repositório privado do dono). Colaboradores fazem fork e abrem pull request (guia em `COMO_COLABORAR.md`). Cada pull request roda os testes (`.github/workflows/testes.yml`). Quando o dono junta no ramo `main`, o `.github/workflows/publicar.yml` roda os testes, espera a aprovação do dono no ambiente `producao` do GitHub, roda no Supabase só os SQL novos (`ferramentas/aplicar_sql.mjs`, com a cópia de segurança antes) e publica a pasta `deploy` no Cloudflare Pages com o wrangler (mesmo endereço). Segredos só no ambiente `producao`: `SUPABASE_DB_URL`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; variável `CLOUDFLARE_PROJECT`.
 
 ## Arquivos
