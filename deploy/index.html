@@ -1586,6 +1586,7 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .aw{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}.aw-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin-top:10px}
 .aw-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03)}.aw-card h4{margin:0 0 2px}.aw-card ol{list-style:none;padding:0;margin:8px 0 0}
 .aw-card li{margin:3px 0}.aw-card li.me{color:#FFE7A0}.aw-last{display:flex;flex-wrap:wrap;gap:6px}
+.qz-prize-box{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:8px 12px 12px}.qz-prize-box legend{font-weight:700;padding:0 6px}.qz-prize-box details{margin-top:8px}.qz-prize-box summary{cursor:pointer}
 .hunt-pop{max-width:520px}.hunt-pop ul{padding-left:20px;color:var(--text-2)}.hunt-pop li{margin:6px 0}
 .hunt-sil{display:block;margin:4px auto 8px;width:120px;height:120px;image-rendering:pixelated;filter:brightness(0);opacity:.9}
 .hunt-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
@@ -5175,7 +5176,8 @@ function LIB() {
       <p>Quem vai anda pelo caminho da Caçada. O <b>primeiro</b> a parar na casa do Pokémon tenta capturar com 3 bolas. <b>Pegando ou não, você volta para a casa onde estava antes</b>: não perde posição, mas não avança na corrida enquanto caça. Dá para desistir no meio e voltar; cada um vai atrás uma vez só.</p>
       <p>A Caçada tem prazo: se ninguém chegar, o Pokémon foge e todos voltam.</p>` },
     { id: "quiz", ic: "❓", t: "Quiz surpresa", h: `<p>De vez em quando aparece um <b>quiz</b> valendo prêmio. Você vê o aviso e o prêmio, conta 3, 2, 1 e responde um número antes do tempo acabar.</p>
-      <p>Vale uma tentativa só. Vence quem chegar <b>mais perto</b> da resposta; no empate, quem respondeu primeiro. Dá para responder pelo aviso no mapa ou pelo Jornal.</p>` },
+      <p>Vale uma tentativa só. Vence quem chegar <b>mais perto</b> da resposta; no empate, quem respondeu primeiro. Dá para responder pelo aviso no mapa ou pelo Jornal.</p>
+      <p>O prêmio cai sozinho na conta do vencedor assim que o quiz fecha, e aparece no 📬 Correio.</p>` },
     { id: "social", ic: "🤝", t: "Duelos, bolão, times e mercado", h: `<p><b>Duelos:</b> desafie um amigo valendo moedas, no quiz (adivinhar um Pokémon: menos tentativas vence; empate, quem foi mais rápido) ou na sorte.</p>
       <p><b>Bolão:</b> aposte em quem vai vencer a rodada do dia.</p>
       <p><b>Times:</b> junte-se a um time; o melhor time da semana ganha prêmio.</p>
@@ -5291,7 +5293,7 @@ async function loadAdmin() {
   if (S.adminTab === "convites") A.invites = await rpc("admin_invites");
   if (S.adminTab === "caixa") await loadCaixa();
   if (S.adminTab === "presentes") { await loadGiftsAdmin(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
-  if (S.adminTab === "quiz") await loadQuizAdmin();
+  if (S.adminTab === "quiz") { await loadQuizAdmin(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "cacada") await loadHunt(false);
   if (S.adminTab === "uso") { try { A.usage = await rpc("admin_usage"); } catch (e) { if (isMissingFn(e)) A.usage = false; else throw e; } }
   if (S.adminTab === "pix") { await loadShopFresh(); await loadOffers(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
@@ -8531,7 +8533,7 @@ function adminQuizView() {
         ${answered.map((e, i) => `<tr><td>${i + 1}º</td><td>${esc(e.name)}${e.user_id === q.winner ? " 🥇" : ""}</td><td class="num">${qzNum(e.guess)}</td><td class="num">${qzNum(e.diff)}</td></tr>`).join("")}</tbody></table></div>` : ""}
       <div class="qz-actions" style="justify-content:flex-start;margin-top:10px">
         ${q.status === "aberto" ? `<button class="btn small" data-act="adq-close" data-v="${q.id}">Encerrar agora</button>` : ""}
-        ${q.winner ? `<button class="btn small" data-act="adq-prize" data-v="${q.id}">🎁 Dar o prêmio a ${esc(charName(q.winner))}</button>` : ""}
+        ${q.winner ? (q.prize_given_at ? `<span class="tag ok">✅ Prêmio entregue sozinho a ${esc(charName(q.winner))}</span>` : `<button class="btn small" data-act="adq-prize" data-v="${q.id}">🎁 Dar o prêmio a ${esc(charName(q.winner))}</button>`) : ""}
         <button class="btn ghost small" data-act="adq-del" data-v="${q.id}">Apagar</button></div></section>`;
   };
   return `<div class="qz-adm">
@@ -8541,7 +8543,7 @@ function adminQuizView() {
       <form id="quizform" class="inv-form" style="display:block">
         <div class="qz-grid">
           <label>Título da tela<input id="qz-title" maxlength="80" required value="Quiz surpresa!"></label>
-          <label>Prêmio (texto)<input id="qz-prize" maxlength="200" placeholder="Ex.: 500 moedas, Aura dourada..."></label>
+          <label>Prêmio (texto que aparece; vazio = montado sozinho)<input id="qz-prize" maxlength="200" placeholder="Ex.: 500 moedas e 2 Ultra Balls"></label>
         </div>
         <label>Aviso (texto de chamada)<textarea id="qz-intro" maxlength="500" rows="2">Um quiz surpresa valendo prêmio! Quem chegar mais perto da resposta ganha.</textarea></label>
         <label>Pergunta (aparece só depois de clicar em Revelar)<textarea id="qz-q" maxlength="300" rows="2" required placeholder="Ex.: Quantos Pokémon existem na 1ª geração?"></textarea></label>
@@ -8550,17 +8552,31 @@ function adminQuizView() {
           <label>Segundos para responder<input id="qz-sec-in" type="number" min="5" max="120" value="15"></label>
           <label>Fecha em (horas)<input id="qz-hours" type="number" min="1" max="168" value="24"></label>
         </div>
+        <fieldset class="qz-prize-box"><legend>🎁 Prêmio entregue sozinho ao vencedor (opcional)</legend>
+          <p class="muted">O vencedor recebe na hora em que o quiz fecha: entra na conta e aparece no Correio. Deixe tudo zerado para entregar à mão, pelo botão "Dar o prêmio".</p>
+          <div class="qz-grid"><label>Moedas<input id="qz-coins" type="number" min="0" max="100000" value="0"></label>
+            <label>Dicas<input id="qz-hints" type="number" min="0" max="99" value="0"></label>
+            <label>Tente outra vez<input id="qz-retries" type="number" min="0" max="99" value="0"></label></div>
+          <details><summary>Bolas, pedras e itens da bolsa</summary><div class="cx-items">${giftBagOptions().map(([k, n]) => `<label class="check cx-off"><input type="number" name="qz-bag" min="0" max="99" value="0" data-id="${k}" data-n="${esc(n)}" aria-label="Quantas ${esc(n)}"> ${esc(n)}</label>`).join("")}</div></details>
+        </fieldset>
         <div style="margin-top:12px"><button class="btn">Publicar quiz</button></div></form></section>`}
     ${L.map(card).join("") || `<p class="muted">Nenhum quiz ainda.</p>`}
-    <p class="muted" style="font-size:12px">O quiz fecha sozinho quando todos os jogadores ativos participarem ou no prazo. O prêmio é entregue pelo botão "Dar o prêmio", que abre a aba Presentes já com o vencedor escolhido.</p></div>`;
+    <p class="muted" style="font-size:12px">O quiz fecha sozinho quando todos os jogadores ativos participarem ou no prazo. Com prêmio escolhido no formulário, o vencedor recebe sozinho na hora. Sem prêmio escolhido, use o botão "Dar o prêmio", que abre a aba Presentes já com o vencedor.</p></div>`;
 }
 document.addEventListener("submit", e => {
   if (e.target.id !== "quizform") return; e.preventDefault();
   const ans = qzParse($("#qz-ans").value);
   if (!isFinite(ans)) return toast("A resposta certa precisa ser um número.", true);
+  // prêmio de verdade (arquivo 51): entregue sozinho ao vencedor
+  const coins = +$("#qz-coins")?.value || 0, hints = +$("#qz-hints")?.value || 0, retries = +$("#qz-retries")?.value || 0;
+  const bagIn = [...document.querySelectorAll('[name="qz-bag"]')].filter(i => +i.value > 0), bag = Object.fromEntries(bagIn.map(i => [i.dataset.id, +i.value]));
+  const auto = [coins ? `${coins} moedas` : "", hints ? `${hints} ${hints === 1 ? "dica" : "dicas"}` : "", retries ? `${retries} tente outra vez` : "", ...bagIn.map(i => `${i.value} ${i.dataset.n}`)].filter(Boolean);
+  const prizeTxt = $("#qz-prize").value.trim() || (auto.length > 1 ? auto.slice(0, -1).join(", ") + " e " + auto.at(-1) : auto[0] || "");
+  const real = coins || hints || retries || bagIn.length;
   guarded(async () => {
-    await rpc("admin_quiz_save", { _title: $("#qz-title").value.trim(), _intro: $("#qz-intro").value.trim(), _prize: $("#qz-prize").value.trim(),
-      _question: $("#qz-q").value.trim(), _answer: ans, _seconds: +$("#qz-sec-in").value || 15, _hours: +$("#qz-hours").value || 24 });
+    await rpc("admin_quiz_save", { _title: $("#qz-title").value.trim(), _intro: $("#qz-intro").value.trim(), _prize: prizeTxt,
+      _question: $("#qz-q").value.trim(), _answer: ans, _seconds: +$("#qz-sec-in").value || 15, _hours: +$("#qz-hours").value || 24,
+      ...(real ? { _prize_coins: coins, _prize_hints: hints, _prize_retries: retries, _prize_bag: bag } : {}) });
     await Promise.all([loadQuizAdmin(), loadQuiz()]); toast("❓ Quiz publicado!"); sfx("acerto"); render(); renderHUD();
   });
 });
@@ -8875,6 +8891,8 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "quiz-premio-2026-10-27", sql: "51", title: "❓ Quiz: o prêmio agora cai na hora!", body: () => `Ganhou o Quiz surpresa? O prêmio agora entra sozinho na sua conta assim que o quiz fecha, e fica guardado no 📬 Correio com a mensagem.
+Fique de olho no aviso do quiz no mapa e no Jornal!` },
   { id: "premios-temporada-2026-10-27", sql: "50", title: "🏅 Prêmios da temporada: 12 categorias!", body: () => `Agora, quando a temporada fechar, o 1º lugar de cada categoria ganha ${S.cfg.season_awards?.coins ?? 150} moedas, uma medalha no cartão e um presente no 📬 Correio. Empatou? Todos os empatados ganham!
 🥾 Mais casas andadas · 🎯 Mais Pokémon capturados · 🧠 Mais vitórias na rodada do dia
 ⚔️ Mais batalhas Pokémon vencidas · 🤺 Mais duelos vencidos · 🚀 Mais dano na Equipe Rocket
