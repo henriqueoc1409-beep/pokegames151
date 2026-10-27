@@ -19,6 +19,8 @@ jobs:
   publicar:
     name: Banco e site
     needs: testes
+    # só publica depois que o dono configurar tudo (a variável CLOUDFLARE_PROJECT existe)
+    if: vars.CLOUDFLARE_PROJECT != ''
     runs-on: ubuntu-latest
     environment: producao
     steps:
