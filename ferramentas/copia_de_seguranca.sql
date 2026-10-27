@@ -1,7 +1,8 @@
 -- Cópia de segurança do Pokegames. Rode no SQL Editor do Supabase ANTES de qualquer SQL novo.
 -- Só COPIA: não muda nem apaga nada do jogo. Cria uma pasta (schema) chamada copia_AAAA_MM_DD
 -- com a data de hoje e copia para lá as tabelas que existirem. Se rodar de novo no mesmo dia,
--- a cópia do dia é refeita.
+-- a cópia do dia é refeita. Para não encher o plano grátis do Supabase, guarda só as 7 cópias
+-- mais recentes: as mais antigas (copia_ de outras datas) são apagadas no fim.
 do $$
 declare
   pasta text := 'copia_' || to_char(now() at time zone 'America/Sao_Paulo', 'YYYY_MM_DD');
@@ -20,6 +21,10 @@ begin
       execute format('drop table if exists %I.%I', pasta, t);
       execute format('create table %I.%I as select * from public.%I', pasta, t, t);
     end if;
+  end loop;
+  -- guarda só as 7 cópias mais recentes (o nome tem a data, então a ordem alfabética é a das datas)
+  for t in select nspname from pg_namespace where nspname ~ '^copia_[0-9]{4}_[0-9]{2}_[0-9]{2}$' order by nspname desc offset 7 loop
+    execute format('drop schema %I cascade', t);
   end loop;
 end $$;
 

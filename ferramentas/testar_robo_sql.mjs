@@ -34,14 +34,18 @@ let r = await aplicar(db, root, { soListar: true, log: quiet });
 check("lista o que rodaria, sem rodar", JSON.stringify(r.faltam) === JSON.stringify(todos.filter(f => parseInt(f) >= 46)) && !(await pg.query("select to_regclass('public.hunts') x")).rows[0].x, JSON.stringify(r));
 
 console.log("\nRodar de verdade");
-const logs = []; r = await aplicar(db, root, { log: m => logs.push(m) });
+for (let d = 1; d <= 9; d++) await pg.exec(`create schema copia_2020_01_0${d}; create table copia_2020_01_0${d}.x (id int);`);   // cópias antigas
+const logs = []; r = await aplicar(db, root, { log: m => logs.push(m), info: { versao: "abc1234", execucao: "7", por: "dono" } });
 check("roda só os novos, em ordem", JSON.stringify(r.rodados) === JSON.stringify(todos.filter(f => parseInt(f) >= 46)), JSON.stringify(r.rodados));
 check("o 14 fica de fora (é MANUAL)", r.pulados.includes("14_recomecar_do_zero.sql") && !logs.some(l => /Rodando 14_/.test(l)));
-check("fez a cópia de segurança antes", (await pg.query("select count(*)::int n from information_schema.schemata where schema_name like 'copia_%'")).rows[0].n === 1);
+const copias = (await pg.query("select schema_name s from information_schema.schemata where schema_name like 'copia_%' order by 1 desc")).rows.map(x => x.s);
+check("fez a cópia de segurança antes e guarda só as 7 mais recentes", copias.length === 7 && copias[0] > "copia_2020" && !copias.includes("copia_2020_01_01"), JSON.stringify(copias));
 check("as tabelas novas existem (Caçada, itens, escolha)", (await pg.query("select to_regclass('public.hunts') a, to_regclass('public.pk_items') b, to_regclass('public.hunt_entries') c")).rows.every(x => x.a && x.b && x.c));
-check("anotou os três como rodados pelo robô", (await pg.query("select count(*)::int n from sql_aplicados where origem = 'robo'")).rows[0].n === 3);
-r = await aplicar(db, root, { log: quiet });
-check("rodar de novo não faz nada", r.rodados.length === 0);
+check("anotou os novos como rodados pelo robô", (await pg.query("select count(*)::int n from sql_aplicados where origem = 'robo'")).rows[0].n === todos.filter(f => parseInt(f) >= 46).length);
+const pub = (await pg.query("select * from publicacoes order by id")).rows;
+check("anotou a publicação (versão, quem pediu e os SQL que rodaram)", pub.length === 1 && pub[0].versao === "abc1234" && pub[0].por === "dono" && pub[0].sql_rodados.length === r.rodados.length, JSON.stringify(pub));
+r = await aplicar(db, root, { log: quiet, info: { versao: "def5678" } });
+check("rodar de novo não roda SQL, mas anota a publicação", r.rodados.length === 0 && (await pg.query("select count(*)::int n from publicacoes")).rows[0].n === 2);
 
 console.log("\nErro e arquivo manual");
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "pg-robo-"));
