@@ -6,7 +6,8 @@ import { citext } from "@electric-sql/pglite/contrib/citext";
 import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
 import fs from "fs"; import path from "path";
 const [root, dataDir] = process.argv.slice(2);
-const db = new PGlite(dataDir, { extensions: { citext, pgcrypto } });
+const opts = { extensions: { citext, pgcrypto } };
+const db = dataDir ? new PGlite(dataDir, opts) : new PGlite(opts);   // sem pasta: banco só na memória
 const run = async (f) => { const sql = fs.readFileSync(f, "utf8"); try { await db.exec(sql); } catch (e) { console.error("ERRO em", path.basename(f), "\n", e.message, e.where || ""); process.exit(1); } };
 await run(path.join(root, "ferramentas/supabase_simulado.sql"));
 for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql")).sort()) { console.log("==", f); await run(path.join(root, "sql", f)); }
