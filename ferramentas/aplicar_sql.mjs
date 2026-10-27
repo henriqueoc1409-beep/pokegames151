@@ -20,14 +20,24 @@ export function manual(root, f) {
   return /^--\s*MANUAL/im.test(topo);
 }
 // db: { exec(sql) roda vários comandos; query(sql, params) devolve { rows } }
-export async function aplicar(db, root, { soListar = false, log = console.log } = {}) {
+// anota a publicação (arquivo 49 em diante): quando, versão do código, quem pediu e quais SQL rodaram
+async function registrar(db, rodados, info) {
+  if (!(await db.query("select to_regclass('public.publicacoes') is not null as ok")).rows[0].ok) return;
+  await db.query("insert into public.publicacoes(versao, execucao, por, sql_rodados) values ($1, $2, $3, $4)",
+    [info.versao || null, info.execucao || null, info.por || null, rodados]);
+}
+export async function aplicar(db, root, { soListar = false, log = console.log, info = null } = {}) {
   const tem = (await db.query("select to_regclass('public.sql_aplicados') is not null as ok")).rows[0].ok;
   if (!tem) throw new Error("A tabela sql_aplicados não existe. Rode uma vez ferramentas/marcar_sql_ja_rodados.sql no SQL Editor do Supabase.");
   const feitos = new Set((await db.query("select arquivo from public.sql_aplicados")).rows.map(r => r.arquivo));
   const faltam = arquivosSql(root).filter(f => !feitos.has(f));
   const pular = faltam.filter(f => manual(root, f)), rodar = faltam.filter(f => !manual(root, f));
   for (const f of pular) log(`⏭️  ${f}: é MANUAL, o robô não roda (o dono roda à mão, se quiser).`);
-  if (!rodar.length) { log("✅ Nenhum SQL novo para rodar."); return { rodados: [], pulados: pular }; }
+  if (!rodar.length) {
+    log("✅ Nenhum SQL novo para rodar.");
+    if (info && !soListar) await registrar(db, [], info);
+    return { rodados: [], pulados: pular };
+  }
   log(`📋 SQL novos, nesta ordem: ${rodar.join(", ")}`);
   if (soListar) return { rodados: [], faltam: rodar, pulados: pular };
   log("💾 Fazendo a cópia de segurança…");
@@ -46,6 +56,7 @@ export async function aplicar(db, root, { soListar = false, log = console.log } 
     }
     rodados.push(f); log(`✅ ${f} rodou.`);
   }
+  if (info) await registrar(db, rodados, info);
   return { rodados, pulados: pular };
 }
 
@@ -78,7 +89,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const client = new pg.Client({ connectionString: url, ssl: { rejectUnauthorized: false } });
   await client.connect();
   const db = { exec: s => client.query(s), query: (s, p) => client.query(s, p) };
-  try { await aplicar(db, ROOT, { soListar: process.argv.includes("--so-listar") }); }
+  const info = { versao: (process.env.GITHUB_SHA || "").slice(0, 7), execucao: process.env.GITHUB_RUN_NUMBER || null, por: process.env.GITHUB_ACTOR || null };
+  try { await aplicar(db, ROOT, { soListar: process.argv.includes("--so-listar"), info }); }
   catch (e) { console.error("❌ " + e.message); process.exitCode = 1; }
   finally { await client.end(); }
 }

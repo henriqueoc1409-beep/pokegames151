@@ -1581,6 +1581,8 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .mail-list{display:grid;gap:10px;margin-top:12px;max-width:760px}.mail-card{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.03)}
 .mail-card.fresh{border-color:#E5B92E;box-shadow:0 0 0 1px #E5B92E inset}.mail-card header{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.mail-card time{margin-left:auto;color:var(--text-2);font-size:13px}
 .mail-card blockquote{margin:8px 0;padding:6px 10px;border-left:3px solid #E5B92E;color:var(--text);font-style:italic}.mail-got{margin:6px 0 0;color:var(--text-2)}.mail-ic{font-size:20px}
+.uso{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}.uso .panel{min-width:0;overflow-wrap:anywhere}.uso-bar{height:14px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;margin:6px 0 8px;max-width:560px}.uso-bar i{display:block;height:100%}
+.uso-alerta{color:#E0533A}.uso table{margin-top:8px}.uso-links li{margin:4px 0}.uso details{margin-top:8px}.uso summary{cursor:pointer}
 .hunt-pop{max-width:520px}.hunt-pop ul{padding-left:20px;color:var(--text-2)}.hunt-pop li{margin:6px 0}
 .hunt-sil{display:block;margin:4px auto 8px;width:120px;height:120px;image-rendering:pixelated;filter:brightness(0);opacity:.9}
 .hunt-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
@@ -5184,7 +5186,7 @@ function CFG_FIELDS() {
       ...(S.cfg.battle_bet_max != null ? [["battle_bet_min", "Batalha Pokémon: aposta mínima"], ["battle_bet_max", "Batalha Pokémon: aposta máxima"]] : [])];
 }
 function viewAdmin() {
-  const tabs = [["jogadores", "Jogadores"], ["caixa", "Caixa da Obra"], ["presentes", "Presentes"], ["quiz", "Quiz"], ["cacada", "Caçada"], ["pix", "Loja e PIX"], ["convites", "Convites"], ["pokedex", "Pokédex"], ["regras", "Regras"], ["temporada", "Temporada"], ["auditoria", "Auditoria"]];
+  const tabs = [["jogadores", "Jogadores"], ["caixa", "Caixa da Obra"], ["presentes", "Presentes"], ["quiz", "Quiz"], ["cacada", "Caçada"], ["pix", "Loja e PIX"], ["convites", "Convites"], ["pokedex", "Pokédex"], ["regras", "Regras"], ["temporada", "Temporada"], ["uso", "Uso do jogo"], ["auditoria", "Auditoria"]];
   const A = S.admin; let body = `<p class="muted">Carregando…</p>`;
   if (S.adminTab === "jogadores" && A.players) {
     body = `<div class="table-scroll"><table class="list"><thead><tr><th>Usuário</th><th>E-mail</th><th>Personagem</th><th>Nv</th><th>Moedas</th><th>Casa</th><th>Faltam</th><th>Situação</th><th></th></tr></thead><tbody>
@@ -5230,6 +5232,7 @@ function viewAdmin() {
   if (S.adminTab === "presentes") body = adminGiftView();
   if (S.adminTab === "quiz") body = adminQuizView();
   if (S.adminTab === "cacada") body = adminHuntView();
+  if (S.adminTab === "uso") body = adminUsageView();
   if (S.adminTab === "temporada") {
     const se = S.today?.season;
     body = `<p>Temporada atual: <strong>${se?.id ?? "?"}</strong>, ${se?.status === "encerrada" ? "encerrada (a próxima começa amanhã sozinha)" : "em andamento"}.</p>
@@ -5250,6 +5253,7 @@ async function loadAdmin() {
   if (S.adminTab === "presentes") { await loadGiftsAdmin(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "quiz") await loadQuizAdmin();
   if (S.adminTab === "cacada") await loadHunt(false);
+  if (S.adminTab === "uso") { try { A.usage = await rpc("admin_usage"); } catch (e) { if (isMissingFn(e)) A.usage = false; else throw e; } }
   if (S.adminTab === "pix") { await loadShopFresh(); await loadOffers(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "pokedex") A.media = await rpc("admin_media_status");
   if (S.adminTab === "auditoria") {
@@ -8658,6 +8662,35 @@ function pkItemsAdmin() {
     <p class="muted">Preço em moedas na Loja Pokémon. 0 = não vende (ainda dá para achar nos baús ou dar de presente). O preço começou como o da Red/Blue ÷ 15. Use a busca abaixo para achar um item.</p>
     <details class="pki-grp"><summary>Ver os ${l.length} itens</summary>${l.map(i => `<form class="pki-form" data-id="${i.id}"><span class="pxi-name"><b>${esc(i.name)}</b><small>${kn[i.kind]}</small></span>
       <input name="price" type="number" min="0" step="1" required value="${i.price}" aria-label="Preço em moedas de ${esc(i.name)}"><button class="btn small">Salvar</button></form>`).join("")}</details></section>`;
+}
+// ---------- uso do jogo (arquivo 49): banco, cópias de segurança e publicações, para não passar do plano grátis ----------
+function adminUsageView() {
+  const u = S.admin.usage;
+  if (u === false) return `<p>Precisa do arquivo <code>49_painel_uso.sql</code> rodado no Supabase. O robô de publicação roda sozinho na próxima publicação aprovada.</p>`;
+  if (!u) return `<p class="muted">Carregando…</p>`;
+  const mb = b => `${(+b / 1048576).toLocaleString("pt-BR", { maximumFractionDigits: +b < 10485760 ? 1 : 0 })} MB`;
+  const pct = Math.min(100, Math.round(u.db_bytes / u.db_limit_bytes * 100)), cor = pct >= 80 ? "#E0533A" : pct >= 60 ? "#E5C04A" : "#3DBE7A";
+  const bk = u.backups.reduce((t, b) => t + +b.bytes, 0), gh = u.pubs_month * 12;
+  const ghPct = Math.min(100, Math.round(gh / 2000 * 100));
+  const bar = (p, c) => `<div class="uso-bar"><i style="width:${p}%;background:${c}"></i></div>`;
+  return `<div class="uso">
+    <section class="panel lo"><h3>🗄️ Banco de dados (Supabase, plano grátis)</h3>
+      ${bar(pct, cor)}<p><b>${mb(u.db_bytes)}</b> de ${mb(u.db_limit_bytes)} usados (<b>${pct}%</b>).
+      ${pct >= 80 ? ` <b class="uso-alerta">Atenção: perto do limite!</b> Me avise para eu ver o que está ocupando espaço.` : pct >= 60 ? " Ainda tranquilo, mas vale ficar de olho." : " Tudo tranquilo."}</p>
+      <p class="muted">Cópias de segurança: <b>${u.backups.length}</b> (${mb(bk)} no total). O robô guarda só as 7 mais recentes e apaga as antigas sozinho.
+        · Jogadores: <b>${u.players}</b> · Pokémon capturados: <b>${u.monsters}</b>${u.sql_last ? ` · Último SQL que rodou: <code>${esc(u.sql_last)}</code>` : ""}</p>
+      <details><summary>As tabelas que mais ocupam espaço</summary><div class="table-scroll"><table class="list"><thead><tr><th>Tabela</th><th>Tamanho</th><th>Linhas (aprox.)</th></tr></thead><tbody>
+        ${u.tables.map(t => `<tr><td><code>${esc(t.name)}</code></td><td class="num">${mb(t.bytes)}</td><td class="num">${(+t.rows).toLocaleString("pt-BR")}</td></tr>`).join("")}</tbody></table></div></details></section>
+    <section class="panel lo"><h3>🚀 Publicações (GitHub)</h3>
+      ${bar(ghPct, ghPct >= 80 ? "#E0533A" : "#3DBE7A")}<p>Este mês: <b>${u.pubs_month}</b> ${u.pubs_month === 1 ? "publicação" : "publicações"}. Cada uma gasta uns 12 minutos dos testes e do robô: cerca de <b>${gh} min</b> dos 2.000 grátis do GitHub (${ghPct}%). Se acabar, o GitHub só para até o mês seguinte; não cobra.</p>
+      ${u.pubs.length ? `<div class="table-scroll"><table class="list"><thead><tr><th>Quando</th><th>Versão</th><th>Quem pediu</th><th>SQL que rodaram</th></tr></thead><tbody>
+        ${u.pubs.map(p => `<tr><td>${new Date(p.quando).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</td><td><code>${esc(p.versao || "–")}</code></td><td>${esc(p.por || "–")}</td><td>${p.sql_rodados?.length ? p.sql_rodados.map(esc).join(", ") : `<span class="muted">nenhum (só o site)</span>`}</td></tr>`).join("")}</tbody></table></div>`
+        : `<p class="muted">Nenhuma publicação anotada ainda. A partir da próxima publicação aprovada, cada uma aparece aqui.</p>`}</section>
+    <section class="panel lo"><h3>🔎 Onde ver os números completos</h3><ul class="uso-links">
+      <li><a href="https://supabase.com/dashboard/org/_/usage" target="_blank" rel="noopener">Supabase → Usage</a>: banco, tráfego e usuários do mês, com os limites do plano grátis.</li>
+      <li><a href="https://dash.cloudflare.com/?to=/:account/pages/view/pokegames" target="_blank" rel="noopener">Cloudflare → pokegames</a>: publicações do site e a aba Metrics (visitas).</li>
+      <li><a href="https://github.com/settings/billing/usage" target="_blank" rel="noopener">GitHub → Billing → Usage</a>: minutos usados pelos testes e pelo robô.</li></ul>
+      <p class="muted">Nenhum desses serviços cobra sem você mudar para um plano pago. No grátis, quando passa do limite, eles bloqueiam ou pausam; não mandam conta.</p></section></div>`;
 }
 function adminPixView() {
   if (S.offers === null) return `<p>Precisa do arquivo <code>21_precos_pix_admin.sql</code> rodado no Supabase.</p>`;
