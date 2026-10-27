@@ -1,3 +1,4 @@
+-- MANUAL: o dono decidiu NÃO usar as bandeiras Missão e Pinguim do Sul (27/10/2026). O robô de publicação não roda este arquivo.
 -- =====================================================================
 -- 36_bandeiras_missao_pinguim.sql
 -- Pedido do dono em 22/10/2026: mais duas bandeiras de vila, com as imagens que ele enviou,
