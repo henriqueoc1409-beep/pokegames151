@@ -1583,6 +1583,9 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .mail-card blockquote{margin:8px 0;padding:6px 10px;border-left:3px solid #E5B92E;color:var(--text);font-style:italic}.mail-got{margin:6px 0 0;color:var(--text-2)}.mail-ic{font-size:20px}
 .uso{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}.uso .panel{min-width:0;overflow-wrap:anywhere}.uso-bar{height:14px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;margin:6px 0 8px;max-width:560px}.uso-bar i{display:block;height:100%}
 .uso-alerta{color:#E0533A}.uso table{margin-top:8px}.uso-links li{margin:4px 0}.uso details{margin-top:8px}.uso summary{cursor:pointer}
+.aw{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}.aw-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin-top:10px}
+.aw-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03)}.aw-card h4{margin:0 0 2px}.aw-card ol{list-style:none;padding:0;margin:8px 0 0}
+.aw-card li{margin:3px 0}.aw-card li.me{color:#FFE7A0}.aw-last{display:flex;flex-wrap:wrap;gap:6px}
 .hunt-pop{max-width:520px}.hunt-pop ul{padding-left:20px;color:var(--text-2)}.hunt-pop li{margin:6px 0}
 .hunt-sil{display:block;margin:4px auto 8px;width:120px;height:120px;image-rendering:pixelated;filter:brightness(0);opacity:.9}
 .hunt-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
@@ -4301,6 +4304,7 @@ const TITLES = {
 };
 async function loadTitles() {
   try { S.titles = await rpc("player_titles"); } catch (e) { console.warn(e); }
+  try { await loadMedals(); } catch {}   // medalhas da temporada (arquivo 50)
   try { S.champ = await rpc("round_champion"); } catch { S.champ = undefined; }   // arquivo 30: melhor da última rodada
 }
 // arquivo 30: o líder só pode ser desafiado pelo melhor da última rodada (e aí é obrigado a duelar)
@@ -4320,11 +4324,41 @@ function displayName(c, id) {
   if (isSnorlax(id ?? c.user_id)) return `💤 ${nm} <span class="snorlax">(Snorlax da Rodada)</span>`;
   return nm;
 }
+// prêmios da temporada (arquivo 50): as mesmas 12 categorias do season_award_cats()
+const SEASON_CATS = { casas: ["🥾", "Andarilho da Temporada"], capturas: ["🎯", "Rei das Capturas"], rodadas: ["🧠", "Mestre do Desafio"], batalhas: ["⚔️", "Campeão das Batalhas"],
+  duelos: ["🤺", "Duelista da Temporada"], rocket: ["🚀", "Terror da Rocket"], quiz: ["❓", "Gênio do Quiz"], treinadores: ["🧢", "Caçador de Treinadores"],
+  moedas: ["💰", "Magnata"], primeira: ["👁️", "Olho de Águia"], pokedex: ["📖", "Pesquisador Pokémon"], cacadas: ["🔍", "Caçador de Lendas"] };
+// medalhas da última temporada premiada (valem até a próxima entrega)
+async function loadMedals() {
+  if (S.medals === false) return;
+  const top = await sb.from("season_awards").select("season_id").order("season_id", { ascending: false }).limit(1);
+  if (top.error) { S.medals = false; return; }
+  if (!top.data.length) { S.medals = { season: null, by: {} }; return; }
+  const season = top.data[0].season_id;
+  const { data, error } = await sb.from("season_awards").select("category,user_id,value").eq("season_id", season);
+  if (error) { S.medals = false; return; }
+  const by = {}; for (const a of data) (by[a.user_id] ||= []).push(a);
+  S.medals = { season, by, list: data };
+}
+function rkAwardsView() {
+  const A = S.rk.awards;
+  if (A === false) return `<div class="rk-state"><p>Os prêmios da temporada precisam do arquivo <code>50_premios_temporada.sql</code> rodado no Supabase.</p></div>`;
+  if (!A) return `<p class="muted rk-state">Carregando…</p>`;
+  const me = S.session.user.id, fmt = v => (+v).toLocaleString("pt-BR");
+  const cards = A.cats.map(c => `<div class="aw-card"><h4>${c.ic} ${esc(c.nome)}</h4><small class="muted">Medalha: ${esc(c.titulo)}</small>
+    ${c.top.length ? `<ol>${c.top.map((t, i) => `<li class="${t.user_id === me ? "me" : ""}">${["🥇", "🥈", "🥉"][i] || ""} <b>${esc(t.name)}</b> <span class="muted">${fmt(t.val)} ${esc(c.un)}</span></li>`).join("")}</ol>` : `<p class="muted">Ninguém ainda.</p>`}</div>`).join("");
+  const M = S.medals, last = M && M.season ? `<section class="panel lo"><h3>🏅 Campeões da Temporada ${M.season}</h3><div class="aw-last">${Object.entries(SEASON_CATS).map(([k, [ic, tt]]) => {
+      const w = (M.list || []).filter(a => a.category === k); return w.length ? `<span class="ttl">${ic} ${esc(tt)}:&nbsp;<b>${w.map(a => esc(charName(a.user_id))).join(" e ")}</b></span>` : ""; }).join("")}</div></section>` : "";
+  return `<div class="aw">${last}<section class="panel lo"><h3>🏅 Prêmios da Temporada ${A.season}</h3>
+    <p class="muted">Quando a temporada fechar, o 1º lugar de cada categoria ganha <b>${A.coins} moedas</b>, uma medalha no cartão e um presente no Correio. Empatou? Todos os empatados ganham. Contando até ${A.until ? fmtDM(A.until) : "ontem"}: o dia de hoje só entra amanhã, para ninguém descobrir a jogada dos outros.</p>
+    <div class="aw-grid">${cards}</div></section></div>`;
+}
 function titleChips(id) {
   const t = S.titles || {}, out = [];
   if (isBrabo(id)) out.push(`<span class="ttl gold" title="Está em 1º no mapa">👑 O Brabo</span>`);
   if (isSnorlax(id)) out.push(`<span class="ttl mud" title="Último lugar na rodada de ontem. Recebe 10% a menos no Dia de pagamento.">💤 Snorlax da Rodada</span>`);
   for (const [k, [nome, desc]] of Object.entries(TITLES)) if (t[k] === id) out.push(`<span class="ttl" title="${esc(desc)}">${nome}</span>`);
+  for (const a of (S.medals?.by?.[id] || [])) { const [ic, tt] = SEASON_CATS[a.category] || ["🏅", a.category]; out.push(`<span class="ttl gold" title="Medalha da Temporada ${S.medals.season}">${ic} ${esc(tt)}</span>`); }
   return out.length ? `<div class="ttls">${out.join("")}</div>` : "";
 }
 
@@ -4402,6 +4436,7 @@ async function loadRank2() {
       try { R.modeStats = await rpc("mode_stats", { _kind: R.period }); } catch (e) { if (isMissingFn(e)) R.modeStats = null; else throw e; }
     } else if (R.period === "times") await loadTeams();
     else if (R.period === "temporada") await loadWorld();
+    else if (R.period === "premios") { try { R.awards = await rpc("season_board"); } catch (e) { if (isMissingFn(e)) R.awards = false; else throw e; } await loadMedals(); }
   } catch (e) {
     if (isMissingFn(e)) { R.missing = true; S.rankTab = "hoje"; await guarded(loadRank); }
     else R.error = errMsg(e);
@@ -4439,7 +4474,7 @@ function statusText(r, today) {
   return `jogando ${r.done}/4`;
 }
 function rkTabs() {
-  const tabs = [["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"], ["geral", "Geral"], ["temporada", "Temporada"], ["times", "Times"]];
+  const tabs = [["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"], ["geral", "Geral"], ["temporada", "Temporada"], ["premios", "🏅 Prêmios"], ["times", "Times"]];
   return `<div class="tabs rk-tabs">${tabs.map(([k, t]) => `<button data-act="rk-period" data-v="${k}" aria-current="${S.rk.period === k}">${t}</button>`).join("")}</div>`;
 }
 function viewRanking2() {
@@ -4452,6 +4487,7 @@ function viewRanking2() {
   else if (R.period === "dia") body = rkDayView();
   else if (["semana", "mes", "geral"].includes(R.period)) body = rkPeriodView();
   else if (R.period === "times") body = teamsView();
+  else if (R.period === "premios") body = rkAwardsView();
   else body = rkSeasonView();
   return `<div class="rk">${rkTabs()}${body}</div>`;
 }
@@ -5129,7 +5165,8 @@ function LIB() {
       <p>Na sua vila, a <b>Mina</b> também deixa cavar pedras uma vez por dia.</p>` },
     { id: "liga", ic: "🏆", t: "Temporada e Liga Pokémon", h: `<p>Quando todos os jogadores ativos chegam ao Castelo, começa a <b>Liga Pokémon</b>: um mata-mata de batalhas, uma fase por dia, com vida cheia. Quem não tem Pokémon perde por W.O.</p>
       <p>O <b>campeão</b> ganha a Aura do Campeão, uma estátua no mapa e vai à <b>caverna do lendário</b>: uma única tentativa de capturar um lendário, com a torcida de todos.</p>
-      <p>Depois a temporada fecha e todos voltam à largada, <b>mantendo</b> nível, moedas, Pokémon e itens.</p>` },
+      <p>Depois a temporada fecha e todos voltam à largada, <b>mantendo</b> nível, moedas, Pokémon e itens.</p>
+      <p><b>🏅 Prêmios da temporada:</b> quando ela fecha, o 1º lugar de cada uma das 12 categorias ganha ${c.season_awards?.coins ?? 150} moedas, uma medalha no cartão e um presente no Correio (empatados ganham todos): mais casas andadas, mais Pokémon capturados, mais vitórias na rodada do dia, mais batalhas Pokémon vencidas, mais duelos vencidos, mais dano na Equipe Rocket, mais vitórias no Quiz, mais treinadores vencidos, mais moedas ganhas andando, mais acertos de primeira, mais espécies novas na Pokédex e mais Caçadas vencidas. Acompanhe em <b>Ranking → 🏅 Prêmios</b>.</p>` },
     { id: "rocket", ic: "🚀", t: "Equipe Rocket", h: `<p>A Equipe Rocket invade o jogo de tempos em tempos (normalmente terça, sexta e domingo às 8h) e fica 24 horas.</p>
       <p>Ela tem uma <b>barra de vida coletiva</b>: cada jogador cede 1 Pokémon e luta turno a turno; todo o dano que você tira vai para a barra.</p>
       <p><b>Se a turma zerar a barra</b>, cada participante ganha ${c.rocket?.reward ?? 100} moedas. <b>Se não zerar</b>, a Rocket sorteia 1 participante e rouba para sempre o Pokémon que ele cedeu. Pense bem em quem você vai ceder!</p>` },
@@ -5237,7 +5274,10 @@ function viewAdmin() {
     const se = S.today?.season;
     body = `<p>Temporada atual: <strong>${se?.id ?? "?"}</strong>, ${se?.status === "encerrada" ? "encerrada (a próxima começa amanhã sozinha)" : "em andamento"}.</p>
       <p class="muted">Começar uma nova temporada agora manda todos de volta à largada e desarma as armadilhas. Nível, moedas, visual e ajudas continuam.</p>
-      <button class="btn danger" data-act="adm-season">Começar nova temporada agora</button>`;
+      <button class="btn danger" data-act="adm-season">Começar nova temporada agora</button>
+      <h3 style="margin-top:20px">🏅 Prêmios da temporada</h3>
+      <p class="muted">Saem sozinhos quando a temporada fecha pela Liga (depois da caverna do lendário). Se a temporada fechar de outro jeito (por exemplo, pelo botão acima), use este botão depois: ele entrega os prêmios da última temporada encerrada, uma vez só.</p>
+      <button class="btn ghost" data-act="adm-awards">Entregar os prêmios da última temporada</button>`;
   }
   if (S.adminTab === "auditoria" && A.audit) {
     body = A.audit.length ? `<div class="table-scroll"><table class="list"><thead><tr><th>Quando</th><th>Ação</th><th>Alvo</th><th>Motivo</th></tr></thead><tbody>
@@ -8835,6 +8875,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "premios-temporada-2026-10-27", sql: "50", title: "🏅 Prêmios da temporada: 12 categorias!", body: () => `Agora, quando a temporada fechar, o 1º lugar de cada categoria ganha ${S.cfg.season_awards?.coins ?? 150} moedas, uma medalha no cartão e um presente no 📬 Correio. Empatou? Todos os empatados ganham!
+🥾 Mais casas andadas · 🎯 Mais Pokémon capturados · 🧠 Mais vitórias na rodada do dia
+⚔️ Mais batalhas Pokémon vencidas · 🤺 Mais duelos vencidos · 🚀 Mais dano na Equipe Rocket
+❓ Mais vitórias no Quiz · 🧢 Mais treinadores vencidos · 💰 Mais moedas ganhas andando
+👁️ Mais acertos de primeira · 📖 Mais espécies novas na Pokédex · 🔍 Mais Caçadas vencidas
+Acompanhe quem está na frente em Ranking → 🏅 Prêmios (conta até ontem, sem spoiler do dia).` },
   { id: "correio-2026-10-23", title: "📬 Novo: Correio de presentes", body: () => `Agora todo presente que o admin mandar fica guardado no 📬 Correio, no menu Comunidade.
 • Se o presente chegar com o jogo aberto, aparece um aviso no mapa na hora.
 • O selo vermelho no menu mostra quantos presentes novos você tem.
@@ -9006,6 +9052,10 @@ ${n.body()}`, "Publicar"))) return;
   },
   "nov-edit": v => { const n = NOVIDADES.find(x => x.id === v); if (!n) return; S.postEdit = null; S.postDraft = { kind: "novidade", title: n.title, body: n.body() }; render(); $("#postform")?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth" }); },
   "lib-t": v => { S.libT = v; render(); $(".lib-page")?.scrollIntoView({ block: "nearest", behavior: reduceMotion() ? "auto" : "smooth" }); },
+  "adm-awards": async () => {
+    if (!(await confirmModal("Entregar os prêmios?", "O 1º lugar de cada categoria da última temporada encerrada ganha as moedas, a medalha e um presente no Correio, e o Jornal anuncia. Isso só acontece uma vez por temporada.", "Entregar"))) return;
+    await guarded(async () => { const n = await rpc("admin_season_awards"); S.medals = undefined; await loadMedals(); toast(`🏅 Prêmios entregues: ${n} ${n === 1 ? "medalha" : "medalhas"}.`); });
+  },
   "nov-off": v => { try { localStorage.setItem(novOffKey(), JSON.stringify([...novOff(), v])); } catch {} render(); toast("Ok, essa não vai para o Jornal."); },
   "aud-draft": () => {
     const ids = [...document.querySelectorAll(".nd-ck:checked")].map(i => +i.value); if (!ids.length) return toast("Marque pelo menos uma mudança.", true);
