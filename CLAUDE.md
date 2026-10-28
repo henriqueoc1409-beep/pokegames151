@@ -15,7 +15,7 @@ RPG de tabuleiro multiplayer no navegador para um grupo de amigos (cerca de 150 
 
 ```
 deploy/index.html               O site inteiro: HTML + CSS + JavaScript, sem build. Desde 21/10/2026 o dono guarda o arquivo na pasta `deploy` (a pasta que ele arrasta para publicar), já com a chave anon colada. Edite esse arquivo; não envie outros arquivos para essa pasta.
-sql/01..51_*.sql                Migrações do banco, em ordem (não existem 19 e 20). 01 a 13 já rodadas em produção; 14 a 18 e 21 a 48 escritas em 16-23/10/2026 (confirme com o dono se já rodou; o 22 ele rodou).
+sql/01..52_*.sql                Migrações do banco, em ordem (não existem 19 e 20). 01 a 13 já rodadas em produção; 14 a 18 e 21 a 48 escritas em 16-23/10/2026 (confirme com o dono se já rodou; o 22 ele rodou).
 PLANO_SEGUNDA_GERACAO.md        Plano simples da 2ª geração (152 a 251) com regras da 1ª e interruptor liga/desliga no admin. Feito: sql/27 (dados escondidos), sql/28 (interruptor e funções) e o site (botão no admin, palpites, Pokédex, tipos e pedras).
 PLANO_VILA_E_GUERRAS.md         Plano aprovado da vila com 18 construções e das guerras entre vilas (inventário, custos, regras).
 sql/descartados/                19 e 20: o dono decidiu NÃO rodar. O 21 já contém o Caixa da Obra que estava no 19. Não rodar nem usar como base.
@@ -61,6 +61,7 @@ ferramentas/testar_robo_sql.mjs            Testes do robô e da marcação (19 v
 ferramentas/testar_uso.mjs                 Testes do 49 (painel de uso do admin) (11 verificações).
 ferramentas/testar_premios.mjs             Testes do 50 (prêmios da temporada: placar das 12 categorias só até ontem, entrega no fim da temporada, 150 moedas, medalha, Correio, Jornal, empate, uma vez só, reserva do admin) (25 verificações).
 ferramentas/testar_quiz_premio.mjs        Testes do 51 (prêmio do Quiz entregue sozinho: escolher, recusar inválido, vencedor recebe na conta/bolsa/Correio, Jornal, uma vez só, quiz sem prêmio segue como antes) (13 verificações).
+ferramentas/testar_ajudas.mjs              Testes do 52 (ajudas não contam na rodada; casas não mudam) (6 verificações).
 ferramentas/conferir_site.mjs              Confere o JavaScript do site e barra a publicação se a chave do site não for a pública (anon).
 ferramentas/package.json                   Dependências das ferramentas (PGlite para os testes, pg para o robô): `npm ci --prefix ferramentas`.
 .github/workflows/                         Testes automáticos (testes.yml) e publicação automática (publicar.yml).
@@ -250,13 +251,14 @@ No Supabase: Authentication → URL Configuration → Site URL = link do Netlify
 | 49_painel_uso | Pedido do dono em 27/10/2026: tabela `publicacoes` (o robô anota cada publicação: versão, quem pediu, SQL que rodaram) e `admin_usage()` (só admin: tamanho do banco e limite, tabelas maiores, cópias `copia_*`, jogadores, Pokémon, publicações do mês, último SQL de `sql_aplicados`, lido por SQL dinâmico porque essa tabela é criada à mão). Não muda nada do jogo. Escrito em 27/10/2026 |
 | 50_premios_temporada | Pedido do dono em 27/10/2026: no fim da temporada (`league_cave_end` nova chama `season_awards_give`), o 1º de cada uma de 12 categorias (`season_award_cats`: casas andadas, capturas, vitórias na rodada do dia, batalhas Pokémon vencidas contra jogadores/Liga, duelos, dano na Rocket, quizzes, treinadores do mapa, moedas ganhas nas andadas, acertos de primeira, espécies novas na Pokédex, Caçadas) ganha 150 moedas (`season_awards.coins` no game_config), medalha (`season_awards`, pública) e presente no Correio (`gifts`); o Jornal anuncia. Empate premia todos. Uma vez por temporada. Contagem em `season_rank(_cat, _t0, _t1)`; placar ao vivo `season_board()` só até ontem (sem spoiler); reserva `admin_season_awards()` (só a última temporada encerrada). Escrito em 27/10/2026 |
 | 51_quiz_premio_automatico | Pedido do dono em 27/10/2026: prêmio de verdade no quiz (`quizzes.prize_coins`, `prize_hints`, `prize_retries`, `prize_bag`, `prize_items`, `prize_given_at`); nova `admin_quiz_save` com esses argumentos (a de 7 argumentos foi apagada; chamar sem eles continua valendo); `quiz_tick` novo entrega na hora ao vencedor por `gift_give` (conta, bolsa, visuais e presente no Correio) e conta no Jornal; `gift_check` confere o prêmio com as mesmas regras do `admin_gift`. Escrito em 27/10/2026 |
+| 52_ajudas_nao_contam | Pedido do dono em 28/10/2026: `rank_attempts` não soma mais Dica (+1) nem Tente outra vez (+2): a rodada conta só os palpites que ficaram valendo; modo não acertado continua `unsolved_rank_attempts`. Casas não mudam. Rodadas já fechadas não mudam de vencedor. Escrito em 28/10/2026 |
 | 30_aposta_reserva_lider | Pedido dos jogadores/dono em 22/10/2026: aposta da batalha Pokémon reservada ao desafiar (devolve ao recusar/cancelar) e líder (Procurado) que só enfrenta o melhor da última rodada, em duelo obrigatório e nos encontros do mapa. Novas versões de `battle_challenge`, `battle_respond`, `battle_cancel`, `create_duel` e `do_move`; função `round_champion`. Escrito em 22/10/2026 |
 | 15_trava_ranking_chat | Ranking só libera quando todos os ativos jogam, quem já jogou (`day_presence`) e Chat dos Aventureiros com bloqueio de spoiler. Escrito em 17/10/2026, ainda não rodado (confirme com o dono) |
 
 ## Regras do jogo (resumo)
 
 - **Pontos por modo**, em casas: 1 tentativa = 5, 2 = 4, 3 = 3, 4 = 2, 5 ou 6 = 1, 7 ou mais = 0. Soma-se a roleta de 1 a 3 e os bônus.
-- **Rodada do dia:** vence quem somar menos tentativas. Cada ajuda conta +1 e modo não acertado conta 10. Fecha à meia-noite (horário de Brasília). Prêmios: 1º +3 casas e 100 moedas, 2º +2 e 50, 3º +1.
+- **Rodada do dia:** vence quem somar menos tentativas. Desde o 52 as ajudas (Dica e Tente outra vez) não contam (antes Dica +1 e Tente outra vez +2); modo não acertado conta 10. Fecha à meia-noite (horário de Brasília). Prêmios: 1º +3 casas e 100 moedas, 2º +2 e 50, 3º +1.
 - **Tabuleiro:** 9 bifurcações. A rota arriscada tem 80% do tamanho da segura, mas 45% de lamaçais de 6 casas; a segura tem baús e 2 Dias de Pagamento. A distância efetiva fica parecida, e a segura rende cerca de +187 moedas (cálculo em `ferramentas/gerar_mapa.py`).
 - **Temporada (desde o 31):** quando todos os ativos chegam ao Castelo, acontece a Liga Pokémon (mata-mata); o campeão ganha aura, estátua e a caverna do lendário (5%); depois todos voltam à largada mantendo nível, moedas e itens.
 - **Heróis:** Guerreiro, Mago, Arqueiro, Ladino, Clérigo e Domador, cada um com passiva e habilidade diária.
