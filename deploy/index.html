@@ -3933,7 +3933,7 @@ function challengeBody(mode, P) {
       : `<button class="btn ghost small" data-act="hint">${S.me.hints > 0 ? `Usar dica (tem ${S.me.hints})` : `Comprar dica (${S.cfg.hint_price} moedas)`}</button>`;
     const retryBtn = P.retries_used >= 1 ? `<button class="btn ghost small" disabled>Tente outra vez usado</button>`
       : `<button class="btn ghost small" data-act="retry" ${P.can_retry ? "" : "disabled"} title="Anula seu último palpite errado">${S.me.retries > 0 ? `Tente outra vez (tem ${S.me.retries})` : `Comprar Tente outra vez (${S.cfg.retry_price})`}</button>`;
-    helps = `<div class="helps">${hintBtn}${retryBtn}</div><p class="muted" style="text-align:center;font-size:.82rem;margin:4px 0 0">Cada ajuda soma +1 tentativa no ranking da rodada. Tente outra vez anula o último erro, então não reduz suas casas.</p>`;
+    helps = `<div class="helps">${hintBtn}${retryBtn}</div><p class="muted" style="text-align:center;font-size:.82rem;margin:4px 0 0">As ajudas são bônus: não contam como tentativa no ranking da rodada. Tente outra vez apaga o último palpite errado.</p>`;
   }
   const input = P.finished ? "" : `<div class="guess-box">
       <input id="guess" placeholder="Digite o nome de um Pokémon" autocomplete="off" aria-label="Nome do Pokémon" aria-autocomplete="list">
@@ -4013,7 +4013,7 @@ async function useHelp(kind) {
   const price = kind === "dica" ? S.cfg.hint_price : S.cfg.retry_price;
   const nome = kind === "dica" ? "Dica" : "Tente outra vez";
   if (have < 1) {
-    const ok = await confirmModal(`Comprar ${nome}?`, `Custa ${price} moedas e será usada agora. Lembre: cada ajuda soma +1 tentativa no ranking da rodada.`, `Comprar por ${price}`);
+    const ok = await confirmModal(`Comprar ${nome}?`, `Custa ${price} moedas e será usada agora. As ajudas não contam como tentativa no ranking da rodada.`, `Comprar por ${price}`);
     if (!ok) return;
   }
   busy = true;
@@ -4494,7 +4494,7 @@ function viewRanking2() {
 }
 function rkRulesCard() {
   return `<details class="panel lo rk-card"><summary><strong>Como funciona a classificação</strong></summary>
-    <p>Soma-se o número de palpites dos modos do dia. Cada ajuda (dica ou tente outra vez) conta +1 e um modo não acertado conta ${S.cfg.unsolved_rank_attempts ?? 10}. Quem somar menos vence; no empate, vence quem terminou primeiro. A rodada fecha à meia-noite: 1º ganha +${S.cfg.round_bonus_steps?.[0] ?? 3} casas e ${S.cfg.round_bonus_coins?.[0] ?? 100} moedas, 2º +${S.cfg.round_bonus_steps?.[1] ?? 2} casas e ${S.cfg.round_bonus_coins?.[1] ?? 50} moedas, 3º +${S.cfg.round_bonus_steps?.[2] ?? 1} casa. Dias recuperados não entram na rodada.</p></details>`;
+    <p>Soma-se o número de palpites dos modos do dia. As ajudas (Dica e Tente outra vez) não contam, e um modo não acertado conta ${S.cfg.unsolved_rank_attempts ?? 10}. Quem somar menos vence; no empate, vence quem terminou primeiro. A rodada fecha à meia-noite: 1º ganha +${S.cfg.round_bonus_steps?.[0] ?? 3} casas e ${S.cfg.round_bonus_coins?.[0] ?? 100} moedas, 2º +${S.cfg.round_bonus_steps?.[1] ?? 2} casas e ${S.cfg.round_bonus_coins?.[1] ?? 50} moedas, 3º +${S.cfg.round_bonus_steps?.[2] ?? 1} casa. Dias recuperados não entram na rodada.</p></details>`;
 }
 function guessListHTML(k, M) {
   if (!M.guesses.length) return `<p class="muted">Nenhum palpite.</p>`;
@@ -5078,7 +5078,7 @@ function viewRanking() {
   } else if (S.rankRows) {
     if (S.rankTab === "hoje") {
       const can = S.today?.moved || S.isAdmin;
-      table = `<p class="muted">Soma das tentativas nos 4 modos, contando +1 por ajuda e ${S.cfg.unsolved_rank_attempts} para modo não acertado. Menos é melhor. ${can ? "" : "As tentativas dos outros aparecem depois que você anda."} O resultado fecha à meia-noite: 1º ganha +${S.cfg.round_bonus_steps[0]} casas e ${S.cfg.round_bonus_coins[0]} moedas, 2º +${S.cfg.round_bonus_steps[1]} casas e ${S.cfg.round_bonus_coins[1]} moedas, 3º +${S.cfg.round_bonus_steps[2]} casa.</p>
+      table = `<p class="muted">Soma das tentativas nos 4 modos (as ajudas não contam), com ${S.cfg.unsolved_rank_attempts} para modo não acertado. Menos é melhor. ${can ? "" : "As tentativas dos outros aparecem depois que você anda."} O resultado fecha à meia-noite: 1º ganha +${S.cfg.round_bonus_steps[0]} casas e ${S.cfg.round_bonus_coins[0]} moedas, 2º +${S.cfg.round_bonus_steps[1]} casas e ${S.cfg.round_bonus_coins[1]} moedas, 3º +${S.cfg.round_bonus_steps[2]} casa.</p>
       <table class="list"><thead><tr><th>Aventureiro</th><th>Modos feitos</th><th>Acertos</th><th>Andou</th><th>Tentativas</th></tr></thead><tbody>
       ${S.rankRows.map(r => `<tr><td>${who(r)}</td><td class="num">${r.modes_done}/4</td><td class="num">${r.solved}</td><td>${r.moved ? "sim" : "ainda não"}</td><td class="num">${r.modes_done === 0 && !r.moved ? "–" : (r.attempts ?? "?")}</td></tr>`).join("")}</tbody></table>`;
     } else if (S.rankTab === "ontem") {
@@ -5127,7 +5127,7 @@ function LIB() {
     { id: "desafio", ic: "🎯", t: "Desafio do dia", h: `<p>São 4 modos, sempre com o mesmo Pokémon secreto para todo mundo:</p><ul>${Object.values(MODES).map(m => `<li><b>${m.nome}</b>: ${esc(m.dica)}</li>`).join("")}</ul>
       <p><b>Casas por modo acertado:</b> 1 tentativa = ${st["1"] ?? 5}, 2 = ${st["2"] ?? 4}, 3 = ${st["3"] ?? 3}, 4 = ${st["4"] ?? 2}, 5 ou 6 = ${st["5"] ?? 1}, 7 ou mais = ${st["7"] ?? 0}. Depois soma a roleta do movimento (${libN(c.roll_min, 1)} a ${libN(c.roll_max, 3)}) e os bônus guardados.</p>
       <p><b>Ajudas:</b> a <b>Dica</b> revela uma característica do Pokémon; o <b>Tente outra vez</b> apaga o último palpite errado. Você ganha ajudas na roleta e nas cartas, ou compra na loja do herói.</p>` },
-    { id: "rodada", ic: "🏅", t: "Rodada e ranking", h: `<p>Todo dia é uma disputa: vence quem somar <b>menos tentativas</b> nos 4 modos. Cada ajuda conta +1 e um modo não acertado conta ${libN(c.unsolved_rank_attempts, 10)}.</p>
+    { id: "rodada", ic: "🏅", t: "Rodada e ranking", h: `<p>Todo dia é uma disputa: vence quem somar <b>menos tentativas</b> nos 4 modos. As ajudas (Dica e Tente outra vez) <b>não contam</b>, e um modo não acertado conta ${libN(c.unsolved_rank_attempts, 10)}.</p>
       <p>A rodada fecha à meia-noite (horário de Brasília). Prêmios: 1º +${rs[0]} casas e ${rc[0]} moedas; 2º +${rs[1]} casas e ${rc[1]} moedas; 3º +${rs[2]} casa.</p>
       <p><b>Sem spoiler:</b> os palpites e números dos outros só aparecem quando você e todos os jogadores ativos já jogaram o dia. Antes disso, só aparece quem já jogou.</p>
       <p><b>Destaques:</b> o 1º do mapa é <b>O Brabo</b> (e o Procurado: vencê-lo rende recompensa, mas só o melhor da última rodada pode enfrentá-lo). O último de ontem é o <b>Snorlax da Rodada</b>: recebe menos salário e acorda com a vila enlameada. Toque num jogador para ver os títulos dele.</p>` },
@@ -8891,6 +8891,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "ajudas-bonus-2026-10-28", sql: "52", title: "💡 Dicas e Tente outra vez agora são só bônus!", body: () => `Mudou a regra da rodada do dia: usar Dica ou Tente outra vez NÃO conta mais como tentativa no ranking.
+• A Dica revela uma característica do Pokémon, de graça para a sua posição na rodada.
+• O Tente outra vez apaga o último palpite errado, como se ele nunca tivesse existido.
+• Modo não acertado continua contando ${S.cfg.unsolved_rank_attempts ?? 10} tentativas.
+Use as ajudas sem medo!` },
   { id: "quiz-premio-2026-10-27", sql: "51", title: "❓ Quiz: o prêmio agora cai na hora!", body: () => `Ganhou o Quiz surpresa? O prêmio agora entra sozinho na sua conta assim que o quiz fecha, e fica guardado no 📬 Correio com a mensagem.
 Fique de olho no aviso do quiz no mapa e no Jornal!` },
   { id: "premios-temporada-2026-10-27", sql: "50", title: "🏅 Prêmios da temporada: 12 categorias!", body: () => `Agora, quando a temporada fechar, o 1º lugar de cada categoria ganha ${S.cfg.season_awards?.coins ?? 150} moedas, uma medalha no cartão e um presente no 📬 Correio. Empatou? Todos os empatados ganham!
