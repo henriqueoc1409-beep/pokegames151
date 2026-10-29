@@ -16,7 +16,7 @@ begin
     'monsters', 'pokedex_entries', 'encounters', 'pk_move_sync', 'bag_items', 'mon_events', 'battles', 'battle_actions',
     'chat_messages', 'donations', 'pix_offers', 'contributions', 'posts', 'poll_votes',
     'arena_battles', 'arena_fans', 'arena_cheers', 'arena_nudges', 'arena_mutes', 'war_squads', 'wars', 'post_images',
-    'leagues', 'league_players', 'league_matches', 'cave_votes', 'cave_cheers', 'gifts', 'quizzes', 'quiz_entries', 'sac_tickets', 'sac_messages', 'sac_agents', 'npc_fights', 'board_nodes', 'rocket_raids', 'rocket_entries', 'hunts', 'pk_items', 'hunt_entries', 'season_awards', 'publicacoes', 'treino_dias', 'treino_lutas'] loop
+    'leagues', 'league_players', 'league_matches', 'cave_votes', 'cave_cheers', 'gifts', 'quizzes', 'quiz_entries', 'sac_tickets', 'sac_messages', 'sac_agents', 'npc_fights', 'board_nodes', 'rocket_raids', 'rocket_entries', 'hunts', 'pk_items', 'hunt_entries', 'season_awards', 'publicacoes', 'treino_dias', 'treino_lutas', 'treino_visitas'] loop
     if to_regclass('public.' || t) is not null then
       execute format('drop table if exists %I.%I', pasta, t);
       execute format('create table %I.%I as select * from public.%I', pasta, t, t);
