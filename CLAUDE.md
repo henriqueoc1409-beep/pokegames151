@@ -163,7 +163,7 @@ ferramentas/copia_de_seguranca.sql         Cópia de segurança pronta: copia to
 7. **Conteúdo proibido em skins e artes:** pessoas reais, personagens Pokémon desenhados (as imagens do desafio vêm prontas da PokeAPI) e marcas ou escudos de clubes. Faça versões originais.
 8. **Não esconda o selo "Powered by Netlify" por código.** Ele é do Netlify.
 9. Mantenha o `index.html` funcionando como arquivo único publicável, até o dono aprovar uma divisão em arquivos.
-10. **Toda mudança que os jogadores veem ganha uma entrada nova em `NOVIDADES`** (no `index.html`), com título e texto prontos em linguagem de jogador, para o dono publicar no Jornal com um clique. Atualize também o assunto da Biblioteca (`LIB()`).
+10. **Toda mudança que os jogadores veem é publicada sozinha no Jornal** (decisão do dono em 29/10/2026): o SQL novo termina com um `insert into public.posts(kind, title, body, created_by)` do tipo `novidade` (autor = o admin), só se ainda não existe aviso com o mesmo título (veja o fim do `sql/55`). Assim o aviso aparece quando a publicação roda, sem o dono clicar. Mudança só no site (sem SQL) leva o aviso num SQL pequeno junto. Ponha a mesma entrada (mesmo título) em `NOVIDADES` no `index.html`, que some sozinha quando o aviso existe. Atualize também o assunto da Biblioteca (`LIB()`).
 11. **Trabalhe sempre num ramo e entregue como pull request**; nunca envie direto para o `main` (o `main` publica o jogo). SQL que só o dono deve rodar à mão começa com `-- MANUAL`.
 
 ## Testes
