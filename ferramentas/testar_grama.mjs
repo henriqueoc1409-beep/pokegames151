@@ -2,6 +2,7 @@
 // visita de 5 ou 10 minutos tirada do relógio de 60, encontro só com visita aberta e com intervalo, batalha em que o
 // jogador dá os comandos e o selvagem joga sozinho, XP e vida no fim, fugir, a luta termina mesmo se o tempo acabar,
 // sair antes devolve o tempo, cada um só mexe na sua luta, a luta automática saiu, novidade no Jornal.
+// Roda só até o 57 (o 58 mudou o tempo do dia, o sair e a resposta do encontro; os testes dele estão em testar_grama30.mjs).
 // Uso (na pasta ferramentas, uma vez: npm install):  node testar_grama.mjs ..
 import { PGlite } from "@electric-sql/pglite";
 import { citext } from "@electric-sql/pglite/contrib/citext";
@@ -10,7 +11,7 @@ import fs from "fs"; import path from "path";
 const root = process.argv[2];
 const db = new PGlite({ extensions: { citext, pgcrypto } });
 await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
-for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort()) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql" && f < "58").sort()) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
 let ok = 0, fail = 0;
 const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
 const sys = async (q, p = []) => (await db.query(q, p)).rows;

@@ -1633,7 +1633,17 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 @media (max-width:600px){.gr-hint{left:12px;transform:none;max-width:calc(100% - 210px);bottom:calc(70px + env(safe-area-inset-bottom,0px))}}
 .gr-flash{position:absolute;inset:0;pointer-events:none;opacity:0}
 .gr-flash.on{animation:grflash .9s steps(6) forwards}
+.gr-flash.on.leg{animation:grleg 1.2s steps(8) forwards}
+@keyframes grleg{0%{opacity:0;background:#5A0A0A}25%{opacity:1;background:#FFD54A}50%{opacity:1;background:#5A0A0A}75%{opacity:1;background:#FFD54A}100%{opacity:1;background:#120406}}
+.modal.modal-leg{width:min(560px,100%);text-align:center;border:3px solid #F5C542;border-radius:18px;background:radial-gradient(circle at 50% 30%,rgba(245,197,66,.35),transparent 60%),linear-gradient(#2A0C10,#120406);color:#FFF1D6}
+.gr-leg img{image-rendering:auto;filter:drop-shadow(0 0 24px rgba(255,213,74,.7));margin:6px auto;display:block;max-width:60vw;height:auto}
+.gr-leg h2{font-size:28px;color:#FFD54A;margin:6px 0 10px}.gr-leg-tag{font-weight:900;letter-spacing:.12em;color:#FF8A7A;margin:0}
+.gr-leg .muted{color:#E8CFC0}
 @keyframes grflash{0%{opacity:0;background:#000}20%{opacity:1;background:#000}40%{opacity:1;background:#fff}60%{opacity:1;background:#000}80%{opacity:1;background:#fff}100%{opacity:1;background:#000}}
+.aj-warn{background:rgba(229,185,46,.12);border:1px solid rgba(229,185,46,.5);border-radius:10px;padding:10px 12px}
+.aj-tabs{flex-wrap:wrap;margin:10px 0}.aj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px 16px;align-items:end}
+.aj-set{grid-column:1/-1;border:1px solid var(--line);border-radius:10px;padding:6px 12px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px 16px;align-items:end}
+.aj-set legend{font-weight:700;padding:0 6px}.aj-f{min-width:0}.aj-f label{font-size:13px}
 .tr-hist{list-style:none;margin:0;padding:0;font-size:13px}
 .tr-hist li{display:flex;gap:6px;align-items:center;padding:4px 0;border-bottom:1px dashed var(--line)}.hunt-pop ul{padding-left:20px;color:var(--text-2)}.hunt-pop li{margin:6px 0}
 .hunt-sil{display:block;margin:4px auto 8px;width:120px;height:120px;image-rendering:pixelated;filter:brightness(0);opacity:.9}
@@ -5200,7 +5210,9 @@ function LIB() {
       <p><b>Mascote:</b> um Pokémon que anda com você no mapa. <b>Roupas:</b> só visual, não mudam nada na batalha.</p>${genOn() ? `<p><b>2ª geração ligada:</b> os Pokémon 152 a 251 também aparecem.</p>` : ""}` },
     { id: "treino", ic: "🌿", t: "Grama de Treino", h: `<p>A <b>Grama de Treino</b> é uma área fora do tabuleiro (menu Pokémon), como a Safari Zone. Escolha quem vai treinar e quanto tempo quer ficar: <b>${(S.treino?.st?.opcoes || [5, 10]).join(" ou ")} minutos</b>.</p>
       <p>Lá dentro, ande com o seu personagem (<b>WASD ou as setas</b> no computador; botões na tela no celular). Na <b>grama alta</b> aparecem Pokémon selvagens do nível do seu, e <b>você comanda a batalha</b>: ataques, itens da bolsa ou fugir. Vencendo, ganha experiência; perdendo, não ganha nada.</p>
-      <p>⏱️ São <b>${S.treino?.st?.minutos_dia ?? 60} minutos por dia</b>. O tempo corre o tempo todo lá dentro, inclusive nas batalhas; se o tempo acabar no meio de uma luta, você termina a luta. Saindo antes, o que sobrou volta para o relógio. O relógio zera à meia-noite.</p>
+      <p>⏱️ São <b>${S.treino?.st?.minutos_dia ?? 30} minutos por dia</b>. Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. Se o tempo acabar no meio de uma luta, você termina a luta. O relógio zera à meia-noite.</p>
+      <p>🐦 Pokémon selvagens passeiam pela grama só de enfeite, e quem estiver na grama ao mesmo tempo que você aparece andando por lá.</p>
+      <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
       <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.</p>
@@ -5283,7 +5295,7 @@ function CFG_FIELDS() {
       ...(S.cfg.battle_bet_max != null ? [["battle_bet_min", "Batalha Pokémon: aposta mínima"], ["battle_bet_max", "Batalha Pokémon: aposta máxima"]] : [])];
 }
 function viewAdmin() {
-  const tabs = [["jogadores", "Jogadores"], ["caixa", "Caixa da Obra"], ["presentes", "Presentes"], ["quiz", "Quiz"], ["cacada", "Caçada"], ["pix", "Loja e PIX"], ["convites", "Convites"], ["pokedex", "Pokédex"], ["regras", "Regras"], ["temporada", "Temporada"], ["uso", "Uso do jogo"], ["auditoria", "Auditoria"]];
+  const tabs = [["jogadores", "Jogadores"], ["caixa", "Caixa da Obra"], ["presentes", "Presentes"], ["quiz", "Quiz"], ["cacada", "Caçada"], ["pix", "Loja e PIX"], ["convites", "Convites"], ["pokedex", "Pokédex"], ["regras", "Regras"], ["ajustes", "Ajustes do jogo"], ["treino", "Grama de Treino"], ["temporada", "Temporada"], ["uso", "Uso do jogo"], ["auditoria", "Auditoria"]];
   const A = S.admin; let body = `<p class="muted">Carregando…</p>`;
   if (S.adminTab === "jogadores" && A.players) {
     body = `<div class="table-scroll"><table class="list"><thead><tr><th>Usuário</th><th>E-mail</th><th>Personagem</th><th>Nv</th><th>Moedas</th><th>Casa</th><th>Faltam</th><th>Situação</th><th></th></tr></thead><tbody>
@@ -5330,6 +5342,8 @@ function viewAdmin() {
   if (S.adminTab === "quiz") body = adminQuizView();
   if (S.adminTab === "cacada") body = adminHuntView();
   if (S.adminTab === "uso") body = adminUsageView();
+  if (S.adminTab === "ajustes") body = adminAjustesView();
+  if (S.adminTab === "treino") body = adminTreinoView();
   if (S.adminTab === "temporada") {
     const se = S.today?.season;
     body = `<p>Temporada atual: <strong>${se?.id ?? "?"}</strong>, ${se?.status === "encerrada" ? "encerrada (a próxima começa amanhã sozinha)" : "em andamento"}.</p>
@@ -5353,6 +5367,7 @@ async function loadAdmin() {
   if (S.adminTab === "presentes") { await loadGiftsAdmin(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "quiz") { await loadQuizAdmin(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "cacada") await loadHunt(false);
+  if (S.adminTab === "ajustes" || S.adminTab === "treino") { try { A.cfgEf = await rpc("admin_cfg_efetiva"); } catch (e) { if (isMissingFn(e)) A.cfgEf = false; else throw e; } }
   if (S.adminTab === "uso") { try { A.usage = await rpc("admin_usage"); } catch (e) { if (isMissingFn(e)) A.usage = false; else throw e; } }
   if (S.adminTab === "pix") { await loadShopFresh(); await loadOffers(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "pokedex") A.media = await rpc("admin_media_status");
@@ -5833,7 +5848,7 @@ function menuHTML() {
     ["Pokémon", [
       ["go", "pokedex", "Pokédex & Coleção", "pokebola", S.pk?.mons?.some(m => evoReady(m).length || m.pending_moves?.length) ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : S.pk?.mons?.length ? `<b class="mb">${S.pk.mons.length}</b>` : ""],
       ["go", "equipe", "Equipe & Mascote", "equipe", ""],
-      ...(S.treino?.missing ? [] : [["go", "treino", "Grama de Treino", "grama", S.treino?.st?.visita ? `<b class="mb live">LÁ DENTRO</b>` : S.treino?.st && S.treino.st.minutos < S.treino.st.minutos_dia ? `<b class="mb">${S.treino.st.minutos_dia - S.treino.st.minutos} min</b>` : ""]]),
+      ...(S.treino?.missing ? [] : [["go", "treino", "Grama de Treino", "grama", S.treino?.st?.visita ? `<b class="mb live">LÁ DENTRO</b>` : S.treino?.st && S.treino.st.minutos < S.treino.st.minutos_dia + (S.treino.st.bonus || 0) ? `<b class="mb">${S.treino.st.minutos_dia + (S.treino.st.bonus || 0) - S.treino.st.minutos} min</b>` : ""]]),
       ...(S.treino?.missing || !S.treino?.st?.feridos ? [] : [["go", "centro", "Centro Pokémon", "cruz", S.treino.st.feridos.length ? `<b class="mb red" title="Pokémon feridos">${S.treino.st.feridos.length}</b>` : ""]]),
       ["go", "batalhas", "Batalhas Pokémon", "espadas", S.pk?.battles && btPending() ? `<b class="mb red">${btPending()}</b>` : ""],
       ...(S.rocket ? [["go", "rocket", "Equipe Rocket", "espadas", S.rocket.status === "ativa" ? `<b class="mb red">🚀 INVASÃO</b>` : ""]] : []),
@@ -7730,15 +7745,15 @@ function viewTreino() {
   if (!st.on) return `<div class="pk-empty"><p><strong>A Grama de Treino está fechada no momento.</strong></p><p class="muted">Volte mais tarde.</p></div>`;
   if (!mons.length) return `<div class="pk-empty"><p><strong>Você ainda não tem Pokémon.</strong></p><p class="muted">Capture um depois de andar no tabuleiro e volte para treinar.</p></div>`;
   const m = mons.find(x => x.id === T.sel) || mons.find(x => treinoHpOf(x) > 0) || mons[0]; T.sel = m.id;
-  const xp = pkXp(m), hp = treinoHpOf(m), ko = hp <= 0, rest = Math.max(0, st.minutos_dia - st.minutos), V = st.visita;
-  const used = Math.min(100, Math.round(st.minutos / Math.max(1, st.minutos_dia) * 100));
+  const xp = pkXp(m), hp = treinoHpOf(m), ko = hp <= 0, tot = st.minutos_dia + (st.bonus || 0), rest = Math.max(0, tot - st.minutos), V = st.visita;
+  const used = Math.min(100, Math.round(st.minutos / Math.max(1, tot) * 100));
   const vLeft = V ? Math.max(0, Math.ceil((new Date(V.fim) - treinoNow()) / 1000)) : 0;
   const enterBtns = (st.opcoes || [5, 10]).map(n => { const real = Math.min(n, rest);
     return `<button class="btn big" data-act="gr-enter" data-v="${n}" ${real > 0 && !ko ? "" : "disabled"}>🌿 Entrar por ${real > 0 ? real : n} min</button>`; }).join("");
   return `<div class="treino">
     <div class="tr-field">
       <div class="tr-clock"><b>⏱️ Relógio de treino de hoje</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
-        <span>${st.minutos} de ${st.minutos_dia} min usados · ${rest ? `faltam ${rest} min` : "acabou por hoje"}</span></div>
+        <span>${st.minutos} de ${tot} min usados${st.bonus > 0 ? ` (🎁 +${st.bonus} min de presente do admin)` : ""} · ${rest ? `faltam ${rest} min` : "acabou por hoje"}</span></div>
       <div class="tr-stage">
         <div class="tr-mon">${monCv(m.species_id, m.outfit, 120)}<b>${esc(pkName(m.species_id))}</b><span>Nível ${m.level}</span>
           <span class="mini-xp" title="Faltam ${xp.falta} de experiência para o próximo nível"><i style="width:${xp.pct}%"></i></span>
@@ -7753,7 +7768,7 @@ function viewTreino() {
       </div>
     </div>
     <p class="muted">Hoje: ${st.lutas} ${st.lutas === 1 ? "luta" : "lutas"}, ${st.vitorias} ${st.vitorias === 1 ? "vitória" : "vitórias"}, ${st.xp} de experiência.
-      O tempo corre o tempo todo lá dentro, inclusive nas batalhas; se sair antes, o que sobrou volta para o relógio. A vida que o Pokémon perde fica para a próxima luta (só no treino): desmaiou, Centro Pokémon (pago) ou ${st.gratis_horas} horas de espera (grátis).</p>
+      ⚠️ Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. A vida que o Pokémon perde fica para a próxima luta (só no treino): desmaiou, Centro Pokémon (pago) ou ${st.gratis_horas} horas de espera (grátis).</p>
     <h3>Quem vai treinar?</h3>
     <div class="tr-pick">${mons.map(x => { const h = treinoHpOf(x); return `<button class="mon-card ${x.id === m.id ? "sel" : ""} ${h <= 0 ? "ko" : ""}" data-act="tr-sel" data-v="${x.id}" aria-pressed="${x.id === m.id}">
       ${monCv(x.species_id, x.outfit, 72)}<span class="mc-name">${esc(pkName(x.species_id))}${x.team_slot ? `<i class="team-badge" title="Na equipe">${x.team_slot}</i>` : ""}</span><span class="mc-lv">Nv ${x.level}</span>
@@ -7798,6 +7813,7 @@ Se preferir, espere: de graça, eles se recuperam ${S.treino.st?.gratis_horas ??
 };
 // contagem da espera: atualiza só o número; quando acaba, redesenha a tela
 setInterval(() => {
+  if (grChannel && !GR.open && !grTimeLeft() && !(S.win === "batalha" && S.pk.bt?.data?.mode === "treino" && S.pk.bt.data.status === "ativa")) grNetLeave();
   if (S.win !== "treino" || !S.treino?.st?.visita || GR.open) return;
   const b = document.querySelector('[data-act="gr-open"]'); if (!b) return;
   const w = grTimeLeft(); if (w > 0) b.textContent = `🌿 Voltar para a grama (faltam ${mmss(w)})`; else loadTreino().then(render);
@@ -7812,7 +7828,8 @@ ACTIONS["gr-enter"] = v => guarded(async () => {
 });
 ACTIONS["gr-open"] = () => grOpen();
 ACTIONS["gr-exit"] = async () => {
-  if (!await confirmModal("Sair da grama?", "O tempo que sobrou volta para o seu relógio de hoje.", "Sair")) return;
+  const left = grTimeLeft();
+  if (!await confirmModal("Sair da grama?", `⚠️ Atenção: entrou, o tempo conta. Se sair agora, você PERDE ${left > 60 ? `os ${Math.floor(left / 60)} minutos` : "os segundos"} que sobraram desta visita. Eles não voltam para o relógio de hoje.`, "Sair mesmo assim")) return;
   await grLeave();
 };
 ACTIONS["gr-resume"] = async () => { await guarded(loadBattles); await btOpen(S.treino.st.batalha); };
@@ -7850,6 +7867,32 @@ const GR_MAP = [
   "TTTTTTTTTTTTTTTT==TTTTTTTTTTTT",
 ];
 // T árvore da borda, g grama alta, ~ lago, a árvore, b arbusto, r pedra, p placa, = caminho de entrada
+// Pokémon de enfeite passeando pela grama (só enfeite: não dá para batalhar com eles). As imagens vêm prontas da PokeAPI,
+// como as do desafio (regra 7: nada de Pokémon desenhado por nós).
+const GR_DECO_SPECIES = [16, 19, 10, 43, 69, 21, 29, 32, 46, 48, 13, 25, 39, 52, 60, 133, 129, 54];
+const GR_SPR8 = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/transparent/${id}.png`;
+const GR_IMG = {};
+function grImg(id) {
+  if (GR_IMG[id]) return GR_IMG[id];
+  const i = new Image(); i.crossOrigin = "anonymous"; i.src = GR_SPR8(id); i.onerror = () => { if (!i.dataset.alt) { i.dataset.alt = 1; i.src = SPRITE(id); } };
+  return (GR_IMG[id] = i);
+}
+function grDecoInit() {
+  if (GR.deco) return;
+  const grass = []; GR_MAP.forEach((row, y) => [...row].forEach((c, x) => { if (c === "g") grass.push([x, y]); }));
+  const pick = [...GR_DECO_SPECIES].sort(() => Math.random() - .5).slice(0, 7);
+  GR.deco = pick.map((sp, i) => { const [x, y] = grass[Math.floor(Math.random() * grass.length)]; return { sp, x, y, tx: x, ty: y, wait: 1000 + Math.random() * 3000, t: 1, fx: x, fy: y, face: 1, img: grImg(sp) }; });
+}
+function grDecoStep(dt) {
+  for (const d of GR.deco || []) {
+    if (d.t < 1) { d.t = Math.min(1, d.t + dt / 650); d.fx = d.x + (d.tx - d.x) * d.t; d.fy = d.y + (d.ty - d.y) * d.t; if (d.t >= 1) { d.x = d.tx; d.y = d.ty; } continue; }
+    d.wait -= dt; if (d.wait > 0) continue;
+    d.wait = 1500 + Math.random() * 4000;
+    const [dx, dy] = [[1, 0], [-1, 0], [0, 1], [0, -1]][Math.floor(Math.random() * 4)];
+    if (grAt(d.x + dx, d.y + dy) !== "g") continue;   // fica sempre na grama alta
+    d.tx = d.x + dx; d.ty = d.y + dy; d.t = 0; if (dx) d.face = dx;
+  }
+}
 const GR = { open: false, art: null, x: 16, y: 17, fx: 16, fy: 17, dir: null, moving: null, face: 1, keys: new Set(), raf: 0, busy: false, lastEnc: 0, steps: 0 };
 const grAt = (x, y) => (GR_MAP[y] || "")[x] || "T";
 const grSolid = (x, y) => "T~abrp".includes(grAt(x, y));
@@ -7931,11 +7974,12 @@ async function grOpen() {
   if (grSolid(GR.x, GR.y)) { GR.x = 16; GR.y = 17; }
   GR.fx = GR.x; GR.fy = GR.y;
   $("#gr-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande pela grama alta para achar Pokémon" : "Ande pela grama alta para achar Pokémon · WASD ou setas";
-  grHud(); await grBuildArt();
+  grHud(); grDecoInit(); grNetJoin(); await grBuildArt();
   cancelAnimationFrame(GR.raf); GR.last = performance.now(); GR.raf = requestAnimationFrame(grLoop);
 }
-function grClose() {
+function grClose(battle = false) {
   GR.open = false; GR.keys.clear(); cancelAnimationFrame(GR.raf);
+  if (battle) grNetTrack(true); else grNetLeave();
   const el = $("#grama"); if (el) el.hidden = true; document.body.classList.remove("gr-on");
 }
 async function grLeave() {
@@ -7971,6 +8015,7 @@ function grLoop(now) {
     else if (ty >= GR_MAP.length - 1 || (grAt(tx, ty) === "T" && grAt(GR.x, GR.y) === "=")) { $("#gr-hint").textContent = "A saída é pelo botão Sair, lá em cima."; }
   }
   const mv = GR.moving; GR.fx = mv ? mv.fx + (mv.tx - mv.fx) * mv.t : GR.x; GR.fy = mv ? mv.fy + (mv.ty - mv.fy) * mv.t : GR.y;
+  grDecoStep(dt); grNetStep(dt);
   grDraw(now);
   GR.raf = requestAnimationFrame(grLoop);
 }
@@ -7986,6 +8031,28 @@ function grDraw(now) {
   cy = MH <= cv.height ? (MH - cv.height) / 2 : Math.max(0, Math.min(MH - cv.height, cy));
   g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
   g.drawImage(GR.art, -cx, -cy, MW, MH);
+  // Pokémon de enfeite (meio escondidos na grama alta)
+  for (const d of GR.deco || []) {
+    if (!d.img.complete || !d.img.naturalWidth) continue;
+    const dx = (d.fx + .5) * tile - cx, dy = (d.fy + 1) * tile - cy, hop = d.t < 1 ? Math.abs(Math.sin(d.t * Math.PI)) * 4 * dpr : Math.sin(now / 400 + d.sp) * dpr;
+    if (dx < -tile || dy < -tile || dx > cv.width + tile || dy > cv.height + tile * 2) continue;
+    const sz = tile * 1.05;
+    g.save(); g.translate(dx, dy - hop); if (d.face > 0) g.scale(-1, 1);
+    g.drawImage(d.img, -sz / 2, -sz * .95, sz, sz); g.restore();
+    g.save(); g.translate(dx - tile / 2, dy - tile); g.scale(k, k); grTuft(g, 0, 0, 32, (d.sp % 5)); g.restore();
+  }
+  // outros jogadores na grama (tempo real)
+  const nameTag = (txt, x, y) => { g.font = `700 ${Math.round(11 * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(10,20,12,.9)"; g.strokeText(txt, x, y); g.fillStyle = "#F4F8E8"; g.fillText(txt, x, y); };
+  for (const o of Object.values(GR.others || {})) {
+    const ch = S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} };
+    if (!ch.class) continue;
+    const osp = avatarCanvas(ch), ox = (o.fx + .5) * tile - cx, oy = (o.fy + 1) * tile - cy, h = tile * 1.15, w = h * osp.cv.width / osp.cv.height;
+    g.globalAlpha = o.b ? .55 : 1;
+    g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(ox, oy - 3 * dpr, tile * .28, tile * .1, 0, 0, Math.PI * 2); g.fill();
+    g.save(); g.translate(ox, oy - 2 * dpr); if (o.f < 0) g.scale(-1, 1); g.drawImage(osp.cv, -w / 2, -h, w, h); g.restore();
+    g.globalAlpha = 1;
+    nameTag((o.b ? "⚔️ " : "") + (o.n || "Treinador"), ox, oy - h - 6 * dpr);
+  }
   // personagem (o mesmo do tabuleiro), com um pulinho ao andar
   const sp = S.me ? avatarCanvas(S.me) : null;
   const px = (GR.fx + .5) * tile - cx, py = (GR.fy + 1) * tile - cy, bob = GR.moving ? Math.abs(Math.sin(GR.moving.t * Math.PI)) * 3 * dpr : 0;
@@ -7999,11 +8066,60 @@ function grDraw(now) {
   const on = grAt(Math.round(GR.fx), Math.round(GR.fy)) === "g";
   if (on && !GR.moving) { g.save(); g.translate(px - tile / 2, py - tile); g.scale(k, k); grTuft(g, 0, 0, 32, 2); g.restore(); }
 }
+// Cada um avisa a sua posição no máximo a cada 1,2 s (e uma última quando para), para não gastar a cota grátis do Realtime.
+let grChannel = null;
+function grNetJoin() {
+  if (!sb || !S.me) return;
+  if (grChannel) { grNetTrack(); return; }
+  GR.others = {};
+  grChannel = sb.channel("grama", { config: { presence: { key: pkMe() }, broadcast: { self: false } } })
+    .on("presence", { event: "sync" }, () => {
+      let st = {}; try { st = grChannel.presenceState(); } catch {}
+      const seen = new Set();
+      for (const [uid, metas] of Object.entries(st)) {
+        if (uid === pkMe()) continue; const p = metas.at(-1) || {}; seen.add(uid);
+        const o = GR.others[uid] || (GR.others[uid] = { uid, fx: p.x, fy: p.y, x: p.x, y: p.y });
+        Object.assign(o, { n: p.n, c: p.c, o: p.o, b: p.b, f: p.f ?? o.f, x: p.x ?? o.x, y: p.y ?? o.y });
+      }
+      for (const uid of Object.keys(GR.others)) if (!seen.has(uid)) delete GR.others[uid];
+    })
+    .on("broadcast", { event: "pos" }, ({ payload: p }) => {
+      if (!p?.u || p.u === pkMe()) return;
+      const o = GR.others[p.u] || (GR.others[p.u] = { uid: p.u, fx: p.x, fy: p.y });
+      Object.assign(o, { x: p.x, y: p.y, f: p.f, b: p.b });
+    })
+    .subscribe(st => { if (st === "SUBSCRIBED") grNetTrack(); });
+}
+function grNetTrack(battle = false) {
+  if (!grChannel || !S.me) return;
+  try { grChannel.track({ n: S.me.name, c: S.me.class, o: S.me.outfit || {}, x: GR.x, y: GR.y, f: GR.face, b: battle ? 1 : 0 }); } catch {}
+}
+function grNetSend() {
+  if (!grChannel) return;
+  const now = Date.now(); clearTimeout(GR.sendT);
+  const go = () => { GR.lastSend = Date.now(); try { grChannel.send({ type: "broadcast", event: "pos", payload: { u: pkMe(), x: GR.x, y: GR.y, f: GR.face, b: 0 } }); } catch {} };
+  if (now - (GR.lastSend || 0) >= 1200) go(); else GR.sendT = setTimeout(go, 1200 - (now - GR.lastSend));
+}
+function grNetLeave() {
+  clearTimeout(GR.sendT);
+  if (grChannel) { try { grChannel.untrack(); sb.removeChannel(grChannel); } catch {} }
+  grChannel = null; GR.others = {};
+}
+// os outros andam suavemente até a última posição recebida
+function grNetStep(dt) {
+  for (const o of Object.values(GR.others || {})) {
+    if (o.x == null) continue;
+    const sp = dt / 170, dx = o.x - o.fx, dy = o.y - o.fy, d = Math.hypot(dx, dy);
+    if (d > 6) { o.fx = o.x; o.fy = o.y; continue; }   // pulou longe (ou acabou de chegar): aparece direto
+    if (d <= sp) { o.fx = o.x; o.fy = o.y; } else { o.fx += dx / d * sp; o.fy += dy / d * sp; }
+  }
+}
 function grStepped() {
+  grNetSend();
   if (grAt(GR.x, GR.y) !== "g") return;
   GR.steps++;
   const wait = (S.treino.st?.encontro_seg ?? 8) * 1000;
-  if (Date.now() - GR.lastEnc < wait || Math.random() > .16) return;
+  if (Date.now() - GR.lastEnc < wait || Math.random() > .1) return;
   grEncounter();
 }
 async function grEncounter() {
@@ -8011,15 +8127,39 @@ async function grEncounter() {
   if (!m) return;
   if (treinoHpOf(m) <= 0) { $("#gr-hint").textContent = `💤 ${pkName(m.species_id)} está desmaiado: escolha outro Pokémon lá em cima.`; return; }
   GR.busy = true; GR.keys.clear(); GR.lastEnc = Date.now();
-  let bid;
-  try { bid = await rpc("treino_encontro", { _mon: m.id }); }
+  let r;
+  try { r = await rpc("treino_encontro", { _mon: m.id }); }
   catch (e) { GR.busy = false; const t = errMsg(e); if (!/continue andando/.test(t)) toast(t, true); return; }
+  if (r?.lendario) return grLegend(r.lendario);
+  const bid = typeof r === "string" ? r : r?.battle;   // o 58 devolve {battle}; antes vinha só o número da luta
   sfx("tick");
   const fl = $("#gr-flash");
   if (fl && !reduceMotion()) { fl.classList.add("on"); await sleep(900); fl.classList.remove("on"); }
-  grClose(); GR.busy = false;
+  grClose(true); GR.busy = false;
   await guarded(loadBattles);
   await btOpen(bid);
+}
+// lendário (arquivo 58): aparece raramente e acaba com o seu Pokémon na hora, sem batalha
+async function grLegend(L) {
+  GR.keys.clear(); sfx("erro");
+  const fl = $("#gr-flash");
+  if (fl && !reduceMotion()) { fl.classList.add("on", "leg"); await sleep(1200); fl.classList.remove("on", "leg"); }
+  await guarded(async () => { await Promise.all([loadPk(), loadTreino()]); });
+  grHud();
+  await new Promise(res => {
+    const m = openModal(`<div class="gr-leg"><p class="gr-leg-tag">⚠️ POKÉMON LENDÁRIO</p>
+      <img src="${ART(L.species)}" alt="${esc(L.name)}" width="220" height="220">
+      <h2>O lendário acabou com você.</h2>
+      <p>Um <b>${esc(L.name)}</b> de nível ${L.level} saiu da grama alta, e o seu <b>${esc(pkName(L.mon_species))}</b> desmaiou na hora.</p>
+      <p class="muted">Leve-o ao 🏥 Centro Pokémon ou espere ${L.gratis_horas} horas para ele se recuperar de graça. Escolha outro Pokémon para continuar treinando.</p>
+      <div class="actions"><button class="btn ghost" data-r="centro">🏥 Centro Pokémon</button><button class="btn" data-r="ok">Continuar na grama</button></div></div>`);
+    m.querySelector(".modal").classList.add("modal-leg");
+    m.addEventListener("click", ev => { const b = ev.target.closest("[data-r]"); if (!b) return; closeModal(); res();
+      if (b.dataset.r === "centro") { grClose(); ACTIONS.go("centro"); } });
+  });
+  // escolhe sozinho outro Pokémon de pé, se houver
+  const ok = treinoMons().find(x => treinoHpOf(x) > 0); if (ok) S.treino.sel = ok.id;
+  GR.busy = false; grHud();
 }
 async function grAfterBattle(b) {
   await guarded(async () => { await Promise.all([loadBattles(), loadPk(), loadTreino(), refreshMe()]); });
@@ -8034,6 +8174,108 @@ function grEndHTML(b) {
     <p>${msg} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
     <div class="act-btns">${V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
+
+// =================================================================
+// CONTROLES DO ADMIN (arquivo 59, pedido do dono em 29/10/2026: "fazer o que quiser no jogo sem ficar pedindo")
+// "Ajustes do jogo": mostra TODOS os números de cada sistema (já com os padrões, de admin_cfg_efetiva) num formulário
+// montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
+// admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
+// =================================================================
+const AJ_GROUPS = [["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+  ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
+const AJ_LABELS = {
+  treino: { on: "Grama de Treino aberta", minutos_dia: "Minutos por dia", visita_opcoes: "Opções de tempo por visita (minutos, separados por vírgula)",
+    encontro_seg: "Segundos mínimos entre um encontro e outro", xp_mult: "Multiplicador de experiência (1 = normal)", nivel_menos: "Selvagem: até quantos níveis abaixo",
+    nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
+    forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
+    lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
+    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça" },
+  rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
+    hp_factor: "Vida da barra (multiplicador)", max_turns: "Turnos máximos por luta", level_bonus: "Níveis a mais da equipe da Rocket" },
+  pk: { "encounter.level_min": "Encontro: nível mínimo dos selvagens", "encounter.level_span": "Encontro: níveis a mais até o Castelo", "encounter.level_spread": "Encontro: sorteio de níveis a mais",
+    "encounter.legendaries": "Encontro: lendários podem aparecer", "encounter.region_bonus": "Encontro: peso a mais para tipos da região", "capture.throws": "Bolas por encontro",
+    "stones.price": "Preço das pedras de evolução", "xp.move_base": "XP por andada (base)", "xp.per_step": "XP por casa dos acertos", "xp.per_mode": "XP por modo acertado",
+    "xp.battle_mult": "XP de batalha (multiplicador)", "xp.battles_per_day": "Batalhas por dia que dão XP", "storage.max_monsters": "Máximo de Pokémon por jogador",
+    "battle.size": "Pokémon por lado na batalha", "battle.min_captured": "Pokémon capturados para poder batalhar" },
+  itens: { per_battle: "Itens por batalha", bau_pct: "Chance de item no baú (%)", fonte_pct: "Chance de item na Fonte (%)", hm_bau_pct: "Chance de HM no baú (%)",
+    hm_npc_pct: "Chance de HM ao vencer treinador do mapa (%)", "hm.on": "Atalhos das HMs ligados", "hm.max_per_move": "Atalhos por andada", "hm.fly_bonus": "Casas do Fly" }
+};
+const ajLabel = (g, path) => AJ_LABELS[g]?.[path] || path.split(".").map(p => p.replace(/_/g, " ")).join(" › ");
+function ajFields(g, obj, pre = "") {
+  return Object.entries(obj).map(([k, v]) => {
+    const path = pre ? `${pre}.${k}` : k, id = `aj-${g}-${path.replace(/\W/g, "_")}`, lab = esc(ajLabel(g, path));
+    if (v && typeof v === "object" && !Array.isArray(v)) return `<fieldset class="aj-set"><legend>${lab}</legend>${ajFields(g, v, path)}</fieldset>`;
+    if (typeof v === "boolean") return `<label class="check aj-f"><input type="checkbox" id="${id}" data-aj="${esc(path)}" data-t="b" ${v ? "checked" : ""}> ${lab}</label>`;
+    if (typeof v === "number") return `<div class="aj-f"><label for="${id}">${lab}</label><input id="${id}" type="number" step="any" data-aj="${esc(path)}" data-t="n" value="${v}"></div>`;
+    if (Array.isArray(v) && v.every(x => typeof x === "number")) return `<div class="aj-f"><label for="${id}">${lab}</label><input id="${id}" data-aj="${esc(path)}" data-t="an" value="${v.join(", ")}"></div>`;
+    if (typeof v === "string") return `<div class="aj-f"><label for="${id}">${lab}</label><input id="${id}" data-aj="${esc(path)}" data-t="s" value="${esc(v)}"></div>`;
+    return `<div class="aj-f"><label for="${id}">${lab} <small class="muted">(texto técnico)</small></label><input id="${id}" data-aj="${esc(path)}" data-t="j" value="${esc(JSON.stringify(v))}"></div>`;
+  }).join("");
+}
+function ajForm(g, title, extra = "") {
+  const A = S.admin, cur = A.cfgEf?.[g];
+  if (!cur) return `<p class="muted">Sem números para mostrar.</p>`;
+  return `<form id="ajform" data-g="${g}" class="aj-form"><h3>${esc(title)}</h3>${extra}<div class="aj-grid">${ajFields(g, cur)}</div>
+    <label for="aj-reason">Motivo da mudança (vai para a Auditoria)</label><input id="aj-reason" required placeholder="Ex.: deixar a Grama mais fácil no fim de semana">
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn">Salvar ${esc(title.replace(/^\S+\s/, ""))}</button></div></form>`;
+}
+function adminAjustesView() {
+  const A = S.admin;
+  if (A.cfgEf === false) return `<p class="muted">Precisa do arquivo <code>59_admin_controles.sql</code> rodado no Supabase.</p>`;
+  if (!A.cfgEf) return `<p class="muted">Carregando…</p>`;
+  const g = S.ajG || "treino", t = AJ_GROUPS.find(x => x[0] === g)?.[1] || g;
+  return `<div class="aj"><p class="aj-warn">⚠️ Aqui ficam <b>todos os números</b> de cada parte do jogo. A mudança vale <b>na hora, para todos</b>. Mude com calma: tudo vai para a Auditoria, com o valor de antes, e dá para voltar atrás. Os números do dia a dia (casas, moedas, preços das ajudas) continuam na aba <b>Regras</b>.</p>
+    <div class="tabs aj-tabs">${AJ_GROUPS.filter(([k]) => A.cfgEf[k]).map(([k, n]) => `<button data-act="aj-g" data-v="${k}" aria-current="${g === k}">${n}</button>`).join("")}</div>
+    ${ajForm(g, t)}</div>`;
+}
+function adminTreinoView() {
+  const A = S.admin;
+  if (A.cfgEf === false) return `<p class="muted">Precisa do arquivo <code>59_admin_controles.sql</code> rodado no Supabase.</p>`;
+  if (!A.cfgEf) return `<p class="muted">Carregando…</p>`;
+  const players = [...(S.chars || [])].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+  return `<section class="panel lo"><h3>🎁 Dar tempo extra na Grama de Treino (só hoje)</h3>
+      <p class="muted">Soma minutos ao relógio de hoje do jogador (ele vê "🎁 +N min de presente do admin"). Para tirar, use um número negativo. Amanhã o relógio volta ao normal.</p>
+      <form id="trbform" class="inv-form" style="display:block">
+        <label for="trb-user">Jogador</label><select id="trb-user" required><option value="">Escolha o jogador</option>${players.map(c => `<option value="${c.user_id}">${esc(c.name)} (Nv ${c.level})</option>`).join("")}</select>
+        <label for="trb-min">Minutos a mais</label><input id="trb-min" type="number" min="-600" max="600" value="15" required>
+        <label for="trb-reason">Motivo (vai para a Auditoria)</label><input id="trb-reason" placeholder="Ex.: ficou sem internet no meio do treino">
+        <div style="margin-top:12px"><button class="btn">Dar o tempo</button></div></form></section>
+    ${ajForm("treino", "🌿 Regras da Grama de Treino e do Centro Pokémon")}`;
+}
+ACTIONS["aj-g"] = v => { S.ajG = v; render(); };
+document.addEventListener("submit", e => {
+  if (e.target.id === "trbform") {
+    e.preventDefault();
+    const user = $("#trb-user").value, min = Math.trunc(+$("#trb-min").value || 0), nm = charName(user);
+    if (!user || !min) return toast("Escolha o jogador e os minutos.", true);
+    guarded(async () => {
+      const r = await rpc("admin_treino_bonus", { _user: user, _min: min, _reason: $("#trb-reason").value.trim() || null });
+      toast(`🎁 ${nm}: ${min > 0 ? "+" : ""}${min} min na Grama hoje. Agora tem ${r.livre} min livres.`);
+      $("#trbform").reset();
+    });
+  }
+  if (e.target.id === "ajform") {
+    e.preventDefault();
+    const g = e.target.dataset.g, base = JSON.parse(JSON.stringify(S.admin.cfgEf[g] || {}));
+    let bad = "";
+    for (const el of e.target.querySelectorAll("[data-aj]")) {
+      const path = el.dataset.aj.split("."), t = el.dataset.t; let v;
+      if (t === "b") v = el.checked;
+      else if (t === "n") { v = Number(el.value); if (el.value === "" || !isFinite(v)) bad = ajLabel(g, el.dataset.aj); }
+      else if (t === "an") { v = el.value.split(/[,;\s]+/).filter(Boolean).map(Number); if (v.some(x => !isFinite(x))) bad = ajLabel(g, el.dataset.aj); }
+      else if (t === "j") { try { v = JSON.parse(el.value); } catch { bad = ajLabel(g, el.dataset.aj); } }
+      else v = el.value;
+      let o = base; for (const p of path.slice(0, -1)) o = o[p]; o[path.at(-1)] = v;
+    }
+    if (bad) return toast(`Confira o campo "${bad}".`, true);
+    guarded(async () => {
+      S.cfg = await rpc("admin_set_config", { _patch: { [g]: base }, _reason: $("#aj-reason").value.trim() });
+      S.admin.cfgEf = await rpc("admin_cfg_efetiva");
+      toast("Ajustes salvos. Já valem para todos."); render();
+      if (g === "treino") try { await loadTreino(); } catch {}
+    });
+  }
+});
 
 // =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
@@ -9304,6 +9546,13 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "grama-30-2026-10-29", sql: "58", title: "🌿 Grama de Treino: 30 minutos, lendários e amigos na grama", body: () => `Mudanças na Grama de Treino:
+• Agora são 30 minutos por dia.
+• Entrou, o tempo conta: se sair antes, o tempo que sobrou da visita é perdido.
+• Os Pokémon aparecem um pouco menos: ande mais pela grama alta.
+• ⚠️ Muito raramente aparece um Pokémon LENDÁRIO… e ele acaba com o seu Pokémon na hora (desmaia; Centro Pokémon ou 72 horas).
+• Pokémon selvagens passeiam pela grama, só de enfeite.
+• Quem está na grama ao mesmo tempo que você aparece andando por lá!` },
   { id: "dig-2026-10-29", sql: "57", title: "⛏️ Dig agora funciona como no jogo", body: () => `Corrigimos o ataque Dig nas batalhas:
 • No primeiro turno, o Pokémon cava um buraco e fica debaixo da terra: nenhum ataque o acerta.
 • No turno seguinte, ele sai do chão e ataca.
