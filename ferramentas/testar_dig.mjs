@@ -15,6 +15,7 @@ const sys = async (q, p = []) => (await db.query(q, p)).rows;
 const as = async (uid, q, p = []) => { await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${uid}', false);`); try { return { rows: (await db.query(q, p)).rows }; } catch (e) { return { error: e.message }; } finally { await db.exec("reset role;"); } };
 const A = "11111111-1111-1111-1111-111111111111";
 await sys(`insert into auth.users(id, email, raw_user_meta_data) values ($1, 'a@t.l', '{"username":"Ana"}')`, [A]); await as(A, `select public.create_character('Ana', 'mago')`);
+await sys(`update game_config set config = jsonb_set(config, '{treino}', '{"lendario_pct": 0}') where active`);   // sem lendário no teste
 const dig = (await sys(`select (public.pk_new_monster($1, 50, 30)).id id`, [A]))[0].id;   // Diglett
 await sys(`update monsters set moves = '{91}' where id = $1`, [dig]);
 const battle = async id => (await sys(`select * from battles where id = $1`, [id]))[0];
@@ -24,7 +25,7 @@ for (let k = 0; k < 6; k++) {
   await sys(`update monsters set tr_hp = 100 where id = $1`, [dig]); await sys(`delete from treino_dias`); await sys(`delete from treino_visitas`);
   await as(A, `select public.treino_entrar(10)`);
   const e = await as(A, `select public.treino_encontro($1) b`, [dig]); if (e.error) { check("encontro", false, e.error); break; }
-  const bid = e.rows[0].b;
+  const bid = e.rows[0].b?.battle ?? e.rows[0].b;   // o 58 devolve {battle}
   // o selvagem só tem ataques que sempre acertam quem está à vista (Quick Attack, 100%)
   await sys(`update battles set state = jsonb_set(jsonb_set(state, '{sides,1,mons,0,moves}', '[{"id":98,"pp":30,"max":30}]'), '{sides,1,mons,0,hp}', '999') where id = $1`, [bid]);
   await sys(`update battles set state = jsonb_set(state, '{sides,1,mons,0,maxhp}', '999') where id = $1`, [bid]);
