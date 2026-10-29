@@ -5209,6 +5209,7 @@ function LIB() {
       <p><b>Aposta:</b> quem desafia escolhe de ${bet[0]} a ${bet[1]} moedas. Quem vence leva tudo; empate devolve.</p>
       <p><b>Sem prazo por turno:</b> jogue quando puder. Ninguém perde por demora.</p>
       <p><b>Itens:</b> até ${ic.per_battle} por batalha, e cada um gasta a sua vez.</p>
+      <p><b>Fly e Dig:</b> como nos jogos, no primeiro turno o Pokémon voa bem alto ou cava um buraco e nenhum ataque o acerta; no turno seguinte ele ataca.</p>
       <p>Quem derruba adversários ganha XP (nas primeiras ${pk.xp?.battles_per_day ?? 5} batalhas do dia). Vida e PP só valem dentro da batalha: no fim todos voltam inteiros.</p>
       <p><b>Arena:</b> todo mundo pode assistir às batalhas ao vivo, torcer, mandar reações e cobrar quem está demorando (sem punição).</p>` },
     { id: "itens", ic: "🎒", t: "Itens, TMs e HMs", h: `<p>Na Loja Pokémon há itens como na Red/Blue:</p><ul>
@@ -9303,6 +9304,10 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "dig-2026-10-29", sql: "57", title: "⛏️ Dig agora funciona como no jogo", body: () => `Corrigimos o ataque Dig nas batalhas:
+• No primeiro turno, o Pokémon cava um buraco e fica debaixo da terra: nenhum ataque o acerta.
+• No turno seguinte, ele sai do chão e ataca.
+É igual ao Fly, que já funcionava assim, e igual aos jogos de Pokémon. Vale para todas as batalhas.` },
   { id: "grama-andar-2026-10-29", sql: "56", title: "🌿 Grama de Treino: agora você anda por ela!", body: () => `A Grama de Treino virou uma área de verdade, como a Safari Zone!
 • Entre pelo menu Pokémon, escolha quem vai treinar e quanto tempo quer ficar: 5 ou 10 minutos.
 • Ande com o seu personagem (WASD ou as setas no computador; botões na tela no celular).

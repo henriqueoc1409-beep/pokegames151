@@ -34,6 +34,7 @@ from (values
   ('54_grama_de_treino',         to_regclass('public.treino_lutas') is not null),
   ('55_treino_espera_centro',    exists (select 1 from pg_proc where proname = 'centro_curar')),
   ('56_grama_para_andar',        to_regclass('public.treino_visitas') is not null),
+  ('57_dig_protege',             exists (select 1 from pg_proc where proname = 'bt_use_move' and prosrc like '%mv.id = 91%')),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
