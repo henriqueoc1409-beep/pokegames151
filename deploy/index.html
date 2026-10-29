@@ -1587,7 +1587,24 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .aw-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03)}.aw-card h4{margin:0 0 2px}.aw-card ol{list-style:none;padding:0;margin:8px 0 0}
 .aw-card li{margin:3px 0}.aw-card li.me{color:#FFE7A0}.aw-last{display:flex;flex-wrap:wrap;gap:6px}
 .qz-prize-box{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:8px 12px 12px}.qz-prize-box legend{font-weight:700;padding:0 6px}.qz-prize-box details{margin-top:8px}.qz-prize-box summary{cursor:pointer}
-.hunt-pop{max-width:520px}.hunt-pop ul{padding-left:20px;color:var(--text-2)}.hunt-pop li{margin:6px 0}
+.hunt-pop{max-width:520px}
+.tr-field{position:relative;border-radius:14px;padding:14px;margin-bottom:12px;overflow:hidden;
+  background:linear-gradient(180deg,#3E7A3A 0%,#2F6A2F 60%,#24561F 100%);border:2px solid #1C4318;color:#F4F8E8}
+.tr-field::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;opacity:.55;
+  background:repeating-linear-gradient(90deg,transparent 0 6px,#1E4A1A 6px 8px,transparent 8px 12px,#5C9E4A 12px 14px)}
+.tr-clock{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.tr-bar{flex:1;min-width:160px;height:12px;border-radius:6px;background:rgba(0,0,0,.35);overflow:hidden}
+.tr-bar i{display:block;height:100%;background:linear-gradient(90deg,#B9E76A,#F2D857)}
+.tr-stage{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;position:relative;z-index:1}
+.tr-stage .vs{font-weight:800;font-size:22px;color:#F2D857;text-shadow:0 2px 0 #1C4318}
+.tr-mon{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:120px}
+.tr-mon .mini-xp{width:110px}
+.tr-res{border-radius:12px;padding:10px 12px;margin-bottom:12px;border:1px solid var(--line)}
+.tr-res.tr-ok{border-color:#6CC36A;background:rgba(108,195,106,.12)}
+.tr-res.tr-bad{border-color:#C98A5A;background:rgba(201,138,90,.1)}
+.tr-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}
+.tr-hist{list-style:none;margin:0;padding:0;font-size:13px}
+.tr-hist li{display:flex;gap:6px;align-items:center;padding:4px 0;border-bottom:1px dashed var(--line)}.hunt-pop ul{padding-left:20px;color:var(--text-2)}.hunt-pop li{margin:6px 0}
 .hunt-sil{display:block;margin:4px auto 8px;width:120px;height:120px;image-rendering:pixelated;filter:brightness(0);opacity:.9}
 .hunt-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
 .hunt-draw-fixed{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:80;width:min(680px,92vw);box-shadow:0 8px 24px rgba(0,0,0,.5)}
@@ -3780,6 +3797,7 @@ const WINS = {
   ranking: ["Ranking", () => viewRanking2()],
   regras: ["Biblioteca", () => viewLibrary()],
   correio: ["Correio", () => viewMail()],
+  treino: ["Grama de Treino", () => viewTreino()],
   admin: ["Administração", () => viewAdmin()]
 };
 // Formulários com texto digitado não podem sumir quando a tela se atualiza sozinha (Jornal, chat, Arena…).
@@ -3799,7 +3817,7 @@ function renderWindow() {
   const fa = document.activeElement, keepFocus = fa && keepForms.some(f => f.contains(fa)) ? { el: fa, a: fa.selectionStart, b: fa.selectionEnd } : null;
   if (!S.win || !WINS[S.win] || (S.win === "admin" && !S.isAdmin)) { root.innerHTML = ""; root.dataset.tab = ""; return; }
   const prev = root.querySelector(".win-body"), keep = prev && root.dataset.tab === S.win ? prev.scrollTop : 0;
-  const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
+  const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "treino", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
   const pos = k => { const i = ORDER.indexOf(k); return i < 0 ? 99 : i; };
   const tabs = Object.entries(WINS).filter(([k]) => (k !== "admin" || S.isAdmin) && k !== "batalha").sort((a, b) => pos(a[0]) - pos(b[0]));
   const [title, view] = WINS[S.win];
@@ -5148,6 +5166,9 @@ function LIB() {
       <p><b>Equipe:</b> até 6 Pokémon. A equipe ganha XP toda vez que você anda, dividido entre eles, e também nas batalhas.</p>
       <p><b>Evolução:</b> por nível ou por pedra (${pk.stones?.price ?? 250} moedas), como na Red/Blue. Você escolhe a hora de evoluir.</p>
       <p><b>Mascote:</b> um Pokémon que anda com você no mapa. <b>Roupas:</b> só visual, não mudam nada na batalha.</p>${genOn() ? `<p><b>2ª geração ligada:</b> os Pokémon 152 a 251 também aparecem.</p>` : ""}` },
+    { id: "treino", ic: "🌿", t: "Grama de Treino", h: `<p>A <b>Grama de Treino</b> fica fora do tabuleiro (menu Pokémon). Escolha um Pokémon seu e ele entra sozinho na grama para lutar contra um <b>Pokémon selvagem</b> de nível parecido. Vencendo, ganha experiência; perdendo, não perde nada.</p>
+      <p>Cada dia você tem um <b>relógio de treino de ${S.treino?.st?.minutos_dia ?? 60} minutos</b>, e cada luta gasta ${S.treino?.st?.minutos_luta ?? 3}. O relógio zera à meia-noite. O treino é lento de propósito: evoluir dá trabalho, então treine um pouco todo dia.</p>
+      <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
     { id: "batalha", ic: "⚔️", t: "Batalhas Pokémon e Arena", h: `<p>Precisa de 3 Pokémon capturados. Entram os <b>3 primeiros da equipe</b>. Os dois escolhem a ação do turno em segredo (atacar, trocar ou usar um item) e o servidor resolve.</p>
       <p><b>Aposta:</b> quem desafia escolhe de ${bet[0]} a ${bet[1]} moedas. Quem vence leva tudo; empate devolve.</p>
       <p><b>Sem prazo por turno:</b> jogue quando puder. Ninguém perde por demora.</p>
@@ -5402,6 +5423,7 @@ const ACTIONS = {
     if (v === "mapa") { S.win = null; return render(); }
     if (["pokedex", "equipe", "pkloja", "batalhas"].includes(v)) return pkOpenWin(v);
     if (v === "correio") return mailOpen();
+    if (v === "treino") return treinoOpen();
     if (v === "arena") return arenaOpen();
     if (v === "guerras") return warOpen();
     if (v === "liga") return leagueOpen();
@@ -5708,7 +5730,7 @@ function pixModal() {
 async function welcomeFlow() {
   await Promise.all([loadCaixa(), loadPosts()]); subscribeCaixa(); subscribePosts(); renderHUD();
   await donationThanks();
-  await giftPopup(); await loadMail(true); renderHUD();
+  await giftPopup(); await loadMail(true); loadTreino().then(() => renderHUD()).catch(() => {}); renderHUD();
   await loadQuiz(); await quizPopup(false);
   await loadRocket(); subscribeRocket(); await rocketPopup(); renderHUD();
   await loadHunt(true); subscribeHunt(); renderHUD();
@@ -5748,6 +5770,7 @@ async function contribPopup() {
 
 // ---------- menu de aventura ----------
 ICONS.balao = ["xxxxxx", "x....x", "x....x", "xxxxxx", ".x....", "x....."];
+ICONS.grama = ["x..x..x", "x.xx.xx", "xxx.xxx", "xxxxxxx", ".xxxxx."];
 ICONS.pokebola = [".xxxx.", "xxxxxx", "x.oo.x", "xxxxxx", "x....x", ".xxxx."];
 ICONS.obra = ["..xx..", ".xxxx.", "xxxxxx", "x.xx.x", "x.xx.x", "xxxxxx"];
 ICONS.equipe = ["xx..xx", "xx..xx", "......", "xx..xx", "xx..xx"];
@@ -5772,6 +5795,7 @@ function menuHTML() {
     ["Pokémon", [
       ["go", "pokedex", "Pokédex & Coleção", "pokebola", S.pk?.mons?.some(m => evoReady(m).length || m.pending_moves?.length) ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : S.pk?.mons?.length ? `<b class="mb">${S.pk.mons.length}</b>` : ""],
       ["go", "equipe", "Equipe & Mascote", "equipe", ""],
+      ...(S.treino?.missing ? [] : [["go", "treino", "Grama de Treino", "grama", S.treino?.st ? (treinoLeft() ? `<b class="mb">${treinoLeft()} lutas</b>` : "") : ""]]),
       ["go", "batalhas", "Batalhas Pokémon", "espadas", S.pk?.battles && btPending() ? `<b class="mb red">${btPending()}</b>` : ""],
       ...(S.rocket ? [["go", "rocket", "Equipe Rocket", "espadas", S.rocket.status === "ativa" ? `<b class="mb red">🚀 INVASÃO</b>` : ""]] : []),
       ["go", "arena", "Arena Pokémon (ao vivo)", "crown", arenaLive().length ? `<b class="mb live">${arenaLive().length} AO VIVO</b>` : ""],
@@ -7623,6 +7647,79 @@ async function giftPopup() {
 }
 
 // =================================================================
+// GRAMA DE TREINO (arquivo 54, pedido do dono em 29/10/2026): fora do tabuleiro, o Pokémon escolhido luta sozinho
+// contra selvagens de nível parecido. Relógio de 60 minutos por dia (3 por luta), tudo conferido no servidor.
+// =================================================================
+S.treino = { st: null, missing: false, sel: null, res: null, busy: false, showLog: false };
+const treinoLeft = () => { const t = S.treino.st; return t ? Math.max(0, Math.floor((t.minutos_dia - t.minutos) / Math.max(1, t.minutos_luta))) : 0; };
+async function loadTreino() {
+  try { S.treino.st = await rpc("treino_estado"); S.treino.missing = false; }
+  catch (e) { if (isMissingFn(e)) S.treino.missing = true; else throw e; }
+}
+async function treinoOpen() {
+  S.win = "treino"; render();
+  try { if (S.pk.on !== false) { await loadPkStatic(); await loadPk(); } await loadTreino(); }
+  catch (e) { if (pkMissing(e)) S.pk.on = false; else toast(errMsg(e), true); }
+  render(); if ($("#game")) renderHUD();
+}
+function treinoMons() {
+  return [...(S.pk.mons || [])].sort((a, b) => (a.team_slot || 99) - (b.team_slot || 99) || b.level - a.level);
+}
+function viewTreino() {
+  const T = S.treino;
+  if (T.missing) return `<p class="muted rk-state">A Grama de Treino precisa do arquivo <code>54_grama_de_treino.sql</code> rodado no Supabase.</p>`;
+  if (S.pk.on === false) return `<p class="muted rk-state">Os Pokémon ainda não estão ligados no jogo.</p>`;
+  if (!T.st || !S.pk.mons) return `<p class="muted rk-state">Abrindo a Grama de Treino…</p>`;
+  const st = T.st, mons = treinoMons();
+  if (!st.on) return `<div class="pk-empty"><p><strong>A Grama de Treino está fechada no momento.</strong></p><p class="muted">Volte mais tarde.</p></div>`;
+  if (!mons.length) return `<div class="pk-empty"><p><strong>Você ainda não tem Pokémon.</strong></p><p class="muted">Capture um depois de andar no tabuleiro e volte para treinar.</p></div>`;
+  const m = mons.find(x => x.id === T.sel) || mons[0]; T.sel = m.id;
+  const xp = pkXp(m), left = treinoLeft(), used = Math.min(100, Math.round(st.minutos / Math.max(1, st.minutos_dia) * 100));
+  const r = T.res, rMon = r && S.pk.mons.find(x => x.id === r.mon);
+  const res = r ? `<div class="tr-res ${r.won ? "tr-ok" : "tr-bad"}" role="status">
+      <p><b>${r.won ? "🏆 Vitória!" : "Não foi dessa vez."}</b> ${esc(pkName(r.species))} enfrentou um ${esc(pkName(r.wild))} selvagem de nível ${r.wild_level}.
+      ${r.won ? `Ganhou <b>${r.xp} de experiência</b>${r.level_to > r.level_from ? ` e <b>subiu para o nível ${r.level_to}</b>! 🎉` : "."}` : "Não perdeu nada: treine e tente de novo."}</p>
+      <button class="btn ghost small" data-act="tr-log">${T.showLog ? "Esconder a luta" : "Ver a luta"}</button>
+      ${T.showLog ? `<div class="npc-log"><ol>${(r.log || []).flatMap(t => (t.lines || []).map(l => `<li>${esc(l.txt || "")}</li>`)).join("")}</ol></div>` : ""}</div>` : "";
+  return `<div class="treino">
+    <div class="tr-field">
+      <div class="tr-clock"><b>⏱️ Relógio de treino de hoje</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
+        <span>${st.minutos} de ${st.minutos_dia} min usados · ${left ? `${left} ${left === 1 ? "luta restante" : "lutas restantes"}` : "acabou por hoje"}</span></div>
+      <div class="tr-stage">
+        <div class="tr-mon">${monCv(m.species_id, m.outfit, 120)}<b>${esc(pkName(m.species_id))}</b><span>Nível ${m.level}</span>
+          <span class="mini-xp" title="Faltam ${xp.falta} de experiência para o próximo nível"><i style="width:${xp.pct}%"></i></span></div>
+        <span class="vs">VS</span>
+        <div class="tr-mon"><span style="font-size:64px;line-height:120px" aria-hidden="true">🌿</span><b>Selvagem</b><span>Nível ${Math.max(1, m.level - st.nivel_menos)} a ${m.level + st.nivel_mais}</span></div>
+      </div>
+      <div style="text-align:center;margin-top:10px;position:relative;z-index:1">
+        <button class="btn big" data-act="tr-go" ${left && m.level < 100 && !T.busy ? "" : "disabled"}>${T.busy ? "Lutando na grama…" : left ? `🌿 Entrar na grama (gasta ${st.minutos_luta} min)` : "Volte amanhã"}</button></div>
+    </div>
+    ${res}
+    <p class="muted">Hoje: ${st.lutas} ${st.lutas === 1 ? "luta" : "lutas"}, ${st.vitorias} ${st.vitorias === 1 ? "vitória" : "vitórias"}, ${st.xp} de experiência. O treino é lento de propósito: um pouco todo dia faz o seu time crescer.</p>
+    <h3>Quem vai treinar?</h3>
+    <div class="tr-pick">${mons.map(x => `<button class="mon-card ${x.id === m.id ? "sel" : ""}" data-act="tr-sel" data-v="${x.id}" aria-pressed="${x.id === m.id}">
+      ${monCv(x.species_id, x.outfit, 72)}<span class="mc-name">${esc(pkName(x.species_id))}${x.team_slot ? `<i class="team-badge" title="Na equipe">${x.team_slot}</i>` : ""}</span><span class="mc-lv">Nv ${x.level}</span>
+      <span class="mini-xp"><i style="width:${pkXp(x).pct}%"></i></span></button>`).join("")}</div>
+    ${st.ultimas?.length ? `<h3 style="margin-top:14px">Últimas lutas</h3><ul class="tr-hist">${st.ultimas.map(l => `<li>${l.won ? "🏆" : "🌿"} ${esc(pkName(l.species))} ${l.won ? "venceu" : "perdeu para"} ${esc(pkName(l.wild))} (nível ${l.wild_level})${l.won ? ` · +${l.xp} XP` : ""}${l.level_to > l.level_from ? ` · subiu para o nível ${l.level_to}` : ""}<time style="margin-left:auto" class="muted">${ago(l.created_at)}</time></li>`).join("")}</ul>` : ""}
+  </div>`;
+}
+ACTIONS["tr-sel"] = v => { S.treino.sel = v; render(); };
+ACTIONS["tr-log"] = () => { S.treino.showLog = !S.treino.showLog; render(); };
+ACTIONS["tr-go"] = async () => {
+  const T = S.treino; if (T.busy || !T.sel) return;
+  T.busy = true; T.res = null; T.showLog = false; render();
+  let r;
+  try { r = await rpc("treino_lutar", { _mon: T.sel }); }
+  catch (e) { T.busy = false; toast(errMsg(e), true); try { await loadTreino(); } catch {} return render(); }
+  const m = S.pk.mons.find(x => x.id === T.sel);
+  T.res = { ...r, mon: T.sel, species: m?.species_id };
+  sfx(r.won ? "acerto" : "erro");
+  try { await Promise.all([loadPk(), loadTreino()]); } catch (e) { console.warn(e); }
+  T.busy = false; render(); if ($("#game")) renderHUD();
+  if (r.events?.length) await monEventsFlow(r.events);
+};
+
+// =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
 // Usa a tabela gifts do arquivo 34 (cada um lê só os seus); confere a cada minuto e avisa quando chega um novo.
 // =================================================================
@@ -8891,6 +8988,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "grama-treino-2026-10-29", sql: "54", title: "🌿 Nova: Grama de Treino", body: () => `Agora dá para treinar os seus Pokémon na Grama de Treino, no menu Pokémon!
+• Escolha um Pokémon e ele luta sozinho contra Pokémon selvagens do nível dele.
+• Venceu? Ganha experiência. Perdeu? Não perde nada.
+• Todo dia você tem 60 minutos de treino, e cada luta gasta 3 (20 lutas por dia).
+O treino é lento: evoluir agora dá trabalho. Treine um pouco todo dia!` },
   { id: "selvagens-fracos-2026-10-29", sql: "53", title: "🌱 Pokémon selvagens agora aparecem fracos", body: () => `Os Pokémon que aparecem depois de andar agora vêm sempre entre os níveis 1 e 5, em qualquer parte do tabuleiro.
 • A chance de captura continua a mesma: os raros seguem difíceis.
 • Quer um time forte? Treine os seus Pokémon nas andadas, nas batalhas e contra os treinadores do mapa!
