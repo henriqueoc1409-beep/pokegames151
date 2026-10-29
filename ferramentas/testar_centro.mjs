@@ -1,6 +1,7 @@
 // Testa o arquivo 55 (Grama de Treino com espera, Pokémon fortes, vida do treino e Centro Pokémon) com dados de TESTE,
 // como jogadores comuns: espera de 5 minutos, 12 lutas por dia, vida que fica, desmaio, cura paga, cura grátis em 72 h,
 // forte dá mais XP, cada um cura só os seus, e as novidades vão sozinhas para o Jornal (sem repetir).
+// Roda só até o 55 (o 56 trocou a luta automática pela grama de andar; os testes dele estão em testar_grama.mjs).
 // Uso (na pasta ferramentas, uma vez: npm install):  node testar_centro.mjs ..
 import { PGlite } from "@electric-sql/pglite";
 import { citext } from "@electric-sql/pglite/contrib/citext";
@@ -10,7 +11,7 @@ const root = process.argv[2];
 const db = new PGlite({ extensions: { citext, pgcrypto } });
 const sqls = fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort();
 await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
-for (const f of sqls) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+for (const f of sqls.filter(f => f < "56")) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
 let ok = 0, fail = 0;
 const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
 const sys = async (q, p = []) => (await db.query(q, p)).rows;
