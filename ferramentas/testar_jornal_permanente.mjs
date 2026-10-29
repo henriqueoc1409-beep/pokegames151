@@ -24,7 +24,7 @@ console.log("\nArquivar em vez de apagar");
 await as(ADM, `select public.admin_delete_post($1)`, [ID]);
 const a = (await as(A, `select * from posts where id = $1`, [ID])).rows[0];
 check("'apagar' só arquiva: o aviso continua no Jornal", !!a && a.archived && !a.pinned);
-check("jogador vê o arquivado", (await as(A, `select count(*)::int n from posts`)).rows[0].n === 1);
+check("jogador vê o arquivado", (await as(A, `select count(*)::int n from posts where id = $1 and archived`, [ID])).rows[0].n === 1);
 check("jogador comum não arquiva", /administrador/.test((await as(A, `select public.admin_archive_post($1, false)`, [ID])).error || ""));
 await as(ADM, `select public.admin_archive_post($1, false)`, [ID]);
 check("admin tira do arquivo", (await sys(`select archived from posts where id = $1`, [ID]))[0].archived === false);
