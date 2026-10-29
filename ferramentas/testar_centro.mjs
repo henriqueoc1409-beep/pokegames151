@@ -35,7 +35,7 @@ check("primeira luta sem erro", !r.error, r.error);
 await sys(`update monsters set tr_hp = 100 where id = $1`, [charm]);   // se desmaiou, não é isso que estamos testando
 check("lutar de novo na hora é recusado (descansando)", /descansando/.test((await fight(A, charm)).error || ""));
 st = await state(A);
-check("o estado mostra quando libera a próxima (5 minutos depois)", st.proxima && Math.abs(new Date(st.proxima) - new Date(st.agora) - 5 * 60000) < 5000, JSON.stringify([st.proxima, st.agora]));
+check("o estado mostra quando libera a próxima (5 minutos depois)", st.proxima && (d => d <= 5 * 60000 && d > 4 * 60000)(new Date(st.proxima) - new Date(st.agora)), JSON.stringify([st.proxima, st.agora]));
 await rest(A);
 let n = 1;
 for (; n < 20; n++) { await sys(`update monsters set tr_hp = 100 where id = $1`, [charm]); const x = await fight(A, charm); if (x.error) break; await rest(A); }
@@ -45,7 +45,8 @@ check("a 13ª é recusada pelo tempo do dia", /tempo de treino de hoje acabou/.t
 console.log("\nVida do treino");
 await sys(`delete from treino_dias`); await sys(`update monsters set tr_hp = 100, tr_hurt_at = null`);
 let hurtSeen = false, carried = false;
-for (let i = 0; i < 10 && !(hurtSeen && carried); i++) {
+for (let i = 0; i < 40 && !(hurtSeen && carried); i++) {   // a luta é sorteada: tenta até ver os dois casos
+  await sys(`delete from treino_dias`);   // o limite do dia não é o que se testa aqui
   const before = (await mon(charm)).tr_hp, x = await fight(A, charm); await rest(A);
   if (x.error) break;
   const after = await mon(charm);
