@@ -1640,6 +1640,10 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .gr-leg h2{font-size:28px;color:#FFD54A;margin:6px 0 10px}.gr-leg-tag{font-weight:900;letter-spacing:.12em;color:#FF8A7A;margin:0}
 .gr-leg .muted{color:#E8CFC0}
 @keyframes grflash{0%{opacity:0;background:#000}20%{opacity:1;background:#000}40%{opacity:1;background:#fff}60%{opacity:1;background:#000}80%{opacity:1;background:#fff}100%{opacity:1;background:#000}}
+.aj-warn{background:rgba(229,185,46,.12);border:1px solid rgba(229,185,46,.5);border-radius:10px;padding:10px 12px}
+.aj-tabs{flex-wrap:wrap;margin:10px 0}.aj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px 16px;align-items:end}
+.aj-set{grid-column:1/-1;border:1px solid var(--line);border-radius:10px;padding:6px 12px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px 16px;align-items:end}
+.aj-set legend{font-weight:700;padding:0 6px}.aj-f{min-width:0}.aj-f label{font-size:13px}
 .tr-hist{list-style:none;margin:0;padding:0;font-size:13px}
 .tr-hist li{display:flex;gap:6px;align-items:center;padding:4px 0;border-bottom:1px dashed var(--line)}.hunt-pop ul{padding-left:20px;color:var(--text-2)}.hunt-pop li{margin:6px 0}
 .hunt-sil{display:block;margin:4px auto 8px;width:120px;height:120px;image-rendering:pixelated;filter:brightness(0);opacity:.9}
@@ -5291,7 +5295,7 @@ function CFG_FIELDS() {
       ...(S.cfg.battle_bet_max != null ? [["battle_bet_min", "Batalha Pokémon: aposta mínima"], ["battle_bet_max", "Batalha Pokémon: aposta máxima"]] : [])];
 }
 function viewAdmin() {
-  const tabs = [["jogadores", "Jogadores"], ["caixa", "Caixa da Obra"], ["presentes", "Presentes"], ["quiz", "Quiz"], ["cacada", "Caçada"], ["pix", "Loja e PIX"], ["convites", "Convites"], ["pokedex", "Pokédex"], ["regras", "Regras"], ["temporada", "Temporada"], ["uso", "Uso do jogo"], ["auditoria", "Auditoria"]];
+  const tabs = [["jogadores", "Jogadores"], ["caixa", "Caixa da Obra"], ["presentes", "Presentes"], ["quiz", "Quiz"], ["cacada", "Caçada"], ["pix", "Loja e PIX"], ["convites", "Convites"], ["pokedex", "Pokédex"], ["regras", "Regras"], ["ajustes", "Ajustes do jogo"], ["treino", "Grama de Treino"], ["temporada", "Temporada"], ["uso", "Uso do jogo"], ["auditoria", "Auditoria"]];
   const A = S.admin; let body = `<p class="muted">Carregando…</p>`;
   if (S.adminTab === "jogadores" && A.players) {
     body = `<div class="table-scroll"><table class="list"><thead><tr><th>Usuário</th><th>E-mail</th><th>Personagem</th><th>Nv</th><th>Moedas</th><th>Casa</th><th>Faltam</th><th>Situação</th><th></th></tr></thead><tbody>
@@ -5338,6 +5342,8 @@ function viewAdmin() {
   if (S.adminTab === "quiz") body = adminQuizView();
   if (S.adminTab === "cacada") body = adminHuntView();
   if (S.adminTab === "uso") body = adminUsageView();
+  if (S.adminTab === "ajustes") body = adminAjustesView();
+  if (S.adminTab === "treino") body = adminTreinoView();
   if (S.adminTab === "temporada") {
     const se = S.today?.season;
     body = `<p>Temporada atual: <strong>${se?.id ?? "?"}</strong>, ${se?.status === "encerrada" ? "encerrada (a próxima começa amanhã sozinha)" : "em andamento"}.</p>
@@ -5361,6 +5367,7 @@ async function loadAdmin() {
   if (S.adminTab === "presentes") { await loadGiftsAdmin(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "quiz") { await loadQuizAdmin(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "cacada") await loadHunt(false);
+  if (S.adminTab === "ajustes" || S.adminTab === "treino") { try { A.cfgEf = await rpc("admin_cfg_efetiva"); } catch (e) { if (isMissingFn(e)) A.cfgEf = false; else throw e; } }
   if (S.adminTab === "uso") { try { A.usage = await rpc("admin_usage"); } catch (e) { if (isMissingFn(e)) A.usage = false; else throw e; } }
   if (S.adminTab === "pix") { await loadShopFresh(); await loadOffers(); if (S.pk.on !== false) try { await loadPkStatic(); } catch {} }
   if (S.adminTab === "pokedex") A.media = await rpc("admin_media_status");
@@ -5841,7 +5848,7 @@ function menuHTML() {
     ["Pokémon", [
       ["go", "pokedex", "Pokédex & Coleção", "pokebola", S.pk?.mons?.some(m => evoReady(m).length || m.pending_moves?.length) ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : S.pk?.mons?.length ? `<b class="mb">${S.pk.mons.length}</b>` : ""],
       ["go", "equipe", "Equipe & Mascote", "equipe", ""],
-      ...(S.treino?.missing ? [] : [["go", "treino", "Grama de Treino", "grama", S.treino?.st?.visita ? `<b class="mb live">LÁ DENTRO</b>` : S.treino?.st && S.treino.st.minutos < S.treino.st.minutos_dia ? `<b class="mb">${S.treino.st.minutos_dia - S.treino.st.minutos} min</b>` : ""]]),
+      ...(S.treino?.missing ? [] : [["go", "treino", "Grama de Treino", "grama", S.treino?.st?.visita ? `<b class="mb live">LÁ DENTRO</b>` : S.treino?.st && S.treino.st.minutos < S.treino.st.minutos_dia + (S.treino.st.bonus || 0) ? `<b class="mb">${S.treino.st.minutos_dia + (S.treino.st.bonus || 0) - S.treino.st.minutos} min</b>` : ""]]),
       ...(S.treino?.missing || !S.treino?.st?.feridos ? [] : [["go", "centro", "Centro Pokémon", "cruz", S.treino.st.feridos.length ? `<b class="mb red" title="Pokémon feridos">${S.treino.st.feridos.length}</b>` : ""]]),
       ["go", "batalhas", "Batalhas Pokémon", "espadas", S.pk?.battles && btPending() ? `<b class="mb red">${btPending()}</b>` : ""],
       ...(S.rocket ? [["go", "rocket", "Equipe Rocket", "espadas", S.rocket.status === "ativa" ? `<b class="mb red">🚀 INVASÃO</b>` : ""]] : []),
@@ -7738,15 +7745,15 @@ function viewTreino() {
   if (!st.on) return `<div class="pk-empty"><p><strong>A Grama de Treino está fechada no momento.</strong></p><p class="muted">Volte mais tarde.</p></div>`;
   if (!mons.length) return `<div class="pk-empty"><p><strong>Você ainda não tem Pokémon.</strong></p><p class="muted">Capture um depois de andar no tabuleiro e volte para treinar.</p></div>`;
   const m = mons.find(x => x.id === T.sel) || mons.find(x => treinoHpOf(x) > 0) || mons[0]; T.sel = m.id;
-  const xp = pkXp(m), hp = treinoHpOf(m), ko = hp <= 0, rest = Math.max(0, st.minutos_dia - st.minutos), V = st.visita;
-  const used = Math.min(100, Math.round(st.minutos / Math.max(1, st.minutos_dia) * 100));
+  const xp = pkXp(m), hp = treinoHpOf(m), ko = hp <= 0, tot = st.minutos_dia + (st.bonus || 0), rest = Math.max(0, tot - st.minutos), V = st.visita;
+  const used = Math.min(100, Math.round(st.minutos / Math.max(1, tot) * 100));
   const vLeft = V ? Math.max(0, Math.ceil((new Date(V.fim) - treinoNow()) / 1000)) : 0;
   const enterBtns = (st.opcoes || [5, 10]).map(n => { const real = Math.min(n, rest);
     return `<button class="btn big" data-act="gr-enter" data-v="${n}" ${real > 0 && !ko ? "" : "disabled"}>🌿 Entrar por ${real > 0 ? real : n} min</button>`; }).join("");
   return `<div class="treino">
     <div class="tr-field">
       <div class="tr-clock"><b>⏱️ Relógio de treino de hoje</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
-        <span>${st.minutos} de ${st.minutos_dia} min usados · ${rest ? `faltam ${rest} min` : "acabou por hoje"}</span></div>
+        <span>${st.minutos} de ${tot} min usados${st.bonus > 0 ? ` (🎁 +${st.bonus} min de presente do admin)` : ""} · ${rest ? `faltam ${rest} min` : "acabou por hoje"}</span></div>
       <div class="tr-stage">
         <div class="tr-mon">${monCv(m.species_id, m.outfit, 120)}<b>${esc(pkName(m.species_id))}</b><span>Nível ${m.level}</span>
           <span class="mini-xp" title="Faltam ${xp.falta} de experiência para o próximo nível"><i style="width:${xp.pct}%"></i></span>
@@ -8167,6 +8174,108 @@ function grEndHTML(b) {
     <p>${msg} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
     <div class="act-btns">${V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
+
+// =================================================================
+// CONTROLES DO ADMIN (arquivo 59, pedido do dono em 29/10/2026: "fazer o que quiser no jogo sem ficar pedindo")
+// "Ajustes do jogo": mostra TODOS os números de cada sistema (já com os padrões, de admin_cfg_efetiva) num formulário
+// montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
+// admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
+// =================================================================
+const AJ_GROUPS = [["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+  ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
+const AJ_LABELS = {
+  treino: { on: "Grama de Treino aberta", minutos_dia: "Minutos por dia", visita_opcoes: "Opções de tempo por visita (minutos, separados por vírgula)",
+    encontro_seg: "Segundos mínimos entre um encontro e outro", xp_mult: "Multiplicador de experiência (1 = normal)", nivel_menos: "Selvagem: até quantos níveis abaixo",
+    nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
+    forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
+    lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
+    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça" },
+  rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
+    hp_factor: "Vida da barra (multiplicador)", max_turns: "Turnos máximos por luta", level_bonus: "Níveis a mais da equipe da Rocket" },
+  pk: { "encounter.level_min": "Encontro: nível mínimo dos selvagens", "encounter.level_span": "Encontro: níveis a mais até o Castelo", "encounter.level_spread": "Encontro: sorteio de níveis a mais",
+    "encounter.legendaries": "Encontro: lendários podem aparecer", "encounter.region_bonus": "Encontro: peso a mais para tipos da região", "capture.throws": "Bolas por encontro",
+    "stones.price": "Preço das pedras de evolução", "xp.move_base": "XP por andada (base)", "xp.per_step": "XP por casa dos acertos", "xp.per_mode": "XP por modo acertado",
+    "xp.battle_mult": "XP de batalha (multiplicador)", "xp.battles_per_day": "Batalhas por dia que dão XP", "storage.max_monsters": "Máximo de Pokémon por jogador",
+    "battle.size": "Pokémon por lado na batalha", "battle.min_captured": "Pokémon capturados para poder batalhar" },
+  itens: { per_battle: "Itens por batalha", bau_pct: "Chance de item no baú (%)", fonte_pct: "Chance de item na Fonte (%)", hm_bau_pct: "Chance de HM no baú (%)",
+    hm_npc_pct: "Chance de HM ao vencer treinador do mapa (%)", "hm.on": "Atalhos das HMs ligados", "hm.max_per_move": "Atalhos por andada", "hm.fly_bonus": "Casas do Fly" }
+};
+const ajLabel = (g, path) => AJ_LABELS[g]?.[path] || path.split(".").map(p => p.replace(/_/g, " ")).join(" › ");
+function ajFields(g, obj, pre = "") {
+  return Object.entries(obj).map(([k, v]) => {
+    const path = pre ? `${pre}.${k}` : k, id = `aj-${g}-${path.replace(/\W/g, "_")}`, lab = esc(ajLabel(g, path));
+    if (v && typeof v === "object" && !Array.isArray(v)) return `<fieldset class="aj-set"><legend>${lab}</legend>${ajFields(g, v, path)}</fieldset>`;
+    if (typeof v === "boolean") return `<label class="check aj-f"><input type="checkbox" id="${id}" data-aj="${esc(path)}" data-t="b" ${v ? "checked" : ""}> ${lab}</label>`;
+    if (typeof v === "number") return `<div class="aj-f"><label for="${id}">${lab}</label><input id="${id}" type="number" step="any" data-aj="${esc(path)}" data-t="n" value="${v}"></div>`;
+    if (Array.isArray(v) && v.every(x => typeof x === "number")) return `<div class="aj-f"><label for="${id}">${lab}</label><input id="${id}" data-aj="${esc(path)}" data-t="an" value="${v.join(", ")}"></div>`;
+    if (typeof v === "string") return `<div class="aj-f"><label for="${id}">${lab}</label><input id="${id}" data-aj="${esc(path)}" data-t="s" value="${esc(v)}"></div>`;
+    return `<div class="aj-f"><label for="${id}">${lab} <small class="muted">(texto técnico)</small></label><input id="${id}" data-aj="${esc(path)}" data-t="j" value="${esc(JSON.stringify(v))}"></div>`;
+  }).join("");
+}
+function ajForm(g, title, extra = "") {
+  const A = S.admin, cur = A.cfgEf?.[g];
+  if (!cur) return `<p class="muted">Sem números para mostrar.</p>`;
+  return `<form id="ajform" data-g="${g}" class="aj-form"><h3>${esc(title)}</h3>${extra}<div class="aj-grid">${ajFields(g, cur)}</div>
+    <label for="aj-reason">Motivo da mudança (vai para a Auditoria)</label><input id="aj-reason" required placeholder="Ex.: deixar a Grama mais fácil no fim de semana">
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn">Salvar ${esc(title.replace(/^\S+\s/, ""))}</button></div></form>`;
+}
+function adminAjustesView() {
+  const A = S.admin;
+  if (A.cfgEf === false) return `<p class="muted">Precisa do arquivo <code>59_admin_controles.sql</code> rodado no Supabase.</p>`;
+  if (!A.cfgEf) return `<p class="muted">Carregando…</p>`;
+  const g = S.ajG || "treino", t = AJ_GROUPS.find(x => x[0] === g)?.[1] || g;
+  return `<div class="aj"><p class="aj-warn">⚠️ Aqui ficam <b>todos os números</b> de cada parte do jogo. A mudança vale <b>na hora, para todos</b>. Mude com calma: tudo vai para a Auditoria, com o valor de antes, e dá para voltar atrás. Os números do dia a dia (casas, moedas, preços das ajudas) continuam na aba <b>Regras</b>.</p>
+    <div class="tabs aj-tabs">${AJ_GROUPS.filter(([k]) => A.cfgEf[k]).map(([k, n]) => `<button data-act="aj-g" data-v="${k}" aria-current="${g === k}">${n}</button>`).join("")}</div>
+    ${ajForm(g, t)}</div>`;
+}
+function adminTreinoView() {
+  const A = S.admin;
+  if (A.cfgEf === false) return `<p class="muted">Precisa do arquivo <code>59_admin_controles.sql</code> rodado no Supabase.</p>`;
+  if (!A.cfgEf) return `<p class="muted">Carregando…</p>`;
+  const players = [...(S.chars || [])].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+  return `<section class="panel lo"><h3>🎁 Dar tempo extra na Grama de Treino (só hoje)</h3>
+      <p class="muted">Soma minutos ao relógio de hoje do jogador (ele vê "🎁 +N min de presente do admin"). Para tirar, use um número negativo. Amanhã o relógio volta ao normal.</p>
+      <form id="trbform" class="inv-form" style="display:block">
+        <label for="trb-user">Jogador</label><select id="trb-user" required><option value="">Escolha o jogador</option>${players.map(c => `<option value="${c.user_id}">${esc(c.name)} (Nv ${c.level})</option>`).join("")}</select>
+        <label for="trb-min">Minutos a mais</label><input id="trb-min" type="number" min="-600" max="600" value="15" required>
+        <label for="trb-reason">Motivo (vai para a Auditoria)</label><input id="trb-reason" placeholder="Ex.: ficou sem internet no meio do treino">
+        <div style="margin-top:12px"><button class="btn">Dar o tempo</button></div></form></section>
+    ${ajForm("treino", "🌿 Regras da Grama de Treino e do Centro Pokémon")}`;
+}
+ACTIONS["aj-g"] = v => { S.ajG = v; render(); };
+document.addEventListener("submit", e => {
+  if (e.target.id === "trbform") {
+    e.preventDefault();
+    const user = $("#trb-user").value, min = Math.trunc(+$("#trb-min").value || 0), nm = charName(user);
+    if (!user || !min) return toast("Escolha o jogador e os minutos.", true);
+    guarded(async () => {
+      const r = await rpc("admin_treino_bonus", { _user: user, _min: min, _reason: $("#trb-reason").value.trim() || null });
+      toast(`🎁 ${nm}: ${min > 0 ? "+" : ""}${min} min na Grama hoje. Agora tem ${r.livre} min livres.`);
+      $("#trbform").reset();
+    });
+  }
+  if (e.target.id === "ajform") {
+    e.preventDefault();
+    const g = e.target.dataset.g, base = JSON.parse(JSON.stringify(S.admin.cfgEf[g] || {}));
+    let bad = "";
+    for (const el of e.target.querySelectorAll("[data-aj]")) {
+      const path = el.dataset.aj.split("."), t = el.dataset.t; let v;
+      if (t === "b") v = el.checked;
+      else if (t === "n") { v = Number(el.value); if (el.value === "" || !isFinite(v)) bad = ajLabel(g, el.dataset.aj); }
+      else if (t === "an") { v = el.value.split(/[,;\s]+/).filter(Boolean).map(Number); if (v.some(x => !isFinite(x))) bad = ajLabel(g, el.dataset.aj); }
+      else if (t === "j") { try { v = JSON.parse(el.value); } catch { bad = ajLabel(g, el.dataset.aj); } }
+      else v = el.value;
+      let o = base; for (const p of path.slice(0, -1)) o = o[p]; o[path.at(-1)] = v;
+    }
+    if (bad) return toast(`Confira o campo "${bad}".`, true);
+    guarded(async () => {
+      S.cfg = await rpc("admin_set_config", { _patch: { [g]: base }, _reason: $("#aj-reason").value.trim() });
+      S.admin.cfgEf = await rpc("admin_cfg_efetiva");
+      toast("Ajustes salvos. Já valem para todos."); render();
+      if (g === "treino") try { await loadTreino(); } catch {}
+    });
+  }
+});
 
 // =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
