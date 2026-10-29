@@ -5144,7 +5144,7 @@ function LIB() {
       <p><b>As HMs são raras:</b> não vendem. Aparecem em 1 de cada ${Math.round(100 / (ic.hm_bau_pct || 1))} baús ou em 1 de cada ${Math.round(100 / (ic.hm_npc_pct || 2))} vitórias contra os treinadores do mapa. Cada HM sai uma vez só para cada jogador e nunca acaba.</p>` },
     { id: "herois", ic: "🛡️", t: "Heróis", h: `<p>Cada herói tem uma <b>passiva</b>, que funciona sempre, e uma <b>habilidade</b> que você ativa uma vez por dia, antes de andar. As duas ficam mais fortes nos níveis ${(c.skill_levels || [1, 5, 10, 15, 20]).join(", ")}. Trocar de herói custa ${libN(c.class_change_price, 300)} moedas.</p>
       <ul class="hero-list">${Object.entries(HEROES).map(([k, h]) => { const x = heroStats(k, 1); return `<li><strong>${h.nome}.</strong> ${h.passiva(x.pv)} <strong>${h.skill}:</strong> ${h.efeito(x.sv)}</li>`; }).join("")}</ul>` },
-    { id: "pokemon", ic: "🐾", t: "Pokémon: captura e coleção", h: `<p>Depois de cada andada aparece um <b>Pokémon selvagem</b> na casa onde você parou. Você tem <b>3 bolas</b> para tentar capturar. A Poké Bola é grátis; a Great Ball (${balls.great?.price ?? 40} moedas) e a Ultra Ball (${balls.ultra?.price ?? 90}) aumentam a chance. Pokémon raros são mais difíceis, e cada região tem os seus tipos preferidos. Mais perto do Castelo, os Pokémon aparecem em nível mais alto.</p>
+    { id: "pokemon", ic: "🐾", t: "Pokémon: captura e coleção", h: `<p>Depois de cada andada aparece um <b>Pokémon selvagem</b> na casa onde você parou. Você tem <b>3 bolas</b> para tentar capturar. A Poké Bola é grátis; a Great Ball (${balls.great?.price ?? 40} moedas) e a Ultra Ball (${balls.ultra?.price ?? 90}) aumentam a chance. Pokémon raros são mais difíceis, e cada região tem os seus tipos preferidos. Os Pokémon selvagens sempre aparecem fracos, entre os <b>níveis 1 e 5</b>, em qualquer parte do tabuleiro: para ficarem fortes, é preciso treinar.</p>
       <p><b>Equipe:</b> até 6 Pokémon. A equipe ganha XP toda vez que você anda, dividido entre eles, e também nas batalhas.</p>
       <p><b>Evolução:</b> por nível ou por pedra (${pk.stones?.price ?? 250} moedas), como na Red/Blue. Você escolhe a hora de evoluir.</p>
       <p><b>Mascote:</b> um Pokémon que anda com você no mapa. <b>Roupas:</b> só visual, não mudam nada na batalha.</p>${genOn() ? `<p><b>2ª geração ligada:</b> os Pokémon 152 a 251 também aparecem.</p>` : ""}` },
@@ -8891,6 +8891,10 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "selvagens-fracos-2026-10-29", sql: "53", title: "🌱 Pokémon selvagens agora aparecem fracos", body: () => `Os Pokémon que aparecem depois de andar agora vêm sempre entre os níveis 1 e 5, em qualquer parte do tabuleiro.
+• A chance de captura continua a mesma: os raros seguem difíceis.
+• Quer um time forte? Treine os seus Pokémon nas andadas, nas batalhas e contra os treinadores do mapa!
+Os Pokémon que você já tem não mudam.` },
   { id: "ajudas-bonus-2026-10-28", sql: "52", title: "💡 Dicas e Tente outra vez agora são só bônus!", body: () => `Mudou a regra da rodada do dia: usar Dica ou Tente outra vez NÃO conta mais como tentativa no ranking.
 • A Dica revela uma característica do Pokémon, de graça para a sua posição na rodada.
 • O Tente outra vez apaga o último palpite errado, como se ele nunca tivesse existido.
