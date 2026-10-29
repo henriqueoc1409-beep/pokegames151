@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        teste: [testar_banco_sem_postgres, testar_robo_sql, testar_pokemon, testar_itens, testar_cacada_escolha, testar_casas_npc, testar_rocket, testar_liga, testar_arena, testar_guerras, testar_uso, testar_premios, testar_quiz_premio, testar_quiz, testar_ajudas, testar_selvagens, testar_treino, testar_centro, testar_grama]
+        teste: [testar_banco_sem_postgres, testar_robo_sql, testar_pokemon, testar_itens, testar_cacada_escolha, testar_casas_npc, testar_rocket, testar_liga, testar_arena, testar_guerras, testar_uso, testar_premios, testar_quiz_premio, testar_quiz, testar_ajudas, testar_selvagens, testar_treino, testar_centro, testar_grama, testar_dig]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
