@@ -182,6 +182,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .q{font-size:var(--fs-20);margin-bottom:var(--s2)}
 .clue-img{display:block;margin:var(--s4) auto;width:min(300px,80vw);aspect-ratio:1;border-radius:var(--r-md);background:#E7F0F6;overflow:hidden;border:1px solid var(--line-strong)}
 .clue-img img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;transition:transform .5s ease}
+.no-grab,.no-grab img{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none}.no-grab img{pointer-events:none}
+.desc-parts{text-align:center;font-size:.85rem;margin:-4px 0 8px}
 .card{width:min(280px,78vw);margin:var(--s4) auto;padding:var(--s3);border-radius:var(--r-lg);background:var(--surface-2);border:2px solid var(--gold-dim)}
 .card .art{background:#DCEAF2;border-radius:var(--r-md);aspect-ratio:1;overflow:hidden}
 .card .art img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
@@ -1780,8 +1782,8 @@ const S = {
 const MODES = {
   classico:  { nome: "Clássico",  q: "Adivinhe o Pokémon de hoje", dica: "Cada palpite mostra o que bate com a resposta: tipos, habitat, cor, fase, altura e peso." },
   cartao:    { nome: "Cartão",    q: "Que Pokémon está nesta carta?", dica: "Cada palpite revela mais pixels." },
-  descricao: { nome: "Descrição", q: "Que Pokémon tem esta descrição?", dica: "O nome foi escondido com ???." },
-  silhueta:  { nome: "Silhueta",  q: "De quem é esta silhueta?", dica: "Cada palpite afasta um pouco a câmera." }
+  descricao: { nome: "Descrição", q: "Que Pokémon tem esta descrição?", dica: "Um verbete de Pokédex em partes: começa vago e cada palpite errado revela mais um pedaço." },
+  silhueta:  { nome: "Silhueta",  q: "De quem é esta silhueta?", dica: "Cada palpite afasta um pouco a câmera. Só o pedaço da tela chega ao seu aparelho." }
 };
 const HEROES = {
   guerreiro: { nome: "Guerreiro", skill: "Investida", passiva: () => `Mais forte nos encontros: +${S.cfg.guerreiro_duel_bonus ?? 15}% de chance de vencer o duelo.`, efeito: v => `Anda +${v} casas hoje.` },
@@ -3977,12 +3979,12 @@ function challengeBody(mode, P) {
   const M = MODES[mode];
   let clue = "";
   const made = P.attempts + P.retries_used;
-  if (mode === "descricao") clue = `<p class="quote">“${esc(P.clue.text)}”</p>`;
+  if (mode === "descricao") clue = `<p class="quote">“${esc(P.clue.text)}”</p>${P.clue.parts_total && !P.finished ? `<p class="muted desc-parts">📖 Pista ${P.clue.parts} de ${P.clue.parts_total}${P.clue.parts < P.clue.parts_total ? ": cada palpite errado revela mais um pedaço do verbete." : "."}</p>` : ""}`;
   if (mode === "silhueta") {
     const seed = [...P.date].reduce((a, c) => a + c.charCodeAt(0), 0);
     const ox = 30 + (seed * 7) % 40, oy = 25 + (seed * 13) % 35;
-    const scale = P.finished ? 1 : Math.max(1, 2.8 - 0.3 * P.clue.zoom_step);
-    clue = `<div class="clue-img"><img alt="Silhueta do Pokémon" src="${P.clue.image}" style="transform:scale(${scale});transform-origin:${ox}% ${oy}%;image-rendering:auto"></div>`;
+    const scale = P.finished || P.clue.cropped ? 1 : Math.max(1, 2.8 - 0.3 * P.clue.zoom_step);   // cortada no servidor (arquivo 60): já vem no zoom certo
+    clue = `<div class="clue-img no-grab"><img alt="Silhueta do Pokémon" src="${P.clue.image}" draggable="false" style="transform:scale(${scale});transform-origin:${ox}% ${oy}%;image-rendering:auto"></div>`;
   }
   if (mode === "cartao") clue = `<div class="card"><div class="art"><img alt="Imagem pixelada do Pokémon" src="${P.clue.image}"></div><div class="lines"><i></i><i style="width:70%"></i><i style="width:85%"></i></div></div>`;
   const hints = P.hints.length ? `<ul class="hints">${P.hints.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : "";
@@ -4122,8 +4124,8 @@ function duelPlay(D) {
   const back = `<button class="btn ghost small" data-act="duel-back">Voltar aos duelos</button>`;
   let clue = "";
   if (D.clue) {
-    const scale = D.status === "concluido" ? 1 : Math.max(1, 2.8 - 0.3 * D.me.attempts);
-    clue = `<div class="clue-img"><img alt="Silhueta do Pokémon do duelo" src="${D.clue.image}" style="transform:scale(${scale});transform-origin:45% 40%;image-rendering:auto"></div>`;
+    const scale = D.status === "concluido" || D.clue.cropped ? 1 : Math.max(1, 2.8 - 0.3 * D.me.attempts);
+    clue = `<div class="clue-img no-grab"><img alt="Silhueta do Pokémon do duelo" src="${D.clue.image}" draggable="false" style="transform:scale(${scale});transform-origin:45% 40%;image-rendering:auto"></div>`;
   }
   let state;
   if (D.status === "concluido") {
@@ -5316,6 +5318,11 @@ function viewAdmin() {
       <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn" data-act="adm-import" ${miss ? "" : "disabled"}>${miss ? `Importar ${miss} Pokémon que faltam` : "Pokédex completa"}</button>
         <button class="btn ghost" data-act="adm-import-all">Reimportar tudo</button></div>
+      ${m.sil_levels != null ? `<section class="panel lo" style="margin-top:16px"><h3>🔒 Silhueta travada</h3>
+        <p>Silhuetas travadas: <strong class="num">${m.sil_levels}</strong> de ${tot}. Descrições novas (4 partes): <strong class="num">${m.desc_parts}</strong> de ${tot}.</p>
+        <p class="muted">Travar a silhueta corta cada etapa do zoom no seu aparelho e guarda no banco: assim só o pedaço da tela chega ao jogador, e ninguém consegue abrir a imagem inteira. Leva alguns minutos; deixe a página aberta até terminar.</p>
+        <button class="btn" data-act="adm-sil" ${m.missing_sil?.length ? "" : "disabled"}>${m.missing_sil?.length ? `Travar ${m.missing_sil.length} silhuetas` : "Todas travadas"}</button>
+        <button class="btn ghost" data-act="adm-sil-all">Gerar todas de novo</button></section>` : ""}
       <div id="imp" class="hidden" style="margin-top:16px"><div class="bar"><i id="imp-bar"></i></div><p id="imp-txt" class="muted"></p></div>`;
   }
   if (S.adminTab === "regras") {
@@ -5379,15 +5386,15 @@ async function loadAdmin() {
     A.names = Object.fromEntries(A.players.map(p => [p.user_id, p.username]));
   }
 }
-async function importPokedex(all) {
-  const ids = all ? S.pokemon.map(p => p.id) : S.admin.media.missing_ids;
+async function importPokedex(all, one = importOne, only = null) {
+  const ids = only || (all ? S.pokemon.map(p => p.id) : S.admin.media.missing_ids);
   $("#imp").classList.remove("hidden");
   const bar = $("#imp-bar"), txt = $("#imp-txt");
   let done = 0; const fails = [], queue = [...ids];
   async function worker() {
     while (queue.length) {
       const id = queue.shift();
-      try { await importOne(id); } catch (e) { console.warn(id, e); fails.push(id); }
+      try { await one(id); } catch (e) { console.warn(id, e); fails.push(id); }
       done++; bar.style.width = `${Math.round(done / ids.length * 100)}%`;
       txt.textContent = `${done} de ${ids.length}${fails.length ? `, ${fails.length} com erro` : ""}`;
     }
@@ -5418,6 +5425,30 @@ async function importOne(id) {
   let fullUrl = full.toDataURL("image/webp", 0.85); if (!fullUrl.startsWith("data:image/webp")) fullUrl = full.toDataURL("image/png");
   levels.push(fullUrl);
   await rpc("admin_save_media", { _id: id, _silhouette: silhouette, _pixel_levels: levels, _description: null });
+  if (S.admin.media?.sil_levels != null) await rpc("admin_save_sil_levels", { _id: id, _levels: silLevels(img, id) });
+}
+// silhueta travada (arquivo 60): as 7 etapas do zoom já cortadas, com o mesmo enquadramento que o site usava (2,8× até 1×).
+// O ponto de foco é fixo por Pokémon, para o desafio e o duelo usarem as mesmas imagens.
+const SIL_SCALES = [2.8, 2.5, 2.2, 1.9, 1.6, 1.3, 1];
+function silLevels(img, id) {
+  const N = 256, base = document.createElement("canvas"); base.width = base.height = N;
+  const bx = base.getContext("2d"); bx.drawImage(img, 0, 0, N, N);
+  bx.globalCompositeOperation = "source-in"; bx.fillStyle = "#111a2c"; bx.fillRect(0, 0, N, N);
+  const ox = (30 + (id * 7) % 40) / 100, oy = (25 + (id * 13) % 35) / 100, OUT = 180;
+  return SIL_SCALES.map(sc => {
+    const w = N / sc, x = ox * (N - w), y = oy * (N - w);
+    const c = document.createElement("canvas"); c.width = c.height = OUT;
+    const g = c.getContext("2d"); g.imageSmoothingEnabled = true; g.drawImage(base, x, y, w, w, 0, 0, OUT, OUT);
+    // só duas cores (silhueta ou fundo): a imagem fica bem mais leve no banco
+    const im = g.getImageData(0, 0, OUT, OUT), px = im.data;
+    for (let i = 3; i < px.length; i += 4) { const on = px[i] >= 128; px[i - 3] = 0x11; px[i - 2] = 0x1a; px[i - 1] = 0x2c; px[i] = on ? 255 : 0; }
+    g.putImageData(im, 0, 0);
+    return c.toDataURL("image/png");
+  });
+}
+async function silOne(id) {
+  const img = await loadImg(ART(id));
+  await rpc("admin_save_sil_levels", { _id: id, _levels: silLevels(img, id) });
 }
 
 // =================================================================
@@ -5691,6 +5722,8 @@ const ACTIONS = {
     await guarded(async () => { await rpc("admin_new_season", { _reason: f.reason }); toast("Nova temporada começou."); await Promise.all([loadToday(), loadWorld(), refreshMe()]); render(); });
   },
   "adm-import": () => importPokedex(false),
+  "adm-sil": () => importPokedex(false, silOne, S.admin.media.missing_sil || []),
+  "adm-sil-all": async () => { if (await confirmModal("Gerar todas de novo?", `Isso corta de novo as silhuetas dos ${S.pokemon.length} Pokémon.`, "Gerar")) importPokedex(true, silOne); },
   "adm-gen2": async v => {
     const on = v === "1";
     if (!(await confirmModal(on ? "Liberar a 2ª geração?" : "Desligar a 2ª geração?", on ? "Os Pokémon novos entram nos encontros e evoluções agora e nos desafios a partir de amanhã. O Jornal avisa todo mundo." : "Os encontros, evoluções e desafios voltam a ser só da 1ª geração. Ninguém perde os Pokémon que já capturou.", on ? "Liberar" : "Desligar"))) return;
@@ -8181,9 +8214,10 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["desafio", "🎯 Desafio do dia"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
+  desafio: { desc_progressiva: "Descrição em partes (cada erro revela mais um pedaço); desligado = o verbete inteiro de uma vez" },
   treino: { on: "Grama de Treino aberta", minutos_dia: "Minutos por dia", visita_opcoes: "Opções de tempo por visita (minutos, separados por vírgula)",
     encontro_seg: "Segundos mínimos entre um encontro e outro", xp_mult: "Multiplicador de experiência (1 = normal)", nivel_menos: "Selvagem: até quantos níveis abaixo",
     nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
@@ -9546,6 +9580,10 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "sil-desc-2026-10-30", sql: "60", title: "🔍 Desafio mais difícil: Descrição e Silhueta", body: () => `Os modos Descrição e Silhueta ficaram mais justos e mais difíceis:
+• Descrição: cada Pokémon ganhou um verbete de Pokédex completo, em 4 partes. Você começa só com uma pista vaga, e cada erro revela mais um pedaço.
+• Silhueta: agora só chega ao seu aparelho o pedaço que está na tela. Nada de abrir a imagem em outra página para ver inteira!
+Boa sorte!` },
   { id: "grama-30-2026-10-29", sql: "58", title: "🌿 Grama de Treino: 30 minutos, lendários e amigos na grama", body: () => `Mudanças na Grama de Treino:
 • Agora são 30 minutos por dia.
 • Entrou, o tempo conta: se sair antes, o tempo que sobrou da visita é perdido.
@@ -9808,6 +9846,8 @@ function afterRender() {
   if (mm) mm.onchange = () => { $("#mk-venda").classList.toggle("hidden", mm.value !== "venda"); $("#mk-troca").classList.toggle("hidden", mm.value === "venda"); };
   if (W.needCenter && W.base) { centerMe(false); W.needCenter = false; }
 }
+document.addEventListener("contextmenu", e => { if (e.target.closest?.(".no-grab")) e.preventDefault(); });
+document.addEventListener("dragstart", e => { if (e.target.closest?.(".no-grab")) e.preventDefault(); });
 document.addEventListener("keydown", e => {
   if (e.key === "Enter" && e.target.matches?.("tr[data-act]")) { e.preventDefault(); e.target.click(); return; }
   if (e.key === "Escape" && S.win && !document.querySelector(".modal-bg")) { S.win = null; render(); }
