@@ -47,6 +47,7 @@ from (values
   ('67_herois_em_tudo',          exists (select 1 from pg_proc where proname = 'herois_cfg')),
   ('68_mapa_mais_casas',         to_regclass('public.board_next') is not null),
   ('69_creche_espera_centro_tempo', to_regclass('public.creche_pedidos') is not null),
+  ('70_treinadores_red', exists(select 1 from information_schema.columns where table_schema = 'public' and table_name = 'board_nodes' and column_name = 'npc')),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),

@@ -3817,9 +3817,12 @@ function hudTip() {
   const n = S.nodeById[S.tip.id]; if (!n) return "";
   if (S.boss?.active && S.boss.node === n.id) return `<div class="hud-card tip">${close}${bossBox(true)}</div>`;
   const k = KIND[n.kind], here = S.chars.filter(c => c.node === n.id);
+  if (n.kind === "treinador" && n.npc === "red") return `<div class="hud-card tip">${close}<span class="npc-tip"><img class="npc-ic" src="${redCanvas().toDataURL()}" alt=""><span><strong>🔴 Red, o treinador lendário</strong><br><span class="muted">em ${esc(n.region)}</span></span></span>
+      <p class="tip-p">Tem um time de <b>6 Pokémon dos níveis 73 a 81</b>. Todo mundo que passa por aqui (parando ou não) tem que enfrentá-lo. Dizem que ninguém vence… quem conseguir ganha <b>${S.cfg.casas?.red_premio ?? 1000} moedas</b>. Perder não tira nada.</p>
+      <p class="tip-p muted">Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p></div>`;
   if (n.kind === "treinador") { const t = npcAt(n.id), lv = npcTeamLevel();
     return `<div class="hud-card tip">${close}<span class="npc-tip">${npcImg(n.id)}<span><strong>🧢 ${esc(t.full)}</strong><br><span class="muted">${esc(t.title)} · em ${esc(n.region)}</span></span></span>
-      <p class="tip-p">Usa Pokémon do tipo <b>${t.types.map(x => esc(PK_TYPES[x]?.[0] || x)).join(" e ")}</b>${lv ? `, mais ou menos no nível <b>${lv}</b> (o da sua equipe)` : ", no nível da sua equipe"}. Quem parar aqui enfrenta essa batalha: vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
+      <p class="tip-p">Usa Pokémon do tipo <b>${t.types.map(x => esc(PK_TYPES[x]?.[0] || x)).join(" e ")}</b>${lv ? `, mais ou menos no nível <b>${lv}</b> (o da sua equipe)` : ", no nível da sua equipe"}. Quem passar por aqui (parando ou não) enfrenta essa batalha: vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
       <p class="tip-p muted">Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p></div>`; }
   return `<div class="hud-card tip">${close}<strong>${k.nome}</strong><span class="muted"> em ${esc(n.region)}</span>
     <p class="tip-p">${k.desc}${n.value ? ` (${n.value} casas)` : ""} Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p>
@@ -5308,7 +5311,8 @@ function LIB() {
       <li><b>HMs</b>: raras, nunca acabam e abrem atalhos no mapa (veja "HMs e atalhos").</li></ul>
       <p>Para ensinar, abra o Pokémon na coleção e toque em <b>📀 Ensinar TM/HM</b>. Na batalha, toque em <b>🎒 Bolsa</b>.</p>
       <p>Às vezes um baú (${ic.bau_pct}%) ou a Fonte das Bolas (${ic.fonte_pct}%) também dá um item.</p>` },
-    { id: "treinadores", ic: "🧢", t: "Treinadores e casas novas", h: `<p><b>Treinadores do mapa:</b> ficam em pé em algumas casas. Quem parar ali enfrenta uma batalha automática contra 3 Pokémon do tipo dele, no nível da sua equipe. Vencendo, ganha moedas e XP (e, com muita sorte, uma HM). Perdendo, não perde nada.</p>
+    { id: "treinadores", ic: "🧢", t: "Treinadores e casas novas", h: `<p><b>Treinadores são obrigatórios:</b> passou pela casa de um Treinador (parando nela ou não), tem que batalhar. Vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
+      <p>🔴 <b>Red, o treinador lendário</b>, fica no caminho perto do Castelo, com 6 Pokémon dos níveis 73 a 81. Todo mundo enfrenta… quem vencer ganha ${c.casas?.red_premio ?? 1000} moedas.</p><p><b>Treinadores do mapa:</b> ficam em pé em algumas casas. Quem parar ali enfrenta uma batalha automática contra 3 Pokémon do tipo dele, no nível da sua equipe. Vencendo, ganha moedas e XP (e, com muita sorte, uma HM). Perdendo, não perde nada.</p>
       <p><b>Mina de pedras</b>: chance de achar uma pedra de evolução. <b>Casa do Desafio</b>: quem acertou os 4 modos do dia ganha moedas e anda mais; quem não acertou volta casas. <b>Ladrão de estrada</b>: leva uma parte das suas moedas. <b>Fonte das Bolas</b>: dá uma Great Ball ou uma Ultra Ball.</p>
       <p>Na sua vila, a <b>Mina</b> também deixa cavar pedras uma vez por dia.</p>` },
     { id: "liga", ic: "🏆", t: "Temporada e Liga Pokémon", h: `<p>O <b>1º jogador que chega ao Castelo encerra a corrida</b>. Quem ainda não jogou naquele dia joga normalmente; quando a rodada do dia fecha (meia-noite), a corrida acaba. Os prêmios do Castelo vão pela posição: primeiro quem chegou, depois quem estava mais perto do Castelo.</p>
@@ -8331,6 +8335,7 @@ function grEndHTML(b) {
 const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
+  casas: { passar_luta: "Quem passa pela casa do Treinador também batalha", red_premio: "Prêmio de quem vencer o Red (moedas)" },
   herois: { guerreiro_dano_pct: "Guerreiro: % a mais de dano", mago_status_acc_pct: "Mago: % a mais de acerto em ataques de status", mago_forte_pct: "Mago: pontos a mais de chance de Pokémon forte na Grama",
     arqueiro_vel_pct: "Arqueiro: % a mais de velocidade", arqueiro_captura_pct: "Arqueiro: % a mais de chance de captura", ladino_taxa_pct: "Ladino: taxa no Leilão e no Mercado (%)",
     clerigo_centro_desc_pct: "Clérigo: desconto no Centro Pokémon (%)", clerigo_cura_horas: "Clérigo: horas para a cura grátis", domador_grama_xp_pct: "Domador: % a mais de experiência na Grama",
@@ -8717,6 +8722,7 @@ const NPC_TRAINERS = [
   { n: "Domador de Dragões", t: ["DRAGAO", "AGUA"], title: "Domador de dragões", hat: "#2B2118", shirt: "#3A5AA8", pants: "#1E2A48", acc: "capa" }];
 const NPC_FIRST = ["Zé", "Lia", "Beto", "Duda", "Rafa", "Nina", "Caio", "Malu", "Téo", "Bia", "Juca", "Gabi"];
 function npcAt(nodeId) {
+  if (S.nodeById?.[nodeId]?.npc === "red") return { n: "Red", t: [], types: [], title: "Treinador lendário", full: "★ Red ★" };
   const t = NPC_TRAINERS[nodeId % NPC_TRAINERS.length];
   return { ...t, types: t.t, full: `${t.n} ${NPC_FIRST[Math.floor(nodeId / NPC_TRAINERS.length) % NPC_FIRST.length]}` };
 }
@@ -8753,6 +8759,16 @@ function npcCanvas(nodeId) {
   if (t.acc !== "capa") for (const [x, y] of NPC_ACC[t.acc] || []) { g.fillStyle = NPC_ACC_COL[t.acc]; g.fillRect(x, y, 1, 1); }
   return npcCvCache[i] = cv;
 }
+let redCv = null;
+function redCanvas() {   // treinador lendário: arte própria do jogo
+  if (redCv) return redCv;
+  const pal = { h: "#F4F1EA", k: "#1B1626", s: "#F2C29B", e: "#1B1626", c: "#3A1F5C", d: "#1E1530" };
+  const cv = document.createElement("canvas"); cv.width = 14; cv.height = 16; const g = cv.getContext("2d");
+  for (const [x, y] of NPC_ACC.capa) { g.fillStyle = "#E0B44C"; g.fillRect(x, y, 1, 1); }
+  NPC_BODY.forEach((row, y) => [...row].forEach((ch, x) => { const col = pal[ch]; if (col) { g.fillStyle = col; g.fillRect(x, y, 1, 1); } }));
+  g.fillStyle = "#F5D547"; for (const [x, y] of [[3, 8], [8, 8], [5, 9], [6, 9], [4, 11], [7, 11]]) g.fillRect(x, y, 1, 1);   // detalhes dourados no casaco
+  return redCv = cv;
+}
 const npcImg = nodeId => `<img class="npc-ic" src="${npcCanvas(nodeId).toDataURL()}" alt="">`;
 function drawNpcTrainers(ctx) {
   if (!S.nodes) return;
@@ -8760,6 +8776,7 @@ function drawNpcTrainers(ctx) {
   ctx.imageSmoothingEnabled = false;
   for (const n of S.nodes) {
     if (n.kind !== "treinador") continue;
+    if (n.npc === "red") { drawRedTrainer(ctx, n); continue; }
     const f = worldToScreen(n.x + 16, n.y + 4), k = f.k || 1, sw = w * z * k, sh = h * z * k, x = f.x - sw / 2, y = f.y - sh;
     if (x + sw < -60 || x > W.w + 60 || y + sh < -60 || y > W.h + 60) continue;
     ctx.fillStyle = "rgba(0,0,0,.32)"; ctx.beginPath(); ctx.ellipse(f.x, f.y - 1 * z, sw * .4, 4 * z * k, 0, 0, Math.PI * 2); ctx.fill();
@@ -8774,6 +8791,29 @@ function drawNpcTrainers(ctx) {
     }
     W.hits.push({ x, y, w: sw, h: sh, npcNode: n.id });
   }
+}
+
+// o Red (arquivo 70): bem maior, brilhando, com aura dourada, para ser visto de longe
+function drawRedTrainer(ctx, n) {
+  const z = W.cam.z, px = 4.6, f = worldToScreen(n.x + 16, n.y + 4), k = f.k || 1, sw = 14 * px * z * k, sh = 16 * px * z * k, x = f.x - sw / 2, y = f.y - sh;
+  if (x + sw < -120 || x > W.w + 120 || y + sh < -120 || y > W.h + 120) return;
+  const t = reduceMotion() ? 0 : Date.now() / 1000, pulse = .75 + .25 * Math.sin(t * 2.4), cy = y + sh * .55, r = sh * 1.15 * (.88 + .12 * pulse);
+  const aura = ctx.createRadialGradient(f.x, cy, sh * .1, f.x, cy, r);
+  aura.addColorStop(0, `rgba(255,244,190,${.9 * pulse})`); aura.addColorStop(.45, `rgba(255,206,70,${.55 * pulse})`); aura.addColorStop(.8, `rgba(245,160,40,${.2 * pulse})`); aura.addColorStop(1, "rgba(245,197,66,0)");
+  ctx.fillStyle = aura; ctx.beginPath(); ctx.arc(f.x, cy, r, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = `rgba(255,215,80,${.5 + .4 * pulse})`; ctx.lineWidth = 2.5 * z * k; ctx.beginPath(); ctx.ellipse(f.x, f.y - 1 * z, sw * .7, 10 * z * k, 0, 0, Math.PI * 2); ctx.stroke();   // anel no chão
+  for (let i = 0; i < 6; i++) {   // brilhos girando
+    const a = t * 1.3 + i * Math.PI / 3, sx = f.x + Math.cos(a) * sw * .75, sy = cy + Math.sin(a) * sh * .5, sz = (2 + 2 * Math.abs(Math.sin(t * 3 + i))) * z * k;
+    ctx.fillStyle = "#FFF4B8"; ctx.fillRect(sx - sz / 2, sy - sz * 1.5, sz, sz * 3); ctx.fillRect(sx - sz * 1.5, sy - sz / 2, sz * 3, sz);
+  }
+  ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.beginPath(); ctx.ellipse(f.x, f.y - 1 * z, sw * .42, 6 * z * k, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(redCanvas(), Math.round(x), Math.round(y), Math.round(sw), Math.round(sh));
+  const bob = Math.sin(t * 3) * 3 * z;
+  ctx.font = `900 ${Math.max(14, 20 * z * k)}px Inter, system-ui, sans-serif`; ctx.textAlign = "center";
+  ctx.lineWidth = 4; ctx.strokeStyle = "#1B1626"; ctx.strokeText("!", f.x, y - 6 * z + bob); ctx.fillStyle = "#FF5A4A"; ctx.fillText("!", f.x, y - 6 * z + bob);
+  ctx.font = `900 ${Math.max(12, 14 * z * k)}px Inter, system-ui, sans-serif`;
+  ctx.lineWidth = 4; ctx.strokeStyle = "rgba(15,20,32,.9)"; ctx.strokeText("★ Red ★", f.x, y - 26 * z * k); ctx.shadowColor = "#FFD54A"; ctx.shadowBlur = 10; ctx.fillStyle = "#FFD54A"; ctx.fillText("★ Red ★", f.x, y - 26 * z * k); ctx.shadowBlur = 0;
+  W.hits.push({ x, y, w: sw, h: sh, npcNode: n.id });
 }
 
 // ---------- treinadores do jogo (arquivo 43): relato da luta, aberto do resultado do movimento ----------
@@ -9896,6 +9936,9 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "red-2026-11-03", sql: "70", title: "🔴 O Red apareceu, e treinador agora é obrigatório", body: () => `Dois avisos:
+• 🧢 Treinadores obrigatórios: passou pela casa de um Treinador, tem que batalhar com ele, parando na casa ou não. Vencer dá moedas; perder não tira nada.
+• 🔴 O Red, o treinador lendário, está no caminho perto do Castelo. Ele tem um time de níveis 73 a 81, e todo mundo vai ter que enfrentá-lo. Dizem que ninguém consegue vencer… quem conseguir ganha 1.000 moedas e fica famoso no Jornal!` },
   { id: "creche-espera-2026-11-03", sql: "69", title: "⏳ Creche com espera e Centro mais barato com o tempo", body: () => `Dois ajustes:
 • 🏡 Creche: você paga na hora, mas os níveis chegam aos poucos, 1 a cada 12 horas. O Pokémon continua jogando enquanto treina. Um treino por vez; se cancelar, as moedas dos níveis que ainda não chegaram voltam.
 • 🏥 Centro Pokémon: o preço da cura cai com o tempo. Logo depois do ferimento custa o preço cheio; na metade da espera, metade; e quando a cura grátis libera, não custa nada.` },
