@@ -84,7 +84,8 @@ console.log("\nBatalha (Guerreiro)");
 const mon = (await sys(`select public.npc_mon(6, 30) m`))[0].m, alvo = (await sys(`select public.npc_mon(10, 5) m`))[0].m;
 alvo.hp = alvo.maxhp = 9999;
 const st = u => ({ sides: [{ user: u, active: 0, mons: [{ ...mon, moves: [{ id: 33, pp: 35, max: 35 }] }] }, { user: H.mago, npc: true, active: 0, mons: [alvo] }] });
-const media = async u => { let t = 0, n = 0; for (let i = 0; i < 150; i++) { const s = (await sys(`select public.bt_use_move($1::jsonb, 0, 33, true) s`, [JSON.stringify(st(u))]))[0].s; const d = 9999 - s.sides[1].mons[0].hp; if (d > 0) { t += d; n++; } } return t / n; };
+// mediana (o golpe crítico dobra o dano e deixava a média sorteada demais)
+const media = async u => { const ds = []; for (let i = 0; i < 300; i++) { const s = (await sys(`select public.bt_use_move($1::jsonb, 0, 33, true) s`, [JSON.stringify(st(u))]))[0].s; const d = 9999 - s.sides[1].mons[0].hp; if (d > 0) ds.push(d); } ds.sort((a, b) => a - b); return ds[ds.length >> 1]; };
 const dG = await media(H.guerreiro), dM = await media(H.mago);
 check(`Guerreiro dá ~10% a mais de dano (${dG.toFixed(1)} contra ${dM.toFixed(1)})`, dG / dM > 1.05 && dG / dM < 1.2);
 const cfgA = (await sys(`select public.admin_cfg_efetiva() c`).catch(() => null));
