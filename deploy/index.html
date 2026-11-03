@@ -1625,6 +1625,7 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .ll-bid,.ll-create{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:8px}.ll-bid label,.ll-create label{width:100%;margin:0}
 .ll-bid input{max-width:140px}.ll-create select{max-width:260px}.ll-create input{max-width:140px}
 .hero-perk{font-size:12px;color:var(--gold-text);margin-top:4px}
+.cr-now{margin-bottom:10px;border-color:#C9A05A}
 .cr-box{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}.cr-mon{display:flex;gap:10px;align-items:center}
 .cr-ctl{flex:1;min-width:240px}.cr-n{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
 .tr-comp{margin:10px 0 4px;display:flex;flex-direction:column;gap:4px}.tr-comp select{max-width:320px}
@@ -5286,12 +5287,12 @@ function LIB() {
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
-      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.</p>
+      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.</p>
       <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
     { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
       <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
       <p>No fim, o Pokémon vai sozinho para quem deu o maior lance, e quem vendeu recebe as moedas, menos ${S.leilao?.st?.cfg?.taxa_pct ?? 5}% de taxa. Sem lance, nada muda.</p>` },
-    { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon <b>sobe de nível na hora</b>, pagando em moedas. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 10} moedas.</p>
+    { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon sobe de nível pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${S.creche?.st?.horas_por_nivel ?? 12} horas</b>, e um Pokémon por vez. Cancelando, as moedas dos níveis que ainda não chegaram voltam. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 10} moedas.</p>
       <p>Limite: ${S.creche?.st?.niveis_semana ?? 5} níveis por semana, somando todos os seus Pokémon, e só até o nível ${S.creche?.st?.nivel_max ?? 40}. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p>` },
     { id: "batalha", ic: "⚔️", t: "Batalhas Pokémon e Arena", h: `<p>Precisa de 3 Pokémon capturados. Entram os <b>3 primeiros da equipe</b>. Os dois escolhem a ação do turno em segredo (atacar, trocar ou usar um item) e o servidor resolve.</p>
       <p><b>Aposta:</b> quem desafia escolhe de ${bet[0]} a ${bet[1]} moedas. Quem vence leva tudo; empate devolve.</p>
@@ -5968,7 +5969,7 @@ function menuHTML() {
     sac: sacUnread() ? `<b class="mb red">${sacUnread()}</b>` : "",
     admin: S.isAdmin ? "" : null,
     leilao: S.leilao?.missing ? null : S.leilao?.st?.abertos?.length ? `<b class="mb live">${S.leilao.st.abertos.length}</b>` : "",
-    creche: S.creche?.missing ? null : S.creche?.st?.restante ? `<b class="mb">${S.creche.st.restante} nív.</b>` : "",
+    creche: S.creche?.missing ? null : S.creche?.st?.treino ? `<b class="mb live">⏳ ${S.creche.st.treino.entregues}/${S.creche.st.treino.niveis}</b>` : S.creche?.st?.restante ? `<b class="mb">${S.creche.st.restante} nív.</b>` : "",
     vila: "", loja: "", pkloja: "", mercado: "", equipe: "", regras: ""
   };
   const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
@@ -7927,7 +7928,7 @@ function viewCentro() {
   return `<div class="centro">
     <div class="ce-head"><p><b>🏥 Bem-vindo ao Centro Pokémon!</b></p>
       <p>Aqui você cura os Pokémon que se feriram na <b>Grama de Treino</b>. Pokémon ferido entra na próxima luta com a vida que sobrou, e o <b>desmaiado não pode treinar</b>.</p>
-      <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro.<br>
+      <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. <b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
          • <b>De graça:</b> espere <b>${st.gratis_horas} horas</b> depois do último ferimento e ele volta inteiro sozinho.</p>
       <p style="font-size:13px">A vida do treino só vale na Grama de Treino. Nas outras batalhas, seus Pokémon começam sempre com a vida cheia.</p></div>
     ${list.length ? `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px"><span>Você tem <b>${coins} moedas</b>.</span>
@@ -7936,7 +7937,7 @@ function viewCentro() {
         <div class="ce-info"><b>${esc(pkName(f.m.species_id))}</b> <span class="muted">Nv ${f.m.level}</span><br>
           ${f.tr_hp <= 0 ? `<span class="ko-tag">💤 Desmaiado</span>` : `${trHpBar(f.tr_hp)} <span>${f.tr_hp}% da vida</span>`}<br>
           <span class="muted" style="font-size:13px">De graça em ${hoursLeft(f.gratis_em)}</span></div>
-        <button class="btn small" data-act="ce-cure" data-v="${f.id}" ${coins >= f.preco ? "" : "disabled"}>Curar agora (${f.preco} moedas)</button></div>`).join("")}</div>`
+        <button class="btn small" data-act="ce-cure" data-v="${f.id}" ${coins >= f.preco ? "" : "disabled"}>Curar agora (${f.preco} moedas)</button>${f.preco_cheio && f.preco < f.preco_cheio ? `<small class="muted">preço cheio: ${f.preco_cheio}</small>` : ""}</div>`).join("")}</div>`
       : `<div class="pk-empty"><p><strong>Todos os seus Pokémon estão com a vida cheia. 💚</strong></p><p class="muted">Quando algum se ferir na Grama de Treino, ele aparece aqui.</p>
           <button class="btn" data-act="go" data-v="treino">🌿 Ir para a Grama de Treino</button></div>`}
   </div>`;
@@ -8337,7 +8338,7 @@ const AJ_LABELS = {
     pesq_comp_pct: "Pesquisador: % de experiência do acompanhante", merc_loja_desc_pct: "Mercador: desconto nas lojas (%)", merc_salario_pct: "Mercador: % a mais no salário", merc_leilao_taxa_pct: "Mercador: taxa no Leilão (%)" },
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
-  creche: { on: "Creche aberta", preco_por_nivel: "Preço: nível alcançado × este número", niveis_semana: "Níveis por semana (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina" },
+  creche: { on: "Creche aberta", preco_por_nivel: "Preço: nível alcançado × este número", niveis_semana: "Níveis por semana (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina", horas_por_nivel: "Horas para cada nível chegar" },
   desafio: { desc_progressiva: "Descrição em partes (cada erro revela mais um pedaço); desligado = o verbete inteiro de uma vez" },
   treino: { on: "Grama de Treino aberta", minutos_dia: "Minutos por dia", visita_opcoes: "Opções de tempo por visita (minutos, separados por vírgula)",
     encontro_seg: "Segundos mínimos entre um encontro e outro", xp_mult: "Multiplicador de experiência (1 = normal)", nivel_menos: "Selvagem: até quantos níveis abaixo",
@@ -8542,15 +8543,22 @@ function viewCreche() {
   const used = Math.round(st.usados / Math.max(1, st.niveis_semana) * 100);
   return `<div class="creche">
     <div class="ce-head" style="background:linear-gradient(180deg,#FFF3DC,#F2DDB6);border-color:#C9A05A;color:#3A2A12"><p><b style="color:#7A4A12">🏡 Bem-vindo à Creche Pokémon!</b></p>
-      <p>Aqui o seu Pokémon treina e <b>sobe de nível na hora</b>, pagando em moedas. Cada nível custa <b>o nível que ele vai alcançar × ${st.preco_por_nivel}</b> (do 10 para o 11: ${11 * st.preco_por_nivel} moedas).</p>
+      <p>Aqui o seu Pokémon treina e sobe de nível, pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${st.horas_por_nivel ?? 12} horas</b>. Enquanto isso, ele continua jogando normalmente. Cada nível custa <b>o nível que ele vai alcançar × ${st.preco_por_nivel}</b> (do 10 para o 11: ${11 * st.preco_por_nivel} moedas).</p>
       ${st.desconto_pct ? `<p>🐎 Domador: você paga ${st.desconto_pct}% a menos.</p>` : ""}<p>Limite: <b>${st.niveis_semana} níveis por semana</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
     <div class="tr-clock" style="margin-bottom:10px"><b>📅 Esta semana</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
       <span>${st.usados} de ${st.niveis_semana} níveis usados · ${st.restante ? `faltam ${st.restante}` : `renova em ${chatWhen(st.renova)}`}</span></div>
+    ${st.treino ? (() => { const t = st.treino, tm = S.pk.mons.find(x => x.id === t.mon_id);
+      return `<section class="panel lo cr-now"><h3>⏳ Treinando agora</h3>
+        <div class="cr-mon">${monCv(t.species, tm?.outfit || {}, 72)}<div><b>${esc(pkName(t.species))}</b> <span class="muted">do nível ${t.level_from} ao ${t.level_from + t.niveis}</span><br>
+          <b>${t.entregues} de ${t.niveis}</b> níveis entregues · próximo em <b>${chatWhen(t.proximo_em)}</b> · termina em ${chatWhen(t.termina_em)}</div></div>
+        <span class="tr-bar" aria-hidden="true" style="display:block;margin:8px 0"><i style="width:${Math.round(t.entregues / t.niveis * 100)}%"></i></span>
+        <button class="btn ghost small" data-act="cr-cancel">Cancelar o treino (devolve ${t.devolve} moedas)</button>
+        <p class="muted" style="margin:6px 0 0">A Creche treina um Pokémon por vez. Quando este terminar, você pode começar outro.</p></section>`; })() : ""}
     <section class="panel lo cr-box">
       <div class="cr-mon">${monCv(m.species_id, m.outfit, 96)}<div><b>${esc(pkName(m.species_id))}</b><br><span class="muted">Nível ${m.level}</span></div></div>
-      ${maxN ? `<div class="cr-ctl"><label for="cr-n">Quantos níveis?</label>
+      ${st.treino ? `<p class="muted">Espere o treino de agora terminar (ou cancele) para começar outro.</p>` : maxN ? `<div class="cr-ctl"><label for="cr-n">Quantos níveis?</label>
           <div class="cr-n">${Array.from({ length: maxN }, (_, i) => i + 1).map(k => `<button class="btn ${k === n ? "" : "ghost"} small" data-act="cr-n" data-v="${k}">+${k}</button>`).join("")}</div>
-          <p>Nível ${m.level} → <b>${m.level + n}</b> · custa <b>${custo} moedas</b> (você tem ${coins}).${evo ? ` <br>✨ Vai chegar ao nível de evoluir para <b>${esc(pkName(evo.to_id))}</b>!` : ""}</p>
+          <p>Nível ${m.level} → <b>${m.level + n}</b> · custa <b>${custo} moedas</b> (você tem ${coins}) · fica pronto em <b>${n * (st.horas_por_nivel ?? 12)} horas</b>.${evo ? ` <br>✨ Vai chegar ao nível de evoluir para <b>${esc(pkName(evo.to_id))}</b>!` : ""}</p>
           <button class="btn big" data-act="cr-go" ${coins >= custo ? "" : "disabled"}>🏡 Treinar na Creche (${custo} moedas)</button></div>`
         : `<p class="muted">${m.level >= st.nivel_max ? `Esse Pokémon já está no nível ${st.nivel_max} ou acima: a Creche não treina mais.` : `Os níveis desta semana acabaram. Renova em ${chatWhen(st.renova)}.`}</p>`}
     </section>
@@ -8560,15 +8568,21 @@ function viewCreche() {
     ${st.historico?.length ? `<h3 style="margin-top:14px">Últimos treinos</h3><ul class="tr-hist">${st.historico.map(h => `<li>🏡 ${esc(pkName(h.species))} do nível ${h.level_from} ao ${h.level_to} · ${h.custo} moedas<time style="margin-left:auto" class="muted">${ago(h.created_at)}</time></li>`).join("")}</ul>` : ""}
   </div>`;
 }
+ACTIONS["cr-cancel"] = async () => {
+  const t = S.creche.st?.treino; if (!t) return;
+  if (!await confirmModal("Cancelar o treino?", `Os níveis que já chegaram ficam. Os ${t.niveis - t.entregues} que faltam não chegam, e você recebe ${t.devolve} moedas de volta.`, "Cancelar o treino")) return;
+  guarded(async () => { const r = await rpc("creche_cancelar"); toast(`🏡 Treino cancelado: ${r.devolvido} moedas de volta.`); await Promise.all([refreshMe(), loadPk(), loadCreche()]); render(); if ($("#game")) renderHUD(); });
+};
 ACTIONS["cr-sel"] = v => { S.creche.sel = v; S.creche.n = 1; render(); };
 ACTIONS["cr-n"] = v => { S.creche.n = +v; render(); };
 ACTIONS["cr-go"] = async () => {
   const C = S.creche, m = S.pk.mons.find(x => x.id === C.sel); if (!m) return;
   const n = C.n || 1, custo = Math.ceil(crechePreco(m.level, n, C.st.preco_por_nivel) * (100 - (C.st.desconto_pct || 0)) / 100);
-  if (!await confirmModal("Treinar na Creche?", `${pkName(m.species_id)} vai do nível ${m.level} ao ${m.level + n} por ${custo} moedas.`, `Treinar por ${custo}`)) return;
+  const hs = C.st.horas_por_nivel ?? 12;
+  if (!await confirmModal("Treinar na Creche?", `${pkName(m.species_id)} vai do nível ${m.level} ao ${m.level + n} por ${custo} moedas, pagos agora. Os níveis chegam aos poucos: 1 a cada ${hs} horas (tudo pronto em ${n * hs} horas).`, `Treinar por ${custo}`)) return;
   guarded(async () => {
     const r = await rpc("creche_treinar", { _mon: m.id, _niveis: n });
-    sfx("acerto"); toast(`🏡 ${pkName(m.species_id)} chegou ao nível ${r.level}!`);
+    sfx("acerto"); toast(`🏡 ${pkName(m.species_id)} está na Creche! O 1º nível chega em ${hs} horas.`);
     if (S.me) S.me.coins = r.coins;
     C.n = 1; await Promise.all([loadPk(), loadCreche()]); render(); if ($("#game")) renderHUD();
     if (r.events?.length) await monEventsFlow(r.events);
@@ -9882,6 +9896,9 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "creche-espera-2026-11-03", sql: "69", title: "⏳ Creche com espera e Centro mais barato com o tempo", body: () => `Dois ajustes:
+• 🏡 Creche: você paga na hora, mas os níveis chegam aos poucos, 1 a cada 12 horas. O Pokémon continua jogando enquanto treina. Um treino por vez; se cancelar, as moedas dos níveis que ainda não chegaram voltam.
+• 🏥 Centro Pokémon: o preço da cura cai com o tempo. Logo depois do ferimento custa o preço cheio; na metade da espera, metade; e quando a cura grátis libera, não custa nada.` },
   { id: "herois-2026-11-03", sql: "67", title: "🛡️ Heróis mais fortes em tudo + 2 heróis novos", body: () => `Os heróis agora fazem diferença no jogo inteiro, não só no tabuleiro:
 • ⚔️ Guerreiro: +10% de dano nas batalhas Pokémon.
 • 🔮 Mago: ataques de status acertam mais; na Grama, aparece mais Pokémon forte.

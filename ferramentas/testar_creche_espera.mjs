@@ -1,0 +1,65 @@
+// Testa o arquivo 69 (Creche com espera e Centro com preço que cai com o tempo) com dados de TESTE, como jogadores comuns.
+// Uso (na pasta ferramentas, uma vez: npm install):  node testar_creche_espera.mjs ..
+import { PGlite } from "@electric-sql/pglite";
+import { citext } from "@electric-sql/pglite/contrib/citext";
+import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
+import fs from "fs"; import path from "path";
+const root = process.argv[2];
+const db = new PGlite({ extensions: { citext, pgcrypto } });
+await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
+for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort()) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+let ok = 0, fail = 0;
+const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
+const sys = async (q, p = []) => (await db.query(q, p)).rows;
+const as = async (uid, q, p = []) => { await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${uid}', false);`); try { return { rows: (await db.query(q, p)).rows }; } catch (e) { return { error: e.message }; } finally { await db.exec("reset role;"); } };
+const A = "11111111-1111-1111-1111-111111111111";
+await sys(`insert into auth.users(id, email, raw_user_meta_data) values ($1, 'a@t.l', '{"username":"Ana"}')`, [A]); await as(A, `select public.create_character('Ana', 'mago')`);
+await sys(`update characters set coins = 10000`);
+const newMon = async (sp, lv) => (await sys(`select (public.pk_new_monster($1, $2, $3)).id id`, [A, sp, lv]))[0].id;
+const lvl = async id => (await sys(`select level from monsters where id = $1`, [id]))[0]?.level;
+const coins = async () => (await sys(`select coins from characters where user_id = $1`, [A]))[0].coins;
+const est = async () => (await as(A, `select public.creche_estado() s`)).rows[0].s;
+const passa = h => sys(`update creche_pedidos set created_at = created_at - make_interval(hours => $1)`, [h]);
+
+console.log("\nCreche com espera");
+const ch = await newMon(4, 13);
+let c0 = await coins(), r = await as(A, `select public.creche_treinar($1, 3) x`, [ch]);
+check("paga na hora (14+15+16 = 450) e o nível não muda ainda", !r.error && c0 - (await coins()) === 450 && (await lvl(ch)) === 13, r.error);
+let st = await est();
+check("o estado mostra o treino: 0 de 3, próximo nível em 12 h", st.treino?.entregues === 0 && st.treino.niveis === 3 && Math.abs(new Date(st.treino.proximo_em) - Date.now() - 12 * 36e5) < 6e4, JSON.stringify(st.treino));
+check("só um treino por vez", /já está treinando/.test((await as(A, `select public.creche_treinar($1, 1)`, [await newMon(1, 5)])).error || ""));
+await passa(13); st = await est();
+check("12 h depois chega 1 nível", (await lvl(ch)) === 14 && st.treino.entregues === 1);
+await passa(24); st = await est();
+check("36 h depois chegaram os 3 (nível 16) e o treino termina", (await lvl(ch)) === 16 && st.treino === null);
+check("ao chegar no nível de evoluir, avisa (evento de evolução)", (await sys(`select count(*)::int n from mon_events where mon_id = $1 and kind = 'evolucao'`, [ch]))[0].n === 1);
+
+console.log("\nCancelar e Pokémon que sai");
+await sys(`delete from creche_log`);
+const sq = await newMon(7, 10);
+await as(A, `select public.creche_treinar($1, 2)`, [sq]);
+await passa(13); await est();
+c0 = await coins(); r = await as(A, `select public.creche_cancelar() x`);
+check("cancelar depois de 1 nível devolve o preço do 2º (120)", !r.error && r.rows[0].x.devolvido === 120 && (await coins()) - c0 === 120 && (await lvl(sq)) === 11, r.error);
+const bu = await newMon(1, 5);
+await as(A, `select public.creche_treinar($1, 2)`, [bu]); c0 = await coins();
+await as(A, `select public.mon_release($1)`, [bu]); await est();
+check("se o Pokémon sai da coleção, o treino acaba e tudo volta (6×10 + 7×10 = 130)", (await coins()) - c0 === 130 && (await est()).treino === null);
+await sys(`delete from creche_log`);
+await as(A, `select public.creche_treinar($1, 1)`, [sq]); await passa(13);
+await sys(`update game_config set config = jsonb_set(config, '{pk_start_at}', to_jsonb(now() - interval '1 minute')) where active`);
+await as(A, `select public.pk_sync()`);
+check("o nível também chega depois de andar (pk_sync), sem abrir a Creche", (await lvl(sq)) === 12);
+check("o limite da semana conta na hora de pagar", /no máximo 5 níveis/.test((await as(A, `select public.creche_treinar($1, 5)`, [sq])).error || ""));
+
+console.log("\nCentro com preço que cai");
+const cm = await newMon(7, 20);
+const preco = async h => { await sys(`update monsters set tr_hp = 0, tr_hurt_at = now() - make_interval(secs => $2) where id = $1`, [cm, Math.round(h * 3600)]); return (await as(A, `select public.treino_estado() s`)).rows[0].s.feridos.find(f => f.id === cm)?.preco; };
+check("logo depois do ferimento: preço cheio (60)", (await preco(0)) === 60);
+check("na metade da espera (36 de 72 h): metade (30)", (await preco(36)) === 30);
+check("faltando 7,2 h (10%): 6 moedas", (await preco(64.8)) === 6);
+c0 = await coins(); await preco(54); await as(A, `select public.centro_curar()`);
+check("curar paga o preço do momento (faltando 18 h: 15)", c0 - (await coins()) === 15);
+check("a novidade está no Jornal", (await sys(`select count(*)::int n from posts where title like '⏳ Creche com espera%'`))[0].n === 1);
+console.log(`\n${ok} testes passaram, ${fail} falharam.`);
+process.exit(fail ? 1 : 0);
