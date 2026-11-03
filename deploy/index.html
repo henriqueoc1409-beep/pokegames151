@@ -1589,6 +1589,9 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .aw-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03)}.aw-card h4{margin:0 0 2px}.aw-card ol{list-style:none;padding:0;margin:8px 0 0}
 .aw-card li{margin:3px 0}.aw-card li.me{color:#FFE7A0}.aw-last{display:flex;flex-wrap:wrap;gap:6px}
 .qz-prize-box{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:8px 12px 12px}.qz-prize-box legend{font-weight:700;padding:0 6px}.qz-prize-box details{margin-top:8px}.qz-prize-box summary{cursor:pointer}
+.qz-sum{cursor:pointer;display:flex;gap:10px;align-items:center;flex-wrap:wrap;list-style-position:inside}
+.qz-card[open] .qz-sum{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.qz-sum-w{font-weight:700}.qz-top summary{cursor:pointer;margin-top:10px}.qz-top ol{margin:6px 0 0}
 .hunt-pop{max-width:520px}
 .tr-field{position:relative;border-radius:14px;padding:14px;margin-bottom:12px;overflow:hidden;
   background:linear-gradient(180deg,#3E7A3A 0%,#2F6A2F 60%,#24561F 100%);border:2px solid #1C4318;color:#F4F8E8}
@@ -9111,6 +9114,19 @@ function quizAlert() {
   return "";
 }
 function qzModal(html) { const m = openModal(`<div class="qz">${html}</div>`); m.querySelector(".modal").classList.add("modal-quiz"); return m; }
+document.addEventListener("toggle", e => { const d = e.target; if (d.matches?.("details[data-qz]") && S.qzF) S.qzF.open[d.dataset.qz] = d.open; }, true);
+document.addEventListener("input", e => {
+  if (e.target.id !== "qzf-q" || !S.qzF) return;
+  S.qzF.q = e.target.value; clearTimeout(S.qzF.t);
+  S.qzF.t = setTimeout(() => { render(); const q = $("#qzf-q"); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }, 250);
+});
+document.addEventListener("change", e => {
+  if (!S.qzF) return;
+  if (e.target.id === "qzf-st") { S.qzF.st = e.target.value; render(); }
+  if (e.target.id === "qzf-w") { S.qzF.w = e.target.value; render(); }
+});
+ACTIONS["qzf-all"] = v => { if (!S.qzF) return; (S.qzAdm || []).forEach(q => { S.qzF.open[q.id] = v === "1"; }); render(); };
+ACTIONS["qzf-clear"] = () => { if (S.qzF) Object.assign(S.qzF, { q: "", st: "", w: "" }); render(); };
 function qzWhen(t) { const h = Math.max(0, Math.round((new Date(t) - Date.now()) / 3600000)); return h >= 1 ? `em ${h} h` : "em menos de 1 h"; }
 // force = aberto pelo botão (mostra também "já respondeu" e "perdeu o tempo")
 async function quizPopup(force) {
@@ -9213,9 +9229,33 @@ async function loadQuizAdmin() {
 function adminQuizView() {
   if (S.qzAdm === false) return `<p>Precisa do arquivo <code>38_quiz_surpresa.sql</code> rodado no Supabase.</p>`;
   const L = S.qzAdm || [], open = L.find(q => q.status === "aberto");
+  // filtro e cartões fechados (pedido do dono em 03/11/2026): cada quiz abre com um clique
+  const F = S.qzF || (S.qzF = { q: "", st: "", w: "", open: {} });
+  const fdate = t => t ? new Date(t).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "";
+  const winners = [...new Map(L.filter(q => q.winner).map(q => [q.winner, charName(q.winner)])).entries()].sort((a, b) => a[1].localeCompare(b[1], "pt-BR"));
+  const nq = norm(F.q || "");
+  const shown = L.filter(q => (!F.st || q.status === F.st) && (!F.w || (F.w === "_sem" ? !q.winner : q.winner === F.w))
+    && (!nq || norm(`${q.title} ${q.question} ${q.winner ? charName(q.winner) : ""} ${(q.entries || []).map(e => e.name).join(" ")}`).includes(nq)));
+  const wins = {}; L.forEach(q => { if (q.winner) wins[q.winner] = (wins[q.winner] || 0) + 1; });
+  const top = Object.entries(wins).sort((a, b) => b[1] - a[1]);
+  const filters = `<section class="panel lo qz-filters"><h3>📋 Quizzes (${L.length})</h3>
+    <div class="qz-grid">
+      <label>Buscar (título, pergunta ou jogador)<input id="qzf-q" type="search" value="${esc(F.q)}" placeholder="Ex.: Pokédex, Obyna…"></label>
+      <label>Situação<select id="qzf-st"><option value="">Todos</option><option value="aberto" ${F.st === "aberto" ? "selected" : ""}>Abertos</option><option value="encerrado" ${F.st === "encerrado" ? "selected" : ""}>Encerrados</option></select></label>
+      <label>Vencedor<select id="qzf-w"><option value="">Todos</option><option value="_sem" ${F.w === "_sem" ? "selected" : ""}>Sem vencedor</option>${winners.map(([id, n]) => `<option value="${id}" ${F.w === id ? "selected" : ""}>${esc(n)} (${wins[id]})</option>`).join("")}</select></label>
+    </div>
+    <div class="qz-actions" style="justify-content:flex-start;margin-top:8px"><span class="muted">Mostrando ${shown.length} de ${L.length}.</span>
+      <button class="btn ghost small" data-act="qzf-all" data-v="1">Abrir todos</button><button class="btn ghost small" data-act="qzf-all" data-v="0">Fechar todos</button>
+      ${F.q || F.st || F.w ? `<button class="btn ghost small" data-act="qzf-clear">Limpar filtro</button>` : ""}</div>
+    ${top.length ? `<details class="qz-top"><summary>🏆 Quem mais ganhou quiz (todos os da lista)</summary><ol>${top.map(([id, n]) => `<li><b>${esc(charName(id))}</b> · ${n} ${n === 1 ? "vitória" : "vitórias"}</li>`).join("")}</ol></details>` : ""}</section>`;
   const card = q => {
     const E = q.entries || [], answered = E.filter(e => e.guess != null);
-    return `<section class="panel lo qz-card"><h3>${esc(q.title)} ${q.status === "aberto" ? `<span class="tag ok">aberto · fecha ${qzWhen(q.closes_at)}</span>` : `<span class="tag">encerrado</span>`}</h3>
+    const isOpen = F.open[q.id] ?? q.status === "aberto";
+    return `<details class="panel lo qz-card" data-qz="${q.id}" ${isOpen ? "open" : ""}><summary class="qz-sum"><b>${esc(q.title)}</b>
+        ${q.status === "aberto" ? `<span class="tag ok">aberto · fecha ${qzWhen(q.closes_at)}</span>` : `<span class="tag">encerrado ${fdate(q.closed_at || q.closes_at)}</span>`}
+        <span class="qz-sum-w">${q.winner ? `🥇 ${esc(charName(q.winner))}` : q.status === "aberto" ? "" : "sem vencedor"}</span>
+        <span class="muted">${answered.length} ${answered.length === 1 ? "resposta" : "respostas"}</span></summary>
+      <h3>${esc(q.title)} ${q.status === "aberto" ? `<span class="tag ok">aberto · fecha ${qzWhen(q.closes_at)}</span>` : `<span class="tag">encerrado</span>`}</h3>
       <p><b>Pergunta:</b> ${esc(q.question)}<br><b>Resposta certa:</b> ${qzNum(q.answer)} · <b>Tempo:</b> ${q.seconds} s${q.prize ? ` · <b>Prêmio:</b> ${esc(q.prize)}` : ""}</p>
       <p class="muted">${answered.length} responderam · ${E.length - answered.length} revelaram e não responderam a tempo · ${q.total} jogadores ativos</p>
       ${answered.length ? `<div class="table-scroll"><table class="list"><thead><tr><th>#</th><th>Jogador</th><th>Palpite</th><th>Diferença</th></tr></thead><tbody>
@@ -9223,7 +9263,7 @@ function adminQuizView() {
       <div class="qz-actions" style="justify-content:flex-start;margin-top:10px">
         ${q.status === "aberto" ? `<button class="btn small" data-act="adq-close" data-v="${q.id}">Encerrar agora</button>` : ""}
         ${q.winner ? (q.prize_given_at ? `<span class="tag ok">✅ Prêmio entregue sozinho a ${esc(charName(q.winner))}</span>` : `<button class="btn small" data-act="adq-prize" data-v="${q.id}">🎁 Dar o prêmio a ${esc(charName(q.winner))}</button>`) : ""}
-        <button class="btn ghost small" data-act="adq-del" data-v="${q.id}">Apagar</button></div></section>`;
+        <button class="btn ghost small" data-act="adq-del" data-v="${q.id}">Apagar</button></div></details>`;
   };
   return `<div class="qz-adm">
     ${open ? `<div class="sac-link"><span>🔗 Link do quiz para mandar no WhatsApp: <code>${esc(quizLink())}</code></span><button class="btn small" data-act="quiz-copy">Copiar link</button></div>
@@ -9249,7 +9289,8 @@ function adminQuizView() {
           <details><summary>Bolas, pedras e itens da bolsa</summary><div class="cx-items">${giftBagOptions().map(([k, n]) => `<label class="check cx-off"><input type="number" name="qz-bag" min="0" max="99" value="0" data-id="${k}" data-n="${esc(n)}" aria-label="Quantas ${esc(n)}"> ${esc(n)}</label>`).join("")}</div></details>
         </fieldset>
         <div style="margin-top:12px"><button class="btn">Publicar quiz</button></div></form></section>`}
-    ${L.map(card).join("") || `<p class="muted">Nenhum quiz ainda.</p>`}
+    ${L.length ? filters : ""}
+    ${shown.map(card).join("") || `<p class="muted">${L.length ? "Nenhum quiz com esse filtro." : "Nenhum quiz ainda."}</p>`}
     <p class="muted" style="font-size:12px">O quiz fecha sozinho quando todos os jogadores ativos participarem ou no prazo. Com prêmio escolhido no formulário, o vencedor recebe sozinho na hora. Sem prêmio escolhido, use o botão "Dar o prêmio", que abre a aba Presentes já com o vencedor.</p></div>`;
 }
 document.addEventListener("submit", e => {
