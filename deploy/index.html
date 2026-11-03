@@ -5362,7 +5362,7 @@ function LIB() {
       <p>Lá dentro, ande com o seu personagem (<b>WASD ou as setas</b> no computador; botões na tela no celular). Na <b>grama alta</b> aparecem Pokémon selvagens do nível do seu, e <b>você comanda a batalha</b>: ataques, itens da bolsa ou fugir. Vencendo, ganha experiência; perdendo, não ganha nada.</p>
       <p>⏱️ São <b>${S.treino?.st?.minutos_dia ?? 30} minutos por dia</b>. Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. Se o tempo acabar no meio de uma luta, você termina a luta. O relógio zera à meia-noite.</p>
       <p>🐦 Pokémon selvagens passeiam pela grama só de enfeite, e quem estiver na grama ao mesmo tempo que você aparece andando por lá.</p>
-      <p>🎒 <b>Acompanhante:</b> antes de entrar, escolha outro Pokémon seu para ir na bolsa. A cada vitória, ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência. Ótimo para quem não tem ataque de dano, como o Magikarp.</p>
+      <p>🎒 <b>Acompanhante:</b> antes de entrar, escolha outro Pokémon seu, com vida, para ir na bolsa. A cada vitória, ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência. Ótimo para quem não tem ataque de dano, como o Magikarp.</p>
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
@@ -8133,7 +8133,7 @@ function viewTreino() {
     <p class="muted">Hoje: ${st.lutas} ${st.lutas === 1 ? "luta" : "lutas"}, ${st.vitorias} ${st.vitorias === 1 ? "vitória" : "vitórias"}, ${st.xp} de experiência.
       ⚠️ Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. A vida que o Pokémon perde fica para a próxima luta (só no treino): desmaiou, Centro Pokémon (pago) ou ${st.gratis_horas} horas de espera (grátis).</p>
     ${mons.length > 1 ? `<div class="tr-comp"><label for="tr-comp">🎒 Acompanhante: fica na bolsa e ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de cada vitória (bom para o Magikarp e quem não dá dano)</label>
-      <select id="tr-comp"><option value="">Nenhum</option>${mons.filter(x => x.id !== m.id).map(x => `<option value="${x.id}" ${S.treino.comp === x.id ? "selected" : ""}>${esc(pkName(x.species_id))} (Nv ${x.level})</option>`).join("")}</select></div>` : ""}
+      <select id="tr-comp"><option value="">Nenhum</option>${mons.filter(x => x.id !== m.id).map(x => { const dead = treinoHpOf(x) <= 0; return `<option value="${x.id}" ${S.treino.comp === x.id && !dead ? "selected" : ""} ${dead ? "disabled" : ""}>${esc(pkName(x.species_id))} (Nv ${x.level})${dead ? " · 💤 desmaiado" : ""}</option>`; }).join("")}</select></div>` : ""}
     <h3>Quem vai treinar?</h3>
     <div class="tr-pick">${mons.map(x => { const h = treinoHpOf(x); return `<button class="mon-card ${x.id === m.id ? "sel" : ""} ${h <= 0 ? "ko" : ""}" data-act="tr-sel" data-v="${x.id}" aria-pressed="${x.id === m.id}">
       ${monCv(x.species_id, x.outfit, 72)}<span class="mc-name">${esc(pkName(x.species_id))}${x.team_slot ? `<i class="team-badge" title="Na equipe">${x.team_slot}</i>` : ""}</span><span class="mc-lv">Nv ${x.level}</span>
@@ -8496,7 +8496,9 @@ async function grEncounter() {
   if (treinoHpOf(m) <= 0) { $("#gr-hint").textContent = `💤 ${pkName(m.species_id)} está desmaiado: escolha outro Pokémon lá em cima.`; return; }
   GR.busy = true; GR.keys.clear(); GR.lastEnc = Date.now();
   let r;
-  const comp = S.treino.comp && S.treino.comp !== m.id ? S.treino.comp : null;
+  const cm = S.treino.comp && S.treino.comp !== m.id ? treinoMons().find(x => x.id === S.treino.comp) : null;
+  const comp = cm && treinoHpOf(cm) > 0 ? cm.id : null;   // acompanhante desmaiado não vai junto
+  if (S.treino.comp && !comp) S.treino.comp = null;
   try { r = await rpc("treino_encontro", comp ? { _mon: m.id, _comp: comp } : { _mon: m.id }); }
   catch (e) { GR.busy = false; const t = errMsg(e); if (!/continue andando/.test(t)) toast(t, true); return; }
   if (r?.lendario) return grLegend(r.lendario);
@@ -10156,6 +10158,7 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "acompanhante-vivo-2026-11-03", sql: "72", title: "🎒 Acompanhante só com vida", body: () => `Na Grama de Treino, o Pokémon acompanhante agora precisa estar com vida, como o que luta. Pokémon desmaiado não pode ir junto: leve ao Centro Pokémon ou espere a cura grátis.` },
   { id: "liga-festa-2026-11-03", sql: "71", title: "🏟️ Festa da Liga: Estádio, chaveamento e troca de herói grátis", body: () => `A Liga ficou com cara de final de campeonato:
 • 🎆 Quando a Liga começa, todo mundo vê a abertura com os confrontos da primeira fase.
 • 🏟️ O Estádio da Liga apareceu ao lado do Castelo. Durante a Liga, todos os treinadores ficam lá, e um toque abre o chaveamento: quem enfrenta quem, fase por fase.

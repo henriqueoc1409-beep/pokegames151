@@ -1,6 +1,6 @@
 // Testa o arquivo 63 (acompanhante na Grama de Treino) com dados de TESTE, como jogadores comuns:
 // o acompanhante ganha metade da experiência de cada vitória, só Pokémon do próprio jogador, não pode ser o mesmo
-// que luta, sem acompanhante nada muda, a porcentagem vem dos Ajustes, novidade no Jornal.
+// que luta, desmaiado não vai junto (arquivo 72), sem acompanhante nada muda, a porcentagem vem dos Ajustes, novidade no Jornal.
 // Uso (na pasta ferramentas, uma vez: npm install):  node testar_acompanhante.mjs ..
 import { PGlite } from "@electric-sql/pglite";
 import { citext } from "@electric-sql/pglite/contrib/citext";
@@ -40,6 +40,8 @@ await as(A, `select public.treino_entrar(10)`);
 console.log("\nAcompanhante");
 check("não pode ser o mesmo Pokémon que luta", /outro Pokémon seu/.test((await as(A, `select public.treino_encontro($1, $1)`, [lutador])).error || ""));
 check("não pode ser Pokémon de outro jogador", /outro Pokémon seu/.test((await as(A, `select public.treino_encontro($1, $2)`, [lutador, alheio])).error || ""));
+await sys(`update monsters set tr_hp = 0, tr_hurt_at = now() where id = $1`, [karp]); await cool();
+check("acompanhante desmaiado não vai junto (arquivo 72)", /acompanhante .* está desmaiado/.test((await as(A, `select public.treino_encontro($1, $2)`, [lutador, karp])).error || ""));
 let won = null;
 for (let k = 0; k < 12 && !won; k++) {
   const x0 = (await mon(karp)).exp, t = await luta(karp);
