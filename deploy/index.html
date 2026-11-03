@@ -1617,6 +1617,8 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .aw-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03)}.aw-card h4{margin:0 0 2px}.aw-card ol{list-style:none;padding:0;margin:8px 0 0}
 .aw-card li{margin:3px 0}.aw-card li.me{color:#FFE7A0}.aw-last{display:flex;flex-wrap:wrap;gap:6px}
 .qz-prize-box{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:8px 12px 12px}.qz-prize-box legend{font-weight:700;padding:0 6px}.qz-prize-box details{margin-top:8px}.qz-prize-box summary{cursor:pointer}
+.tr-comp{margin:10px 0 4px;display:flex;flex-direction:column;gap:4px}.tr-comp select{max-width:320px}
+.gr-comp{font-size:12px;font-weight:700;white-space:nowrap}
 .qz-sum{cursor:pointer;display:flex;gap:10px;align-items:center;flex-wrap:wrap;list-style-position:inside}
 .qz-card[open] .qz-sum{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
 .qz-sum-w{font-weight:700}.qz-top summary{cursor:pointer;margin-top:10px}.qz-top ol{margin:6px 0 0}
@@ -4288,7 +4290,7 @@ function jornalHTML(rep) {
     const w = R[0];
     parts.push(`<div class="jn-head"><span class="jn-kicker">Campeão do dia</span><h3>${pick([
       `${esc(w.name)} amassou a rodada!`, `${esc(w.name)} é o(a) brabo(a) do dia`, `Respeitem ${esc(w.name)}`, `${esc(w.name)} não deixou nem as migalhas`], sd)}</h3>
-      <p>${nm(w)} venceu a rodada de ${d} com <span class="num">${w.attempts}</span> tentativas e ganhou uma estátua de ouro na vila. ${pick(["O resto do grupo só assistiu.", "Pode cobrar ingresso pra visitar a vila agora.", "Isso foi uma aula.", "Alguém chama o Professor Carvalho para estudar esse cérebro."], sd + 1)}</p></div>`);
+      <p>${nm(w)} venceu a rodada de ${d} com <span class="num">${w.attempts}</span> tentativas e ganhou mais um troféu (🏆) na vila. ${pick(["O resto do grupo só assistiu.", "Pode cobrar ingresso pra visitar a vila agora.", "Isso foi uma aula.", "Alguém chama o Professor Carvalho para estudar esse cérebro."], sd + 1)}</p></div>`);
     const ace = R.filter(r => r.first_try >= 3);
     if (ace.length) parts.push(`<p>🎯 ${list(ace)} ${ace.length > 1 ? "acertaram" : "acertou"} três ou mais desafios <strong>de primeira</strong>. ${pick(["Máquina.", "Isso tem nome: talento.", "Leu a mente do Pokémon.", "Pokédex ambulante."], sd + 2)}</p>`);
     const zero = R.filter(r => r.solved === 0);
@@ -4978,9 +4980,7 @@ function drawVila(cv, v) {
   // base e estátuas
   if (v.castles > 0) { drawSprite(g, { s: 9, rows: CASTLE, pal: { x: "#E8E0C8" } }, 392, 150); label(`Castelo da Liga${v.castles > 1 ? ` x${v.castles}` : ""}`, 460, 238); }
   else { drawSprite(g, VSPR.tent, 418, 180); label("Barraca", 456, 236); }
-  const spots = [[330, 230], [560, 230], [300, 330], [590, 330], [360, 380], [520, 380], [280, 180], [610, 180]];
-  for (let i = 0; i < Math.min(v.statues, spots.length); i++) drawSprite(g, VSPR.statue, spots[i][0], spots[i][1]);
-  if (v.statues > spots.length) label(`+${v.statues - spots.length} estátuas`, 460, 270);
+  // as estátuas de ouro saíram do desenho (pedido do dono em 03/11/2026); as vitórias seguem contadas no painel (🏆)
   // construções
   S.vilaHits = [];
   for (const b of VB()) {
@@ -5026,7 +5026,7 @@ function viewVila() {
   const others = S.chars.filter(x => x.user_id !== S.session.user.id);
   const visit = `<label for="vila-visit" class="sr">Visitar vila</label><select id="vila-visit"><option value="">Minha vila</option>${others.map(o => `<option value="${o.user_id}" ${S.vilaUser === o.user_id ? "selected" : ""}>Vila de ${esc(o.name)}</option>`).join("")}</select>`;
   const all = VB(), built = all.filter(b => (v[b.col + "_level"] || 0) > 0).length, dmgN = Object.keys(v.damaged || {}).length, war = !!S.cfg.war;
-  const stats = `<div class="vila-stats"><span class="tag">Construções: ${built}/${all.length}</span>${war ? `<span class="tag">Vila nível ${v.center_level || 1}</span>` : ""}${dmgN ? `<span class="tag bad">🔥 ${dmgN} danificada${dmgN > 1 ? "s" : ""}</span>` : ""}${war && v.shield_until && new Date(v.shield_until) > new Date() ? `<span class="tag ok">🛡️ Escudo até ${chatWhen(v.shield_until)}</span>` : ""}<span class="tag">Estátuas de ouro: ${v.statues}</span><span class="tag">Temporadas vencidas: ${v.castles}</span>${v.mud ? `<span class="tag bad">Lama nível ${v.mud}</span>` : `<span class="tag ok">Vila limpa</span>`}</div>`;
+  const stats = `<div class="vila-stats"><span class="tag">Construções: ${built}/${all.length}</span>${war ? `<span class="tag">Vila nível ${v.center_level || 1}</span>` : ""}${dmgN ? `<span class="tag bad">🔥 ${dmgN} danificada${dmgN > 1 ? "s" : ""}</span>` : ""}${war && v.shield_until && new Date(v.shield_until) > new Date() ? `<span class="tag ok">🛡️ Escudo até ${chatWhen(v.shield_until)}</span>` : ""}<span class="tag" title="Vitórias na rodada do dia">🏆 Vitórias na rodada: ${v.statues}</span><span class="tag">Temporadas vencidas: ${v.castles}</span>${v.mud ? `<span class="tag bad">Lama nível ${v.mud}</span>` : `<span class="tag ok">Vila limpa</span>`}</div>`;
   const pend = [P.coins && `${P.coins} moedas`, P.hints && `${P.hints} dica(s)`, P.xp && `${P.xp} XP`, P.retries && `${P.retries} tente outra vez`, P.steps && `${P.steps} casa(s) de bônus`].filter(Boolean);
   const top = mine ? `${v.mud ? `<div class="panel lo vila-mud"><span><strong>Sua vila está coberta de lama.</strong> Enquanto não limpar, nada é produzido.</span>
       <button class="btn small" data-act="vila-clean" ${S.me.coins < v.clean_cost ? "disabled" : ""}>Limpar por ${v.clean_cost} moedas</button></div>` : ""}
@@ -5036,7 +5036,7 @@ function viewVila() {
     ${stats}${top}
     ${war ? `<div class="vila-cats" role="group" aria-label="Categorias">${VCAT.map(([k, t]) => { const n = all.filter(b => VCAT_OF[b.k] === k && v.damaged?.[b.k]).length; return `<button data-act="vila-cat" data-v="${k}" aria-pressed="${S.vilaCat === k}">${t}${n ? `<b>${n}</b>` : ""}</button>`; }).join("")}</div>` : ""}
     <div class="vila-grid">${all.filter(b => !war || VCAT_OF[b.k] === S.vilaCat).map(b => vilaCard(b, v)).join("")}</div>
-    <p class="muted mk-note">Toque numa construção no desenho para ir até ela. A barraca vira Castelo da Liga quando você vence uma temporada; cada vitória na rodada ergue uma estátua de ouro; quem termina a rodada em último acorda com a vila cheia de lama.</p></div>`;
+    <p class="muted mk-note">Toque numa construção no desenho para ir até ela. A barraca vira Castelo da Liga quando você vence uma temporada; cada vitória na rodada soma um troféu (🏆) no painel; quem termina a rodada em último acorda com a vila cheia de lama.</p></div>`;
 }
 
 // =================================================================
@@ -5245,6 +5245,7 @@ function LIB() {
       <p>Lá dentro, ande com o seu personagem (<b>WASD ou as setas</b> no computador; botões na tela no celular). Na <b>grama alta</b> aparecem Pokémon selvagens do nível do seu, e <b>você comanda a batalha</b>: ataques, itens da bolsa ou fugir. Vencendo, ganha experiência; perdendo, não ganha nada.</p>
       <p>⏱️ São <b>${S.treino?.st?.minutos_dia ?? 30} minutos por dia</b>. Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. Se o tempo acabar no meio de uma luta, você termina a luta. O relógio zera à meia-noite.</p>
       <p>🐦 Pokémon selvagens passeiam pela grama só de enfeite, e quem estiver na grama ao mesmo tempo que você aparece andando por lá.</p>
+      <p>🎒 <b>Acompanhante:</b> antes de entrar, escolha outro Pokémon seu para ir na bolsa. A cada vitória, ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência. Ótimo para quem não tem ataque de dano, como o Magikarp.</p>
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
@@ -7859,6 +7860,8 @@ function viewTreino() {
     </div>
     <p class="muted">Hoje: ${st.lutas} ${st.lutas === 1 ? "luta" : "lutas"}, ${st.vitorias} ${st.vitorias === 1 ? "vitória" : "vitórias"}, ${st.xp} de experiência.
       ⚠️ Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. A vida que o Pokémon perde fica para a próxima luta (só no treino): desmaiou, Centro Pokémon (pago) ou ${st.gratis_horas} horas de espera (grátis).</p>
+    ${mons.length > 1 ? `<div class="tr-comp"><label for="tr-comp">🎒 Acompanhante: fica na bolsa e ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de cada vitória (bom para o Magikarp e quem não dá dano)</label>
+      <select id="tr-comp"><option value="">Nenhum</option>${mons.filter(x => x.id !== m.id).map(x => `<option value="${x.id}" ${S.treino.comp === x.id ? "selected" : ""}>${esc(pkName(x.species_id))} (Nv ${x.level})</option>`).join("")}</select></div>` : ""}
     <h3>Quem vai treinar?</h3>
     <div class="tr-pick">${mons.map(x => { const h = treinoHpOf(x); return `<button class="mon-card ${x.id === m.id ? "sel" : ""} ${h <= 0 ? "ko" : ""}" data-act="tr-sel" data-v="${x.id}" aria-pressed="${x.id === m.id}">
       ${monCv(x.species_id, x.outfit, 72)}<span class="mc-name">${esc(pkName(x.species_id))}${x.team_slot ? `<i class="team-badge" title="Na equipe">${x.team_slot}</i>` : ""}</span><span class="mc-lv">Nv ${x.level}</span>
@@ -8083,7 +8086,10 @@ function grHud() {
   box.innerHTML = m ? `<span title="Vida do treino">${treinoHpOf(m) <= 0 ? "💤" : trHpBar(treinoHpOf(m))}</span>
     <select id="gr-sel" aria-label="Quem vai treinar">${mons.map(x => `<option value="${x.id}" ${x.id === m.id ? "selected" : ""}>${esc(pkName(x.species_id))} (Nv ${x.level})${treinoHpOf(x) <= 0 ? " 💤" : treinoHpOf(x) < 100 ? ` ${treinoHpOf(x)}%` : ""}</option>`).join("")}</select>` : "";
   const sel = $("#gr-sel", el); if (sel) sel.onchange = () => { S.treino.sel = sel.value; sel.blur(); grHud(); };
+  const cm = S.treino.comp && S.treino.comp !== m?.id ? S.pk.mons.find(x => x.id === S.treino.comp) : null;
+  if (cm) box.insertAdjacentHTML("beforeend", `<span class="gr-comp" title="Acompanhante: ganha parte da experiência">🎒 ${esc(pkName(cm.species_id))}</span>`);
 }
+document.addEventListener("change", e => { if (e.target.id === "tr-comp") { S.treino.comp = e.target.value || null; render(); } });
 function grTimeLeft() { const V = S.treino.st?.visita; return V ? Math.max(0, Math.ceil((new Date(V.fim) - treinoNow()) / 1000)) : 0; }
 function grLoop(now) {
   if (!GR.open) return;
@@ -8218,7 +8224,8 @@ async function grEncounter() {
   if (treinoHpOf(m) <= 0) { $("#gr-hint").textContent = `💤 ${pkName(m.species_id)} está desmaiado: escolha outro Pokémon lá em cima.`; return; }
   GR.busy = true; GR.keys.clear(); GR.lastEnc = Date.now();
   let r;
-  try { r = await rpc("treino_encontro", { _mon: m.id }); }
+  const comp = S.treino.comp && S.treino.comp !== m.id ? S.treino.comp : null;
+  try { r = await rpc("treino_encontro", comp ? { _mon: m.id, _comp: comp } : { _mon: m.id }); }
   catch (e) { GR.busy = false; const t = errMsg(e); if (!/continue andando/.test(t)) toast(t, true); return; }
   if (r?.lendario) return grLegend(r.lendario);
   const bid = typeof r === "string" ? r : r?.battle;   // o 58 devolve {battle}; antes vinha só o número da luta
@@ -8260,8 +8267,9 @@ function grEndHTML(b) {
   const r = b.state?.treino?.res || {}, V = S.treino.st?.visita;
   const msg = r.fugiu ? "Você fugiu da luta." : r.won ? `🏆 Vitória! ${esc(pkName(r.species))} ganhou <b>${r.xp} de experiência</b>${r.level_to > r.level_from ? ` e <b>subiu para o nível ${r.level_to}</b>! 🎉` : "."}`
     : "O selvagem venceu. Não ganhou experiência.";
+  const comp = r.comp_xp ? ` 🎒 ${esc(pkName(r.comp_species))} (acompanhante) ganhou <b>${r.comp_xp}</b>.` : "";
   return `<div class="bt-end ${r.won ? "won" : "lost"}"><h3>${r.forte ? "⚡ " : ""}${r.won ? "Você venceu!" : r.fugiu ? "Fugiu!" : "Não foi dessa vez!"}</h3>
-    <p>${msg} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
+    <p>${msg}${comp} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
     <div class="act-btns">${V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
 
@@ -8278,7 +8286,7 @@ const AJ_LABELS = {
   treino: { on: "Grama de Treino aberta", minutos_dia: "Minutos por dia", visita_opcoes: "Opções de tempo por visita (minutos, separados por vírgula)",
     encontro_seg: "Segundos mínimos entre um encontro e outro", xp_mult: "Multiplicador de experiência (1 = normal)", nivel_menos: "Selvagem: até quantos níveis abaixo",
     nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
-    forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
+    forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", acompanhante_pct: "Acompanhante: % da experiência que ele ganha", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
     lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
     centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça" },
   rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
@@ -9675,6 +9683,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "acompanhante-2026-11-03", sql: "63", title: "🎒 Acompanhante na Grama de Treino", body: () => `Tem Pokémon que não consegue vencer sozinho, como o Magikarp, que só sabe Splash? Agora tem jeito!
+• Na Grama de Treino, escolha um ACOMPANHANTE: outro Pokémon seu que fica na bolsa.
+• A cada vitória do Pokémon que está lutando, o acompanhante ganha metade da experiência.
+• Assim dá para subir o Magikarp até ele virar Gyarados!
+E mais: as estátuas de ouro saíram do desenho da vila. As vitórias na rodada continuam contadas no painel da vila (🏆).` },
   { id: "menu-novo-2026-11-03", sql: "62", title: "🧭 Menu novo, mais fácil de achar tudo", body: () => `O menu do jogo foi reorganizado:
 • No topo, atalhos rápidos para o que mais se usa: Desafio, Pokédex, Grama, Batalhas, Vila e Ranking.
 • As opções ficaram em grupos (Pokémon, Vila e lojas, Competir, Comunidade e Ajuda), cada uma com o seu símbolo e em ordem alfabética.
