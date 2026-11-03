@@ -1617,6 +1617,13 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .aw-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03)}.aw-card h4{margin:0 0 2px}.aw-card ol{list-style:none;padding:0;margin:8px 0 0}
 .aw-card li{margin:3px 0}.aw-card li.me{color:#FFE7A0}.aw-last{display:flex;flex-wrap:wrap;gap:6px}
 .qz-prize-box{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:8px 12px 12px}.qz-prize-box legend{font-weight:700;padding:0 6px}.qz-prize-box details{margin-top:8px}.qz-prize-box summary{cursor:pointer}
+.ll-card{margin-bottom:10px}.ll-card.lead{border-color:#4CC38A}
+.ll-top{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}.ll-info{flex:1;min-width:200px}
+.ll-stats{margin-top:4px;font-size:13px}.ll-moves{font-size:12px}
+.ll-price{display:flex;flex-direction:column;align-items:center;min-width:110px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.25)}
+.ll-price b{font-size:22px;color:var(--gold-text)}
+.ll-bid,.ll-create{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:8px}.ll-bid label,.ll-create label{width:100%;margin:0}
+.ll-bid input{max-width:140px}.ll-create select{max-width:260px}.ll-create input{max-width:140px}
 .cr-box{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}.cr-mon{display:flex;gap:10px;align-items:center}
 .cr-ctl{flex:1;min-width:240px}.cr-n{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
 .tr-comp{margin:10px 0 4px;display:flex;flex-direction:column;gap:4px}.tr-comp select{max-width:320px}
@@ -3878,6 +3885,7 @@ const WINS = {
   treino: ["Grama de Treino", () => viewTreino()],
   centro: ["Centro Pokémon", () => viewCentro()],
   creche: ["Creche Pokémon", () => viewCreche()],
+  leilao: ["Leilão de Pokémon", () => viewLeilao()],
   admin: ["Administração", () => viewAdmin()]
 };
 // Formulários com texto digitado não podem sumir quando a tela se atualiza sozinha (Jornal, chat, Arena…).
@@ -3897,7 +3905,7 @@ function renderWindow() {
   const fa = document.activeElement, keepFocus = fa && keepForms.some(f => f.contains(fa)) ? { el: fa, a: fa.selectionStart, b: fa.selectionEnd } : null;
   if (!S.win || !WINS[S.win] || (S.win === "admin" && !S.isAdmin)) { root.innerHTML = ""; root.dataset.tab = ""; return; }
   const prev = root.querySelector(".win-body"), keep = prev && root.dataset.tab === S.win ? prev.scrollTop : 0;
-  const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "treino", "centro", "creche", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
+  const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "treino", "centro", "creche", "leilao", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
   const pos = k => { const i = ORDER.indexOf(k); return i < 0 ? 99 : i; };
   const tabs = Object.entries(WINS).filter(([k]) => (k !== "admin" || S.isAdmin) && k !== "batalha").sort((a, b) => pos(a[0]) - pos(b[0]));
   const [title, view] = WINS[S.win];
@@ -5254,6 +5262,9 @@ function LIB() {
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
       <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.</p>
       <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
+    { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
+      <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
+      <p>No fim, o Pokémon vai sozinho para quem deu o maior lance, e quem vendeu recebe as moedas, menos ${S.leilao?.st?.cfg?.taxa_pct ?? 5}% de taxa. Sem lance, nada muda.</p>` },
     { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon <b>sobe de nível na hora</b>, pagando em moedas. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 10} moedas.</p>
       <p>Limite: ${S.creche?.st?.niveis_semana ?? 5} níveis por semana, somando todos os seus Pokémon, e só até o nível ${S.creche?.st?.nivel_max ?? 40}. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p>` },
     { id: "batalha", ic: "⚔️", t: "Batalhas Pokémon e Arena", h: `<p>Precisa de 3 Pokémon capturados. Entram os <b>3 primeiros da equipe</b>. Os dois escolhem a ação do turno em segredo (atacar, trocar ou usar um item) e o servidor resolve.</p>
@@ -5545,6 +5556,7 @@ const ACTIONS = {
     if (v === "correio") return mailOpen();
     if (v === "treino" || v === "centro") return treinoOpen(v);
     if (v === "creche") return crecheOpen();
+    if (v === "leilao") return leilaoOpen();
     if (v === "arena") return arenaOpen();
     if (v === "guerras") return warOpen();
     if (v === "liga") return leagueOpen();
@@ -5853,7 +5865,7 @@ function pixModal() {
 async function welcomeFlow() {
   await Promise.all([loadCaixa(), loadPosts()]); subscribeCaixa(); subscribePosts(); renderHUD();
   await donationThanks();
-  await giftPopup(); await loadMail(true); loadTreino().then(() => renderHUD()).catch(() => {}); loadCreche().then(() => renderHUD()).catch(() => {}); renderHUD();
+  await giftPopup(); await loadMail(true); loadTreino().then(() => renderHUD()).catch(() => {}); loadCreche().then(() => renderHUD()).catch(() => {}); loadLeilao().then(() => renderHUD()).catch(() => {}); renderHUD();
   await loadQuiz(); await quizPopup(false);
   await loadRocket(); subscribeRocket(); await rocketPopup(); renderHUD();
   await loadHunt(true); subscribeHunt(); renderHUD();
@@ -5928,6 +5940,7 @@ function menuHTML() {
     caixa: S.caixa?.loaded && !S.caixa.missing ? `<b class="mb pix">PIX</b>` : "",
     sac: sacUnread() ? `<b class="mb red">${sacUnread()}</b>` : "",
     admin: S.isAdmin ? "" : null,
+    leilao: S.leilao?.missing ? null : S.leilao?.st?.abertos?.length ? `<b class="mb live">${S.leilao.st.abertos.length}</b>` : "",
     creche: S.creche?.missing ? null : S.creche?.st?.restante ? `<b class="mb">${S.creche.st.restante} nív.</b>` : "",
     vila: "", loja: "", pkloja: "", mercado: "", equipe: "", regras: ""
   };
@@ -5946,14 +5959,14 @@ function menuHTML() {
 // símbolo e nome de cada janela (menu, atalhos e abas das janelas usam os mesmos)
 const MENU = {
   desafio: ["🎯", "Desafio do dia"], pokedex: ["📕", "Pokédex & Coleção"], equipe: ["👥", "Equipe & Mascote"], treino: ["🌿", "Grama de Treino"],
-  centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
+  centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
   pkloja: ["🛒", "Loja Pokémon"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
   mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
   presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
   regras: ["📚", "Biblioteca"], sac: ["🎧", "SAC: fale com a gente"], admin: ["⚙️", "Administração"], batalha: ["⚔️", "Batalha"]
 };
 const MENU_GROUPS = [
-  ["pk", "🐾 Pokémon", ["arena", "batalhas", "centro", "creche", "equipe", "rocket", "treino", "pkloja", "pokedex"]],
+  ["pk", "🐾 Pokémon", ["arena", "batalhas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "pkloja", "pokedex"]],
   ["vila", "🏰 Vila e lojas", ["guerras", "loja", "mercado", "vila"]],
   ["comp", "🏆 Competir", ["duelos", "liga", "presence", "ranking"]],
   ["com", "💬 Comunidade", ["caixa", "chat", "correio"]],
@@ -8286,9 +8299,11 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
+  leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
+    min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   creche: { on: "Creche aberta", preco_por_nivel: "Preço: nível alcançado × este número", niveis_semana: "Níveis por semana (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina" },
   desafio: { desc_progressiva: "Descrição em partes (cada erro revela mais um pedaço); desligado = o verbete inteiro de uma vez" },
   treino: { on: "Grama de Treino aberta", minutos_dia: "Minutos por dia", visita_opcoes: "Opções de tempo por visita (minutos, separados por vírgula)",
@@ -8381,6 +8396,85 @@ document.addEventListener("submit", e => {
       toast("Ajustes salvos. Já valem para todos."); render();
       if (g === "treino") try { await loadTreino(); } catch {}
     });
+  }
+});
+
+// =================================================================
+// LEILÃO DE POKÉMON (arquivo 65, pedido do dono em 03/11/2026): 1 Pokémon a cada 3 dias por jogador, 24 h, lance mínimo;
+// lances reservam as moedas e quem é coberto recebe de volta; no fim o servidor entrega o Pokémon e paga o vendedor.
+// =================================================================
+S.leilao = { st: null, missing: false, tab: "abertos", timer: 0 };
+async function loadLeilao() {
+  try { S.leilao.st = await rpc("leilao_estado"); S.leilao.missing = false; S.leilao.skew = new Date(S.leilao.st.agora) - Date.now(); }
+  catch (e) { if (isMissingFn(e)) S.leilao.missing = true; else throw e; }
+}
+async function leilaoOpen() {
+  S.win = "leilao"; render();
+  try { if (S.pk.on !== false) { await loadPkStatic(); await loadPk(); } await loadLeilao(); } catch (e) { toast(errMsg(e), true); }
+  render(); if ($("#game")) renderHUD();
+  clearInterval(S.leilao.timer);
+  S.leilao.timer = setInterval(async () => { if (S.win !== "leilao") return clearInterval(S.leilao.timer); try { await loadLeilao(); render(); } catch {} }, 30000);
+}
+const llLeft = t => { const ms = new Date(t) - (Date.now() + (S.leilao.skew || 0)); if (ms <= 0) return "terminando…"; const h = Math.floor(ms / 36e5), m = Math.ceil(ms % 36e5 / 6e4); return h ? `${h}h ${m}min` : `${m} min`; };
+function llCard(l) {
+  const me = pkMe(), mine = l.seller === me, lead = l.top_bidder === me, c = S.leilao.st.cfg, I = l.info || {};
+  const minimo = l.top_bid == null ? l.min_price : l.top_bid + c.incremento;
+  const moves = (I.moves || []).map(x => moveOf(x.id)?.name).filter(Boolean).join(", ");
+  return `<article class="panel lo ll-card ${lead ? "lead" : ""}">
+    <div class="ll-top">${monCv(l.species, {}, 96)}<div class="ll-info"><b>${esc(pkName(l.species))}</b> <span class="muted">nível ${l.level}</span><br>
+      <span class="muted">de ${esc(l.seller_name)}${mine ? " (você)" : ""} · termina em <b>${llLeft(l.ends_at)}</b></span>
+      ${I.maxhp ? `<div class="ll-stats">❤️ ${I.maxhp} · ⚔️ ${I.atk} · 🛡️ ${I.def} · 💨 ${I.spd} · ✨ ${I.spc}</div>` : ""}
+      ${moves ? `<div class="muted ll-moves">Ataques: ${esc(moves)}</div>` : ""}</div>
+      <div class="ll-price">${l.top_bid != null ? `<small>Maior lance</small><b>${l.top_bid}</b><small>${lead ? "🥇 você!" : esc(l.bidder_name || "")}</small>` : `<small>Lance mínimo</small><b>${l.min_price}</b><small>sem lances</small>`}<small class="muted">${l.lances} ${l.lances === 1 ? "lance" : "lances"}</small></div></div>
+    ${mine ? `<p class="muted" style="margin:6px 0 0">É o seu leilão. Quando terminar, o Pokémon vai para quem deu o maior lance e você recebe as moedas (menos ${c.taxa_pct}%).</p>`
+      : `<form id="llform-${l.id}" class="ll-bid"><label for="ll-v-${l.id}">Seu lance (mínimo ${minimo})</label><input id="ll-v-${l.id}" type="number" min="${minimo}" step="1" value="${minimo}" required>
+        <button class="btn">🔨 Dar lance</button>${lead ? `<span class="muted">Você está na frente: só paga a diferença.</span>` : ""}</form>`}
+  </article>`;
+}
+function viewLeilao() {
+  const L = S.leilao;
+  if (L.missing) return `<p class="muted rk-state">O Leilão precisa do arquivo <code>65_leilao.sql</code> rodado no Supabase.</p>`;
+  if (!L.st) return `<p class="muted rk-state">Abrindo o Leilão…</p>`;
+  const st = L.st, c = st.cfg, mons = treinoMons(), me = pkMe();
+  if (!st.on) return `<div class="pk-empty"><p><strong>O Leilão está fechado no momento.</strong></p></div>`;
+  const podeEm = st.proximo && new Date(st.proximo) > new Date(Date.now() + (L.skew || 0)) ? st.proximo : null;
+  const meuAberto = st.abertos.find(l => l.seller === me);
+  const criar = meuAberto ? `<p class="muted">Você já tem um Pokémon em leilão.</p>`
+    : podeEm ? `<p class="muted">Você pode pôr outro Pokémon em leilão a partir de <b>${chatWhen(podeEm)}</b> (1 a cada ${c.intervalo_dias} dias).</p>`
+    : !mons.length ? `<p class="muted">Você ainda não tem Pokémon.</p>`
+    : `<form id="llcreate" class="ll-create"><label for="llc-mon">Pokémon</label><select id="llc-mon">${mons.map(x => `<option value="${x.id}">${esc(pkName(x.species_id))} (Nv ${x.level})${x.team_slot ? " · equipe" : ""}</option>`).join("")}</select>
+        <label for="llc-min">Lance mínimo (moedas)</label><input id="llc-min" type="number" min="${c.min_preco}" value="${Math.max(c.min_preco, 100)}" required>
+        <button class="btn">🔨 Pôr em leilão por ${c.horas} h</button></form>`;
+  const tab = L.tab;
+  const list = tab === "abertos" ? (st.abertos.length ? st.abertos.map(llCard).join("") : `<div class="pk-empty"><p><strong>Nenhum leilão aberto agora.</strong></p><p class="muted">Que tal ser o primeiro?</p></div>`)
+    : (st.encerrados.length ? `<ul class="tr-hist">${st.encerrados.map(l => `<li>${l.status === "vendido" ? "✅" : l.status === "sem_lance" ? "⏳" : "❌"} ${esc(pkName(l.species))} (Nv ${l.level}) de ${esc(l.seller_name)}
+        ${l.status === "vendido" ? `· vendido para <b>${esc(l.bidder_name || "?")}</b> por ${l.top_bid}` : l.status === "sem_lance" ? "· ninguém deu lance" : "· cancelado"}<time style="margin-left:auto" class="muted">${ago(l.closed_at)}</time></li>`).join("")}</ul>` : `<p class="muted">Ainda não terminou nenhum leilão.</p>`);
+  return `<div class="leilao">
+    <div class="ce-head" style="background:linear-gradient(180deg,#FFF3DC,#F2DDB6);border-color:#C9A05A;color:#3A2A12"><p><b style="color:#7A4A12">🔨 Leilão de Pokémon</b></p>
+      <p>Cada jogador pode pôr <b>1 Pokémon a cada ${c.intervalo_dias} dias</b>, por <b>${c.horas} horas</b>, com um lance mínimo. Qualquer um cobre a qualquer momento; o seu lance fica reservado e, se alguém cobrir, as moedas voltam na hora. Lance nos últimos ${c.anti_sniper_min} minutos estica o leilão.</p>
+      <p>No fim, o Pokémon vai <b>sozinho</b> para quem deu o maior lance (sai da equipe de quem vendeu), e quem vendeu recebe as moedas, menos ${c.taxa_pct}% de taxa.</p></div>
+    <section class="panel lo"><h3>Pôr um Pokémon em leilão</h3>${criar}</section>
+    <div class="tabs" style="margin:12px 0"><button data-act="ll-tab" data-v="abertos" aria-current="${tab === "abertos"}">Abertos (${st.abertos.length})</button><button data-act="ll-tab" data-v="encerrados" aria-current="${tab === "encerrados"}">Encerrados</button></div>
+    ${list}</div>`;
+}
+ACTIONS["ll-tab"] = v => { S.leilao.tab = v; render(); };
+document.addEventListener("submit", e => {
+  const id = e.target.id || "";
+  if (id === "llcreate") {
+    e.preventDefault();
+    const mon = $("#llc-mon").value, min = Math.trunc(+$("#llc-min").value || 0), m = S.pk.mons.find(x => x.id === mon);
+    (async () => {
+      if (!await confirmModal("Pôr em leilão?", `${pkName(m?.species_id)} (nível ${m?.level}) vai a leilão por ${S.leilao.st.cfg.horas} horas, a partir de ${min} moedas. Se alguém der lance, ele será vendido sozinho no fim e sai da sua coleção.`, "Pôr em leilão")) return;
+      guarded(async () => { await rpc("leilao_criar", { _mon: mon, _min: min }); sfx("acerto"); toast("🔨 Seu Pokémon está no Leilão!"); await loadLeilao(); render(); if ($("#game")) renderHUD(); });
+    })();
+  }
+  if (id.startsWith("llform-")) {
+    e.preventDefault();
+    const lid = +id.slice(7), v = Math.trunc(+$(`#ll-v-${lid}`).value || 0), l = S.leilao.st.abertos.find(x => x.id === lid);
+    (async () => {
+      if (!await confirmModal("Dar o lance?", `${v} moedas por ${pkName(l?.species)} (nível ${l?.level}). As moedas ficam reservadas; se alguém cobrir, elas voltam na hora.`, `Dar ${v}`)) return;
+      guarded(async () => { const r = await rpc("leilao_lance", { _id: lid, _valor: v }); sfx("tick"); toast("🔨 Lance dado! Você está na frente."); await Promise.all([loadLeilao(), refreshMe()]); render(); if ($("#game")) renderHUD(); });
+    })();
   }
 });
 
@@ -9755,6 +9849,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "leilao-2026-11-03", sql: "65", title: "🔨 Novo: Leilão de Pokémon", body: () => `Abriu o Leilão de Pokémon (menu Pokémon)!
+• Cada jogador pode pôr 1 Pokémon em leilão a cada 3 dias. O leilão dura 24 horas, com um lance mínimo que você escolhe.
+• Qualquer jogador pode cobrir o lance a qualquer momento. As moedas do seu lance ficam reservadas; se alguém cobrir, elas voltam na hora.
+• Lance nos últimos 5 minutos estica o leilão mais 5 minutos.
+• No fim, o Pokémon vai sozinho para quem deu o maior lance, e quem vendeu recebe as moedas (menos 5% de taxa).` },
   { id: "creche-2026-11-03", sql: "64", title: "🏡 Nova: Creche Pokémon", body: () => `Abriu a Creche Pokémon (menu Pokémon)!
 • Escolha um Pokémon e quantos níveis ele vai treinar: ele sobe na hora.
 • Cada nível custa moedas: o nível que ele vai alcançar × 10 (do 10 para o 11 custa 110).

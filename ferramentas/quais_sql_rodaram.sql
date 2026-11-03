@@ -42,6 +42,7 @@ from (values
   ('62_menu_novo_jornal',        exists (select 1 from public.posts where title = '🧭 Menu novo, mais fácil de achar tudo')),
   ('63_acompanhante_grama',      exists (select 1 from pg_proc where proname = 'treino_encontro' and pronargs = 2)),
   ('64_creche',                  to_regclass('public.creche_log') is not null),
+  ('65_leilao',                  to_regclass('public.leiloes') is not null),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
