@@ -44,6 +44,7 @@ from (values
   ('64_creche',                  to_regclass('public.creche_log') is not null),
   ('65_leilao',                  to_regclass('public.leiloes') is not null),
   ('66_fim_temporada',           exists (select 1 from pg_proc where proname = 'league_maybe_start' and prosrc like '%first_day%')),
+  ('67_herois_em_tudo',          exists (select 1 from pg_proc where proname = 'herois_cfg')),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),

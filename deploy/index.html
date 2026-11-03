@@ -1624,6 +1624,7 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .ll-price b{font-size:22px;color:var(--gold-text)}
 .ll-bid,.ll-create{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:8px}.ll-bid label,.ll-create label{width:100%;margin:0}
 .ll-bid input{max-width:140px}.ll-create select{max-width:260px}.ll-create input{max-width:140px}
+.hero-perk{font-size:12px;color:var(--gold-text);margin-top:4px}
 .cr-box{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}.cr-mon{display:flex;gap:10px;align-items:center}
 .cr-ctl{flex:1;min-width:240px}.cr-n{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
 .tr-comp{margin:10px 0 4px;display:flex;flex-direction:column;gap:4px}.tr-comp select{max-width:320px}
@@ -1830,11 +1831,31 @@ const MODES = {
 const HEROES = {
   guerreiro: { nome: "Guerreiro", skill: "Investida", passiva: () => `Mais forte nos encontros: +${S.cfg.guerreiro_duel_bonus ?? 15}% de chance de vencer o duelo.`, efeito: v => `Anda +${v} casas hoje.` },
   mago:      { nome: "Mago", skill: "Teleporte", passiva: () => `${S.cfg.mago_resist_pct ?? 30}% de chance de anular armadilhas, lamaçais e raios.`, efeito: v => `Salta até a próxima casa especial à frente, a no máximo ${v} casas.` },
-  arqueiro:  { nome: "Arqueiro", skill: "Tiro certeiro", passiva: () => `A roleta do movimento nunca tira menos que ${S.cfg.arqueiro_min_die ?? 2}.`, efeito: v => `Gira a roleta ${v} vezes e fica com o maior resultado.` },
+  arqueiro:  { nome: "Arqueiro", skill: "Tiro certeiro", passiva: () => `A roleta do movimento nunca tira menos que ${S.cfg.arqueiro_min_die ?? 2}.`, efeito: () => `A roleta do movimento vale o máximo (${S.cfg.roll_max ?? 3}) hoje.` },
   ladino:    { nome: "Ladino", skill: "Atalho", passiva: p => `Mão leve: pega até ${p} moedas de cada jogador que ultrapassa.`, efeito: v => `Desvia do próximo lamaçal ou armadilha e anda +${v} casas.` },
   clerigo:   { nome: "Clérigo", skill: "Bênção", passiva: () => "Cartas de azar fazem só metade do efeito.", efeito: v => `Nada te empurra para trás hoje${v ? ` e você anda +${v} casas` : ""}.` },
+  pesquisador: { nome: "Pesquisador", skill: "Isca de frutas", passiva: () => `Caderno de campo: +${heroCfg().pesq_bolas} bola em cada encontro e +${heroCfg().pesq_xp_pct}% de XP para a equipe nas andadas.`, efeito: v => `Anda +${v} ${v === 1 ? "casa" : "casas"} e o Pokémon do encontro de hoje vem incomum ou mais raro.` },
+  mercador:  { nome: "Mercador", skill: "Negócio da China", passiva: () => `Bom de negócio: lojas ${heroCfg().merc_loja_desc_pct}% mais baratas e +${heroCfg().merc_salario_pct}% no salário.`, efeito: v => `Anda +${v} ${v === 1 ? "casa" : "casas"} e o baú e o salário de hoje vêm em dobro.` },
   domador:   { nome: "Domador", skill: "Montaria", passiva: p => `Ganha ${p} dica${p > 1 ? "s" : ""} grátis toda semana.`, efeito: v => `A roleta do movimento vale ${v} vezes mais.` }
 };
+// bônus de cada herói nos outros sistemas (arquivo 67); os números vêm de Ajustes do jogo → Heróis
+const HERO_DEF = { guerreiro_dano_pct: 10, mago_status_acc_pct: 10, mago_forte_pct: 5, arqueiro_vel_pct: 10, arqueiro_captura_pct: 10, ladino_taxa_pct: 2,
+  clerigo_centro_desc_pct: 30, clerigo_cura_horas: 48, domador_grama_xp_pct: 20, domador_creche_desc_pct: 20, pesq_bolas: 1, pesq_xp_pct: 10, pesq_comp_pct: 75,
+  merc_loja_desc_pct: 10, merc_salario_pct: 10, merc_leilao_taxa_pct: 0 };
+const heroCfg = () => ({ ...HERO_DEF, ...(S.cfg?.herois || {}) });
+function heroPerk(k) {
+  const h = heroCfg();
+  return {
+    guerreiro: `⚔️ +${h.guerreiro_dano_pct}% de dano em todas as batalhas Pokémon.`,
+    mago: `🔮 Ataques de status acertam +${h.mago_status_acc_pct}%; na Grama, aparece mais Pokémon forte.`,
+    arqueiro: `🏹 Pokémon ${h.arqueiro_vel_pct}% mais rápidos nas batalhas e +${h.arqueiro_captura_pct}% de chance de captura.`,
+    ladino: `🗡️ Taxa de só ${h.ladino_taxa_pct}% no Leilão e no Mercado.`,
+    clerigo: `✨ Centro Pokémon ${h.clerigo_centro_desc_pct}% mais barato e cura grátis em ${h.clerigo_cura_horas} horas.`,
+    domador: `🐎 +${h.domador_grama_xp_pct}% de experiência na Grama e Creche ${h.domador_creche_desc_pct}% mais barata.`,
+    pesquisador: `🔬 Acompanhante da Grama ganha ${h.pesq_comp_pct}% da experiência.`,
+    mercador: `💰 Vende no Leilão ${h.merc_leilao_taxa_pct ? `com só ${h.merc_leilao_taxa_pct}% de taxa` : "sem taxa"}.`
+  }[k] || "";
+}
 const ROMAN = ["I", "II", "III", "IV", "V"];
 function heroStats(cls, level) {
   const lv = S.cfg.skill_levels || [1, 5, 10, 15, 20];
@@ -1920,6 +1941,8 @@ const WEAPONS = {
   mago: [[11,2,"#7fe3ff"],[12,2,"#7fe3ff"],[13,2,"#7fe3ff"],[12,1,"#7fe3ff"],[12,3,"#7fe3ff"],[12,4,"#8a5a2b"],[12,5,"#8a5a2b"],[12,6,"#8a5a2b"],[12,7,"#8a5a2b"],[12,8,"#8a5a2b"],[12,9,"#8a5a2b"],[12,10,"#8a5a2b"],[12,11,"#8a5a2b"],[12,12,"#8a5a2b"],[12,13,"#8a5a2b"]],
   ladino: [[12,7,"#d8dde3"],[12,8,"#d8dde3"],[12,9,"#d8dde3"],[11,10,"#8a6421"],[12,10,"#8a6421"],[13,10,"#8a6421"],[12,11,"#5a3a24"],[0,9,"#d8dde3"],[0,10,"#d8dde3"],[0,11,"#8a6421"]],
   clerigo: [[12,1,"#f5d547"],[11,2,"#f5d547"],[12,2,"#fff3b0"],[13,2,"#f5d547"],[12,3,"#f5d547"],[12,4,"#c9a24a"],[12,5,"#c9a24a"],[12,6,"#c9a24a"],[12,7,"#c9a24a"],[12,8,"#c9a24a"],[12,9,"#c9a24a"],[12,10,"#c9a24a"],[12,11,"#c9a24a"],[12,12,"#c9a24a"],[12,13,"#c9a24a"]],
+  pesquisador: [[11,2,"#c9d6df"],[12,2,"#c9d6df"],[13,2,"#c9d6df"],[11,3,"#c9d6df"],[12,3,"#a8e0ff"],[13,3,"#c9d6df"],[11,4,"#c9d6df"],[12,4,"#c9d6df"],[13,4,"#c9d6df"],[13,5,"#8a5a2b"],[14,6,"#8a5a2b"],[14,7,"#8a5a2b"],[0,8,"#e8e0c8"],[0,9,"#e8e0c8"],[0,10,"#c94a4a"]],
+  mercador: [[12,6,"#c9a24a"],[11,7,"#b8743a"],[12,7,"#b8743a"],[13,7,"#b8743a"],[10,8,"#b8743a"],[11,8,"#b8743a"],[12,8,"#f5d547"],[13,8,"#b8743a"],[14,8,"#b8743a"],[10,9,"#b8743a"],[11,9,"#b8743a"],[12,9,"#b8743a"],[13,9,"#b8743a"],[14,9,"#b8743a"],[11,10,"#8a5a2b"],[12,10,"#8a5a2b"],[13,10,"#8a5a2b"]],
   domador: [[12,6,"#8a5a2b"],[13,7,"#8a5a2b"],[14,8,"#8a5a2b"],[14,9,"#8a5a2b"],[13,10,"#8a5a2b"],[12,9,"#8a5a2b"],[12,10,"#5a3a24"],[12,11,"#5a3a24"],[12,12,"#5a3a24"]],
   arqueiro: [[12,4,"#8a5a2b"],[13,5,"#8a5a2b"],[13,6,"#8a5a2b"],[13,7,"#8a5a2b"],[13,8,"#8a5a2b"],[13,9,"#8a5a2b"],[13,10,"#8a5a2b"],[12,11,"#8a5a2b"],[12,5,"#efe6cc"],[12,6,"#efe6cc"],[12,7,"#efe6cc"],[12,8,"#efe6cc"],[12,9,"#efe6cc"],[12,10,"#efe6cc"]]
 };
@@ -1929,7 +1952,9 @@ const CLASS_COLORS = {
   arqueiro:  { h: "#c98c2c", c: "#3f8a4f", d: "#24552e" },
   ladino:    { h: "#2b2b33", c: "#3d4250", d: "#22252d" },
   clerigo:   { h: "#d9b46a", c: "#e8e0c8", d: "#c9a24a" },
-  domador:   { h: "#7a4a2a", c: "#b8743a", d: "#6e4222" }
+  domador:   { h: "#7a4a2a", c: "#b8743a", d: "#6e4222" },
+  pesquisador: { h: "#4a3a2a", c: "#eceee6", d: "#5a7a8a" },
+  mercador:  { h: "#2a1a10", c: "#7a2a4a", d: "#c9a24a" }
 };
 function mixWhite(hex, t) {
   const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255, f = v => Math.round(v + (255 - v) * t);
@@ -2260,7 +2285,7 @@ function renderCreate() {
     <div class="classes">${Object.entries(HEROES).map(([k, h]) => { const st = heroStats(k, 1); return `
       <button class="cls" data-act="pickclass" data-v="${k}" aria-pressed="${c === k}">
         ${avatarSVG({ class: k, outfit: {} }, 5)}
-        <h3 style="margin-top:8px">${h.nome}</h3><p>${h.passiva(st.pv)}</p><p><strong>${h.skill}:</strong> ${h.efeito(st.sv)}</p></button>`; }).join("")}</div>
+        <h3 style="margin-top:8px">${h.nome}</h3><p>${h.passiva(st.pv)}</p><p><strong>${h.skill}:</strong> ${h.efeito(st.sv)}</p><p class="hero-perk">${heroPerk(k)}</p></button>`; }).join("")}</div>
     <form id="createform"><label for="f-cname">Nome do personagem</label>
       <input id="f-cname" required minlength="3" maxlength="16" placeholder="Como os outros vão ver você">
       <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn">Começar a aventura</button>
@@ -5247,7 +5272,8 @@ function LIB() {
       <p>Quem não tem a HM passa normalmente e <b>não perde nada</b>, só recebe uma dica.</p>
       <p><b>As HMs são raras:</b> não vendem. Aparecem em 1 de cada ${Math.round(100 / (ic.hm_bau_pct || 1))} baús ou em 1 de cada ${Math.round(100 / (ic.hm_npc_pct || 2))} vitórias contra os treinadores do mapa. Cada HM sai uma vez só para cada jogador e nunca acaba.</p>` },
     { id: "herois", ic: "🛡️", t: "Heróis", h: `<p>Cada herói tem uma <b>passiva</b>, que funciona sempre, e uma <b>habilidade</b> que você ativa uma vez por dia, antes de andar. As duas ficam mais fortes nos níveis ${(c.skill_levels || [1, 5, 10, 15, 20]).join(", ")}. Trocar de herói custa ${libN(c.class_change_price, 300)} moedas.</p>
-      <ul class="hero-list">${Object.entries(HEROES).map(([k, h]) => { const x = heroStats(k, 1); return `<li><strong>${h.nome}.</strong> ${h.passiva(x.pv)} <strong>${h.skill}:</strong> ${h.efeito(x.sv)}</li>`; }).join("")}</ul>` },
+      <p><b>Heróis em tudo:</b> cada herói também ganha um bônus pequeno fora do tabuleiro (batalhas, Grama, Centro, Creche, Leilão e lojas). Veja na lista abaixo, em "Em tudo".</p>
+      <ul class="hero-list">${Object.entries(HEROES).map(([k, h]) => { const x = heroStats(k, 1); return `<li><strong>${h.nome}.</strong> ${h.passiva(x.pv)} <strong>${h.skill}:</strong> ${h.efeito(x.sv)} <em>Em tudo:</em> ${heroPerk(k)}</li>`; }).join("")}</ul>` },
     { id: "pokemon", ic: "🐾", t: "Pokémon: captura e coleção", h: `<p>Depois de cada andada aparece um <b>Pokémon selvagem</b> na casa onde você parou. Você tem <b>3 bolas</b> para tentar capturar. A Poké Bola é grátis; a Great Ball (${balls.great?.price ?? 40} moedas) e a Ultra Ball (${balls.ultra?.price ?? 90}) aumentam a chance. Pokémon raros são mais difíceis, e cada região tem os seus tipos preferidos. Os Pokémon selvagens sempre aparecem fracos, entre os <b>níveis 1 e 5</b>, em qualquer parte do tabuleiro: para ficarem fortes, é preciso treinar.</p>
       <p><b>Equipe:</b> até 6 Pokémon. A equipe ganha XP toda vez que você anda, dividido entre eles, e também nas batalhas.</p>
       <p><b>Evolução:</b> por nível ou por pedra (${pk.stones?.price ?? 250} moedas), como na Red/Blue. Você escolhe a hora de evoluir.</p>
@@ -5717,7 +5743,7 @@ const ACTIONS = {
     const price = S.cfg.class_change_price ?? 300;
     if (S.me.coins < price) return toast(`A troca de herói custa ${price} moedas.`, true);
     const m = openModal(`<h2>Trocar de herói</h2><p class="muted">Custa ${price} moedas. Nível, itens, ajudas e posição no mapa continuam iguais.</p>
-      <div class="hero-pick">${Object.entries(HEROES).filter(([k]) => k !== S.me.class).map(([k, h]) => `<button class="cls" data-pick="${k}">${avatarSVG({ class: k, outfit: S.me.outfit }, 3)}<h3>${h.nome}</h3><p>${h.skill}</p></button>`).join("")}</div>
+      <div class="hero-pick">${Object.entries(HEROES).filter(([k]) => k !== S.me.class).map(([k, h]) => `<button class="cls" data-pick="${k}">${avatarSVG({ class: k, outfit: S.me.outfit }, 3)}<h3>${h.nome}</h3><p>${h.skill}</p><p class="hero-perk">${heroPerk(k)}</p></button>`).join("")}</div>
       <div class="actions"><button class="btn ghost" data-r="0">Cancelar</button></div>`);
     const k = await new Promise(res => m.addEventListener("click", e => { const b = e.target.closest("[data-pick]"); if (b) res(b.dataset.pick); else if (e.target.closest("[data-r]")) res(null); }));
     closeModal(); if (!k) return;
@@ -8301,9 +8327,14 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
+  herois: { guerreiro_dano_pct: "Guerreiro: % a mais de dano", mago_status_acc_pct: "Mago: % a mais de acerto em ataques de status", mago_forte_pct: "Mago: pontos a mais de chance de Pokémon forte na Grama",
+    arqueiro_vel_pct: "Arqueiro: % a mais de velocidade", arqueiro_captura_pct: "Arqueiro: % a mais de chance de captura", ladino_taxa_pct: "Ladino: taxa no Leilão e no Mercado (%)",
+    clerigo_centro_desc_pct: "Clérigo: desconto no Centro Pokémon (%)", clerigo_cura_horas: "Clérigo: horas para a cura grátis", domador_grama_xp_pct: "Domador: % a mais de experiência na Grama",
+    domador_creche_desc_pct: "Domador: desconto na Creche (%)", pesq_bolas: "Pesquisador: bolas a mais por encontro", pesq_xp_pct: "Pesquisador: % a mais de XP da equipe nas andadas",
+    pesq_comp_pct: "Pesquisador: % de experiência do acompanhante", merc_loja_desc_pct: "Mercador: desconto nas lojas (%)", merc_salario_pct: "Mercador: % a mais no salário", merc_leilao_taxa_pct: "Mercador: taxa no Leilão (%)" },
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   creche: { on: "Creche aberta", preco_por_nivel: "Preço: nível alcançado × este número", niveis_semana: "Níveis por semana (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina" },
@@ -8428,7 +8459,7 @@ function llCard(l) {
       ${I.maxhp ? `<div class="ll-stats">❤️ ${I.maxhp} · ⚔️ ${I.atk} · 🛡️ ${I.def} · 💨 ${I.spd} · ✨ ${I.spc}</div>` : ""}
       ${moves ? `<div class="muted ll-moves">Ataques: ${esc(moves)}</div>` : ""}</div>
       <div class="ll-price">${l.top_bid != null ? `<small>Maior lance</small><b>${l.top_bid}</b><small>${lead ? "🥇 você!" : esc(l.bidder_name || "")}</small>` : `<small>Lance mínimo</small><b>${l.min_price}</b><small>sem lances</small>`}<small class="muted">${l.lances} ${l.lances === 1 ? "lance" : "lances"}</small></div></div>
-    ${mine ? `<p class="muted" style="margin:6px 0 0">É o seu leilão. Quando terminar, o Pokémon vai para quem deu o maior lance e você recebe as moedas (menos ${c.taxa_pct}%).</p>`
+    ${mine ? `<p class="muted" style="margin:6px 0 0">É o seu leilão. Quando terminar, o Pokémon vai para quem deu o maior lance e você recebe as moedas (${(S.leilao.st.minha_taxa ?? c.taxa_pct) > 0 ? `menos ${S.leilao.st.minha_taxa ?? c.taxa_pct}%` : "sem taxa"}).</p>`
       : `<form id="llform-${l.id}" class="ll-bid"><label for="ll-v-${l.id}">Seu lance (mínimo ${minimo})</label><input id="ll-v-${l.id}" type="number" min="${minimo}" step="1" value="${minimo}" required>
         <button class="btn">🔨 Dar lance</button>${lead ? `<span class="muted">Você está na frente: só paga a diferença.</span>` : ""}</form>`}
   </article>`;
@@ -8506,13 +8537,13 @@ function viewCreche() {
   if (!mons.length) return `<div class="pk-empty"><p><strong>Você ainda não tem Pokémon.</strong></p></div>`;
   const m = mons.find(x => x.id === C.sel) || mons.find(x => x.level < st.nivel_max) || mons[0]; C.sel = m.id;
   const maxN = Math.max(0, Math.min(st.restante, st.nivel_max - m.level)), n = Math.max(1, Math.min(C.n || 1, maxN || 1));
-  const custo = crechePreco(m.level, n, st.preco_por_nivel), coins = S.me?.coins ?? 0;
+  const custo = Math.ceil(crechePreco(m.level, n, st.preco_por_nivel) * (100 - (st.desconto_pct || 0)) / 100), coins = S.me?.coins ?? 0;
   const evo = evosOf(m.species_id).find(e => e.method === "nivel" && e.level > m.level && e.level <= m.level + n);
   const used = Math.round(st.usados / Math.max(1, st.niveis_semana) * 100);
   return `<div class="creche">
     <div class="ce-head" style="background:linear-gradient(180deg,#FFF3DC,#F2DDB6);border-color:#C9A05A;color:#3A2A12"><p><b style="color:#7A4A12">🏡 Bem-vindo à Creche Pokémon!</b></p>
       <p>Aqui o seu Pokémon treina e <b>sobe de nível na hora</b>, pagando em moedas. Cada nível custa <b>o nível que ele vai alcançar × ${st.preco_por_nivel}</b> (do 10 para o 11: ${11 * st.preco_por_nivel} moedas).</p>
-      <p>Limite: <b>${st.niveis_semana} níveis por semana</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
+      ${st.desconto_pct ? `<p>🐎 Domador: você paga ${st.desconto_pct}% a menos.</p>` : ""}<p>Limite: <b>${st.niveis_semana} níveis por semana</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
     <div class="tr-clock" style="margin-bottom:10px"><b>📅 Esta semana</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
       <span>${st.usados} de ${st.niveis_semana} níveis usados · ${st.restante ? `faltam ${st.restante}` : `renova em ${chatWhen(st.renova)}`}</span></div>
     <section class="panel lo cr-box">
@@ -8533,7 +8564,7 @@ ACTIONS["cr-sel"] = v => { S.creche.sel = v; S.creche.n = 1; render(); };
 ACTIONS["cr-n"] = v => { S.creche.n = +v; render(); };
 ACTIONS["cr-go"] = async () => {
   const C = S.creche, m = S.pk.mons.find(x => x.id === C.sel); if (!m) return;
-  const n = C.n || 1, custo = crechePreco(m.level, n, C.st.preco_por_nivel);
+  const n = C.n || 1, custo = Math.ceil(crechePreco(m.level, n, C.st.preco_por_nivel) * (100 - (C.st.desconto_pct || 0)) / 100);
   if (!await confirmModal("Treinar na Creche?", `${pkName(m.species_id)} vai do nível ${m.level} ao ${m.level + n} por ${custo} moedas.`, `Treinar por ${custo}`)) return;
   guarded(async () => {
     const r = await rpc("creche_treinar", { _mon: m.id, _niveis: n });
@@ -9851,6 +9882,16 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "herois-2026-11-03", sql: "67", title: "🛡️ Heróis mais fortes em tudo + 2 heróis novos", body: () => `Os heróis agora fazem diferença no jogo inteiro, não só no tabuleiro:
+• ⚔️ Guerreiro: +10% de dano nas batalhas Pokémon.
+• 🔮 Mago: ataques de status acertam mais; na Grama, aparece mais Pokémon forte.
+• 🏹 Arqueiro: Pokémon mais rápidos nas batalhas e +10% de chance de captura. A habilidade agora deixa a roleta no máximo (3).
+• 🗡️ Ladino: paga só 2% de taxa no Leilão e no Mercado.
+• ✨ Clérigo: Centro Pokémon 30% mais barato e cura grátis em 48 horas.
+• 🐎 Domador: +20% de experiência na Grama e Creche 20% mais barata.
+E chegaram 2 heróis novos (dá para trocar em Loja & Visuais):
+• 🔬 Pesquisador: +1 bola em cada encontro, +10% de XP da equipe, acompanhante da Grama ganha 75%. Habilidade "Isca de frutas": anda +1 casa e o Pokémon do encontro vem incomum ou mais raro.
+• 💰 Mercador: lojas 10% mais baratas, vende no Leilão sem taxa e +10% de salário. Habilidade "Negócio da China": anda +1 casa e o baú e o salário do dia vêm em dobro.` },
   { id: "fim-temporada-2026-11-03", sql: "66", title: "🏁 Novo fim de temporada: o 1º no Castelo encerra a corrida", body: () => `Mudou o fim da temporada:
 • O primeiro jogador que chegar ao Castelo encerra a corrida. Os outros ainda jogam o resto daquele dia.
 • Quando a rodada daquele dia fecha (meia-noite), a corrida acaba e a Liga Pokémon começa na hora, com todos os jogadores ativos.
