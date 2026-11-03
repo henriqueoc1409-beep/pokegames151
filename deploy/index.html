@@ -733,6 +733,20 @@ details.rk-card p{font-size:13px;color:var(--text-2);margin:8px 0 0}
    CELULAR: o mapa em primeiro lugar
    ===================================================================== */
 .act-mini,.m-only-flex{display:none}
+/* computador (03/11/2026): "Jogar hoje" começa recolhido numa linha; "Mais" abre o resto */
+@media (min-width:761px){
+  #hud-action .act-mini{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #hud-action .act-mini-txt{flex:1 1 100%;font-size:13px}
+  #hud-action .act-mini .btn{flex:1 1 auto;margin:0}
+  #hud-action .act-mini .act-more{flex:none}
+  #hud-action:not(.open) .act-full{display:none}
+  #hud-action.open .act-full{margin-top:8px}
+  #sec-today{padding:10px!important}
+  #sec-today .dock-h{margin-bottom:6px}
+  #hud-caixa .cx-card{flex-direction:row;align-items:center;gap:8px;padding:6px 10px}
+  #hud-caixa .cx-card > :not(.cx-top){display:none}
+  #hud-caixa .cx-top{flex:1}
+}
 .mchip.skill-on{background:rgba(224,180,76,.18);color:var(--gold)}
 .more-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
 .more-grid .menu-btn{min-height:64px;font-size:13px}
@@ -1011,6 +1025,20 @@ details.rk-card p{font-size:13px;color:var(--text-2);margin:8px 0 0}
 .mb.ok{background:#2E7D4A}
 .mb.warn{background:#C9702A}
 .mb.lock{background:#3A2A18;border:1px solid var(--frame)}
+.menu-fast{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:4px}
+.mf-btn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:58px;padding:6px 4px;border-radius:10px;cursor:pointer;
+  background:linear-gradient(#25343E,#1A262E);border:1px solid rgba(201,160,90,.5);color:var(--text);font:700 12px/1.1 var(--sans)}
+.mf-btn:hover,.mf-btn[aria-current="true"]{border-color:var(--frame-hi);background:linear-gradient(#3A2A18,#2A1E12)}
+.mf-ic{font-size:22px;line-height:1}
+.mf-btn .mb{position:absolute;top:-5px;right:-5px;min-width:18px;padding:3px 5px;font-size:10px}
+.mg-btn{display:flex;align-items:center;gap:8px;width:100%;margin:6px 0 0;padding:6px 4px;border:0;border-bottom:1px solid rgba(201,160,90,.3);background:none;color:var(--gold-text);
+  font:800 12px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-align:left}
+.mg-btn span{flex:1}.mg-arrow{font-style:normal;color:var(--text-2)}
+.mg-list{display:flex;flex-direction:column;gap:4px}
+#game .mg-list .menu-btn{min-height:40px}
+#game .menu-btn .me{flex:none;width:22px;text-align:center;font-size:17px;line-height:1}
+.wt-ic{margin-right:5px}
+#game.dock-min .menu-btn .me{display:block!important}#game.dock-min .menu-fast{grid-template-columns:1fr}#game.dock-min .mf-t,#game.dock-min .mg-btn span,#game.dock-min .mg-arrow{display:none}
 #game .menu-btn.menu-out{display:flex;min-height:40px;background:none;border-style:dashed;color:var(--text-2)}
 .menu-open-btn,.pres-chip,.m-eu{display:none}
 #menu-back{display:none}
@@ -3814,7 +3842,7 @@ function hudAction() {
   btns.push(`<button class="btn ghost" data-act="bet-open">Ranking do dia</button>`);
   const prim = pending ? `<button class="btn small" data-act="go" data-v="desafio">Jogar desafio (${total - pending}/${total})</button>` : `<button class="btn small" data-act="move">Andar no mapa</button>`;
   const spinMini = !T.spin ? `<button class="btn small spin-btn" data-act="spin">Roleta</button>` : "";
-  return `${mini("", prim + spinMini)}<div class="act-full">${prog}${chips}<div class="act-btns">${btns.join("")}</div>
+  return `${mini(`🎯 Desafio <b>${total - pending}/${total}</b>${T.spin ? "" : " · 🎡 roleta liberada"}`, prim + spinMini)}<div class="act-full">${prog}${chips}<div class="act-btns">${btns.join("")}</div>
     <div class="act-note"><span class="num">${T.steps}</span> casas pelos acertos, mais a roleta (${S.cfg.roll_min} a ${S.cfg.roll_max})${S.me.bonus_steps ? ` e <span class="num">${S.me.bonus_steps}</span> de bônus` : ""}. Rodada: ${T.rank_attempts} tentativas.</div>${rec}
     ${bossLine}
     ${S.social?.can_bet ? `<div class="rec-line"><span class="muted">Bolão aberto até você começar o desafio.</span><button class="btn ghost small" data-act="bet-open">Apostar</button></div>` : ""}</div>`;
@@ -3871,8 +3899,8 @@ function renderWindow() {
   // a torcida chega ao vivo: não apagar o que a pessoa está escrevendo
   const ae = document.activeElement, keepIn = ae?.id === "cheer-in" ? { v: ae.value, a: ae.selectionStart, b: ae.selectionEnd } : null;
   root.innerHTML = `<div class="win-bg"><section class="win" role="dialog" aria-modal="true" aria-label="${title}">
-    <header class="win-head"><h2>${title}</h2><button class="btn ghost small" data-act="go" data-v="mapa">Voltar ao mapa</button></header>
-    <nav class="win-tabs" aria-label="Abas">${tabs.map(([k, [t]]) => `<button data-act="go" data-v="${k}" aria-current="${S.win === k}">${t}</button>`).join("")}</nav>
+    <header class="win-head"><h2>${MENU[S.win] ? `<span aria-hidden="true">${MENU[S.win][0]}</span> ` : ""}${title}</h2><button class="btn ghost small" data-act="go" data-v="mapa">Voltar ao mapa</button></header>
+    <nav class="win-tabs" aria-label="Abas">${tabs.map(([k, [t]]) => `<button data-act="go" data-v="${k}" aria-current="${S.win === k}">${MENU[k] ? `<span class="wt-ic" aria-hidden="true">${MENU[k][0]}</span>` : ""}${t}</button>`).join("")}</nav>
     <div class="win-body">${view()}</div></section></div>`;
   root.dataset.tab = S.win;
   root.querySelector(".win-body").scrollTop = keep;
@@ -5874,37 +5902,63 @@ function menuHTML() {
     ${pend ? `<button class="btn big" data-act="go" data-v="desafio">Jogar desafio (${total - pend}/${total})</button>` : `<button class="btn ghost" data-act="go" data-v="desafio">Desafio do dia ✓</button>`}
     <div class="menu-play-row">${T && !T.spin ? `<button class="btn spin-btn" data-act="spin">Girar a roleta</button>` : ""}${T && !T.moved ? `<button class="btn ghost" data-act="move">Andar no mapa</button>` : ""}</div>
     ${caixaCard()}</div>`;
-  // ordem do mais importante para o menos importante, em grupos
-  const groups = [
-    ["Competir", [
-      ...(S.league !== false && S.league ? [["go", "liga", "Liga Pokémon", "crown", S.league.lg?.status === "rodada" ? `<b class="mb live">AO VIVO</b>` : S.league.lg?.status === "caverna" ? `<b class="mb red">🕳️</b>` : ""]] : []),
-      ["go", "ranking", "Ranking & Pódios", "crown", pi && !pi.P.released ? `<b class="mb lock" title="Travado até todos jogarem">🔒</b>` : ""],
-      ["presence", "", "Quem já jogou hoje", "alvo", pi ? `<b class="mb ${pi.missing.length ? "warn" : "ok"}">${pi.done.length}/${pi.act.length}</b>` : ""],
-      ["go", "duelos", "Duelos & Bolão", "raio", duels ? `<b class="mb red">${duels}</b>` : ""]]],
-    ["Pokémon", [
-      ["go", "pokedex", "Pokédex & Coleção", "pokebola", S.pk?.mons?.some(m => evoReady(m).length || m.pending_moves?.length) ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : S.pk?.mons?.length ? `<b class="mb">${S.pk.mons.length}</b>` : ""],
-      ["go", "equipe", "Equipe & Mascote", "equipe", ""],
-      ...(S.treino?.missing ? [] : [["go", "treino", "Grama de Treino", "grama", S.treino?.st?.visita ? `<b class="mb live">LÁ DENTRO</b>` : S.treino?.st && S.treino.st.minutos < S.treino.st.minutos_dia + (S.treino.st.bonus || 0) ? `<b class="mb">${S.treino.st.minutos_dia + (S.treino.st.bonus || 0) - S.treino.st.minutos} min</b>` : ""]]),
-      ...(S.treino?.missing || !S.treino?.st?.feridos ? [] : [["go", "centro", "Centro Pokémon", "cruz", S.treino.st.feridos.length ? `<b class="mb red" title="Pokémon feridos">${S.treino.st.feridos.length}</b>` : ""]]),
-      ["go", "batalhas", "Batalhas Pokémon", "espadas", S.pk?.battles && btPending() ? `<b class="mb red">${btPending()}</b>` : ""],
-      ...(S.rocket ? [["go", "rocket", "Equipe Rocket", "espadas", S.rocket.status === "ativa" ? `<b class="mb red">🚀 INVASÃO</b>` : ""]] : []),
-      ["go", "arena", "Arena Pokémon (ao vivo)", "crown", arenaLive().length ? `<b class="mb live">${arenaLive().length} AO VIVO</b>` : ""],
-      ...(S.cfg.war ? [["go", "guerras", "Guerras entre vilas", "raio", S.war?.st?.unseen ? `<b class="mb red" title="Sua vila foi atacada">🏰 ${S.war.st.unseen}</b>` : ""]] : [])]],
-    ["Comunidade", [
-      ...(S.mail && !S.mail.missing ? [["go", "correio", "Correio (presentes)", "bau", S.mail.unseen ? `<b class="mb red" title="Presente novo">🎁 ${S.mail.unseen}</b>` : ""]] : []),
-      ["go", "chat", "Chat, Jornal & Mural", "balao", unreadPosts() ? `<b class="mb red" title="Avisos novos no Jornal">📰 ${unreadPosts()}</b>` : S.chatUnread ? `<b class="mb red">${S.chatUnread > 99 ? "99+" : S.chatUnread}</b>` : `<b class="mb live">LIVE</b>`],
-      ["go", "caixa", "Caixa da Obra & Apoio", "obra", S.caixa?.loaded && !S.caixa.missing ? `<b class="mb pix">PIX</b>` : ""]]],
-    ["Lojas e vila", [
-      ["go", "loja", "Loja & Visuais", "xp", ""],
-      ["go", "pkloja", "Loja Pokémon", "bau", ""],
-      ["go", "mercado", "Mercado", "bau", ""],
-      ["go", "vila", "Minha Vila", "casa", ""]]],
-    ["Ajuda", [["go", "regras", "Biblioteca", "book", ""], ["go", "sac", "SAC: fale com a gente", "balao", sacUnread() ? `<b class="mb red">${sacUnread()}</b>` : ""], ...(S.isAdmin ? [["go", "admin", "Administração", "gear", ""]] : [])]]
-  ];
-  const btn = ([act, v, t, ic, b]) => `<button class="menu-btn" data-act="${act}" data-v="${v}" ${act === "go" ? `aria-current="${S.win === v}"` : ""} title="${t}">${iconSVG(ic, "mi")}<span>${t}</span>${b}</button>`;
-  return play + groups.map(([g, list]) => `<p class="menu-group">${g}</p>${list.map(btn).join("")}`).join("")
-    + `<button class="menu-btn menu-out" data-act="logout" title="Sair">${iconSVG("door", "mi")}<span>Sair</span></button>`;
+  // menu novo (pedido do dono em 03/11/2026): atalhos no topo; grupos do mais usado para o menos usado;
+  // dentro de cada grupo, ordem alfabética; cada grupo abre e fecha com um clique (fica guardado no aparelho)
+  const B = {
+    liga: S.league !== false && S.league ? (S.league.lg?.status === "rodada" ? `<b class="mb live">AO VIVO</b>` : S.league.lg?.status === "caverna" ? `<b class="mb red">🕳️</b>` : "") : null,
+    ranking: pi && !pi.P.released ? `<b class="mb lock" title="Travado até todos jogarem">🔒</b>` : "",
+    presence: pi ? `<b class="mb ${pi.missing.length ? "warn" : "ok"}">${pi.done.length}/${pi.act.length}</b>` : "",
+    duelos: duels ? `<b class="mb red">${duels}</b>` : "",
+    pokedex: S.pk?.mons?.some(m => evoReady(m).length || m.pending_moves?.length) ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : S.pk?.mons?.length ? `<b class="mb">${S.pk.mons.length}</b>` : "",
+    treino: S.treino?.missing ? null : S.treino?.st?.visita ? `<b class="mb live">LÁ DENTRO</b>` : S.treino?.st && S.treino.st.minutos < S.treino.st.minutos_dia + (S.treino.st.bonus || 0) ? `<b class="mb">${S.treino.st.minutos_dia + (S.treino.st.bonus || 0) - S.treino.st.minutos} min</b>` : "",
+    centro: S.treino?.missing || !S.treino?.st?.feridos ? null : S.treino.st.feridos.length ? `<b class="mb red" title="Pokémon feridos">${S.treino.st.feridos.length}</b>` : "",
+    batalhas: S.pk?.battles && btPending() ? `<b class="mb red">${btPending()}</b>` : "",
+    rocket: S.rocket ? (S.rocket.status === "ativa" ? `<b class="mb red">🚀 INVASÃO</b>` : "") : null,
+    arena: arenaLive().length ? `<b class="mb live">${arenaLive().length} AO VIVO</b>` : "",
+    guerras: S.cfg.war ? (S.war?.st?.unseen ? `<b class="mb red" title="Sua vila foi atacada">🏰 ${S.war.st.unseen}</b>` : "") : null,
+    correio: S.mail && !S.mail.missing ? (S.mail.unseen ? `<b class="mb red" title="Presente novo">🎁 ${S.mail.unseen}</b>` : "") : null,
+    chat: unreadPosts() ? `<b class="mb red" title="Avisos novos no Jornal">📰 ${unreadPosts()}</b>` : S.chatUnread ? `<b class="mb red">${S.chatUnread > 99 ? "99+" : S.chatUnread}</b>` : "",
+    caixa: S.caixa?.loaded && !S.caixa.missing ? `<b class="mb pix">PIX</b>` : "",
+    sac: sacUnread() ? `<b class="mb red">${sacUnread()}</b>` : "",
+    admin: S.isAdmin ? "" : null,
+    vila: "", loja: "", pkloja: "", mercado: "", equipe: "", regras: ""
+  };
+  const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
+  const byName = list => list.map(item).filter(Boolean).sort((a, b) => a[2].localeCompare(b[2], "pt-BR"));
+  const groups = MENU_GROUPS.map(([gk, gn, keys]) => [gk, gn, byName(keys)]).filter(g => g[2].length);
+  const closed = menuClosed();
+  const btn = ([act, v, t, ic, b]) => `<button class="menu-btn" data-act="${act}" data-v="${v}" ${act === "go" ? `aria-current="${S.win === v}"` : ""} title="${t}"><span class="me" aria-hidden="true">${ic}</span><span>${t}</span>${b}</button>`;
+  const fast = MENU_FAST.map(k => { const it = k === "desafio" ? ["go", "desafio", "Desafio", "🎯", pend ? `<b class="mb red">${total - pend}/${total}</b>` : `<b class="mb ok">✓</b>`] : item(k); return it; }).filter(Boolean);
+  const fastHTML = `<div class="menu-fast" aria-label="Atalhos rápidos">${fast.map(([act, v, t, ic, b]) => `<button class="mf-btn" data-act="${act}" data-v="${v}" aria-current="${S.win === v}" title="${t}"><span class="mf-ic" aria-hidden="true">${ic}</span><span class="mf-t">${MENU_SHORT[v] || t}</span>${b}</button>`).join("")}</div>`;
+  const reds = list => list.filter(x => /mb (red|live)/.test(x[4] || "")).length;
+  return play + fastHTML + groups.map(([gk, gn, list]) => { const off = closed.has(gk), r = reds(list);
+    return `<button class="mg-btn" data-act="mgrp" data-v="${gk}" aria-expanded="${!off}"><span>${gn}</span>${off && r ? `<b class="mb red">${r}</b>` : ""}<i class="mg-arrow" aria-hidden="true">${off ? "▸" : "▾"}</i></button>${off ? "" : `<div class="mg-list">${list.map(btn).join("")}</div>`}`; }).join("")
+    + `<button class="menu-btn menu-out" data-act="logout" title="Sair"><span class="me" aria-hidden="true">🚪</span><span>Sair</span></button>`;
 }
+// símbolo e nome de cada janela (menu, atalhos e abas das janelas usam os mesmos)
+const MENU = {
+  desafio: ["🎯", "Desafio do dia"], pokedex: ["📕", "Pokédex & Coleção"], equipe: ["👥", "Equipe & Mascote"], treino: ["🌿", "Grama de Treino"],
+  centro: ["🏥", "Centro Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
+  pkloja: ["🛒", "Loja Pokémon"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
+  mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
+  presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
+  regras: ["📚", "Biblioteca"], sac: ["🎧", "SAC: fale com a gente"], admin: ["⚙️", "Administração"], batalha: ["⚔️", "Batalha"]
+};
+const MENU_GROUPS = [
+  ["pk", "🐾 Pokémon", ["arena", "batalhas", "centro", "equipe", "rocket", "treino", "pkloja", "pokedex"]],
+  ["vila", "🏰 Vila e lojas", ["guerras", "loja", "mercado", "vila"]],
+  ["comp", "🏆 Competir", ["duelos", "liga", "presence", "ranking"]],
+  ["com", "💬 Comunidade", ["caixa", "chat", "correio"]],
+  ["ajuda", "❓ Ajuda", ["admin", "regras", "sac"]]
+];
+const MENU_FAST = ["desafio", "pokedex", "treino", "batalhas", "vila", "ranking"];
+const MENU_SHORT = { desafio: "Desafio", pokedex: "Pokédex", treino: "Grama", batalhas: "Batalhas", vila: "Vila", ranking: "Ranking" };
+function menuClosed() { try { return new Set(JSON.parse(localStorage.getItem("pg-menu-fechado") || "[]")); } catch { return new Set(); } }
+ACTIONS.mgrp = v => {
+  const c = menuClosed(); c.has(v) ? c.delete(v) : c.add(v);
+  try { localStorage.setItem("pg-menu-fechado", JSON.stringify([...c])); } catch {}
+  renderHUD();
+};
 
 // ---------- quem já jogou hoje ----------
 async function loadPresence() {
@@ -9621,6 +9675,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "menu-novo-2026-11-03", sql: "62", title: "🧭 Menu novo, mais fácil de achar tudo", body: () => `O menu do jogo foi reorganizado:
+• No topo, atalhos rápidos para o que mais se usa: Desafio, Pokédex, Grama, Batalhas, Vila e Ranking.
+• As opções ficaram em grupos (Pokémon, Vila e lojas, Competir, Comunidade e Ajuda), cada uma com o seu símbolo e em ordem alfabética.
+• Clique no nome do grupo para abrir ou fechar. O jogo lembra como você deixou.
+• O "Jogar hoje" ficou compacto no computador: clique em "Mais" para ver tudo.` },
   { id: "sil-desc-2026-10-30", sql: "60", title: "🔍 Desafio mais difícil: Descrição e Silhueta", body: () => `Os modos Descrição e Silhueta ficaram mais justos e mais difíceis:
 • Descrição: cada Pokémon ganhou um verbete de Pokédex completo, em 4 partes. Você começa só com uma pista vaga, e cada erro revela mais um pedaço.
 • Silhueta: agora só chega ao seu aparelho o pedaço que está na tela. Nada de abrir a imagem em outra página para ver inteira!
