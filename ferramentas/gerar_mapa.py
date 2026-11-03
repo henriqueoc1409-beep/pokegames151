@@ -1,4 +1,7 @@
-import math, json, random
+import math, json, random, sys
+# uso: python gerar_mapa.py [escala do espaçamento entre casas, 1 = mapa de 443 casas] [arquivo de saída]
+ESC = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
+OUT = sys.argv[2] if len(sys.argv) > 2 else "mapa_gerado.json"
 random.seed(151)
 W, H = 3200, 2720
 ROWS = [210, 730, 1250, 1770, 2290]
@@ -37,7 +40,7 @@ TR = lambda i: ("raio" if i % 23 == 17 else "troca" if i % 29 == 13 else "avanco
 forks_info = []
 def make_fork(fork, merge_xy, safe_pts, risky_pts, names):
     ls, lr = poly_len(safe_pts), poly_len(risky_pts)
-    ns = max(12, round(ls / 56)); nr = max(9, round(ns * .8))
+    ns = max(12, round(ls / (56 * ESC))); nr = max(9, round(ns * .8))
     s_ids = [add(x, y, names[0], "seguro", k, 2 if k == "avanco" else 0) for (x, y), k in zip(resample(safe_pts, ns), safe_kinds(ns))]
     r_ids = [add(x, y, names[1], "arriscado", k, 6 if k == "recuo" else 0) for (x, y), k in zip(resample(risky_pts, nr), risky_kinds(nr))]
     for a, b in zip(s_ids, s_ids[1:]): nodes[a]["next_a"] = b
@@ -56,7 +59,7 @@ for r in range(5):
     xa, xb = (XL + (XR - XL) * .38, XL + (XR - XL) * .64) if ltr else (XR - (XR - XL) * .38, XR - (XR - XL) * .64)
     def trunk_run(xs, xe, first_skip=True):
         global prev, counter
-        pts = dense(lambda x: curve(r, x), xs, xe, 120); n = max(2, round(poly_len(pts) / 58))
+        pts = dense(lambda x: curve(r, x), xs, xe, 120); n = max(2, round(poly_len(pts) / (58 * ESC)))
         ids = []
         for (x, y) in resample(pts, n - 1) + [(xe, curve(r, xe))]:
             counter += 1
@@ -131,7 +134,7 @@ for f in forks_info:
 meta = {"w": W, "h": H, "water": [[470, 540], [1490, 1560]],
         "labels": [[TRUNK[r], (XL + 260) if r % 2 == 0 else (XR - 260), ROWS[r] - 110] for r in range(5)]}
 import os
-json.dump(dict(nodes=nodes, meta=meta), open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "mapa_gerado.json"), "w"), ensure_ascii=False)
+json.dump(dict(nodes=nodes, meta=meta), open(os.path.join(os.path.dirname(os.path.abspath(__file__)), OUT), "w", encoding="utf-8"), ensure_ascii=False)
 bad = [n for n in nodes if not (40 < n["x"] < W - 40 and 60 < n["y"] < H - 40)]
 print("fora do mapa:", [(n["id"], n["x"], n["y"], n["region"]) for n in bad][:5])
 pairs = [(a["id"], b["id"], a["region"], b["region"], round(math.dist((a["x"], a["y"]), (b["x"], b["y"])))) for a in nodes for b in nodes if a["id"] < b["id"] and math.dist((a["x"], a["y"]), (b["x"], b["y"])) < 30]

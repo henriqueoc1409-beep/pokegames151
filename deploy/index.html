@@ -1617,6 +1617,19 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .aw-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03)}.aw-card h4{margin:0 0 2px}.aw-card ol{list-style:none;padding:0;margin:8px 0 0}
 .aw-card li{margin:3px 0}.aw-card li.me{color:#FFE7A0}.aw-last{display:flex;flex-wrap:wrap;gap:6px}
 .qz-prize-box{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:8px 12px 12px}.qz-prize-box legend{font-weight:700;padding:0 6px}.qz-prize-box details{margin-top:8px}.qz-prize-box summary{cursor:pointer}
+.ll-card{margin-bottom:10px}.ll-card.lead{border-color:#4CC38A}
+.ll-top{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}.ll-info{flex:1;min-width:200px}
+.ll-stats{margin-top:4px;font-size:13px}.ll-moves{font-size:12px}
+.ll-price{display:flex;flex-direction:column;align-items:center;min-width:110px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.25)}
+.ll-price b{font-size:22px;color:var(--gold-text)}
+.ll-bid,.ll-create{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:8px}.ll-bid label,.ll-create label{width:100%;margin:0}
+.ll-bid input{max-width:140px}.ll-create select{max-width:260px}.ll-create input{max-width:140px}
+.hero-perk{font-size:12px;color:var(--gold-text);margin-top:4px}
+.cr-now{margin-bottom:10px;border-color:#C9A05A}
+.cr-box{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}.cr-mon{display:flex;gap:10px;align-items:center}
+.cr-ctl{flex:1;min-width:240px}.cr-n{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.tr-comp{margin:10px 0 4px;display:flex;flex-direction:column;gap:4px}.tr-comp select{max-width:320px}
+.gr-comp{font-size:12px;font-weight:700;white-space:nowrap}
 .qz-sum{cursor:pointer;display:flex;gap:10px;align-items:center;flex-wrap:wrap;list-style-position:inside}
 .qz-card[open] .qz-sum{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
 .qz-sum-w{font-weight:700}.qz-top summary{cursor:pointer;margin-top:10px}.qz-top ol{margin:6px 0 0}
@@ -1819,11 +1832,31 @@ const MODES = {
 const HEROES = {
   guerreiro: { nome: "Guerreiro", skill: "Investida", passiva: () => `Mais forte nos encontros: +${S.cfg.guerreiro_duel_bonus ?? 15}% de chance de vencer o duelo.`, efeito: v => `Anda +${v} casas hoje.` },
   mago:      { nome: "Mago", skill: "Teleporte", passiva: () => `${S.cfg.mago_resist_pct ?? 30}% de chance de anular armadilhas, lamaçais e raios.`, efeito: v => `Salta até a próxima casa especial à frente, a no máximo ${v} casas.` },
-  arqueiro:  { nome: "Arqueiro", skill: "Tiro certeiro", passiva: () => `A roleta do movimento nunca tira menos que ${S.cfg.arqueiro_min_die ?? 2}.`, efeito: v => `Gira a roleta ${v} vezes e fica com o maior resultado.` },
+  arqueiro:  { nome: "Arqueiro", skill: "Tiro certeiro", passiva: () => `A roleta do movimento nunca tira menos que ${S.cfg.arqueiro_min_die ?? 2}.`, efeito: () => `A roleta do movimento vale o máximo (${S.cfg.roll_max ?? 3}) hoje.` },
   ladino:    { nome: "Ladino", skill: "Atalho", passiva: p => `Mão leve: pega até ${p} moedas de cada jogador que ultrapassa.`, efeito: v => `Desvia do próximo lamaçal ou armadilha e anda +${v} casas.` },
   clerigo:   { nome: "Clérigo", skill: "Bênção", passiva: () => "Cartas de azar fazem só metade do efeito.", efeito: v => `Nada te empurra para trás hoje${v ? ` e você anda +${v} casas` : ""}.` },
+  pesquisador: { nome: "Pesquisador", skill: "Isca de frutas", passiva: () => `Caderno de campo: +${heroCfg().pesq_bolas} bola em cada encontro e +${heroCfg().pesq_xp_pct}% de XP para a equipe nas andadas.`, efeito: v => `Anda +${v} ${v === 1 ? "casa" : "casas"} e o Pokémon do encontro de hoje vem incomum ou mais raro.` },
+  mercador:  { nome: "Mercador", skill: "Negócio da China", passiva: () => `Bom de negócio: lojas ${heroCfg().merc_loja_desc_pct}% mais baratas e +${heroCfg().merc_salario_pct}% no salário.`, efeito: v => `Anda +${v} ${v === 1 ? "casa" : "casas"} e o baú e o salário de hoje vêm em dobro.` },
   domador:   { nome: "Domador", skill: "Montaria", passiva: p => `Ganha ${p} dica${p > 1 ? "s" : ""} grátis toda semana.`, efeito: v => `A roleta do movimento vale ${v} vezes mais.` }
 };
+// bônus de cada herói nos outros sistemas (arquivo 67); os números vêm de Ajustes do jogo → Heróis
+const HERO_DEF = { guerreiro_dano_pct: 10, mago_status_acc_pct: 10, mago_forte_pct: 5, arqueiro_vel_pct: 10, arqueiro_captura_pct: 10, ladino_taxa_pct: 2,
+  clerigo_centro_desc_pct: 30, clerigo_cura_horas: 48, domador_grama_xp_pct: 20, domador_creche_desc_pct: 20, pesq_bolas: 1, pesq_xp_pct: 10, pesq_comp_pct: 75,
+  merc_loja_desc_pct: 10, merc_salario_pct: 10, merc_leilao_taxa_pct: 0 };
+const heroCfg = () => ({ ...HERO_DEF, ...(S.cfg?.herois || {}) });
+function heroPerk(k) {
+  const h = heroCfg();
+  return {
+    guerreiro: `⚔️ +${h.guerreiro_dano_pct}% de dano em todas as batalhas Pokémon.`,
+    mago: `🔮 Ataques de status acertam +${h.mago_status_acc_pct}%; na Grama, aparece mais Pokémon forte.`,
+    arqueiro: `🏹 Pokémon ${h.arqueiro_vel_pct}% mais rápidos nas batalhas e +${h.arqueiro_captura_pct}% de chance de captura.`,
+    ladino: `🗡️ Taxa de só ${h.ladino_taxa_pct}% no Leilão e no Mercado.`,
+    clerigo: `✨ Centro Pokémon ${h.clerigo_centro_desc_pct}% mais barato e cura grátis em ${h.clerigo_cura_horas} horas.`,
+    domador: `🐎 +${h.domador_grama_xp_pct}% de experiência na Grama e Creche ${h.domador_creche_desc_pct}% mais barata.`,
+    pesquisador: `🔬 Acompanhante da Grama ganha ${h.pesq_comp_pct}% da experiência.`,
+    mercador: `💰 Vende no Leilão ${h.merc_leilao_taxa_pct ? `com só ${h.merc_leilao_taxa_pct}% de taxa` : "sem taxa"}.`
+  }[k] || "";
+}
 const ROMAN = ["I", "II", "III", "IV", "V"];
 function heroStats(cls, level) {
   const lv = S.cfg.skill_levels || [1, 5, 10, 15, 20];
@@ -1850,7 +1883,7 @@ const KIND = {
   cacada:     { nome: "Trilha da Caçada", desc: "Caminho temporário até o Pokémon misterioso. Some quando a Caçada acabar.", cor: "#7E57C2" },
   alvo:       { nome: "Pokémon misterioso", desc: "O primeiro a parar aqui tenta capturar com as 3 bolas. Dando certo ou não, volta para a casa onde estava antes da Caçada.", cor: "#3A2858" },
   treinador:  { nome: "Treinador", desc: "Um treinador do jogo te desafia para uma batalha Pokémon. Vencer dá moedas e XP.", cor: "#cf6a2a" },
-  castelo:    { nome: "Castelo da Liga", desc: "A chegada. Quando todos os jogadores ativos chegarem, começa a Liga Pokémon.", cor: "#d6a548" }
+  castelo:    { nome: "Castelo da Liga", desc: "A chegada. O 1º que chegar encerra a corrida: quando a rodada daquele dia fecha, começa a Liga Pokémon.", cor: "#d6a548" }
 };
 function toast(msg, err = false) {
   const t = document.createElement("div");
@@ -1909,6 +1942,8 @@ const WEAPONS = {
   mago: [[11,2,"#7fe3ff"],[12,2,"#7fe3ff"],[13,2,"#7fe3ff"],[12,1,"#7fe3ff"],[12,3,"#7fe3ff"],[12,4,"#8a5a2b"],[12,5,"#8a5a2b"],[12,6,"#8a5a2b"],[12,7,"#8a5a2b"],[12,8,"#8a5a2b"],[12,9,"#8a5a2b"],[12,10,"#8a5a2b"],[12,11,"#8a5a2b"],[12,12,"#8a5a2b"],[12,13,"#8a5a2b"]],
   ladino: [[12,7,"#d8dde3"],[12,8,"#d8dde3"],[12,9,"#d8dde3"],[11,10,"#8a6421"],[12,10,"#8a6421"],[13,10,"#8a6421"],[12,11,"#5a3a24"],[0,9,"#d8dde3"],[0,10,"#d8dde3"],[0,11,"#8a6421"]],
   clerigo: [[12,1,"#f5d547"],[11,2,"#f5d547"],[12,2,"#fff3b0"],[13,2,"#f5d547"],[12,3,"#f5d547"],[12,4,"#c9a24a"],[12,5,"#c9a24a"],[12,6,"#c9a24a"],[12,7,"#c9a24a"],[12,8,"#c9a24a"],[12,9,"#c9a24a"],[12,10,"#c9a24a"],[12,11,"#c9a24a"],[12,12,"#c9a24a"],[12,13,"#c9a24a"]],
+  pesquisador: [[11,2,"#c9d6df"],[12,2,"#c9d6df"],[13,2,"#c9d6df"],[11,3,"#c9d6df"],[12,3,"#a8e0ff"],[13,3,"#c9d6df"],[11,4,"#c9d6df"],[12,4,"#c9d6df"],[13,4,"#c9d6df"],[13,5,"#8a5a2b"],[14,6,"#8a5a2b"],[14,7,"#8a5a2b"],[0,8,"#e8e0c8"],[0,9,"#e8e0c8"],[0,10,"#c94a4a"]],
+  mercador: [[12,6,"#c9a24a"],[11,7,"#b8743a"],[12,7,"#b8743a"],[13,7,"#b8743a"],[10,8,"#b8743a"],[11,8,"#b8743a"],[12,8,"#f5d547"],[13,8,"#b8743a"],[14,8,"#b8743a"],[10,9,"#b8743a"],[11,9,"#b8743a"],[12,9,"#b8743a"],[13,9,"#b8743a"],[14,9,"#b8743a"],[11,10,"#8a5a2b"],[12,10,"#8a5a2b"],[13,10,"#8a5a2b"]],
   domador: [[12,6,"#8a5a2b"],[13,7,"#8a5a2b"],[14,8,"#8a5a2b"],[14,9,"#8a5a2b"],[13,10,"#8a5a2b"],[12,9,"#8a5a2b"],[12,10,"#5a3a24"],[12,11,"#5a3a24"],[12,12,"#5a3a24"]],
   arqueiro: [[12,4,"#8a5a2b"],[13,5,"#8a5a2b"],[13,6,"#8a5a2b"],[13,7,"#8a5a2b"],[13,8,"#8a5a2b"],[13,9,"#8a5a2b"],[13,10,"#8a5a2b"],[12,11,"#8a5a2b"],[12,5,"#efe6cc"],[12,6,"#efe6cc"],[12,7,"#efe6cc"],[12,8,"#efe6cc"],[12,9,"#efe6cc"],[12,10,"#efe6cc"]]
 };
@@ -1918,7 +1953,9 @@ const CLASS_COLORS = {
   arqueiro:  { h: "#c98c2c", c: "#3f8a4f", d: "#24552e" },
   ladino:    { h: "#2b2b33", c: "#3d4250", d: "#22252d" },
   clerigo:   { h: "#d9b46a", c: "#e8e0c8", d: "#c9a24a" },
-  domador:   { h: "#7a4a2a", c: "#b8743a", d: "#6e4222" }
+  domador:   { h: "#7a4a2a", c: "#b8743a", d: "#6e4222" },
+  pesquisador: { h: "#4a3a2a", c: "#eceee6", d: "#5a7a8a" },
+  mercador:  { h: "#2a1a10", c: "#7a2a4a", d: "#c9a24a" }
 };
 function mixWhite(hex, t) {
   const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255, f = v => Math.round(v + (255 - v) * t);
@@ -2249,7 +2286,7 @@ function renderCreate() {
     <div class="classes">${Object.entries(HEROES).map(([k, h]) => { const st = heroStats(k, 1); return `
       <button class="cls" data-act="pickclass" data-v="${k}" aria-pressed="${c === k}">
         ${avatarSVG({ class: k, outfit: {} }, 5)}
-        <h3 style="margin-top:8px">${h.nome}</h3><p>${h.passiva(st.pv)}</p><p><strong>${h.skill}:</strong> ${h.efeito(st.sv)}</p></button>`; }).join("")}</div>
+        <h3 style="margin-top:8px">${h.nome}</h3><p>${h.passiva(st.pv)}</p><p><strong>${h.skill}:</strong> ${h.efeito(st.sv)}</p><p class="hero-perk">${heroPerk(k)}</p></button>`; }).join("")}</div>
     <form id="createform"><label for="f-cname">Nome do personagem</label>
       <input id="f-cname" required minlength="3" maxlength="16" placeholder="Como os outros vão ver você">
       <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn">Começar a aventura</button>
@@ -3780,9 +3817,12 @@ function hudTip() {
   const n = S.nodeById[S.tip.id]; if (!n) return "";
   if (S.boss?.active && S.boss.node === n.id) return `<div class="hud-card tip">${close}${bossBox(true)}</div>`;
   const k = KIND[n.kind], here = S.chars.filter(c => c.node === n.id);
+  if (n.kind === "treinador" && n.npc === "red") return `<div class="hud-card tip">${close}<span class="npc-tip"><img class="npc-ic" src="${redCanvas().toDataURL()}" alt=""><span><strong>🔴 Red, o treinador lendário</strong><br><span class="muted">em ${esc(n.region)}</span></span></span>
+      <p class="tip-p">Tem um time de <b>6 Pokémon dos níveis 73 a 81</b>. Todo mundo que passa por aqui (parando ou não) tem que enfrentá-lo. Dizem que ninguém vence… quem conseguir ganha <b>${S.cfg.casas?.red_premio ?? 1000} moedas</b>. Perder não tira nada.</p>
+      <p class="tip-p muted">Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p></div>`;
   if (n.kind === "treinador") { const t = npcAt(n.id), lv = npcTeamLevel();
     return `<div class="hud-card tip">${close}<span class="npc-tip">${npcImg(n.id)}<span><strong>🧢 ${esc(t.full)}</strong><br><span class="muted">${esc(t.title)} · em ${esc(n.region)}</span></span></span>
-      <p class="tip-p">Usa Pokémon do tipo <b>${t.types.map(x => esc(PK_TYPES[x]?.[0] || x)).join(" e ")}</b>${lv ? `, mais ou menos no nível <b>${lv}</b> (o da sua equipe)` : ", no nível da sua equipe"}. Quem parar aqui enfrenta essa batalha: vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
+      <p class="tip-p">Usa Pokémon do tipo <b>${t.types.map(x => esc(PK_TYPES[x]?.[0] || x)).join(" e ")}</b>${lv ? `, mais ou menos no nível <b>${lv}</b> (o da sua equipe)` : ", no nível da sua equipe"}. Quem passar por aqui (parando ou não) enfrenta essa batalha: vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
       <p class="tip-p muted">Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p></div>`; }
   return `<div class="hud-card tip">${close}<strong>${k.nome}</strong><span class="muted"> em ${esc(n.region)}</span>
     <p class="tip-p">${k.desc}${n.value ? ` (${n.value} casas)` : ""} Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p>
@@ -3855,7 +3895,7 @@ function seasonBlock() {
   const pod = Array.from({ length: need }, (_, i) => { const a = arr.find(x => x.rank === i + 1); return `<li><span class="num">${i + 1}º</span> ${a ? esc(a.name) : `<span class="muted">vago</span>`}</li>`; }).join("");
   const y = T.yesterday || [];
   return `<div class="panel lo season"><div class="season-grid">
-    <div><h3>Temporada ${se.id}</h3><p class="muted" style="margin:4px 0 0">${se.status === "encerrada" ? "Encerrada! Amanhã todos voltam à largada." : `Termina quando ${need} jogadores chegarem ao Castelo.`}</p><ol class="podium">${pod}</ol></div>
+    <div><h3>Temporada ${se.id}</h3><p class="muted" style="margin:4px 0 0">${se.status === "encerrada" ? "Encerrada! Amanhã todos voltam à largada." : `O 1º que chegar ao Castelo encerra a corrida (vale até a rodada daquele dia fechar). Pódio pela posição no mapa.`}</p><ol class="podium">${pod}</ol></div>
     <div><h3>Rodada de ontem</h3>${y.length ? `<ol class="podium">${y.map(r => `<li><span class="num">${r.rank}º</span> ${esc(r.name)} <span class="muted">(${r.attempts} tentativas)</span></li>`).join("")}</ol>` : `<p class="muted" style="margin-top:4px">Ainda sem resultado.</p>`}</div>
   </div></div>`;
 }
@@ -3873,6 +3913,8 @@ const WINS = {
   correio: ["Correio", () => viewMail()],
   treino: ["Grama de Treino", () => viewTreino()],
   centro: ["Centro Pokémon", () => viewCentro()],
+  creche: ["Creche Pokémon", () => viewCreche()],
+  leilao: ["Leilão de Pokémon", () => viewLeilao()],
   admin: ["Administração", () => viewAdmin()]
 };
 // Formulários com texto digitado não podem sumir quando a tela se atualiza sozinha (Jornal, chat, Arena…).
@@ -3892,7 +3934,7 @@ function renderWindow() {
   const fa = document.activeElement, keepFocus = fa && keepForms.some(f => f.contains(fa)) ? { el: fa, a: fa.selectionStart, b: fa.selectionEnd } : null;
   if (!S.win || !WINS[S.win] || (S.win === "admin" && !S.isAdmin)) { root.innerHTML = ""; root.dataset.tab = ""; return; }
   const prev = root.querySelector(".win-body"), keep = prev && root.dataset.tab === S.win ? prev.scrollTop : 0;
-  const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "treino", "centro", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
+  const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "treino", "centro", "creche", "leilao", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
   const pos = k => { const i = ORDER.indexOf(k); return i < 0 ? 99 : i; };
   const tabs = Object.entries(WINS).filter(([k]) => (k !== "admin" || S.isAdmin) && k !== "batalha").sort((a, b) => pos(a[0]) - pos(b[0]));
   const [title, view] = WINS[S.win];
@@ -4288,7 +4330,7 @@ function jornalHTML(rep) {
     const w = R[0];
     parts.push(`<div class="jn-head"><span class="jn-kicker">Campeão do dia</span><h3>${pick([
       `${esc(w.name)} amassou a rodada!`, `${esc(w.name)} é o(a) brabo(a) do dia`, `Respeitem ${esc(w.name)}`, `${esc(w.name)} não deixou nem as migalhas`], sd)}</h3>
-      <p>${nm(w)} venceu a rodada de ${d} com <span class="num">${w.attempts}</span> tentativas e ganhou uma estátua de ouro na vila. ${pick(["O resto do grupo só assistiu.", "Pode cobrar ingresso pra visitar a vila agora.", "Isso foi uma aula.", "Alguém chama o Professor Carvalho para estudar esse cérebro."], sd + 1)}</p></div>`);
+      <p>${nm(w)} venceu a rodada de ${d} com <span class="num">${w.attempts}</span> tentativas e ganhou mais um troféu (🏆) na vila. ${pick(["O resto do grupo só assistiu.", "Pode cobrar ingresso pra visitar a vila agora.", "Isso foi uma aula.", "Alguém chama o Professor Carvalho para estudar esse cérebro."], sd + 1)}</p></div>`);
     const ace = R.filter(r => r.first_try >= 3);
     if (ace.length) parts.push(`<p>🎯 ${list(ace)} ${ace.length > 1 ? "acertaram" : "acertou"} três ou mais desafios <strong>de primeira</strong>. ${pick(["Máquina.", "Isso tem nome: talento.", "Leu a mente do Pokémon.", "Pokédex ambulante."], sd + 2)}</p>`);
     const zero = R.filter(r => r.solved === 0);
@@ -4978,9 +5020,7 @@ function drawVila(cv, v) {
   // base e estátuas
   if (v.castles > 0) { drawSprite(g, { s: 9, rows: CASTLE, pal: { x: "#E8E0C8" } }, 392, 150); label(`Castelo da Liga${v.castles > 1 ? ` x${v.castles}` : ""}`, 460, 238); }
   else { drawSprite(g, VSPR.tent, 418, 180); label("Barraca", 456, 236); }
-  const spots = [[330, 230], [560, 230], [300, 330], [590, 330], [360, 380], [520, 380], [280, 180], [610, 180]];
-  for (let i = 0; i < Math.min(v.statues, spots.length); i++) drawSprite(g, VSPR.statue, spots[i][0], spots[i][1]);
-  if (v.statues > spots.length) label(`+${v.statues - spots.length} estátuas`, 460, 270);
+  // as estátuas de ouro saíram do desenho (pedido do dono em 03/11/2026); as vitórias seguem contadas no painel (🏆)
   // construções
   S.vilaHits = [];
   for (const b of VB()) {
@@ -5026,7 +5066,7 @@ function viewVila() {
   const others = S.chars.filter(x => x.user_id !== S.session.user.id);
   const visit = `<label for="vila-visit" class="sr">Visitar vila</label><select id="vila-visit"><option value="">Minha vila</option>${others.map(o => `<option value="${o.user_id}" ${S.vilaUser === o.user_id ? "selected" : ""}>Vila de ${esc(o.name)}</option>`).join("")}</select>`;
   const all = VB(), built = all.filter(b => (v[b.col + "_level"] || 0) > 0).length, dmgN = Object.keys(v.damaged || {}).length, war = !!S.cfg.war;
-  const stats = `<div class="vila-stats"><span class="tag">Construções: ${built}/${all.length}</span>${war ? `<span class="tag">Vila nível ${v.center_level || 1}</span>` : ""}${dmgN ? `<span class="tag bad">🔥 ${dmgN} danificada${dmgN > 1 ? "s" : ""}</span>` : ""}${war && v.shield_until && new Date(v.shield_until) > new Date() ? `<span class="tag ok">🛡️ Escudo até ${chatWhen(v.shield_until)}</span>` : ""}<span class="tag">Estátuas de ouro: ${v.statues}</span><span class="tag">Temporadas vencidas: ${v.castles}</span>${v.mud ? `<span class="tag bad">Lama nível ${v.mud}</span>` : `<span class="tag ok">Vila limpa</span>`}</div>`;
+  const stats = `<div class="vila-stats"><span class="tag">Construções: ${built}/${all.length}</span>${war ? `<span class="tag">Vila nível ${v.center_level || 1}</span>` : ""}${dmgN ? `<span class="tag bad">🔥 ${dmgN} danificada${dmgN > 1 ? "s" : ""}</span>` : ""}${war && v.shield_until && new Date(v.shield_until) > new Date() ? `<span class="tag ok">🛡️ Escudo até ${chatWhen(v.shield_until)}</span>` : ""}<span class="tag" title="Vitórias na rodada do dia">🏆 Vitórias na rodada: ${v.statues}</span><span class="tag">Temporadas vencidas: ${v.castles}</span>${v.mud ? `<span class="tag bad">Lama nível ${v.mud}</span>` : `<span class="tag ok">Vila limpa</span>`}</div>`;
   const pend = [P.coins && `${P.coins} moedas`, P.hints && `${P.hints} dica(s)`, P.xp && `${P.xp} XP`, P.retries && `${P.retries} tente outra vez`, P.steps && `${P.steps} casa(s) de bônus`].filter(Boolean);
   const top = mine ? `${v.mud ? `<div class="panel lo vila-mud"><span><strong>Sua vila está coberta de lama.</strong> Enquanto não limpar, nada é produzido.</span>
       <button class="btn small" data-act="vila-clean" ${S.me.coins < v.clean_cost ? "disabled" : ""}>Limpar por ${v.clean_cost} moedas</button></div>` : ""}
@@ -5036,7 +5076,7 @@ function viewVila() {
     ${stats}${top}
     ${war ? `<div class="vila-cats" role="group" aria-label="Categorias">${VCAT.map(([k, t]) => { const n = all.filter(b => VCAT_OF[b.k] === k && v.damaged?.[b.k]).length; return `<button data-act="vila-cat" data-v="${k}" aria-pressed="${S.vilaCat === k}">${t}${n ? `<b>${n}</b>` : ""}</button>`; }).join("")}</div>` : ""}
     <div class="vila-grid">${all.filter(b => !war || VCAT_OF[b.k] === S.vilaCat).map(b => vilaCard(b, v)).join("")}</div>
-    <p class="muted mk-note">Toque numa construção no desenho para ir até ela. A barraca vira Castelo da Liga quando você vence uma temporada; cada vitória na rodada ergue uma estátua de ouro; quem termina a rodada em último acorda com a vila cheia de lama.</p></div>`;
+    <p class="muted mk-note">Toque numa construção no desenho para ir até ela. A barraca vira Castelo da Liga quando você vence uma temporada; cada vitória na rodada soma um troféu (🏆) no painel; quem termina a rodada em último acorda com a vila cheia de lama.</p></div>`;
 }
 
 // =================================================================
@@ -5236,7 +5276,8 @@ function LIB() {
       <p>Quem não tem a HM passa normalmente e <b>não perde nada</b>, só recebe uma dica.</p>
       <p><b>As HMs são raras:</b> não vendem. Aparecem em 1 de cada ${Math.round(100 / (ic.hm_bau_pct || 1))} baús ou em 1 de cada ${Math.round(100 / (ic.hm_npc_pct || 2))} vitórias contra os treinadores do mapa. Cada HM sai uma vez só para cada jogador e nunca acaba.</p>` },
     { id: "herois", ic: "🛡️", t: "Heróis", h: `<p>Cada herói tem uma <b>passiva</b>, que funciona sempre, e uma <b>habilidade</b> que você ativa uma vez por dia, antes de andar. As duas ficam mais fortes nos níveis ${(c.skill_levels || [1, 5, 10, 15, 20]).join(", ")}. Trocar de herói custa ${libN(c.class_change_price, 300)} moedas.</p>
-      <ul class="hero-list">${Object.entries(HEROES).map(([k, h]) => { const x = heroStats(k, 1); return `<li><strong>${h.nome}.</strong> ${h.passiva(x.pv)} <strong>${h.skill}:</strong> ${h.efeito(x.sv)}</li>`; }).join("")}</ul>` },
+      <p><b>Heróis em tudo:</b> cada herói também ganha um bônus pequeno fora do tabuleiro (batalhas, Grama, Centro, Creche, Leilão e lojas). Veja na lista abaixo, em "Em tudo".</p>
+      <ul class="hero-list">${Object.entries(HEROES).map(([k, h]) => { const x = heroStats(k, 1); return `<li><strong>${h.nome}.</strong> ${h.passiva(x.pv)} <strong>${h.skill}:</strong> ${h.efeito(x.sv)} <em>Em tudo:</em> ${heroPerk(k)}</li>`; }).join("")}</ul>` },
     { id: "pokemon", ic: "🐾", t: "Pokémon: captura e coleção", h: `<p>Depois de cada andada aparece um <b>Pokémon selvagem</b> na casa onde você parou. Você tem <b>3 bolas</b> para tentar capturar. A Poké Bola é grátis; a Great Ball (${balls.great?.price ?? 40} moedas) e a Ultra Ball (${balls.ultra?.price ?? 90}) aumentam a chance. Pokémon raros são mais difíceis, e cada região tem os seus tipos preferidos. Os Pokémon selvagens sempre aparecem fracos, entre os <b>níveis 1 e 5</b>, em qualquer parte do tabuleiro: para ficarem fortes, é preciso treinar.</p>
       <p><b>Equipe:</b> até 6 Pokémon. A equipe ganha XP toda vez que você anda, dividido entre eles, e também nas batalhas.</p>
       <p><b>Evolução:</b> por nível ou por pedra (${pk.stones?.price ?? 250} moedas), como na Red/Blue. Você escolhe a hora de evoluir.</p>
@@ -5245,11 +5286,17 @@ function LIB() {
       <p>Lá dentro, ande com o seu personagem (<b>WASD ou as setas</b> no computador; botões na tela no celular). Na <b>grama alta</b> aparecem Pokémon selvagens do nível do seu, e <b>você comanda a batalha</b>: ataques, itens da bolsa ou fugir. Vencendo, ganha experiência; perdendo, não ganha nada.</p>
       <p>⏱️ São <b>${S.treino?.st?.minutos_dia ?? 30} minutos por dia</b>. Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. Se o tempo acabar no meio de uma luta, você termina a luta. O relógio zera à meia-noite.</p>
       <p>🐦 Pokémon selvagens passeiam pela grama só de enfeite, e quem estiver na grama ao mesmo tempo que você aparece andando por lá.</p>
+      <p>🎒 <b>Acompanhante:</b> antes de entrar, escolha outro Pokémon seu para ir na bolsa. A cada vitória, ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência. Ótimo para quem não tem ataque de dano, como o Magikarp.</p>
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
-      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.</p>
+      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.</p>
       <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
+    { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
+      <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
+      <p>No fim, o Pokémon vai sozinho para quem deu o maior lance, e quem vendeu recebe as moedas, menos ${S.leilao?.st?.cfg?.taxa_pct ?? 5}% de taxa. Sem lance, nada muda.</p>` },
+    { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon sobe de nível pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${S.creche?.st?.horas_por_nivel ?? 12} horas</b>, e um Pokémon por vez. Cancelando, as moedas dos níveis que ainda não chegaram voltam. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 10} moedas.</p>
+      <p>Limite: ${S.creche?.st?.niveis_semana ?? 5} níveis por semana, somando todos os seus Pokémon, e só até o nível ${S.creche?.st?.nivel_max ?? 40}. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p>` },
     { id: "batalha", ic: "⚔️", t: "Batalhas Pokémon e Arena", h: `<p>Precisa de 3 Pokémon capturados. Entram os <b>3 primeiros da equipe</b>. Os dois escolhem a ação do turno em segredo (atacar, trocar ou usar um item) e o servidor resolve.</p>
       <p><b>Aposta:</b> quem desafia escolhe de ${bet[0]} a ${bet[1]} moedas. Quem vence leva tudo; empate devolve.</p>
       <p><b>Sem prazo por turno:</b> jogue quando puder. Ninguém perde por demora.</p>
@@ -5264,10 +5311,12 @@ function LIB() {
       <li><b>HMs</b>: raras, nunca acabam e abrem atalhos no mapa (veja "HMs e atalhos").</li></ul>
       <p>Para ensinar, abra o Pokémon na coleção e toque em <b>📀 Ensinar TM/HM</b>. Na batalha, toque em <b>🎒 Bolsa</b>.</p>
       <p>Às vezes um baú (${ic.bau_pct}%) ou a Fonte das Bolas (${ic.fonte_pct}%) também dá um item.</p>` },
-    { id: "treinadores", ic: "🧢", t: "Treinadores e casas novas", h: `<p><b>Treinadores do mapa:</b> ficam em pé em algumas casas. Quem parar ali enfrenta uma batalha automática contra 3 Pokémon do tipo dele, no nível da sua equipe. Vencendo, ganha moedas e XP (e, com muita sorte, uma HM). Perdendo, não perde nada.</p>
+    { id: "treinadores", ic: "🧢", t: "Treinadores e casas novas", h: `<p><b>Treinadores são obrigatórios:</b> passou pela casa de um Treinador (parando nela ou não), tem que batalhar. Vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
+      <p>🔴 <b>Red, o treinador lendário</b>, fica no caminho perto do Castelo, com 6 Pokémon dos níveis 73 a 81. Todo mundo enfrenta… quem vencer ganha ${c.casas?.red_premio ?? 1000} moedas.</p><p><b>Treinadores do mapa:</b> ficam em pé em algumas casas. Quem parar ali enfrenta uma batalha automática contra 3 Pokémon do tipo dele, no nível da sua equipe. Vencendo, ganha moedas e XP (e, com muita sorte, uma HM). Perdendo, não perde nada.</p>
       <p><b>Mina de pedras</b>: chance de achar uma pedra de evolução. <b>Casa do Desafio</b>: quem acertou os 4 modos do dia ganha moedas e anda mais; quem não acertou volta casas. <b>Ladrão de estrada</b>: leva uma parte das suas moedas. <b>Fonte das Bolas</b>: dá uma Great Ball ou uma Ultra Ball.</p>
       <p>Na sua vila, a <b>Mina</b> também deixa cavar pedras uma vez por dia.</p>` },
-    { id: "liga", ic: "🏆", t: "Temporada e Liga Pokémon", h: `<p>Quando todos os jogadores ativos chegam ao Castelo, começa a <b>Liga Pokémon</b>: um mata-mata de batalhas, uma fase por dia, com vida cheia. Quem não tem Pokémon perde por W.O.</p>
+    { id: "liga", ic: "🏆", t: "Temporada e Liga Pokémon", h: `<p>O <b>1º jogador que chega ao Castelo encerra a corrida</b>. Quem ainda não jogou naquele dia joga normalmente; quando a rodada do dia fecha (meia-noite), a corrida acaba. Os prêmios do Castelo vão pela posição: primeiro quem chegou, depois quem estava mais perto do Castelo.</p>
+      <p>Aí começa a <b>Liga Pokémon</b>, com todos os jogadores ativos: um mata-mata de batalhas, uma fase por dia, com vida cheia (o 1º da corrida enfrenta o último). Quem não tem Pokémon perde por W.O.</p>
       <p>O <b>campeão</b> ganha a Aura do Campeão, uma estátua no mapa e vai à <b>caverna do lendário</b>: uma única tentativa de capturar um lendário, com a torcida de todos.</p>
       <p>Depois a temporada fecha e todos voltam à largada, <b>mantendo</b> nível, moedas, Pokémon e itens.</p>
       <p><b>🏅 Prêmios da temporada:</b> quando ela fecha, o 1º lugar de cada uma das 12 categorias ganha ${c.season_awards?.coins ?? 150} moedas, uma medalha no cartão e um presente no Correio (empatados ganham todos): mais casas andadas, mais Pokémon capturados, mais vitórias na rodada do dia, mais batalhas Pokémon vencidas, mais duelos vencidos, mais dano na Equipe Rocket, mais vitórias no Quiz, mais treinadores vencidos, mais moedas ganhas andando, mais acertos de primeira, mais espécies novas na Pokédex e mais Caçadas vencidas. Acompanhe em <b>Ranking → 🏅 Prêmios</b>.</p>` },
@@ -5324,7 +5373,7 @@ function CFG_FIELDS() {
       ["hint_price", "Preço da Dica"], ["retry_price", "Preço do Tente outra vez"], ["max_hints_per_mode", "Dicas por modo (até 3)"],
       ["trap_price", "Preço da armadilha"], ["trap_push", "Casas que a armadilha empurra"], ["trap_reward", "Moedas para o dono da armadilha"], ["storm_push", "Casas que o raio empurra"],
       ["duel_push", "Casas que o perdedor do encontro volta"], ["duel_coins", "Moedas em jogo no encontro"], ["duel_level_factor", "% por nível de diferença no encontro"],
-      ["guerreiro_duel_bonus", "Bônus do Guerreiro (%)"], ["mago_resist_pct", "Chance do Mago resistir (%)"], ["arqueiro_min_die", "Roleta mínima do Arqueiro"], ["season_arrivals", "Chegadas que encerram a temporada"],
+      ["guerreiro_duel_bonus", "Bônus do Guerreiro (%)"], ["mago_resist_pct", "Chance do Mago resistir (%)"], ["arqueiro_min_die", "Roleta mínima do Arqueiro"], ["season_arrivals", "Posições do pódio da temporada"],
       ...(S.cfg.battle_bet_max != null ? [["battle_bet_min", "Batalha Pokémon: aposta mínima"], ["battle_bet_max", "Batalha Pokémon: aposta máxima"]] : [])];
 }
 function viewAdmin() {
@@ -5538,6 +5587,8 @@ const ACTIONS = {
     if (["pokedex", "equipe", "pkloja", "batalhas"].includes(v)) return pkOpenWin(v);
     if (v === "correio") return mailOpen();
     if (v === "treino" || v === "centro") return treinoOpen(v);
+    if (v === "creche") return crecheOpen();
+    if (v === "leilao") return leilaoOpen();
     if (v === "arena") return arenaOpen();
     if (v === "guerras") return warOpen();
     if (v === "liga") return leagueOpen();
@@ -5697,7 +5748,7 @@ const ACTIONS = {
     const price = S.cfg.class_change_price ?? 300;
     if (S.me.coins < price) return toast(`A troca de herói custa ${price} moedas.`, true);
     const m = openModal(`<h2>Trocar de herói</h2><p class="muted">Custa ${price} moedas. Nível, itens, ajudas e posição no mapa continuam iguais.</p>
-      <div class="hero-pick">${Object.entries(HEROES).filter(([k]) => k !== S.me.class).map(([k, h]) => `<button class="cls" data-pick="${k}">${avatarSVG({ class: k, outfit: S.me.outfit }, 3)}<h3>${h.nome}</h3><p>${h.skill}</p></button>`).join("")}</div>
+      <div class="hero-pick">${Object.entries(HEROES).filter(([k]) => k !== S.me.class).map(([k, h]) => `<button class="cls" data-pick="${k}">${avatarSVG({ class: k, outfit: S.me.outfit }, 3)}<h3>${h.nome}</h3><p>${h.skill}</p><p class="hero-perk">${heroPerk(k)}</p></button>`).join("")}</div>
       <div class="actions"><button class="btn ghost" data-r="0">Cancelar</button></div>`);
     const k = await new Promise(res => m.addEventListener("click", e => { const b = e.target.closest("[data-pick]"); if (b) res(b.dataset.pick); else if (e.target.closest("[data-r]")) res(null); }));
     closeModal(); if (!k) return;
@@ -5846,7 +5897,7 @@ function pixModal() {
 async function welcomeFlow() {
   await Promise.all([loadCaixa(), loadPosts()]); subscribeCaixa(); subscribePosts(); renderHUD();
   await donationThanks();
-  await giftPopup(); await loadMail(true); loadTreino().then(() => renderHUD()).catch(() => {}); renderHUD();
+  await giftPopup(); await loadMail(true); loadTreino().then(() => renderHUD()).catch(() => {}); loadCreche().then(() => renderHUD()).catch(() => {}); loadLeilao().then(() => renderHUD()).catch(() => {}); renderHUD();
   await loadQuiz(); await quizPopup(false);
   await loadRocket(); subscribeRocket(); await rocketPopup(); renderHUD();
   await loadHunt(true); subscribeHunt(); renderHUD();
@@ -5921,6 +5972,8 @@ function menuHTML() {
     caixa: S.caixa?.loaded && !S.caixa.missing ? `<b class="mb pix">PIX</b>` : "",
     sac: sacUnread() ? `<b class="mb red">${sacUnread()}</b>` : "",
     admin: S.isAdmin ? "" : null,
+    leilao: S.leilao?.missing ? null : S.leilao?.st?.abertos?.length ? `<b class="mb live">${S.leilao.st.abertos.length}</b>` : "",
+    creche: S.creche?.missing ? null : S.creche?.st?.treino ? `<b class="mb live">⏳ ${S.creche.st.treino.entregues}/${S.creche.st.treino.niveis}</b>` : S.creche?.st?.restante ? `<b class="mb">${S.creche.st.restante} nív.</b>` : "",
     vila: "", loja: "", pkloja: "", mercado: "", equipe: "", regras: ""
   };
   const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
@@ -5938,14 +5991,14 @@ function menuHTML() {
 // símbolo e nome de cada janela (menu, atalhos e abas das janelas usam os mesmos)
 const MENU = {
   desafio: ["🎯", "Desafio do dia"], pokedex: ["📕", "Pokédex & Coleção"], equipe: ["👥", "Equipe & Mascote"], treino: ["🌿", "Grama de Treino"],
-  centro: ["🏥", "Centro Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
+  centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
   pkloja: ["🛒", "Loja Pokémon"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
   mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
   presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
   regras: ["📚", "Biblioteca"], sac: ["🎧", "SAC: fale com a gente"], admin: ["⚙️", "Administração"], batalha: ["⚔️", "Batalha"]
 };
 const MENU_GROUPS = [
-  ["pk", "🐾 Pokémon", ["arena", "batalhas", "centro", "equipe", "rocket", "treino", "pkloja", "pokedex"]],
+  ["pk", "🐾 Pokémon", ["arena", "batalhas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "pkloja", "pokedex"]],
   ["vila", "🏰 Vila e lojas", ["guerras", "loja", "mercado", "vila"]],
   ["comp", "🏆 Competir", ["duelos", "liga", "presence", "ranking"]],
   ["com", "💬 Comunidade", ["caixa", "chat", "correio"]],
@@ -7395,7 +7448,7 @@ function leagueAlert() {
     if (lg?.status === "encerrada" && Date.now() - Date.parse(lg.ended_at || 0) < 864e5) return `<button class="arena-alert" data-act="go" data-v="liga">🏆 ${esc(lg.champion_name)} venceu a ${esc(lg.name)}! <b>Ver</b></button>`;
     return "";
   }
-  return `<button class="arena-alert" data-act="go" data-v="liga">🏰 ${arrived.length} de ${act.length} no Castelo: quando todos chegarem, começa a Liga! <b>Ver</b></button>`;
+  return `<button class="arena-alert" data-act="go" data-v="liga">🏁 ${arrived.length === 1 ? "Alguém chegou" : `${arrived.length} chegaram`} ao Castelo: a corrida termina quando a rodada de hoje fechar, e aí começa a Liga! <b>Ver</b></button>`;
 }
 function caveMsgHTML(m) {
   return `<li class="chm ${m.side === "contra" ? "aviso" : ""}" data-id="${m.id}"><b>${esc(m.name)}</b>${m.side ? `<span class="chm-to">${m.side === "favor" ? "💚 a favor" : "💔 contra"}</span>` : ""}<time>${chatWhen(m.created_at)}</time><p>${esc(m.body)}</p></li>`;
@@ -7427,14 +7480,15 @@ function viewLiga() {
   if (!L) return `<p class="muted rk-state">Abrindo a Liga…</p>`;
   const lg = L.lg, me = S.session.user.id, adm = S.isAdmin;
   const rules = `<details class="war-rules"><summary>Como funciona a Liga</summary><ul>
-    <li>Quando todos os jogadores ativos chegam ao Castelo, começa a Liga. O prêmio por ordem de chegada continua (500, 300 e 150 moedas).</li>
-    <li>Mata-mata em batalhas Pokémon turno a turno: o 1º a chegar enfrenta o último, o 2º o penúltimo, e assim por diante. Se o número for ímpar, os dois últimos fazem uma repescagem antes.</li>
+    <li>O 1º jogador que chega ao Castelo encerra a corrida: quem ainda não jogou naquele dia joga normalmente, e quando a rodada do dia fecha, começa a Liga com todos os jogadores ativos.</li>
+    <li>Classificação da corrida: primeiro quem chegou ao Castelo (pela ordem), depois quem estava mais perto. Os prêmios do Castelo (${(S.cfg.castle_prizes || [500, 300, 150]).join(", ")} moedas) vão por essa posição.</li>
+    <li>Mata-mata em batalhas Pokémon turno a turno: o 1º da corrida enfrenta o último, o 2º o penúltimo, e assim por diante. Se o número for ímpar, os dois últimos fazem uma repescagem antes.</li>
     <li>Uma rodada por dia. A vida dos Pokémon começa cheia em toda luta. Quem não tem Pokémon perde por W.O.; empate, passa quem chegou antes ao Castelo.</li>
     <li>O campeão ganha a Aura do Campeão, um castelo na vila e a estátua no mapa, e entra na caverna de um lendário. Depois de 24 horas, ele tem uma única tentativa de captura, com ${S.cfg.league_capture_pct ?? 5}% de chance.</li>
     <li>No dia seguinte, todos voltam à largada sem perder nada e começa uma nova corrida.</li></ul></details>`;
   const hall = S.leagueHall.length ? `<section class="panel lo"><h3>🏛️ Hall da Fama</h3><ul class="war-hist">${S.leagueHall.map(h => `<li class="won"><span>🏆 <b>${esc(h.champion_name)}</b>: campeão da ${esc(h.name)}${h.cave_result ? ` · ${h.cave_result === "capturou" ? `capturou o ${esc(pkName(h.legend_id))}` : `o ${esc(pkName(h.legend_id))} escapou`}` : ""}</span><small class="muted">${h.ended_at ? chatWhen(h.ended_at) : "caverna aberta"}</small></li>`).join("")}</ul></section>` : "";
   if (!lg || (lg.status === "encerrada" && S.today?.season?.status === "ativa" && lg.season_id !== S.today?.season?.id)) {
-    return `<div class="war-page"><section class="panel lo"><h3>🏆 Liga Pokémon</h3><p>A Liga ainda não começou nesta temporada. Ela começa quando todos os jogadores ativos chegarem ao Castelo da Liga.</p>
+    return `<div class="war-page"><section class="panel lo"><h3>🏆 Liga Pokémon</h3><p>A Liga ainda não começou nesta temporada. Ela começa quando a rodada do dia em que o 1º jogador chegar ao Castelo fechar.</p>
       ${adm ? `<button class="btn ghost" data-act="lg-start">Começar a Liga agora (admin)</button>` : ""}</section>${rules}${hall}</div>`;
   }
   const stages = [...new Set(L.matches.map(m => m.stage))].sort((a, b) => b - a);
@@ -7859,6 +7913,8 @@ function viewTreino() {
     </div>
     <p class="muted">Hoje: ${st.lutas} ${st.lutas === 1 ? "luta" : "lutas"}, ${st.vitorias} ${st.vitorias === 1 ? "vitória" : "vitórias"}, ${st.xp} de experiência.
       ⚠️ Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. A vida que o Pokémon perde fica para a próxima luta (só no treino): desmaiou, Centro Pokémon (pago) ou ${st.gratis_horas} horas de espera (grátis).</p>
+    ${mons.length > 1 ? `<div class="tr-comp"><label for="tr-comp">🎒 Acompanhante: fica na bolsa e ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de cada vitória (bom para o Magikarp e quem não dá dano)</label>
+      <select id="tr-comp"><option value="">Nenhum</option>${mons.filter(x => x.id !== m.id).map(x => `<option value="${x.id}" ${S.treino.comp === x.id ? "selected" : ""}>${esc(pkName(x.species_id))} (Nv ${x.level})</option>`).join("")}</select></div>` : ""}
     <h3>Quem vai treinar?</h3>
     <div class="tr-pick">${mons.map(x => { const h = treinoHpOf(x); return `<button class="mon-card ${x.id === m.id ? "sel" : ""} ${h <= 0 ? "ko" : ""}" data-act="tr-sel" data-v="${x.id}" aria-pressed="${x.id === m.id}">
       ${monCv(x.species_id, x.outfit, 72)}<span class="mc-name">${esc(pkName(x.species_id))}${x.team_slot ? `<i class="team-badge" title="Na equipe">${x.team_slot}</i>` : ""}</span><span class="mc-lv">Nv ${x.level}</span>
@@ -7876,7 +7932,7 @@ function viewCentro() {
   return `<div class="centro">
     <div class="ce-head"><p><b>🏥 Bem-vindo ao Centro Pokémon!</b></p>
       <p>Aqui você cura os Pokémon que se feriram na <b>Grama de Treino</b>. Pokémon ferido entra na próxima luta com a vida que sobrou, e o <b>desmaiado não pode treinar</b>.</p>
-      <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro.<br>
+      <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. <b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
          • <b>De graça:</b> espere <b>${st.gratis_horas} horas</b> depois do último ferimento e ele volta inteiro sozinho.</p>
       <p style="font-size:13px">A vida do treino só vale na Grama de Treino. Nas outras batalhas, seus Pokémon começam sempre com a vida cheia.</p></div>
     ${list.length ? `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px"><span>Você tem <b>${coins} moedas</b>.</span>
@@ -7885,7 +7941,7 @@ function viewCentro() {
         <div class="ce-info"><b>${esc(pkName(f.m.species_id))}</b> <span class="muted">Nv ${f.m.level}</span><br>
           ${f.tr_hp <= 0 ? `<span class="ko-tag">💤 Desmaiado</span>` : `${trHpBar(f.tr_hp)} <span>${f.tr_hp}% da vida</span>`}<br>
           <span class="muted" style="font-size:13px">De graça em ${hoursLeft(f.gratis_em)}</span></div>
-        <button class="btn small" data-act="ce-cure" data-v="${f.id}" ${coins >= f.preco ? "" : "disabled"}>Curar agora (${f.preco} moedas)</button></div>`).join("")}</div>`
+        <button class="btn small" data-act="ce-cure" data-v="${f.id}" ${coins >= f.preco ? "" : "disabled"}>Curar agora (${f.preco} moedas)</button>${f.preco_cheio && f.preco < f.preco_cheio ? `<small class="muted">preço cheio: ${f.preco_cheio}</small>` : ""}</div>`).join("")}</div>`
       : `<div class="pk-empty"><p><strong>Todos os seus Pokémon estão com a vida cheia. 💚</strong></p><p class="muted">Quando algum se ferir na Grama de Treino, ele aparece aqui.</p>
           <button class="btn" data-act="go" data-v="treino">🌿 Ir para a Grama de Treino</button></div>`}
   </div>`;
@@ -8083,7 +8139,10 @@ function grHud() {
   box.innerHTML = m ? `<span title="Vida do treino">${treinoHpOf(m) <= 0 ? "💤" : trHpBar(treinoHpOf(m))}</span>
     <select id="gr-sel" aria-label="Quem vai treinar">${mons.map(x => `<option value="${x.id}" ${x.id === m.id ? "selected" : ""}>${esc(pkName(x.species_id))} (Nv ${x.level})${treinoHpOf(x) <= 0 ? " 💤" : treinoHpOf(x) < 100 ? ` ${treinoHpOf(x)}%` : ""}</option>`).join("")}</select>` : "";
   const sel = $("#gr-sel", el); if (sel) sel.onchange = () => { S.treino.sel = sel.value; sel.blur(); grHud(); };
+  const cm = S.treino.comp && S.treino.comp !== m?.id ? S.pk.mons.find(x => x.id === S.treino.comp) : null;
+  if (cm) box.insertAdjacentHTML("beforeend", `<span class="gr-comp" title="Acompanhante: ganha parte da experiência">🎒 ${esc(pkName(cm.species_id))}</span>`);
 }
+document.addEventListener("change", e => { if (e.target.id === "tr-comp") { S.treino.comp = e.target.value || null; render(); } });
 function grTimeLeft() { const V = S.treino.st?.visita; return V ? Math.max(0, Math.ceil((new Date(V.fim) - treinoNow()) / 1000)) : 0; }
 function grLoop(now) {
   if (!GR.open) return;
@@ -8218,7 +8277,8 @@ async function grEncounter() {
   if (treinoHpOf(m) <= 0) { $("#gr-hint").textContent = `💤 ${pkName(m.species_id)} está desmaiado: escolha outro Pokémon lá em cima.`; return; }
   GR.busy = true; GR.keys.clear(); GR.lastEnc = Date.now();
   let r;
-  try { r = await rpc("treino_encontro", { _mon: m.id }); }
+  const comp = S.treino.comp && S.treino.comp !== m.id ? S.treino.comp : null;
+  try { r = await rpc("treino_encontro", comp ? { _mon: m.id, _comp: comp } : { _mon: m.id }); }
   catch (e) { GR.busy = false; const t = errMsg(e); if (!/continue andando/.test(t)) toast(t, true); return; }
   if (r?.lendario) return grLegend(r.lendario);
   const bid = typeof r === "string" ? r : r?.battle;   // o 58 devolve {battle}; antes vinha só o número da luta
@@ -8260,8 +8320,9 @@ function grEndHTML(b) {
   const r = b.state?.treino?.res || {}, V = S.treino.st?.visita;
   const msg = r.fugiu ? "Você fugiu da luta." : r.won ? `🏆 Vitória! ${esc(pkName(r.species))} ganhou <b>${r.xp} de experiência</b>${r.level_to > r.level_from ? ` e <b>subiu para o nível ${r.level_to}</b>! 🎉` : "."}`
     : "O selvagem venceu. Não ganhou experiência.";
+  const comp = r.comp_xp ? ` 🎒 ${esc(pkName(r.comp_species))} (acompanhante) ganhou <b>${r.comp_xp}</b>.` : "";
   return `<div class="bt-end ${r.won ? "won" : "lost"}"><h3>${r.forte ? "⚡ " : ""}${r.won ? "Você venceu!" : r.fugiu ? "Fugiu!" : "Não foi dessa vez!"}</h3>
-    <p>${msg} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
+    <p>${msg}${comp} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
     <div class="act-btns">${V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
 
@@ -8271,14 +8332,23 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["desafio", "🎯 Desafio do dia"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
+  casas: { passar_luta: "Quem passa pela casa do Treinador também batalha", red_premio: "Prêmio de quem vencer o Red (moedas)" },
+  herois: { guerreiro_dano_pct: "Guerreiro: % a mais de dano", mago_status_acc_pct: "Mago: % a mais de acerto em ataques de status", mago_forte_pct: "Mago: pontos a mais de chance de Pokémon forte na Grama",
+    arqueiro_vel_pct: "Arqueiro: % a mais de velocidade", arqueiro_captura_pct: "Arqueiro: % a mais de chance de captura", ladino_taxa_pct: "Ladino: taxa no Leilão e no Mercado (%)",
+    clerigo_centro_desc_pct: "Clérigo: desconto no Centro Pokémon (%)", clerigo_cura_horas: "Clérigo: horas para a cura grátis", domador_grama_xp_pct: "Domador: % a mais de experiência na Grama",
+    domador_creche_desc_pct: "Domador: desconto na Creche (%)", pesq_bolas: "Pesquisador: bolas a mais por encontro", pesq_xp_pct: "Pesquisador: % a mais de XP da equipe nas andadas",
+    pesq_comp_pct: "Pesquisador: % de experiência do acompanhante", merc_loja_desc_pct: "Mercador: desconto nas lojas (%)", merc_salario_pct: "Mercador: % a mais no salário", merc_leilao_taxa_pct: "Mercador: taxa no Leilão (%)" },
+  leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
+    min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
+  creche: { on: "Creche aberta", preco_por_nivel: "Preço: nível alcançado × este número", niveis_semana: "Níveis por semana (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina", horas_por_nivel: "Horas para cada nível chegar" },
   desafio: { desc_progressiva: "Descrição em partes (cada erro revela mais um pedaço); desligado = o verbete inteiro de uma vez" },
   treino: { on: "Grama de Treino aberta", minutos_dia: "Minutos por dia", visita_opcoes: "Opções de tempo por visita (minutos, separados por vírgula)",
     encontro_seg: "Segundos mínimos entre um encontro e outro", xp_mult: "Multiplicador de experiência (1 = normal)", nivel_menos: "Selvagem: até quantos níveis abaixo",
     nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
-    forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
+    forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", acompanhante_pct: "Acompanhante: % da experiência que ele ganha", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
     lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
     centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça" },
   rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
@@ -8367,6 +8437,162 @@ document.addEventListener("submit", e => {
     });
   }
 });
+
+// =================================================================
+// LEILÃO DE POKÉMON (arquivo 65, pedido do dono em 03/11/2026): 1 Pokémon a cada 3 dias por jogador, 24 h, lance mínimo;
+// lances reservam as moedas e quem é coberto recebe de volta; no fim o servidor entrega o Pokémon e paga o vendedor.
+// =================================================================
+S.leilao = { st: null, missing: false, tab: "abertos", timer: 0 };
+async function loadLeilao() {
+  try { S.leilao.st = await rpc("leilao_estado"); S.leilao.missing = false; S.leilao.skew = new Date(S.leilao.st.agora) - Date.now(); }
+  catch (e) { if (isMissingFn(e)) S.leilao.missing = true; else throw e; }
+}
+async function leilaoOpen() {
+  S.win = "leilao"; render();
+  try { if (S.pk.on !== false) { await loadPkStatic(); await loadPk(); } await loadLeilao(); } catch (e) { toast(errMsg(e), true); }
+  render(); if ($("#game")) renderHUD();
+  clearInterval(S.leilao.timer);
+  S.leilao.timer = setInterval(async () => { if (S.win !== "leilao") return clearInterval(S.leilao.timer); try { await loadLeilao(); render(); } catch {} }, 30000);
+}
+const llLeft = t => { const ms = new Date(t) - (Date.now() + (S.leilao.skew || 0)); if (ms <= 0) return "terminando…"; const h = Math.floor(ms / 36e5), m = Math.ceil(ms % 36e5 / 6e4); return h ? `${h}h ${m}min` : `${m} min`; };
+function llCard(l) {
+  const me = pkMe(), mine = l.seller === me, lead = l.top_bidder === me, c = S.leilao.st.cfg, I = l.info || {};
+  const minimo = l.top_bid == null ? l.min_price : l.top_bid + c.incremento;
+  const moves = (I.moves || []).map(x => moveOf(x.id)?.name).filter(Boolean).join(", ");
+  return `<article class="panel lo ll-card ${lead ? "lead" : ""}">
+    <div class="ll-top">${monCv(l.species, {}, 96)}<div class="ll-info"><b>${esc(pkName(l.species))}</b> <span class="muted">nível ${l.level}</span><br>
+      <span class="muted">de ${esc(l.seller_name)}${mine ? " (você)" : ""} · termina em <b>${llLeft(l.ends_at)}</b></span>
+      ${I.maxhp ? `<div class="ll-stats">❤️ ${I.maxhp} · ⚔️ ${I.atk} · 🛡️ ${I.def} · 💨 ${I.spd} · ✨ ${I.spc}</div>` : ""}
+      ${moves ? `<div class="muted ll-moves">Ataques: ${esc(moves)}</div>` : ""}</div>
+      <div class="ll-price">${l.top_bid != null ? `<small>Maior lance</small><b>${l.top_bid}</b><small>${lead ? "🥇 você!" : esc(l.bidder_name || "")}</small>` : `<small>Lance mínimo</small><b>${l.min_price}</b><small>sem lances</small>`}<small class="muted">${l.lances} ${l.lances === 1 ? "lance" : "lances"}</small></div></div>
+    ${mine ? `<p class="muted" style="margin:6px 0 0">É o seu leilão. Quando terminar, o Pokémon vai para quem deu o maior lance e você recebe as moedas (${(S.leilao.st.minha_taxa ?? c.taxa_pct) > 0 ? `menos ${S.leilao.st.minha_taxa ?? c.taxa_pct}%` : "sem taxa"}).</p>`
+      : `<form id="llform-${l.id}" class="ll-bid"><label for="ll-v-${l.id}">Seu lance (mínimo ${minimo})</label><input id="ll-v-${l.id}" type="number" min="${minimo}" step="1" value="${minimo}" required>
+        <button class="btn">🔨 Dar lance</button>${lead ? `<span class="muted">Você está na frente: só paga a diferença.</span>` : ""}</form>`}
+  </article>`;
+}
+function viewLeilao() {
+  const L = S.leilao;
+  if (L.missing) return `<p class="muted rk-state">O Leilão precisa do arquivo <code>65_leilao.sql</code> rodado no Supabase.</p>`;
+  if (!L.st) return `<p class="muted rk-state">Abrindo o Leilão…</p>`;
+  const st = L.st, c = st.cfg, mons = treinoMons(), me = pkMe();
+  if (!st.on) return `<div class="pk-empty"><p><strong>O Leilão está fechado no momento.</strong></p></div>`;
+  const podeEm = st.proximo && new Date(st.proximo) > new Date(Date.now() + (L.skew || 0)) ? st.proximo : null;
+  const meuAberto = st.abertos.find(l => l.seller === me);
+  const criar = meuAberto ? `<p class="muted">Você já tem um Pokémon em leilão.</p>`
+    : podeEm ? `<p class="muted">Você pode pôr outro Pokémon em leilão a partir de <b>${chatWhen(podeEm)}</b> (1 a cada ${c.intervalo_dias} dias).</p>`
+    : !mons.length ? `<p class="muted">Você ainda não tem Pokémon.</p>`
+    : `<form id="llcreate" class="ll-create"><label for="llc-mon">Pokémon</label><select id="llc-mon">${mons.map(x => `<option value="${x.id}">${esc(pkName(x.species_id))} (Nv ${x.level})${x.team_slot ? " · equipe" : ""}</option>`).join("")}</select>
+        <label for="llc-min">Lance mínimo (moedas)</label><input id="llc-min" type="number" min="${c.min_preco}" value="${Math.max(c.min_preco, 100)}" required>
+        <button class="btn">🔨 Pôr em leilão por ${c.horas} h</button></form>`;
+  const tab = L.tab;
+  const list = tab === "abertos" ? (st.abertos.length ? st.abertos.map(llCard).join("") : `<div class="pk-empty"><p><strong>Nenhum leilão aberto agora.</strong></p><p class="muted">Que tal ser o primeiro?</p></div>`)
+    : (st.encerrados.length ? `<ul class="tr-hist">${st.encerrados.map(l => `<li>${l.status === "vendido" ? "✅" : l.status === "sem_lance" ? "⏳" : "❌"} ${esc(pkName(l.species))} (Nv ${l.level}) de ${esc(l.seller_name)}
+        ${l.status === "vendido" ? `· vendido para <b>${esc(l.bidder_name || "?")}</b> por ${l.top_bid}` : l.status === "sem_lance" ? "· ninguém deu lance" : "· cancelado"}<time style="margin-left:auto" class="muted">${ago(l.closed_at)}</time></li>`).join("")}</ul>` : `<p class="muted">Ainda não terminou nenhum leilão.</p>`);
+  return `<div class="leilao">
+    <div class="ce-head" style="background:linear-gradient(180deg,#FFF3DC,#F2DDB6);border-color:#C9A05A;color:#3A2A12"><p><b style="color:#7A4A12">🔨 Leilão de Pokémon</b></p>
+      <p>Cada jogador pode pôr <b>1 Pokémon a cada ${c.intervalo_dias} dias</b>, por <b>${c.horas} horas</b>, com um lance mínimo. Qualquer um cobre a qualquer momento; o seu lance fica reservado e, se alguém cobrir, as moedas voltam na hora. Lance nos últimos ${c.anti_sniper_min} minutos estica o leilão.</p>
+      <p>No fim, o Pokémon vai <b>sozinho</b> para quem deu o maior lance (sai da equipe de quem vendeu), e quem vendeu recebe as moedas, menos ${c.taxa_pct}% de taxa.</p></div>
+    <section class="panel lo"><h3>Pôr um Pokémon em leilão</h3>${criar}</section>
+    <div class="tabs" style="margin:12px 0"><button data-act="ll-tab" data-v="abertos" aria-current="${tab === "abertos"}">Abertos (${st.abertos.length})</button><button data-act="ll-tab" data-v="encerrados" aria-current="${tab === "encerrados"}">Encerrados</button></div>
+    ${list}</div>`;
+}
+ACTIONS["ll-tab"] = v => { S.leilao.tab = v; render(); };
+document.addEventListener("submit", e => {
+  const id = e.target.id || "";
+  if (id === "llcreate") {
+    e.preventDefault();
+    const mon = $("#llc-mon").value, min = Math.trunc(+$("#llc-min").value || 0), m = S.pk.mons.find(x => x.id === mon);
+    (async () => {
+      if (!await confirmModal("Pôr em leilão?", `${pkName(m?.species_id)} (nível ${m?.level}) vai a leilão por ${S.leilao.st.cfg.horas} horas, a partir de ${min} moedas. Se alguém der lance, ele será vendido sozinho no fim e sai da sua coleção.`, "Pôr em leilão")) return;
+      guarded(async () => { await rpc("leilao_criar", { _mon: mon, _min: min }); sfx("acerto"); toast("🔨 Seu Pokémon está no Leilão!"); await loadLeilao(); render(); if ($("#game")) renderHUD(); });
+    })();
+  }
+  if (id.startsWith("llform-")) {
+    e.preventDefault();
+    const lid = +id.slice(7), v = Math.trunc(+$(`#ll-v-${lid}`).value || 0), l = S.leilao.st.abertos.find(x => x.id === lid);
+    (async () => {
+      if (!await confirmModal("Dar o lance?", `${v} moedas por ${pkName(l?.species)} (nível ${l?.level}). As moedas ficam reservadas; se alguém cobrir, elas voltam na hora.`, `Dar ${v}`)) return;
+      guarded(async () => { const r = await rpc("leilao_lance", { _id: lid, _valor: v }); sfx("tick"); toast("🔨 Lance dado! Você está na frente."); await Promise.all([loadLeilao(), refreshMe()]); render(); if ($("#game")) renderHUD(); });
+    })();
+  }
+});
+
+// =================================================================
+// CRECHE POKÉMON (arquivo 64, pedido do dono em 03/11/2026): paga moedas e o Pokémon sobe de nível na hora,
+// com limite por semana e nível máximo (Ajustes do jogo → Creche). Conta e preço conferidos no servidor.
+// =================================================================
+S.creche = { st: null, missing: false, sel: null, n: 1 };
+async function loadCreche() {
+  try { S.creche.st = await rpc("creche_estado"); S.creche.missing = false; }
+  catch (e) { if (isMissingFn(e)) S.creche.missing = true; else throw e; }
+}
+async function crecheOpen() {
+  S.win = "creche"; render();
+  try { if (S.pk.on !== false) { await loadPkStatic(); await loadPk(); } await loadCreche(); }
+  catch (e) { if (pkMissing(e)) S.pk.on = false; else toast(errMsg(e), true); }
+  render(); if ($("#game")) renderHUD();
+}
+const crechePreco = (lvl, n, por) => { let t = 0; for (let l = lvl + 1; l <= lvl + n; l++) t += l * por; return t; };
+function viewCreche() {
+  const C = S.creche;
+  if (C.missing) return `<p class="muted rk-state">A Creche precisa do arquivo <code>64_creche.sql</code> rodado no Supabase.</p>`;
+  if (S.pk.on === false) return `<p class="muted rk-state">Os Pokémon ainda não estão ligados no jogo.</p>`;
+  if (!C.st || !S.pk.mons) return `<p class="muted rk-state">Abrindo a Creche…</p>`;
+  const st = C.st, mons = treinoMons();
+  if (!st.on) return `<div class="pk-empty"><p><strong>A Creche está fechada no momento.</strong></p></div>`;
+  if (!mons.length) return `<div class="pk-empty"><p><strong>Você ainda não tem Pokémon.</strong></p></div>`;
+  const m = mons.find(x => x.id === C.sel) || mons.find(x => x.level < st.nivel_max) || mons[0]; C.sel = m.id;
+  const maxN = Math.max(0, Math.min(st.restante, st.nivel_max - m.level)), n = Math.max(1, Math.min(C.n || 1, maxN || 1));
+  const custo = Math.ceil(crechePreco(m.level, n, st.preco_por_nivel) * (100 - (st.desconto_pct || 0)) / 100), coins = S.me?.coins ?? 0;
+  const evo = evosOf(m.species_id).find(e => e.method === "nivel" && e.level > m.level && e.level <= m.level + n);
+  const used = Math.round(st.usados / Math.max(1, st.niveis_semana) * 100);
+  return `<div class="creche">
+    <div class="ce-head" style="background:linear-gradient(180deg,#FFF3DC,#F2DDB6);border-color:#C9A05A;color:#3A2A12"><p><b style="color:#7A4A12">🏡 Bem-vindo à Creche Pokémon!</b></p>
+      <p>Aqui o seu Pokémon treina e sobe de nível, pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${st.horas_por_nivel ?? 12} horas</b>. Enquanto isso, ele continua jogando normalmente. Cada nível custa <b>o nível que ele vai alcançar × ${st.preco_por_nivel}</b> (do 10 para o 11: ${11 * st.preco_por_nivel} moedas).</p>
+      ${st.desconto_pct ? `<p>🐎 Domador: você paga ${st.desconto_pct}% a menos.</p>` : ""}<p>Limite: <b>${st.niveis_semana} níveis por semana</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
+    <div class="tr-clock" style="margin-bottom:10px"><b>📅 Esta semana</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
+      <span>${st.usados} de ${st.niveis_semana} níveis usados · ${st.restante ? `faltam ${st.restante}` : `renova em ${chatWhen(st.renova)}`}</span></div>
+    ${st.treino ? (() => { const t = st.treino, tm = S.pk.mons.find(x => x.id === t.mon_id);
+      return `<section class="panel lo cr-now"><h3>⏳ Treinando agora</h3>
+        <div class="cr-mon">${monCv(t.species, tm?.outfit || {}, 72)}<div><b>${esc(pkName(t.species))}</b> <span class="muted">do nível ${t.level_from} ao ${t.level_from + t.niveis}</span><br>
+          <b>${t.entregues} de ${t.niveis}</b> níveis entregues · próximo em <b>${chatWhen(t.proximo_em)}</b> · termina em ${chatWhen(t.termina_em)}</div></div>
+        <span class="tr-bar" aria-hidden="true" style="display:block;margin:8px 0"><i style="width:${Math.round(t.entregues / t.niveis * 100)}%"></i></span>
+        <button class="btn ghost small" data-act="cr-cancel">Cancelar o treino (devolve ${t.devolve} moedas)</button>
+        <p class="muted" style="margin:6px 0 0">A Creche treina um Pokémon por vez. Quando este terminar, você pode começar outro.</p></section>`; })() : ""}
+    <section class="panel lo cr-box">
+      <div class="cr-mon">${monCv(m.species_id, m.outfit, 96)}<div><b>${esc(pkName(m.species_id))}</b><br><span class="muted">Nível ${m.level}</span></div></div>
+      ${st.treino ? `<p class="muted">Espere o treino de agora terminar (ou cancele) para começar outro.</p>` : maxN ? `<div class="cr-ctl"><label for="cr-n">Quantos níveis?</label>
+          <div class="cr-n">${Array.from({ length: maxN }, (_, i) => i + 1).map(k => `<button class="btn ${k === n ? "" : "ghost"} small" data-act="cr-n" data-v="${k}">+${k}</button>`).join("")}</div>
+          <p>Nível ${m.level} → <b>${m.level + n}</b> · custa <b>${custo} moedas</b> (você tem ${coins}) · fica pronto em <b>${n * (st.horas_por_nivel ?? 12)} horas</b>.${evo ? ` <br>✨ Vai chegar ao nível de evoluir para <b>${esc(pkName(evo.to_id))}</b>!` : ""}</p>
+          <button class="btn big" data-act="cr-go" ${coins >= custo ? "" : "disabled"}>🏡 Treinar na Creche (${custo} moedas)</button></div>`
+        : `<p class="muted">${m.level >= st.nivel_max ? `Esse Pokémon já está no nível ${st.nivel_max} ou acima: a Creche não treina mais.` : `Os níveis desta semana acabaram. Renova em ${chatWhen(st.renova)}.`}</p>`}
+    </section>
+    <h3>Qual Pokémon?</h3>
+    <div class="tr-pick">${mons.map(x => `<button class="mon-card ${x.id === m.id ? "sel" : ""}" data-act="cr-sel" data-v="${x.id}" aria-pressed="${x.id === m.id}">
+      ${monCv(x.species_id, x.outfit, 72)}<span class="mc-name">${esc(pkName(x.species_id))}</span><span class="mc-lv">Nv ${x.level}</span><span class="mini-xp"><i style="width:${pkXp(x).pct}%"></i></span></button>`).join("")}</div>
+    ${st.historico?.length ? `<h3 style="margin-top:14px">Últimos treinos</h3><ul class="tr-hist">${st.historico.map(h => `<li>🏡 ${esc(pkName(h.species))} do nível ${h.level_from} ao ${h.level_to} · ${h.custo} moedas<time style="margin-left:auto" class="muted">${ago(h.created_at)}</time></li>`).join("")}</ul>` : ""}
+  </div>`;
+}
+ACTIONS["cr-cancel"] = async () => {
+  const t = S.creche.st?.treino; if (!t) return;
+  if (!await confirmModal("Cancelar o treino?", `Os níveis que já chegaram ficam. Os ${t.niveis - t.entregues} que faltam não chegam, e você recebe ${t.devolve} moedas de volta.`, "Cancelar o treino")) return;
+  guarded(async () => { const r = await rpc("creche_cancelar"); toast(`🏡 Treino cancelado: ${r.devolvido} moedas de volta.`); await Promise.all([refreshMe(), loadPk(), loadCreche()]); render(); if ($("#game")) renderHUD(); });
+};
+ACTIONS["cr-sel"] = v => { S.creche.sel = v; S.creche.n = 1; render(); };
+ACTIONS["cr-n"] = v => { S.creche.n = +v; render(); };
+ACTIONS["cr-go"] = async () => {
+  const C = S.creche, m = S.pk.mons.find(x => x.id === C.sel); if (!m) return;
+  const n = C.n || 1, custo = Math.ceil(crechePreco(m.level, n, C.st.preco_por_nivel) * (100 - (C.st.desconto_pct || 0)) / 100);
+  const hs = C.st.horas_por_nivel ?? 12;
+  if (!await confirmModal("Treinar na Creche?", `${pkName(m.species_id)} vai do nível ${m.level} ao ${m.level + n} por ${custo} moedas, pagos agora. Os níveis chegam aos poucos: 1 a cada ${hs} horas (tudo pronto em ${n * hs} horas).`, `Treinar por ${custo}`)) return;
+  guarded(async () => {
+    const r = await rpc("creche_treinar", { _mon: m.id, _niveis: n });
+    sfx("acerto"); toast(`🏡 ${pkName(m.species_id)} está na Creche! O 1º nível chega em ${hs} horas.`);
+    if (S.me) S.me.coins = r.coins;
+    C.n = 1; await Promise.all([loadPk(), loadCreche()]); render(); if ($("#game")) renderHUD();
+    if (r.events?.length) await monEventsFlow(r.events);
+  });
+};
 
 // =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
@@ -8496,6 +8722,7 @@ const NPC_TRAINERS = [
   { n: "Domador de Dragões", t: ["DRAGAO", "AGUA"], title: "Domador de dragões", hat: "#2B2118", shirt: "#3A5AA8", pants: "#1E2A48", acc: "capa" }];
 const NPC_FIRST = ["Zé", "Lia", "Beto", "Duda", "Rafa", "Nina", "Caio", "Malu", "Téo", "Bia", "Juca", "Gabi"];
 function npcAt(nodeId) {
+  if (S.nodeById?.[nodeId]?.npc === "red") return { n: "Red", t: [], types: [], title: "Treinador lendário", full: "★ Red ★" };
   const t = NPC_TRAINERS[nodeId % NPC_TRAINERS.length];
   return { ...t, types: t.t, full: `${t.n} ${NPC_FIRST[Math.floor(nodeId / NPC_TRAINERS.length) % NPC_FIRST.length]}` };
 }
@@ -8532,6 +8759,16 @@ function npcCanvas(nodeId) {
   if (t.acc !== "capa") for (const [x, y] of NPC_ACC[t.acc] || []) { g.fillStyle = NPC_ACC_COL[t.acc]; g.fillRect(x, y, 1, 1); }
   return npcCvCache[i] = cv;
 }
+let redCv = null;
+function redCanvas() {   // treinador lendário: arte própria do jogo
+  if (redCv) return redCv;
+  const pal = { h: "#F4F1EA", k: "#1B1626", s: "#F2C29B", e: "#1B1626", c: "#3A1F5C", d: "#1E1530" };
+  const cv = document.createElement("canvas"); cv.width = 14; cv.height = 16; const g = cv.getContext("2d");
+  for (const [x, y] of NPC_ACC.capa) { g.fillStyle = "#E0B44C"; g.fillRect(x, y, 1, 1); }
+  NPC_BODY.forEach((row, y) => [...row].forEach((ch, x) => { const col = pal[ch]; if (col) { g.fillStyle = col; g.fillRect(x, y, 1, 1); } }));
+  g.fillStyle = "#F5D547"; for (const [x, y] of [[3, 8], [8, 8], [5, 9], [6, 9], [4, 11], [7, 11]]) g.fillRect(x, y, 1, 1);   // detalhes dourados no casaco
+  return redCv = cv;
+}
 const npcImg = nodeId => `<img class="npc-ic" src="${npcCanvas(nodeId).toDataURL()}" alt="">`;
 function drawNpcTrainers(ctx) {
   if (!S.nodes) return;
@@ -8539,6 +8776,7 @@ function drawNpcTrainers(ctx) {
   ctx.imageSmoothingEnabled = false;
   for (const n of S.nodes) {
     if (n.kind !== "treinador") continue;
+    if (n.npc === "red") { drawRedTrainer(ctx, n); continue; }
     const f = worldToScreen(n.x + 16, n.y + 4), k = f.k || 1, sw = w * z * k, sh = h * z * k, x = f.x - sw / 2, y = f.y - sh;
     if (x + sw < -60 || x > W.w + 60 || y + sh < -60 || y > W.h + 60) continue;
     ctx.fillStyle = "rgba(0,0,0,.32)"; ctx.beginPath(); ctx.ellipse(f.x, f.y - 1 * z, sw * .4, 4 * z * k, 0, 0, Math.PI * 2); ctx.fill();
@@ -8553,6 +8791,29 @@ function drawNpcTrainers(ctx) {
     }
     W.hits.push({ x, y, w: sw, h: sh, npcNode: n.id });
   }
+}
+
+// o Red (arquivo 70): bem maior, brilhando, com aura dourada, para ser visto de longe
+function drawRedTrainer(ctx, n) {
+  const z = W.cam.z, px = 4.6, f = worldToScreen(n.x + 16, n.y + 4), k = f.k || 1, sw = 14 * px * z * k, sh = 16 * px * z * k, x = f.x - sw / 2, y = f.y - sh;
+  if (x + sw < -120 || x > W.w + 120 || y + sh < -120 || y > W.h + 120) return;
+  const t = reduceMotion() ? 0 : Date.now() / 1000, pulse = .75 + .25 * Math.sin(t * 2.4), cy = y + sh * .55, r = sh * 1.15 * (.88 + .12 * pulse);
+  const aura = ctx.createRadialGradient(f.x, cy, sh * .1, f.x, cy, r);
+  aura.addColorStop(0, `rgba(255,244,190,${.9 * pulse})`); aura.addColorStop(.45, `rgba(255,206,70,${.55 * pulse})`); aura.addColorStop(.8, `rgba(245,160,40,${.2 * pulse})`); aura.addColorStop(1, "rgba(245,197,66,0)");
+  ctx.fillStyle = aura; ctx.beginPath(); ctx.arc(f.x, cy, r, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = `rgba(255,215,80,${.5 + .4 * pulse})`; ctx.lineWidth = 2.5 * z * k; ctx.beginPath(); ctx.ellipse(f.x, f.y - 1 * z, sw * .7, 10 * z * k, 0, 0, Math.PI * 2); ctx.stroke();   // anel no chão
+  for (let i = 0; i < 6; i++) {   // brilhos girando
+    const a = t * 1.3 + i * Math.PI / 3, sx = f.x + Math.cos(a) * sw * .75, sy = cy + Math.sin(a) * sh * .5, sz = (2 + 2 * Math.abs(Math.sin(t * 3 + i))) * z * k;
+    ctx.fillStyle = "#FFF4B8"; ctx.fillRect(sx - sz / 2, sy - sz * 1.5, sz, sz * 3); ctx.fillRect(sx - sz * 1.5, sy - sz / 2, sz * 3, sz);
+  }
+  ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.beginPath(); ctx.ellipse(f.x, f.y - 1 * z, sw * .42, 6 * z * k, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(redCanvas(), Math.round(x), Math.round(y), Math.round(sw), Math.round(sh));
+  const bob = Math.sin(t * 3) * 3 * z;
+  ctx.font = `900 ${Math.max(14, 20 * z * k)}px Inter, system-ui, sans-serif`; ctx.textAlign = "center";
+  ctx.lineWidth = 4; ctx.strokeStyle = "#1B1626"; ctx.strokeText("!", f.x, y - 6 * z + bob); ctx.fillStyle = "#FF5A4A"; ctx.fillText("!", f.x, y - 6 * z + bob);
+  ctx.font = `900 ${Math.max(12, 14 * z * k)}px Inter, system-ui, sans-serif`;
+  ctx.lineWidth = 4; ctx.strokeStyle = "rgba(15,20,32,.9)"; ctx.strokeText("★ Red ★", f.x, y - 26 * z * k); ctx.shadowColor = "#FFD54A"; ctx.shadowBlur = 10; ctx.fillStyle = "#FFD54A"; ctx.fillText("★ Red ★", f.x, y - 26 * z * k); ctx.shadowBlur = 0;
+  W.hits.push({ x, y, w: sw, h: sh, npcNode: n.id });
 }
 
 // ---------- treinadores do jogo (arquivo 43): relato da luta, aberto do resultado do movimento ----------
@@ -9675,6 +9936,43 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "red-2026-11-03", sql: "70", title: "🔴 O Red apareceu, e treinador agora é obrigatório", body: () => `Dois avisos:
+• 🧢 Treinadores obrigatórios: passou pela casa de um Treinador, tem que batalhar com ele, parando na casa ou não. Vencer dá moedas; perder não tira nada.
+• 🔴 O Red, o treinador lendário, está no caminho perto do Castelo. Ele tem um time de níveis 73 a 81, e todo mundo vai ter que enfrentá-lo. Dizem que ninguém consegue vencer… quem conseguir ganha 1.000 moedas e fica famoso no Jornal!` },
+  { id: "creche-espera-2026-11-03", sql: "69", title: "⏳ Creche com espera e Centro mais barato com o tempo", body: () => `Dois ajustes:
+• 🏡 Creche: você paga na hora, mas os níveis chegam aos poucos, 1 a cada 12 horas. O Pokémon continua jogando enquanto treina. Um treino por vez; se cancelar, as moedas dos níveis que ainda não chegaram voltam.
+• 🏥 Centro Pokémon: o preço da cura cai com o tempo. Logo depois do ferimento custa o preço cheio; na metade da espera, metade; e quando a cura grátis libera, não custa nada.` },
+  { id: "herois-2026-11-03", sql: "67", title: "🛡️ Heróis mais fortes em tudo + 2 heróis novos", body: () => `Os heróis agora fazem diferença no jogo inteiro, não só no tabuleiro:
+• ⚔️ Guerreiro: +10% de dano nas batalhas Pokémon.
+• 🔮 Mago: ataques de status acertam mais; na Grama, aparece mais Pokémon forte.
+• 🏹 Arqueiro: Pokémon mais rápidos nas batalhas e +10% de chance de captura. A habilidade agora deixa a roleta no máximo (3).
+• 🗡️ Ladino: paga só 2% de taxa no Leilão e no Mercado.
+• ✨ Clérigo: Centro Pokémon 30% mais barato e cura grátis em 48 horas.
+• 🐎 Domador: +20% de experiência na Grama e Creche 20% mais barata.
+E chegaram 2 heróis novos (dá para trocar em Loja & Visuais):
+• 🔬 Pesquisador: +1 bola em cada encontro, +10% de XP da equipe, acompanhante da Grama ganha 75%. Habilidade "Isca de frutas": anda +1 casa e o Pokémon do encontro vem incomum ou mais raro.
+• 💰 Mercador: lojas 10% mais baratas, vende no Leilão sem taxa e +10% de salário. Habilidade "Negócio da China": anda +1 casa e o baú e o salário do dia vêm em dobro.` },
+  { id: "fim-temporada-2026-11-03", sql: "66", title: "🏁 Novo fim de temporada: o 1º no Castelo encerra a corrida", body: () => `Mudou o fim da temporada:
+• O primeiro jogador que chegar ao Castelo encerra a corrida. Os outros ainda jogam o resto daquele dia.
+• Quando a rodada daquele dia fecha (meia-noite), a corrida acaba e a Liga Pokémon começa na hora, com todos os jogadores ativos.
+• Os prêmios do Castelo vão pela posição: o 1º é quem chegou primeiro; o 2º, o 3º e os seguintes são quem estava mais perto do Castelo.
+• As chaves da Liga seguem essa classificação: o 1º da corrida enfrenta o último, o 2º o penúltimo...
+Corra, porque agora cada casa conta!` },
+  { id: "leilao-2026-11-03", sql: "65", title: "🔨 Novo: Leilão de Pokémon", body: () => `Abriu o Leilão de Pokémon (menu Pokémon)!
+• Cada jogador pode pôr 1 Pokémon em leilão a cada 3 dias. O leilão dura 24 horas, com um lance mínimo que você escolhe.
+• Qualquer jogador pode cobrir o lance a qualquer momento. As moedas do seu lance ficam reservadas; se alguém cobrir, elas voltam na hora.
+• Lance nos últimos 5 minutos estica o leilão mais 5 minutos.
+• No fim, o Pokémon vai sozinho para quem deu o maior lance, e quem vendeu recebe as moedas (menos 5% de taxa).` },
+  { id: "creche-2026-11-03", sql: "64", title: "🏡 Nova: Creche Pokémon", body: () => `Abriu a Creche Pokémon (menu Pokémon)!
+• Escolha um Pokémon e quantos níveis ele vai treinar: ele sobe na hora.
+• Cada nível custa moedas: o nível que ele vai alcançar × 10 (do 10 para o 11 custa 110).
+• Limite: até 5 níveis por semana (somando todos os seus Pokémon) e só até o nível 40.
+• Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.` },
+  { id: "acompanhante-2026-11-03", sql: "63", title: "🎒 Acompanhante na Grama de Treino", body: () => `Tem Pokémon que não consegue vencer sozinho, como o Magikarp, que só sabe Splash? Agora tem jeito!
+• Na Grama de Treino, escolha um ACOMPANHANTE: outro Pokémon seu que fica na bolsa.
+• A cada vitória do Pokémon que está lutando, o acompanhante ganha metade da experiência.
+• Assim dá para subir o Magikarp até ele virar Gyarados!
+E mais: as estátuas de ouro saíram do desenho da vila. As vitórias na rodada continuam contadas no painel da vila (🏆).` },
   { id: "menu-novo-2026-11-03", sql: "62", title: "🧭 Menu novo, mais fácil de achar tudo", body: () => `O menu do jogo foi reorganizado:
 • No topo, atalhos rápidos para o que mais se usa: Desafio, Pokédex, Grama, Batalhas, Vila e Ranking.
 • As opções ficaram em grupos (Pokémon, Vila e lojas, Competir, Comunidade e Ajuda), cada uma com o seu símbolo e em ordem alfabética.
