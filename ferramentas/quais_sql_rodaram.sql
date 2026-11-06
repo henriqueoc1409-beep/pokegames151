@@ -52,6 +52,7 @@ from (values
   ('72_acompanhante_vivo', exists(select 1 from public.posts where title = '🎒 Acompanhante só com vida')),
   ('73_liga_sem_espera', to_regprocedure('public.liga_cfg()') is not null),
   ('74_caverna_na_hora', exists(select 1 from public.posts where title = '🕳️ A caverna abriu!')),
+  ('75_conserto_sem_filtro', position('bonus_steps = 0 where true' in pg_get_functiondef('public.start_new_season()'::regprocedure)) > 0),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
