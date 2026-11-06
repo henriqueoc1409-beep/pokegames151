@@ -5391,10 +5391,11 @@ function LIB() {
       <p>🔴 <b>Red, o treinador lendário</b>, fica no caminho perto do Castelo, com 6 Pokémon dos níveis 73 a 81. Todo mundo enfrenta… quem vencer ganha ${c.casas?.red_premio ?? 1000} moedas.</p><p><b>Treinadores do mapa:</b> ficam em pé em algumas casas. Quem parar ali enfrenta uma batalha automática contra 3 Pokémon do tipo dele, no nível da sua equipe. Vencendo, ganha moedas e XP (e, com muita sorte, uma HM). Perdendo, não perde nada.</p>
       <p><b>Mina de pedras</b>: chance de achar uma pedra de evolução. <b>Casa do Desafio</b>: quem acertou os 4 modos do dia ganha moedas e anda mais; quem não acertou volta casas. <b>Ladrão de estrada</b>: leva uma parte das suas moedas. <b>Fonte das Bolas</b>: dá uma Great Ball ou uma Ultra Ball.</p>
       <p>Na sua vila, a <b>Mina</b> também deixa cavar pedras uma vez por dia.</p>` },
-    { id: "liga", ic: "🏆", t: "Temporada e Liga Pokémon", h: `<p>O <b>1º jogador que chega ao Castelo encerra a corrida</b>. Quem ainda não jogou naquele dia joga normalmente; quando a rodada do dia fecha (meia-noite), a corrida acaba. Os prêmios do Castelo vão pela posição: primeiro quem chegou, depois quem estava mais perto do Castelo.</p>
-      <p>Aí começa a <b>Liga Pokémon</b>, com todos os jogadores ativos: um mata-mata de batalhas, uma fase por dia, com vida cheia (o 1º da corrida enfrenta o último). Quem não tem Pokémon perde por W.O.</p>
-      <p>O <b>campeão</b> ganha a Aura do Campeão, uma estátua no mapa e vai à <b>caverna do lendário</b>: uma única tentativa de capturar um lendário, com a torcida de todos.</p>
-      <p>Depois a temporada fecha e todos voltam à largada, <b>mantendo</b> nível, moedas, Pokémon e itens.</p>
+    { id: "liga", ic: "🏆", t: "Temporada e Liga Pokémon", h: `<p>O <b>1º jogador que chega ao Castelo encerra a corrida na hora</b> e puxa todo mundo para a Liga. Os prêmios do Castelo vão pela posição: primeiro quem chegou, depois quem estava mais perto do Castelo.</p>
+      <p>A <b>Liga Pokémon</b> tem todos os jogadores ativos: um mata-mata de batalhas com vida cheia (o 1º da corrida enfrenta o último). Quem não tem Pokémon perde por W.O. <b>Não tem espera</b>: acabou uma fase (ou a repescagem), começa a próxima.</p>
+      <p>Durante a Liga o <b>mapa fica parado</b>: os desafios do dia continuam valendo moedas, XP, a rodada do dia e o Pokémon selvagem, só ninguém anda.</p>
+      <p>O <b>campeão</b> ganha a Aura do Campeão, uma estátua no mapa e vai na hora à <b>caverna do lendário</b>: uma única tentativa de capturar um lendário.</p>
+      <p>Acabou a caverna, a temporada nova começa <b>na hora</b>: todos voltam à largada, <b>mantendo</b> nível, moedas, Pokémon e itens.</p>
       <p><b>🏅 Prêmios da temporada:</b> quando ela fecha, o 1º lugar de cada uma das 12 categorias ganha ${c.season_awards?.coins ?? 150} moedas, uma medalha no cartão e um presente no Correio (empatados ganham todos): mais casas andadas, mais Pokémon capturados, mais vitórias na rodada do dia, mais batalhas Pokémon vencidas, mais duelos vencidos, mais dano na Equipe Rocket, mais vitórias no Quiz, mais treinadores vencidos, mais moedas ganhas andando, mais acertos de primeira, mais espécies novas na Pokédex e mais Caçadas vencidas. Acompanhe em <b>Ranking → 🏅 Prêmios</b>.</p>` },
     { id: "rocket", ic: "🚀", t: "Equipe Rocket", h: `<p>A Equipe Rocket invade o jogo de tempos em tempos (normalmente terça, sexta e domingo às 8h) e fica 24 horas.</p>
       <p>Ela tem uma <b>barra de vida coletiva</b>: cada jogador cede 1 Pokémon e luta turno a turno; todo o dano que você tira vai para a barra.</p>
@@ -7604,7 +7605,7 @@ function leagueAlert() {
     if (lg?.status === "encerrada" && Date.now() - Date.parse(lg.ended_at || 0) < 864e5) return `<button class="arena-alert" data-act="go" data-v="liga">🏆 ${esc(lg.champion_name)} venceu a ${esc(lg.name)}! <b>Ver</b></button>`;
     return "";
   }
-  return `<button class="arena-alert" data-act="go" data-v="liga">🏁 ${arrived.length === 1 ? "Alguém chegou" : `${arrived.length} chegaram`} ao Castelo: a corrida termina quando a rodada de hoje fechar, e aí começa a Liga! <b>Ver</b></button>`;
+  return `<button class="arena-alert" data-act="go" data-v="liga">🏁 ${arrived.length === 1 ? "Alguém chegou" : `${arrived.length} chegaram`} ao Castelo: a corrida acabou e a Liga já vai começar! <b>Ver</b></button>`;
 }
 function caveMsgHTML(m) {
   return `<li class="chm ${m.side === "contra" ? "aviso" : ""}" data-id="${m.id}"><b>${esc(m.name)}</b>${m.side ? `<span class="chm-to">${m.side === "favor" ? "💚 a favor" : "💔 contra"}</span>` : ""}<time>${chatWhen(m.created_at)}</time><p>${esc(m.body)}</p></li>`;
@@ -7636,16 +7637,16 @@ function viewLiga() {
   if (!L) return `<p class="muted rk-state">Abrindo a Liga…</p>`;
   const lg = L.lg, me = S.session.user.id, adm = S.isAdmin;
   const rules = `<details class="war-rules"><summary>Como funciona a Liga</summary><ul>
-    <li>O 1º jogador que chega ao Castelo encerra a corrida: quem ainda não jogou naquele dia joga normalmente, e quando a rodada do dia fecha, começa a Liga com todos os jogadores ativos.</li>
+    <li>O 1º jogador que chega ao Castelo encerra a corrida na hora: a Liga começa com todos os jogadores ativos. Durante a Liga o mapa fica parado, mas os desafios do dia continuam valendo moedas, XP e a rodada.</li>
     <li>Classificação da corrida: primeiro quem chegou ao Castelo (pela ordem), depois quem estava mais perto. Os prêmios do Castelo (${(S.cfg.castle_prizes || [500, 300, 150]).join(", ")} moedas) vão por essa posição.</li>
     <li>Mata-mata em batalhas Pokémon turno a turno: o 1º da corrida enfrenta o último, o 2º o penúltimo, e assim por diante. Se o número for ímpar, os dois últimos fazem uma repescagem antes.</li>
-    <li>Uma rodada por dia. A vida dos Pokémon começa cheia em toda luta. Quem não tem Pokémon perde por W.O.; empate, passa quem chegou antes ao Castelo.</li>
-    <li>O campeão ganha a Aura do Campeão, um castelo na vila e a estátua no mapa, e entra na caverna de um lendário. Depois de 24 horas, ele tem uma única tentativa de captura, com ${S.cfg.league_capture_pct ?? 5}% de chance.</li>
-    <li>No dia seguinte, todos voltam à largada sem perder nada e começa uma nova corrida. Nos primeiros ${S.cfg.temporada?.troca_heroi_dias ?? 3} dias da temporada nova, cada um pode trocar de herói de graça, uma vez.</li>
+    <li>Sem espera: acabou uma fase, começa a próxima. A vida dos Pokémon começa cheia em toda luta. Quem não tem Pokémon perde por W.O.; empate, passa quem chegou antes ao Castelo.</li>
+    <li>O campeão ganha a Aura do Campeão, um castelo na vila e a estátua no mapa, e entra na hora na caverna de um lendário. Ele tem uma única tentativa de captura, com ${S.cfg.league_capture_pct ?? 5}% de chance.</li>
+    <li>Acabou a caverna, todos voltam à largada sem perder nada e já começa uma nova corrida. Nos primeiros ${S.cfg.temporada?.troca_heroi_dias ?? 3} dias da temporada nova, cada um pode trocar de herói de graça, uma vez.</li>
     <li>Durante a Liga, todos os treinadores ficam no 🏟️ Estádio da Liga, ao lado do Castelo. Toque nele para ver o chaveamento.</li></ul></details>`;
   const hall = S.leagueHall.length ? `<section class="panel lo"><h3>🏛️ Hall da Fama</h3><ul class="war-hist">${S.leagueHall.map(h => `<li class="won"><span>🏆 <b>${esc(h.champion_name)}</b>: campeão da ${esc(h.name)}${h.cave_result ? ` · ${h.cave_result === "capturou" ? `capturou o ${esc(pkName(h.legend_id))}` : `o ${esc(pkName(h.legend_id))} escapou`}` : ""}</span><small class="muted">${h.ended_at ? chatWhen(h.ended_at) : "caverna aberta"}</small></li>`).join("")}</ul></section>` : "";
   if (!lg || (lg.status === "encerrada" && S.today?.season?.status === "ativa" && lg.season_id !== S.today?.season?.id)) {
-    return `<div class="war-page"><section class="panel lo"><h3>🏆 Liga Pokémon</h3><p>A Liga ainda não começou nesta temporada. Ela começa quando a rodada do dia em que o 1º jogador chegar ao Castelo fechar.</p>
+    return `<div class="war-page"><section class="panel lo"><h3>🏆 Liga Pokémon</h3><p>A Liga ainda não começou nesta temporada. Ela começa na hora em que o 1º jogador chegar ao Castelo.</p>
       ${adm ? `<button class="btn ghost" data-act="lg-start">Começar a Liga agora (admin)</button>` : ""}</section>${rules}${hall}</div>`;
   }
   const stages = [...new Set(L.matches.map(m => m.stage))].sort((a, b) => b - a);
@@ -7778,7 +7779,7 @@ Object.assign(ACTIONS, {
     const m = openModal(`<h2>${r.caught ? "🎉 Capturou!" : "💨 Escapou..."}</h2><p>${r.caught ? `O ${esc(pkName(r.pokemon))} nível ${r.level} agora é seu!` : `O ${esc(pkName(r.pokemon))} fugiu para o fundo da caverna. Fica para a próxima Liga!`}</p><div class="actions"><button class="btn" data-r="1">OK</button></div>`);
     m.addEventListener("click", e => { if (e.target.closest("[data-r]")) closeModal(); });
   },
-  "lg-start": async () => { if (!(await confirmModal("Começar a Liga agora?", "Ela já começa sozinha quando a rodada do dia fecha. Começando agora, entram todos os jogadores ativos pela posição de agora: primeiro quem chegou ao Castelo, depois quem está mais perto. Quem ainda não andou hoje não sobe mais.", "Começar"))) return;
+  "lg-start": async () => { if (!(await confirmModal("Começar a Liga agora?", "Ela já começa sozinha quando o 1º chega ao Castelo. Começando agora, entram todos os jogadores ativos pela posição de agora: primeiro quem chegou ao Castelo, depois quem está mais perto. Quem ainda não andou hoje não sobe mais.", "Começar"))) return;
     await guarded(async () => { await rpc("admin_league_start"); await loadLeague(); toast("A Liga começou!"); render(); }); },
   "lg-wo": async (v, el) => { const w = el.dataset.w; if (!(await confirmModal("Dar W.O.?", `${lgName(S.league, w)} passa de fase e a luta é encerrada.`, "Dar W.O."))) return;
     await guarded(async () => { await rpc("admin_league_wo", { _match: v, _winner: w }); await loadLeague(); render(); }); }
@@ -8553,9 +8554,11 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
+  liga: { comeca_na_chegada: "A Liga começa quando o 1º chega ao Castelo", mapa_parado: "Durante a Liga ninguém anda no mapa", fase_por_dia: "Uma fase da Liga por dia (desligado: sem espera)",
+    caverna_horas: "Horas até a caverna abrir (0 = na hora)", caverna_prazo_horas: "Horas para o campeão tentar antes do lendário fugir", temporada_na_hora: "Temporada nova começa assim que a Liga acaba" },
   temporada: { troca_heroi_gratis: "Troca de herói grátis na temporada nova", troca_heroi_dias: "Dias para trocar de graça" },
   casas: { passar_luta: "Quem passa pela casa do Treinador também batalha", red_premio: "Prêmio de quem vencer o Red (moedas)" },
   herois: { guerreiro_dano_pct: "Guerreiro: % a mais de dano", mago_status_acc_pct: "Mago: % a mais de acerto em ataques de status", mago_forte_pct: "Mago: pontos a mais de chance de Pokémon forte na Grama",
@@ -10158,6 +10161,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "liga-sem-espera-2026-11-06", sql: "73", title: "⚡ Liga sem espera", body: () => `A Liga Pokémon ficou mais rápida:
+• 🏰 Chegou o 1º ao Castelo? A corrida acaba NA HORA e a Liga começa com todo mundo, pela posição no mapa.
+• 🗺️ Durante a Liga o mapa fica parado: os desafios do dia continuam valendo moedas, XP, rodada e Pokémon, só não se anda.
+• ⚔️ Sem esperar o dia seguinte: acabou uma fase (ou a repescagem), já começa a próxima.
+• 🕳️ A caverna do lendário abre na hora para o campeão.
+• 🔄 Acabou a caverna? A temporada nova começa na hora, todos na largada, sem perder nada (e com a troca de herói grátis).` },
   { id: "acompanhante-vivo-2026-11-03", sql: "72", title: "🎒 Acompanhante só com vida", body: () => `Na Grama de Treino, o Pokémon acompanhante agora precisa estar com vida, como o que luta. Pokémon desmaiado não pode ir junto: leve ao Centro Pokémon ou espere a cura grátis.` },
   { id: "liga-festa-2026-11-03", sql: "71", title: "🏟️ Festa da Liga: Estádio, chaveamento e troca de herói grátis", body: () => `A Liga ficou com cara de final de campeonato:
 • 🎆 Quando a Liga começa, todo mundo vê a abertura com os confrontos da primeira fase.
