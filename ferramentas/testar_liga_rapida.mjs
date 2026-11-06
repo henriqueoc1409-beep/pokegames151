@@ -1,4 +1,4 @@
-// Testa o arquivo 73 (Liga sem espera) com dados de TESTE:
+// Testa os arquivos 73 e 74 (Liga sem espera, caverna na hora) com dados de TESTE:
 // o 1º no Castelo puxa todos para a Liga na hora; durante a Liga ninguém anda, mas o dia conta;
 // acabou uma fase, começa a próxima na hora; a caverna abre na hora; acabou a caverna, temporada nova na hora.
 // Uso (na pasta ferramentas, uma vez: npm install):  node testar_liga_rapida.mjs ..
@@ -56,10 +56,11 @@ L = await lg();
 check("o campeão entra na caverna e ela já está aberta", L.status === "caverna" && L.champion === P.A && new Date(L.cave_open_at) <= new Date(), JSON.stringify([L.status, L.cave_open_at]));
 const old = (await sys(`select id from seasons order by id desc limit 1`))[0].id;
 
+await sys(`update leagues set cave_open_at = now() + interval '20 hours' where id = $1`, [L.id]);   // caverna da regra antiga, ainda esperando
 console.log("\nAcabou a caverna: temporada nova na hora");
 const t = await as(P.A, `select public.league_cave_try() r`);
 const s = (await sys(`select * from seasons order by id desc limit 1`))[0];
-check("o campeão tenta na hora", !t.error, t.error);
+check("o campeão tenta na hora, mesmo numa caverna da regra antiga (arquivo 74)", !t.error, t.error);
 check("a temporada nova já começou", s.id === old + 1 && s.status === "ativa" && (await lg()).status === "encerrada", JSON.stringify(s));
 check("todos voltam à largada sem chegada marcada", (await sys(`select count(*)::int n from characters where node <> 0 or arrived_rank is not null`))[0].n === 0);
 check("e já pode trocar de herói de graça", (await as(P.B, `select public.heroi_troca_estado() s`)).rows[0].s.pode === true);
