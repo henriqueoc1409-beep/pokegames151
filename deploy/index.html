@@ -5403,9 +5403,10 @@ function LIB() {
     { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
       <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
       <p>No fim, o Pokémon vai sozinho para quem deu o maior lance, e quem vendeu recebe as moedas, menos ${S.leilao?.st?.cfg?.taxa_pct ?? 5}% de taxa. Sem lance, nada muda.</p>` },
-    { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon sobe de nível pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${S.creche?.st?.horas_por_nivel ?? 12} horas</b>, e um Pokémon por vez. Cancelando, as moedas dos níveis que ainda não chegaram voltam. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 10} moedas.</p>
-      <p>Limite: ${S.creche?.st?.niveis_semana ?? 5} níveis por semana, somando todos os seus Pokémon, e só até o nível ${S.creche?.st?.nivel_max ?? 40}. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p>` },
+    { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon sobe de nível pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${S.creche?.st?.horas_por_nivel ?? 12} horas</b>, e um Pokémon por vez. Cancelando, as moedas dos níveis que ainda não chegaram voltam. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 5} moedas até o nível ${S.creche?.st?.nivel_alto ?? 30} e × ${S.creche?.st?.preco_por_nivel_alto ?? 10} acima dele.</p>
+      <p>Limite: ${S.creche?.st?.niveis_semana ?? 10} níveis por semana até o nível ${S.creche?.st?.nivel_alto ?? 30} e ${S.creche?.st?.niveis_semana_alto ?? 5} acima dele, somando todos os seus Pokémon, e só até o nível ${S.creche?.st?.nivel_max ?? 40}. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p>` },
     { id: "batalha", ic: "⚔️", t: "Batalhas Pokémon e Arena", h: `<p>Precisa de 3 Pokémon capturados. Entram os <b>3 primeiros da equipe</b>. Os dois escolhem a ação do turno em segredo (atacar, trocar ou usar um item) e o servidor resolve.</p>
+      <p>📏 <b>Teto de nível:</b> nas batalhas valendo moedas, ninguém luta acima do teto da temporada (nível ${S.teto?.nivel ?? 20} agora; sobe 5 por temporada, até 40). Quem está acima luta com a força do nível do teto, e o XP também sai por esse nível. Na Liga Pokémon não há teto.</p>
       <p><b>Aposta:</b> quem desafia escolhe de ${bet[0]} a ${bet[1]} moedas. Quem vence leva tudo; empate devolve.</p>
       <p><b>Sem prazo por turno:</b> jogue quando puder. Ninguém perde por demora.</p>
       <p><b>Itens:</b> até ${ic.per_battle} por batalha, e cada um gasta a sua vez.</p>
@@ -5416,6 +5417,7 @@ function LIB() {
       <li><b>Poções e curas</b>: Potion, Super Potion, Hyper Potion, Max Potion, Full Restore, Antidote, Parlyz Heal, Awakening, Burn Heal, Ice Heal, Full Heal e Revive.</li>
       <li><b>Itens X</b>: sobem um atributo do Pokémon em campo durante a batalha.</li>
       <li><b>TMs</b>: ensinam um ataque e acabam. Nem todo Pokémon aprende todas, igual à Red/Blue.</li>
+      <li><b>Cabo Link</b>: faz evoluir quem, na Red/Blue, só evolui por troca (Kadabra, Machoke, Graveler e Haunter). Acaba ao usar.</li>
       <li><b>HMs</b>: raras, nunca acabam e abrem atalhos no mapa (veja "HMs e atalhos").</li></ul>
       <p>Para ensinar, abra o Pokémon na coleção e toque em <b>📀 Ensinar TM/HM</b>. Na batalha, toque em <b>🎒 Bolsa</b>.</p>
       <p>Às vezes um baú (${ic.bau_pct}%) ou a Fonte das Bolas (${ic.fonte_pct}%) também dá um item.</p>` },
@@ -6343,7 +6345,8 @@ function pkXp(m) {
 }
 const evosOf = sp => (S.pk.evos || []).filter(e => e.from_id === sp && (genOn() || (e.from_id <= 151 && e.to_id <= 151)));
 function evoReady(m) {
-  return evosOf(m.species_id).filter(e => (e.method === "nivel" && m.level >= e.level) || (e.method === "pedra" && (S.pk.bag[e.item] || 0) > 0));
+  return evosOf(m.species_id).filter(e => (e.method === "nivel" && m.level >= e.level) || (e.method === "pedra" && (S.pk.bag[e.item] || 0) > 0)
+    || (e.method === "troca" && (S.pk.bag.cabo_link || 0) > 0));
 }
 const moveOf = id => S.pk.moves?.[id];
 const pkName = id => S.pokeById[id]?.name || "?";
@@ -6363,8 +6366,12 @@ async function loadPkStatic() {
   const [mv, ev, rules] = await Promise.all([sb.from("pk_moves").select("*"), sb.from("pk_evolutions").select("*"), rpc("pk_rules")]);
   if (mv.error) throw mv.error; if (ev.error) throw ev.error;
   S.pk.moves = Object.fromEntries(mv.data.map(m => [m.id, m])); S.pk.evos = ev.data; S.pk.rules = rules;
-  await loadPkItems();
+  await Promise.all([loadPkItems(), loadTeto()]);
 }
+// teto de nível nas batalhas valendo moedas (arquivo 77); sem o 77, não aparece nada
+async function loadTeto() { try { S.teto = await rpc("teto_estado"); } catch { S.teto = null; } }
+const tetoOn = () => S.teto?.on && S.teto?.nivel;
+const tetoTxt = () => tetoOn() ? `<p class="bt-quiet bt-teto">📏 <b>Nesta temporada, os Pokémon lutam no máximo no nível ${S.teto.nivel}.</b> Quem estiver acima luta como se fosse do nível ${S.teto.nivel} (força e XP). Na Liga não há limite.</p>` : "";
 async function loadLearnsets() {
   if (S.pk.learn) return;
   const { data, error } = await sb.from("pk_learnset").select("*").order("level"); if (error) throw error;
@@ -6546,7 +6553,7 @@ function evolutionPrompt(m) {
   return new Promise(resolve => {
     const box = openModal(`<div class="evo"><h2>O que? ${esc(pkName(m.species_id))} está evoluindo!</h2>
       <div class="evo-stage">${monCv(m.species_id, m.outfit, 192, false, "evo-from")}${monCv(ev.to_id, m.outfit, 192, false, "evo-to")}</div>
-      <p id="evo-msg" class="evo-msg">Pode evoluir para <strong>${esc(pkName(ev.to_id))}</strong>${ev.method === "pedra" ? ` usando ${PK_STONES[ev.item]}` : ""}. Se preferir, adie: dá para evoluir depois pela coleção.</p>
+      <p id="evo-msg" class="evo-msg">Pode evoluir para <strong>${esc(pkName(ev.to_id))}</strong>${ev.method === "pedra" ? ` usando ${PK_STONES[ev.item]}` : ev.method === "troca" ? " usando um Cabo Link" : ""}. Se preferir, adie: dá para evoluir depois pela coleção.</p>
       <div class="actions"><button class="btn ghost" data-no="1">Agora não</button><button class="btn big" data-yes="1">Evoluir</button></div></div>`);
     box.querySelector(".modal").classList.add("modal-evo"); hydrateMons(box);
     $("[data-no]", box).onclick = () => { closeModal(); resolve(); };
@@ -6619,7 +6626,7 @@ function monDetail(m) {
       <div class="act-btns">${m.moves.map((old, i) => `<button class="btn ghost small" data-act="pk-learn" data-v="${m.id}" data-m="${id}" data-f="${i + 1}">Esquecer ${esc(moveOf(old)?.name)}</button>`).join("")}
       <button class="btn ghost small" data-act="pk-learn" data-v="${m.id}" data-m="${id}" data-f="0">Não aprender</button></div></div>`; }).join("");
   const evoTxt = allEv.map(e => {
-    const can = ready.includes(e), why = e.method === "nivel" ? `no nível ${e.level}` : e.method === "pedra" ? `com ${PK_STONES[e.item]}${(S.pk.bag[e.item] || 0) ? "" : " (compre na Loja Pokémon)"}` : "por troca (ainda não existe no Pokegames)";
+    const can = ready.includes(e), why = e.method === "nivel" ? `no nível ${e.level}` : e.method === "pedra" ? `com ${PK_STONES[e.item]}${(S.pk.bag[e.item] || 0) ? "" : " (compre na Loja Pokémon)"}` : `por troca, com um Cabo Link${(S.pk.bag.cabo_link || 0) ? "" : " (compre na Loja Pokémon)"}`;
     return `<li>${esc(pkName(e.to_id))} <span class="muted">${why}</span> ${can ? `<button class="btn small" data-act="pk-evolve" data-v="${m.id}" data-to="${e.to_id}">Evoluir agora</button>` : ""}</li>`; }).join("");
   return `<div class="md-head">${monCv(m.species_id, m.outfit, 144)}<div>
       <h3>${esc(p.name)} <small>Nº ${String(p.id).padStart(3, "0")}</small></h3>
@@ -6726,7 +6733,7 @@ function pkItemShop() {
   const c = itemsCfg();
   return `<section class="panel lo"><h3>Itens de batalha, TMs e HMs</h3>
     <p class="muted">Como na Red/Blue. Na batalha, usar um item gasta a sua vez, e cada um usa até <b>${c.per_battle}</b> itens por batalha. A TM ensina um ataque e acaba. A HM é rara: não vende, só se acha em 1 de cada ${Math.round(100 / (c.hm_bau_pct || 1))} baús ou em 1 de cada ${Math.round(100 / (c.hm_npc_pct || 2))} vitórias contra os treinadores do mapa (cada HM só uma vez). Ela nunca acaba e abre um pequeno atalho nos obstáculos do tabuleiro (+1 casa, no máximo 1 por dia); com Fly, você voa +${c.hm.fly_bonus} casas uma vez por temporada. Para ensinar, abra o Pokémon na coleção e toque em "Ensinar TM/HM". Às vezes um baú ou a Fonte das Bolas também dá um item. Você tem <span class="coins">${S.me.coins} moedas</span>.</p>
-    ${grp("Poções e curas", ["cura", "estado", "reviver"], true)}${grp("Itens X (sobem um atributo do Pokémon em campo)", ["x"])}${grp("HMs: raras, nunca acabam e abrem atalhos", ["hm"], true)}${grp("TMs: acabam ao ensinar", ["tm"])}</section>`;
+    ${grp("Poções e curas", ["cura", "estado", "reviver"], true)}${grp("Itens X (sobem um atributo do Pokémon em campo)", ["x"])}${grp("HMs: raras, nunca acabam e abrem atalhos", ["hm"], true)}${grp("TMs: acabam ao ensinar", ["tm"])}${grp("Evolução por troca", ["evo"], true)}</section>`;
 }
 
 // ---------- loja Pokémon: roupas e bolsa ----------
@@ -6794,6 +6801,7 @@ function viewBattles() {
       <p class="muted">Precisa de ${need} Pokémon capturados e de uma equipe montada. Entram os ${S.pk.rules?.battle?.size ?? 3} primeiros da equipe. A vida e os PP só valem dentro da batalha: no fim, todos voltam inteiros.</p>
       ${S.pk.mons.length < need ? `<p class="rk-hint">Você tem ${S.pk.mons.length} Pokémon. Capture mais andando no tabuleiro.</p>` : ""}
       <form id="btform" class="bet-form"><label for="bt-opp" class="sr">Adversário</label><select id="bt-opp">${S.chars.filter(c => c.user_id !== me).map(c => `<option value="${c.user_id}">${esc(c.name)} (Nv ${c.level})</option>`).join("")}</select>${btBetOn() ? `<label for="bt-bet" class="sr">Aposta em moedas</label><input id="bt-bet" type="number" min="${btBetMin()}" max="${btBetMax()}" step="1" value="${btBetMin()}" title="Aposta em moedas" style="width:110px">` : ""}<button class="btn" ${S.pk.mons.length < need ? "disabled" : ""}>Desafiar</button></form>
+      ${tetoTxt()}
       ${btBetOn() ? `<p class="bt-quiet">💰 Toda batalha vale moedas: de ${btBetMin()} a ${btBetMax()}. As suas saem quando você desafia e voltam se o outro recusar ou se você cancelar; as do adversário saem quando ele aceita. Quem vencer leva tudo, empate devolve.</p>` : ""}</section>
     ${inv.length ? `<section class="panel lo"><h3>Convites para você</h3>${inv.map(b => `<div class="bt-row"><span><b>${esc(opp(b))}</b> te desafiou${b.bet ? ` valendo <b>${b.bet} moedas</b>` : ""}</span><button class="btn small" data-act="bt-accept" data-v="${b.id}">Aceitar</button><button class="btn ghost small" data-act="bt-decline" data-v="${b.id}">Recusar</button></div>`).join("")}</section>` : ""}
     ${live.length || sent.length ? `<section class="panel lo"><h3>Em andamento</h3><p class="bt-quiet">Não existe prazo por turno: jogue quando puder. Quem assiste pela Arena pode cobrar a jogada, mas ninguém perde por demora.</p>${live.map(b => `<div class="bt-row"><span>Contra <b>${esc(opp(b))}</b> · turno ${b.turn}${btBetTag(b)}</span>${btMyTurn(b) ? `<em class="tag go">sua vez</em>` : `<em class="tag">esperando</em>`}<button class="btn small" data-act="bt-open" data-v="${b.id}">Abrir</button></div>`).join("")}
@@ -8586,7 +8594,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8601,7 +8609,9 @@ const AJ_LABELS = {
     pesq_comp_pct: "Pesquisador: % de experiência do acompanhante", merc_loja_desc_pct: "Mercador: desconto nas lojas (%)", merc_salario_pct: "Mercador: % a mais no salário", merc_leilao_taxa_pct: "Mercador: taxa no Leilão (%)" },
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
-  creche: { on: "Creche aberta", preco_por_nivel: "Preço: nível alcançado × este número", niveis_semana: "Níveis por semana (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina", horas_por_nivel: "Horas para cada nível chegar" },
+  teto: { on: "Teto ligado nas batalhas valendo moedas", nivel_inicial: "Teto na 1ª temporada com teto", por_temporada: "Quanto o teto sobe a cada temporada", nivel_max: "Teto máximo", temporada_ref: "Temporada de partida (número interno, não mexa)" },
+  boas_vindas: { on: "Dar Pokémon a quem cria o herói", iniciais: "Iniciais possíveis (números da Pokédex)", inicial_nivel: "Nível do inicial", pacote_qtd: "Quantos Pokémon no pacote do jogador novo", pacote_abaixo_teto: "Pacote: quantos níveis abaixo do teto" },
+  creche: { on: "Creche aberta", preco_por_nivel: "Preço até o nível alto: nível alcançado × este número", preco_por_nivel_alto: "Preço acima do nível alto: nível × este número", nivel_alto: "Nível alto (a partir dele, preço e limite mudam)", niveis_semana_alto: "Níveis por semana acima do nível alto", niveis_semana: "Níveis por semana até o nível alto (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina", horas_por_nivel: "Horas para cada nível chegar" },
   desafio: { desc_progressiva: "Descrição em partes (cada erro revela mais um pedaço); desligado = o verbete inteiro de uma vez" },
   treino: { on: "Grama de Treino aberta", minutos_dia: "Minutos por dia", visita_opcoes: "Opções de tempo por visita (minutos, separados por vírgula)",
     encontro_seg: "Segundos mínimos entre um encontro e outro", xp_mult: "Multiplicador de experiência (1 = normal)", nivel_menos: "Selvagem: até quantos níveis abaixo",
@@ -8790,7 +8800,11 @@ async function crecheOpen() {
   catch (e) { if (pkMissing(e)) S.pk.on = false; else toast(errMsg(e), true); }
   render(); if ($("#game")) renderHUD();
 }
-const crechePreco = (lvl, n, por) => { let t = 0; for (let l = lvl + 1; l <= lvl + n; l++) t += l * por; return t; };
+// arquivo 77: até o nível alto (30) custa nível × preco_por_nivel; acima, nível × preco_por_nivel_alto
+const crechePreco = (lvl, n, st) => { let t = 0; for (let l = lvl + 1; l <= lvl + n; l++) t += l * (st.nivel_alto && l > st.nivel_alto ? st.preco_por_nivel_alto : st.preco_por_nivel); return t; };
+// quantos níveis cabem nos dois limites da semana (até o 30 e acima do 30)
+const crecheMaxN = (lvl, st) => { const A = st.nivel_alto ?? 999; let n = 0, b = st.restante, a = st.restante_alto ?? 0;
+  for (let l = lvl + 1; l <= st.nivel_max; l++) { if (l > A) { if (a < 1) break; a--; } else { if (b < 1) break; b--; } n++; } return n; };
 function viewCreche() {
   const C = S.creche;
   if (C.missing) return `<p class="muted rk-state">A Creche precisa do arquivo <code>64_creche.sql</code> rodado no Supabase.</p>`;
@@ -8800,16 +8814,16 @@ function viewCreche() {
   if (!st.on) return `<div class="pk-empty"><p><strong>A Creche está fechada no momento.</strong></p></div>`;
   if (!mons.length) return `<div class="pk-empty"><p><strong>Você ainda não tem Pokémon.</strong></p></div>`;
   const m = mons.find(x => x.id === C.sel) || mons.find(x => x.level < st.nivel_max) || mons[0]; C.sel = m.id;
-  const maxN = Math.max(0, Math.min(st.restante, st.nivel_max - m.level)), n = Math.max(1, Math.min(C.n || 1, maxN || 1));
-  const custo = Math.ceil(crechePreco(m.level, n, st.preco_por_nivel) * (100 - (st.desconto_pct || 0)) / 100), coins = S.me?.coins ?? 0;
+  const maxN = crecheMaxN(m.level, st), n = Math.max(1, Math.min(C.n || 1, maxN || 1));
+  const custo = Math.ceil(crechePreco(m.level, n, st) * (100 - (st.desconto_pct || 0)) / 100), coins = S.me?.coins ?? 0;
   const evo = evosOf(m.species_id).find(e => e.method === "nivel" && e.level > m.level && e.level <= m.level + n);
   const used = Math.round(st.usados / Math.max(1, st.niveis_semana) * 100);
   return `<div class="creche">
     <div class="ce-head" style="background:linear-gradient(180deg,#FFF3DC,#F2DDB6);border-color:#C9A05A;color:#3A2A12"><p><b style="color:#7A4A12">🏡 Bem-vindo à Creche Pokémon!</b></p>
-      <p>Aqui o seu Pokémon treina e sobe de nível, pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${st.horas_por_nivel ?? 12} horas</b>. Enquanto isso, ele continua jogando normalmente. Cada nível custa <b>o nível que ele vai alcançar × ${st.preco_por_nivel}</b> (do 10 para o 11: ${11 * st.preco_por_nivel} moedas).</p>
-      ${st.desconto_pct ? `<p>🐎 Domador: você paga ${st.desconto_pct}% a menos.</p>` : ""}<p>Limite: <b>${st.niveis_semana} níveis por semana</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
+      <p>Aqui o seu Pokémon treina e sobe de nível, pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${st.horas_por_nivel ?? 12} horas</b>. Enquanto isso, ele continua jogando normalmente. Cada nível custa <b>o nível que ele vai alcançar × ${st.preco_por_nivel}</b> (do 10 para o 11: ${11 * st.preco_por_nivel} moedas)${st.nivel_alto ? `; acima do nível ${st.nivel_alto}, <b>× ${st.preco_por_nivel_alto}</b>` : ""}.</p>
+      ${st.desconto_pct ? `<p>🐎 Domador: você paga ${st.desconto_pct}% a menos.</p>` : ""}<p>Limite: <b>${st.niveis_semana} níveis por semana${st.nivel_alto ? ` até o nível ${st.nivel_alto} e ${st.niveis_semana_alto} acima dele` : ""}</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
     <div class="tr-clock" style="margin-bottom:10px"><b>📅 Esta semana</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
-      <span>${st.usados} de ${st.niveis_semana} níveis usados · ${st.restante ? `faltam ${st.restante}` : `renova em ${chatWhen(st.renova)}`}</span></div>
+      <span>${st.usados} de ${st.niveis_semana} níveis usados${st.nivel_alto ? ` até o ${st.nivel_alto} · ${st.usados_alto} de ${st.niveis_semana_alto} acima` : ""} · renova em ${chatWhen(st.renova)}</span></div>
     ${st.treino ? (() => { const t = st.treino, tm = S.pk.mons.find(x => x.id === t.mon_id);
       return `<section class="panel lo cr-now"><h3>⏳ Treinando agora</h3>
         <div class="cr-mon">${monCv(t.species, tm?.outfit || {}, 72)}<div><b>${esc(pkName(t.species))}</b> <span class="muted">do nível ${t.level_from} ao ${t.level_from + t.niveis}</span><br>
@@ -8840,7 +8854,7 @@ ACTIONS["cr-sel"] = v => { S.creche.sel = v; S.creche.n = 1; render(); };
 ACTIONS["cr-n"] = v => { S.creche.n = +v; render(); };
 ACTIONS["cr-go"] = async () => {
   const C = S.creche, m = S.pk.mons.find(x => x.id === C.sel); if (!m) return;
-  const n = C.n || 1, custo = Math.ceil(crechePreco(m.level, n, C.st.preco_por_nivel) * (100 - (C.st.desconto_pct || 0)) / 100);
+  const n = C.n || 1, custo = Math.ceil(crechePreco(m.level, n, C.st) * (100 - (C.st.desconto_pct || 0)) / 100);
   const hs = C.st.horas_por_nivel ?? 12;
   if (!await confirmModal("Treinar na Creche?", `${pkName(m.species_id)} vai do nível ${m.level} ao ${m.level + n} por ${custo} moedas, pagos agora. Os níveis chegam aos poucos: 1 a cada ${hs} horas (tudo pronto em ${n * hs} horas).`, `Treinar por ${custo}`)) return;
   guarded(async () => {
@@ -10194,6 +10208,13 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "nivelamento-2026-11-06", sql: "77", title: "⚖️ Nivelamento da Temporada 2", body: () => `A Temporada 2 começa com todo mundo mais perto:
+• 🔄 Todos os Pokémon acima do nível 5 voltaram ao nível 5 (ataques e evoluções ficam) e todos estão com a vida cheia.
+• 💰 Compensação no Correio: 10 moedas por nível perdido. Quem não perdeu nada ganhou um bônus de, no mínimo, 300 moedas.
+• 🎁 Todo mundo ganhou um inicial nível 5: Bulbasaur, Charmander, Squirtle, Pikachu ou Eevee. Jogador novo ganha também 3 Pokémon de boas-vindas.
+• ⚔️ Nas batalhas valendo moedas, ninguém luta acima do nível 20 nesta temporada (+5 por temporada, até 40). A Liga não tem limite.
+• 🏡 Creche mais barata: nível × 5 até o 30 (nível × 10 acima), 10 níveis por semana até o 30 e 5 acima.
+• 🔌 Cabo Link na Loja Pokémon: Kadabra, Machoke, Graveler e Haunter finalmente evoluem!` },
   { id: "caverna-na-hora-2026-11-06", sql: "74", title: "🕳️ A caverna abriu!", body: () => `Chega de esperar: a caverna do lendário abre assim que a Liga tem um campeão. Quem já estava esperando pode tentar a captura agora mesmo. Uma chance só!` },
   { id: "liga-sem-espera-2026-11-06", sql: "73", title: "⚡ Liga sem espera", body: () => `A Liga Pokémon ficou mais rápida:
 • 🏰 Chegou o 1º ao Castelo? A corrida acaba NA HORA e a Liga começa com todo mundo, pela posição no mapa.

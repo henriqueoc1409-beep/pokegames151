@@ -34,7 +34,7 @@ r = await as(ANA, `select public.admin_pk_item_set('pocao', 0)`); check("jogador
 r = await as(ADM, `select public.admin_pk_item_set('pocao', 0)`); check("admin tira a Potion da venda (preço 0)", !r.error, r.error);
 r = await as(ANA, `select public.pk_buy('pocao', 1)`); check("item com preço 0 não vende", /não está à venda/.test(r.error || ""), r.error);
 await as(ADM, `select public.admin_pk_item_set('pocao', 20)`);
-check("todos leem o catálogo e quem aprende cada TM", (await as(BETO, `select count(*)::int n from pk_items`)).rows[0].n === 71 && (await as(BETO, `select count(*)::int n from pk_tm_compat`)).rows[0].n > 3000);
+check("todos leem o catálogo e quem aprende cada TM", (await as(BETO, `select count(*)::int n from pk_items where kind <> 'evo'`)).rows[0].n === 71 && (await as(BETO, `select count(*)::int n from pk_tm_compat`)).rows[0].n > 3000);
 
 console.log("\nEnsinar TM e HM");
 const [bulba, charm, squirt] = mons[ANA];
