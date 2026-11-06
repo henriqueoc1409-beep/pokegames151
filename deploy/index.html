@@ -5059,7 +5059,7 @@ function wbBenefit(k, l) {
     case "centro": { const un = Object.values(W.buildings).flatMap(b => (b.cv || []).map((x, i) => x === l ? (i ? `${b.name} ${i + 1}` : b.name) : null)).filter(Boolean);
       return `Vila nível ${l}.${un.length ? ` Libera: ${un.join(", ")}.` : ""}`; }
     case "cofre": return `Protege ${(W.base_protect ?? 100) + at("protect")} moedas do saque.`;
-    case "quartel": return `Entra na guerra: ${at("attacks")} ${at("attacks") === 1 ? "ataque" : "ataques"} por dia.`;
+    case "quartel": return `Entra na guerra: ${at("attacks")} ${at("attacks") === 1 ? "ataque" : "ataques"} por dia.${at("soldo") ? ` Soldo de ${at("soldo")} moedas por dia (colete na vila), +${at("batalhas_xp")} ${at("batalhas_xp") === 1 ? "batalha" : "batalhas"} com XP por dia, ${at("treino_xp")} XP por dia para cada Pokémon dos esquadrões e +${at("protect")} moedas protegidas no saque.${l === 1 ? ` Construído agora, vem com ${Math.round((W.quartel_escudo_horas ?? 72) / 24)} dias de escudo.` : ""}` : ""}`;
     case "defesa": return `Defensores lutam com +${at("bonus")}% de vida e defesa (somado às Armadilhas, no máximo ${W.def_cap}%).`;
     case "armadilhas": return `O 1º Pokémon que atacar sua vila entra com ${at("pct")}% a menos de vida.`;
     case "vigia": return ["Mostra quais Pokémon defendem cada vila.", "Mostra também nível e vida atual dos defensores.", "Mostra também os ataques e a chance de vitória."][l - 1];
@@ -5448,7 +5448,8 @@ function LIB() {
       <p><b>Reações:</b> toque num jogador no mapa para mandar uma reação.</p>` },
     { id: "vila", ic: "🏰", t: "Vila e Guerras", h: `<p><b>Minha Vila</b> tem construções que produzem moedas e outras vantagens. Melhore as construções com moedas e colete a produção.</p>
       <p>O Snorlax da Rodada acorda com a vila <b>enlameada</b>: a produção para até limpar.</p>
-      <p><b>Guerras (opcionais):</b> monte esquadrões de ataque e defesa com 3 Pokémon cada e ataque outras vilas parecidas com a sua. A luta é automática. Quem vence leva uma parte das moedas (o Cofre protege), e as construções atingidas precisam de conserto. Os Pokémon feridos se curam no Centro Pokémon ou sozinhos com o tempo.</p>` },
+      <p><b>Guerras (opcionais):</b> monte esquadrões de ataque e defesa com 3 Pokémon cada e ataque outras vilas parecidas com a sua. A luta é automática. Quem vence leva uma parte das moedas (o Cofre protege), e as construções atingidas precisam de conserto. Os Pokémon feridos se curam no Centro Pokémon ou sozinhos com o tempo.</p>
+      <p>🪖 <b>Quartel Pokémon:</b> é ele que coloca você na guerra, mas também dá vantagens todo dia: <b>soldo</b> em moedas (coletado na vila), <b>batalhas extras com XP</b>, <b>XP diário</b> para os Pokémon dos seus esquadrões e mais moedas protegidas no saque. Quartel novo vem com alguns dias de escudo.</p>` },
     { id: "lojas", ic: "🛍️", t: "Lojas, Caixa e ajuda", h: `<p><b>Loja do herói:</b> visuais, ajudas e armadilhas. <b>Loja Pokémon:</b> bolas, pedras, itens, TMs e roupas para Pokémon. <b>Bandeira da vila:</b> compre e hasteie na sua vila.</p>
       <p><b>Caixa da Obra 💛:</b> quem quiser ajudar a manter o jogo pode contribuir por PIX. Algumas ofertas e itens especiais saem por PIX. O mural mostra quem ajudou.</p>
       <p><b>Comunidade:</b> o <b>Chat</b> para conversar (sem spoiler do dia!) e o <b>Jornal</b> com os avisos do admin e o resumo do dia.</p>
@@ -10211,6 +10212,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "quartel-2026-11-06", sql: "79", title: "🪖 O Quartel agora vale a pena", body: () => `O Quartel Pokémon ganhou vantagens para quem tem (a guerra continua opcional):
+• 💰 Soldo: 20, 40 ou 60 moedas por dia (nível 1, 2 ou 3), coletadas na vila junto com a Mina.
+• ⚔️ Mais batalhas com XP: +1, +2 ou +3 por dia, além das 5 de sempre.
+• 🐾 Treino dos soldados: os Pokémon dos seus esquadrões ganham 50, 100 ou 150 XP todo dia.
+• 🛡️ Quartel novo vem com 3 dias de escudo, e ele protege mais 100, 200 ou 300 moedas no saque.
+Construa em Minha Vila → ⚔️ Pokémon e guerra.` },
   { id: "nivelamento-2026-11-06", sql: "77", title: "⚖️ Nivelamento da Temporada 2", body: () => `A Temporada 2 começa com todo mundo mais perto:
 • 🔄 Todos os Pokémon acima do nível 5 voltaram ao nível 5 (ataques e evoluções ficam) e todos estão com a vida cheia.
 • 💰 Compensação no Correio: 10 moedas por nível perdido. Quem não perdeu nada ganhou um bônus de, no mínimo, 300 moedas.
