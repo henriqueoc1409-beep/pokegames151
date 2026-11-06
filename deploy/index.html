@@ -1267,6 +1267,13 @@ details.rk-card p{font-size:13px;color:var(--text-2);margin:8px 0 0}
 .bt-list{display:grid;gap:12px;max-width:820px}
 .bt-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
 .bt-row span{flex:1}
+/* jogo pausado */
+.pausa-tela{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(ellipse at center,#2A1F4A 0%,#0B0A14 75%)}
+.pausa-box{max-width:520px;width:100%;text-align:center;padding:30px 24px;border-radius:18px;background:var(--panel,#1A1F2B);border:3px solid #E0B44C;box-shadow:0 0 40px rgba(224,180,76,.25)}
+.pausa-ic{font-size:64px;line-height:1}
+.pausa-box h1{margin:10px 0 6px;font:900 34px/1.1 var(--serif);color:#FFD54A}
+.pausa-box p{font-size:18px;line-height:1.45}
+.pausa-box .actions{justify-content:center;margin-top:14px}
 /* Liga: chaveamento */
 .bk-wrap{overflow-x:auto;padding:4px 2px 10px}
 .bk{display:flex;gap:26px;min-width:max-content;align-items:stretch}
@@ -2248,15 +2255,40 @@ async function boot() {
   S.session = data.session;
   if (S.session) await enterGame(); else render();
 }
+// jogo pausado pelo admin (arquivo 76): os jogadores veem só o aviso; o admin entra normalmente
+const pausaOn = () => S.cfg?.pausa?.on === true;
+function pausaTela() {
+  const txt = S.cfg?.pausa?.texto || "O jogo está pausado.";
+  app.innerHTML = `<div class="pausa-tela"><div class="pausa-box">
+    <div class="pausa-ic" aria-hidden="true">⏸️</div>
+    <h1>Jogo pausado</h1>
+    <p>${esc(txt)}</p>
+    <p class="muted">Nada se perde: seus Pokémon, moedas e itens estão guardados. Esta tela atualiza sozinha quando o jogo voltar.</p>
+    <div class="actions"><button class="btn" id="pausa-atual">Atualizar</button><button class="btn ghost" id="pausa-sair">Sair</button></div>
+  </div></div>`;
+  $("#pausa-atual").onclick = () => location.reload();
+  $("#pausa-sair").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+}
+// confere a cada minuto: pausou com o jogo aberto, ou voltou enquanto a tela de pausa está aberta
+setInterval(async () => {
+  if (!sb || !S.session || S.isAdmin) return;
+  const { data } = await sb.from("game_config").select("config").eq("active", true).maybeSingle();
+  const on = data?.config?.pausa?.on === true;
+  if (on !== pausaOn()) location.reload();
+}, 60000);
 async function enterGame() {
   app.innerHTML = `<div class="wrap"><p class="muted">Carregando Pokegames…</p></div>`;
+  let parado = false;
   await guarded(async () => {
     await loadStatic();
     await loadMe();
+    if (pausaOn() && !S.isAdmin) { parado = true; return; }
     if (S.me) { await loadToday(); await Promise.all([loadWorld(), refreshMe(), loadSocial(), loadBoss(), loadPresence()]); subscribeRealtime(); subscribeChat(); setTimeout(welcomeFlow, 600); lastDate = tzNowParts().date; }
   });
+  if (parado) return pausaTela();
   W.needCenter = true;
   render();
+  if (pausaOn() && S.isAdmin) toast("⏸️ O jogo está PAUSADO para os jogadores. Para voltar: Administração → Ajustes do jogo → Pausar o jogo.");
 }
 
 // =================================================================
@@ -8554,9 +8586,10 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
+  pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
   liga: { comeca_na_chegada: "A Liga começa quando o 1º chega ao Castelo", mapa_parado: "Durante a Liga ninguém anda no mapa", fase_por_dia: "Uma fase da Liga por dia (desligado: sem espera)",
     caverna_horas: "Horas até a caverna abrir (0 = na hora)", caverna_prazo_horas: "Horas para o campeão tentar antes do lendário fugir", temporada_na_hora: "Temporada nova começa assim que a Liga acaba" },
   temporada: { troca_heroi_gratis: "Troca de herói grátis na temporada nova", troca_heroi_dias: "Dias para trocar de graça" },
