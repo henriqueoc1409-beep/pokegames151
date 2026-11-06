@@ -5549,7 +5549,10 @@ function viewAdmin() {
       <button class="btn danger" data-act="adm-season">Começar nova temporada agora</button>
       <h3 style="margin-top:20px">🏅 Prêmios da temporada</h3>
       <p class="muted">Saem sozinhos quando a temporada fecha pela Liga (depois da caverna do lendário). Se a temporada fechar de outro jeito (por exemplo, pelo botão acima), use este botão depois: ele entrega os prêmios da última temporada encerrada, uma vez só.</p>
-      <button class="btn ghost" data-act="adm-awards">Entregar os prêmios da última temporada</button>`;
+      <button class="btn ghost" data-act="adm-awards">Entregar os prêmios da última temporada</button>
+      <h3 style="margin-top:20px">🔄 Recomeçar a rodada de hoje</h3>
+      <p class="muted">Sorteia Pokémon novos para os 4 desafios de hoje e todo mundo joga do zero (quem já tinha jogado também). As Dicas e os "Tente outra vez" usados hoje voltam para os jogadores, e o Jornal avisa. Só funciona se ninguém andou hoje: quem já andou, use antes "Desfazer andada" em Jogadores.</p>
+      <button class="btn danger" data-act="adm-rodada">Recomeçar a rodada de hoje</button>`;
   }
   if (S.adminTab === "auditoria" && A.audit) {
     body = A.audit.length ? `<div class="table-scroll"><table class="list"><thead><tr><th>Quando</th><th>Ação</th><th>Alvo</th><th>Motivo</th></tr></thead><tbody>
@@ -10494,6 +10497,10 @@ ${n.body()}`, "Publicar"))) return;
   },
   "nov-edit": v => { const n = NOVIDADES.find(x => x.id === v); if (!n) return; S.postEdit = null; S.postDraft = { kind: "novidade", title: n.title, body: n.body() }; render(); $("#postform")?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth" }); },
   "lib-t": v => { S.libT = v; render(); $(".lib-page")?.scrollIntoView({ block: "nearest", behavior: reduceMotion() ? "auto" : "smooth" }); },
+  "adm-rodada": async () => {
+    if (!(await confirmModal("Recomeçar a rodada de hoje?", "Os palpites de hoje de TODOS os jogadores serão apagados, os 4 Pokémon do dia serão trocados por outros e as ajudas usadas hoje voltam para cada um. O Jornal publica um aviso. Não dá para desfazer.", "Recomeçar"))) return;
+    await guarded(async () => { const r = await rpc("admin_rodada_nova", { _reason: "Rodada de hoje recomeçada pelo admin" }); await Promise.all([loadToday(), loadPosts()]); toast(`🔄 Rodada recomeçada: ${r.jogadores} ${r.jogadores === 1 ? "jogador tinha" : "jogadores tinham"} jogado; ${r.dicas} dicas e ${r.tentes} "tente outra vez" devolvidos.`); render(); if ($("#game")) renderHUD(); });
+  },
   "adm-awards": async () => {
     if (!(await confirmModal("Entregar os prêmios?", "O 1º lugar de cada categoria da última temporada encerrada ganha as moedas, a medalha e um presente no Correio, e o Jornal anuncia. Isso só acontece uma vez por temporada.", "Entregar"))) return;
     await guarded(async () => { const n = await rpc("admin_season_awards"); S.medals = undefined; await loadMedals(); toast(`🏅 Prêmios entregues: ${n} ${n === 1 ? "medalha" : "medalhas"}.`); });
