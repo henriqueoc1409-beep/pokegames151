@@ -1874,6 +1874,46 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
   .help-badge{display:none}
   .help-chip{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:999px;border:1px solid rgba(245,197,66,.6);background:rgba(58,42,16,.6);font-size:16px;cursor:pointer}
 }
+/* ---------- central de avisos e botão da equipe (06/11/2026) ---------- */
+.av-pill{display:flex;align-items:center;gap:6px;min-height:34px;padding:0 14px;border-radius:999px;border:2px solid #6B5A3A;background:rgba(22,30,38,.92);color:#F3DFA8;font:800 12.5px/1 var(--sans);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.45)}
+.av-pill b{min-width:22px;padding:4px 7px;border-radius:999px;background:#E05A5A;color:#fff;text-align:center}
+.av-pill.on{border-color:#F5C542;animation:news-pulse 1.6s infinite}
+.av-chip{display:none}
+.modal.modal-av{width:min(560px,100%);max-height:88vh;overflow:auto}
+.av-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.av-head h2{margin:0}
+.av-sub{margin:14px 0 6px;font-size:14px;color:var(--muted,#9AA7B4)}
+.av-list{display:flex;flex-direction:column;gap:6px}
+.av-row{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:inherit;text-align:left;cursor:pointer;font:inherit}
+.av-row:hover{background:rgba(255,255,255,.09)}
+.av-row.new{border-color:rgba(245,197,66,.55);background:rgba(245,197,66,.08)}
+.av-ic{font-size:22px;flex:none;width:30px;text-align:center}
+.av-t{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.av-t small{color:var(--muted,#9AA7B4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av-go{flex:none;font:800 12px/1 var(--sans);color:#F5C542}
+.av-empty{padding:10px 2px}.av-clear{margin-top:12px}
+#pk-dock{position:fixed;right:12px;bottom:calc(122px + env(safe-area-inset-bottom,0px));z-index:59}
+.pkd{position:relative;display:flex;align-items:center;gap:8px;padding:4px 12px 4px 6px;border-radius:14px;border:2px solid #8A6A35;background:linear-gradient(#1F2E38,#16222A);color:#F3DFA8;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.5);font:700 12px/1.2 var(--sans);text-align:left}
+.pkd:hover,.pkd.on{border-color:#F5C542}
+.pkd-mons{display:flex}.pkd-mons img{width:48px;height:48px;margin:-4px -16px -4px 0;image-rendering:pixelated}.pkd-mons img:last-child{margin-right:0}
+.pkd-empty{font-size:26px;padding:4px}
+.pkd-t{display:flex;flex-direction:column}.pkd-t small{color:#BFAF8A;font-weight:600}
+.pkd .mb{position:absolute;top:-8px;right:-6px}
+.pkq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pkq-mon{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 6px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:inherit;cursor:pointer;font:inherit}
+.pkq-mon:hover{border-color:#F5C542}
+.pkq-mon img{image-rendering:pixelated}.pkq-mon small{color:var(--muted,#9AA7B4)}
+.pkq-bar{display:block;width:90%;height:5px;border-radius:3px;background:rgba(0,0,0,.45);overflow:hidden}.pkq-bar i{display:block;height:100%}.pkq-bar.xp i{background:#5AA9E6}
+.pkq-tag{font:800 11px/1.2 var(--sans);font-style:normal;color:#F5C542}.pkq-tag.hurt{color:#E5B92E}
+.pkq-n{margin:10px 0}
+.pkq-fast{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media (max-width:760px){
+  .av-pill{display:none}
+  .av-chip{position:relative;display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:999px;border:1px solid rgba(245,197,66,.6);background:rgba(58,42,16,.6);font-size:16px;cursor:pointer}
+  .av-chip b{position:absolute;top:-5px;right:-5px;min-width:18px;padding:2px 4px;border-radius:999px;background:#E05A5A;color:#fff;font:800 10px/1.2 var(--sans)}
+  .av-chip.on{border-color:#F5C542;animation:news-pulse 1.6s infinite}
+  #pk-dock{right:auto;left:8px;bottom:calc(188px + env(safe-area-inset-bottom,0px))}
+  .pkd{padding:3px 8px 3px 4px}.pkd-t{display:none}.pkd-mons img{width:34px;height:34px;margin-right:-14px}
+  .pkq-grid{grid-template-columns:repeat(2,1fr)}.pkq-fast{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
@@ -2301,6 +2341,7 @@ function render() {
   if (S.profile.status === "bloqueado") { app.innerHTML = `<div class="wrap"><div class="panel challenge"><h2>Conta bloqueada</h2><p>Fale com o administrador para liberar seu acesso.</p><button class="btn ghost" data-act="logout">Sair</button></div></div>`; return; }
   if (!S.me) return renderCreate();
   ensureGameShell();
+  avMarkWin();   // central de avisos: abriu Mercado, Leilão ou Chat = viu
   renderHUD();
   renderWindow();
   afterRender();
@@ -3848,6 +3889,7 @@ function ensureGameShell() {
     <div id="win-root"></div>
     <div id="bt-dock" aria-label="Suas batalhas"></div>
     <div id="sac-dock" aria-label="SAC"></div>
+    <div id="pk-dock" aria-label="Meus Pokémon"></div>
   </div>`;
   worldInit();
 }
@@ -3879,10 +3921,10 @@ function renderHUD() {
   $("#sec-boss").innerHTML = bossBox(false);
   $("#hud-menu").innerHTML = menuHTML();
   $("#hud-caixa").innerHTML = caixaCard();
-  sacDock(); $("#hud-news").innerHTML = mailAlert() + huntAlert() + rocketAlert() + quizAlert() + sacAlert() + newsAlert() + leagueAlert() + arenaAlert(); $("#sec-caixa").classList.toggle("hidden", !$("#hud-caixa").innerHTML.trim());
+  sacDock(); pkDock(); $("#hud-news").innerHTML = avBell(false) + mailAlert() + huntAlert() + rocketAlert() + quizAlert() + sacAlert() + newsAlert() + leagueAlert() + arenaAlert(); $("#sec-caixa").classList.toggle("hidden", !$("#hud-caixa").innerHTML.trim());
   $("#hud-presence").innerHTML = presenceHUD();
   $("#sec-presence").classList.toggle("hidden", !S.presence);
-  $("#hud-player").insertAdjacentHTML("beforeend", presenceChip() + `<button class="help-chip" data-act="go" data-v="caixa" aria-label="Ajude o jogo">💛</button>`);
+  $("#hud-player").insertAdjacentHTML("beforeend", presenceChip() + avBell(true) + `<button class="help-chip" data-act="go" data-v="caixa" aria-label="Ajude o jogo">💛</button>`);
   const sb2 = $("#snd-btn"); if (sb2) { sb2.textContent = S.sound ? "🔊" : "🔇"; sb2.title = sb2.ariaLabel = S.sound ? "Desligar o som" : "Ligar o som"; sb2.ariaPressed = String(S.sound); }
   const tg = $("#dock-toggle");
   if (tg) { tg.textContent = S.dockMin ? "»" : "«"; tg.title = tg.ariaLabel = S.dockMin ? "Abrir painel" : "Recolher painel"; }
@@ -5359,6 +5401,9 @@ function LIB() {
   const bet = [libN(c.battle_bet_min, 10), libN(c.battle_bet_max, 100)], rs = c.round_bonus_steps || [3, 2, 1], rc = c.round_bonus_coins || [100, 50, 0];
   const kinds = Object.entries(KIND).filter(([k]) => !["inicio", "normal", "cacada", "alvo"].includes(k));
   return [
+    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
+      <p>Quando chega algo novo com o jogo aberto, aparece um aviso na tela com som. Abrir o Mercado, o Leilão ou o Chat marca como visto (ou toque em "Marcar como vistos").</p>
+      <p>O botão <b>Meus Pokémon 🐾</b> (canto do mapa) mostra a sua equipe com vida e XP, avisa quem pode evoluir ou está ferido e tem atalhos para montar a equipe, a Pokédex, a Grama, o Centro, a Creche, as batalhas, o Leilão e a Loja Pokémon.</p>` },
     { id: "comecar", ic: "🚀", t: "Começando", h: `<p>Todo dia você faz três coisas:</p><ol>
       <li><b>Roleta da sorte</b>: uma vez por dia e de graça. Pode dar moedas, ajudas e outros prêmios.</li>
       <li><b>Desafio do dia</b>: adivinhe o Pokémon de hoje em 4 modos (Clássico, Cartão, Descrição e Silhueta).</li>
@@ -6013,7 +6058,7 @@ function pixModal() {
 async function welcomeFlow() {
   await Promise.all([loadCaixa(), loadPosts()]); subscribeCaixa(); subscribePosts(); renderHUD();
   await donationThanks();
-  await giftPopup(); await loadMail(true); loadTreino().then(() => renderHUD()).catch(() => {}); loadCreche().then(() => renderHUD()).catch(() => {}); loadLeilao().then(() => renderHUD()).catch(() => {}); renderHUD();
+  await giftPopup(); await loadMail(true); loadTreino().then(() => renderHUD()).catch(() => {}); loadCreche().then(() => renderHUD()).catch(() => {}); loadLeilao().then(() => renderHUD()).catch(() => {}); avCheck(); renderHUD();
   await loadQuiz(); await quizPopup(false);
   await loadRocket(); subscribeRocket(); await rocketPopup(); renderHUD();
   await loadHunt(true); subscribeHunt(); renderHUD();
@@ -6108,13 +6153,14 @@ function menuHTML() {
     arena: arenaLive().length ? `<b class="mb live">${arenaLive().length} AO VIVO</b>` : "",
     guerras: S.cfg.war ? (S.war?.st?.unseen ? `<b class="mb red" title="Sua vila foi atacada">🏰 ${S.war.st.unseen}</b>` : "") : null,
     correio: S.mail && !S.mail.missing ? (S.mail.unseen ? `<b class="mb red" title="Presente novo">🎁 ${S.mail.unseen}</b>` : "") : null,
-    chat: unreadPosts() ? `<b class="mb red" title="Avisos novos no Jornal">📰 ${unreadPosts()}</b>` : S.chatUnread ? `<b class="mb red">${S.chatUnread > 99 ? "99+" : S.chatUnread}</b>` : "",
+    chat: unreadPosts() ? `<b class="mb red" title="Avisos novos no Jornal">📰 ${unreadPosts()}</b>` : Math.max(S.chatUnread, S.av.chat) ? `<b class="mb red">${Math.max(S.chatUnread, S.av.chat) > 99 ? "99+" : Math.max(S.chatUnread, S.av.chat)}</b>` : "",
     caixa: S.caixa?.loaded && !S.caixa.missing ? `<b class="mb pix">PIX</b>` : "",
     sac: sacUnread() ? `<b class="mb red">${sacUnread()}</b>` : "",
     admin: S.isAdmin ? "" : null,
-    leilao: S.leilao?.missing ? null : S.leilao?.st?.abertos?.length ? `<b class="mb live">${S.leilao.st.abertos.length}</b>` : "",
+    leilao: S.leilao?.missing ? null : S.av.cobertos.length + S.av.novos.length ? `<b class="mb red" title="Leilão novo ou lance coberto">${S.av.cobertos.length + S.av.novos.length}</b>` : S.leilao?.st?.abertos?.length ? `<b class="mb live">${S.leilao.st.abertos.length}</b>` : "",
     creche: S.creche?.missing ? null : S.creche?.st?.treino ? `<b class="mb live">⏳ ${S.creche.st.treino.entregues}/${S.creche.st.treino.niveis}</b>` : S.creche?.st?.restante ? `<b class="mb">${S.creche.st.restante} nív.</b>` : "",
-    vila: "", loja: "", pkloja: "", mercado: "", equipe: "", regras: ""
+    mercado: S.av.market.length ? `<b class="mb red" title="Itens novos no Mercado">${S.av.market.length}</b>` : "",
+    vila: "", loja: "", pkloja: "", equipe: "", regras: ""
   };
   const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
   const byName = list => list.map(item).filter(Boolean).sort((a, b) => a[2].localeCompare(b[2], "pt-BR"));
@@ -8871,6 +8917,163 @@ ACTIONS["cr-go"] = async () => {
 };
 
 // =================================================================
+// CENTRAL DE AVISOS (pedido do dono em 06/11/2026): sino 🔔 no mapa com tudo o que é novo para o jogador
+// (Mercado, Leilão, Chat, Correio, Jornal, SAC, batalhas, duelos, Quiz, Rocket, Caçada, Liga, vila, Pokémon),
+// cada linha com o atalho para abrir. Mercado, Leilão e Chat contam o que chegou desde a última vez que a
+// pessoa abriu cada janela (guardado no aparelho em pg-visto-<id>); chegou coisa nova com o jogo aberto = toast + som.
+// Também o botão da equipe 🐾 (canto do mapa): mostra o time e abre um painel rápido com atalhos.
+// Só lê tabelas públicas (market_listings, leiloes, leilao_lances só os seus lances, chat_messages): nada no banco muda.
+// =================================================================
+S.av = { market: [], novos: [], cobertos: [], meus: [], chat: 0, loaded: false };
+const avKey = () => `pg-visto-${S.session?.user?.id}`;
+function avSeen() { try { return JSON.parse(localStorage.getItem(avKey()) || "null"); } catch { return null; } }
+function avSave(p) { const s = { ...(avSeen() || {}), ...p }; try { localStorage.setItem(avKey(), JSON.stringify(s)); } catch {} return s; }
+async function avCheck() {
+  if (!sb || !S.session || !S.me) return;
+  const me = S.session.user.id, ontem = new Date(Date.now() - 864e5).toISOString();
+  let seen = avSeen() || avSave({ mercado: ontem, leilao: ontem, chat: null, cob: {} });
+  try {
+    const [mk, ll, lc, ch] = await Promise.all([
+      sb.from("market_listings").select("id,seller_id,item_kind,item_id,qty,price,want_kind,want_item,want_qty,created_at").eq("status", "aberto").neq("seller_id", me).gt("created_at", seen.mercado || ontem).order("created_at", { ascending: false }).limit(30),
+      sb.from("leiloes").select("id,seller,species,level,min_price,top_bid,top_bidder,ends_at,created_at").eq("status", "aberto").order("ends_at").limit(60),
+      sb.from("leilao_lances").select("leilao_id").eq("user_id", me).order("id", { ascending: false }).limit(200),
+      seen.chat == null ? sb.from("chat_messages").select("id").order("id", { ascending: false }).limit(1)
+        : sb.from("chat_messages").select("id", { count: "exact", head: true }).gt("id", seen.chat).neq("user_id", me)]);
+    const old = { m: new Set(S.av.market.map(x => x.id)), n: new Set(S.av.novos.map(x => x.id)), c: new Set(S.av.cobertos.map(x => x.id)), chat: S.av.chat }, first = !S.av.loaded;
+    if (seen.chat == null) { seen = avSave({ chat: ch.data?.[0]?.id ?? 0 }); S.av.chat = 0; } else if (!ch.error) S.av.chat = ch.count || 0;
+    if (!mk.error) S.av.market = mk.data || [];
+    if (!ll.error) {
+      const lances = new Set((lc.data || []).map(x => x.leilao_id)), cob = seen.cob || {}, L = ll.data || [];
+      S.av.novos = L.filter(l => l.seller !== me && l.created_at > (seen.leilao || ontem) && !lances.has(l.id));
+      S.av.cobertos = L.filter(l => lances.has(l.id) && l.top_bidder && l.top_bidder !== me && cob[l.id] !== l.top_bid);
+      S.av.meus = L.filter(l => l.seller === me && l.top_bid);
+    }
+    S.av.loaded = true;
+    if (!first) {   // chegou coisa nova com o jogo aberto
+      const nm = S.av.market.filter(x => !old.m.has(x.id)), nl = S.av.novos.filter(x => !old.n.has(x.id)), nc = S.av.cobertos.filter(x => !old.c.has(x.id));
+      if (nc.length) { sfx("erro"); toast(`🔨 Seu lance no ${pkName(nc[0].species)} foi coberto: agora está em ${nc[0].top_bid} moedas.`); }
+      else if (nl.length) { sfx("moeda"); toast(`🔨 Leilão novo: ${pkName(nl[0].species)} nível ${nl[0].level} de ${charName(nl[0].seller)}.`); }
+      else if (nm.length) { sfx("moeda"); toast(`🤝 Novo no Mercado: ${charName(nm[0].seller_id)} ${nm[0].price ? "vende" : "troca"} ${itemLabel(nm[0].item_kind, nm[0].item_id, nm[0].qty)}.`); }
+    }
+  } catch (e) { console.warn("avisos", e); }
+  if ($("#game")) renderHUD();
+}
+// abriu a janela = viu o que tinha de novo nela
+function avMarkWin() {
+  if (!S.av.loaded || !S.session) return;
+  const now = new Date().toISOString();
+  if (S.win === "mercado" && S.av.market.length) { avSave({ mercado: now }); S.av.market = []; }
+  if (S.win === "leilao" && (S.av.novos.length || S.av.cobertos.length)) {
+    const cob = { ...(avSeen()?.cob || {}) }; S.av.cobertos.forEach(l => { cob[l.id] = l.top_bid; });
+    avSave({ leilao: now, cob }); S.av.novos = []; S.av.cobertos = [];
+  }
+  if (S.win === "chat" && S.comTab === "chat" && S.chat.loaded && S.chat.msgs.length) {
+    const top = Math.max(...S.chat.msgs.map(m => m.id)); if (top > (avSeen()?.chat || 0)) avSave({ chat: top }); S.av.chat = 0;
+  }
+}
+// o que cada aviso de cima já existente diz (Caçada, Rocket, Quiz, Liga): reaproveita o texto e o atalho
+function avFromAlert(html, ic) {
+  if (!html) return null;
+  const d = document.createElement("div"); d.innerHTML = html; const b = d.querySelector("[data-act]"); if (!b) return null;
+  const t = b.textContent.replace(/\s+/g, " ").trim().replace(/\s(Ver|Abrir|Responder|Ir|Entrar|Lutar|Ir atrás)!?$/i, "");
+  return { ic, t, act: b.dataset.act, v: b.dataset.v || "", n: 1 };
+}
+function avItems() {
+  const L = [], add = (ic, t, act, v, n = 1, sub = "") => n && L.push({ ic, t, act, v, n, sub });
+  const chat = Math.max(S.chatUnread || 0, S.av.chat || 0), duels = (S.social?.duels_in || 0) + (S.social?.duels_play || 0);
+  const bt = S.pk?.battles ? btPending() : 0, posts = typeof unreadPosts === "function" ? unreadPosts() : 0;
+  add("🎁", S.mail?.unseen === 1 ? "Você recebeu um presente" : `Você recebeu ${S.mail?.unseen} presentes`, "go", "correio", S.mail?.unseen || 0);
+  add("⚔️", bt === 1 ? "Uma batalha Pokémon espera por você" : `${bt} batalhas Pokémon esperam por você`, "go", "batalhas", bt, "Convite ou sua vez de jogar");
+  add("🤺", duels === 1 ? "Um duelo para você" : `${duels} duelos para você`, "go", "duelos", duels);
+  add("📰", posts === 1 ? "Aviso novo no Jornal" : `${posts} avisos novos no Jornal`, "go", "mural", posts);
+  add("💬", chat === 1 ? "Mensagem nova no Chat" : `${chat > 99 ? "99+" : chat} mensagens novas no Chat`, "go", "chat", chat);
+  if (S.av.cobertos.length) add("🔨", S.av.cobertos.length === 1 ? `Cobriram seu lance no ${pkName(S.av.cobertos[0].species)}` : `Cobriram ${S.av.cobertos.length} lances seus`, "go", "leilao", S.av.cobertos.length,
+    S.av.cobertos.map(l => `${pkName(l.species)}: ${l.top_bid} moedas`).slice(0, 3).join(" · "));
+  if (S.av.novos.length) add("🔨", S.av.novos.length === 1 ? `Leilão novo: ${pkName(S.av.novos[0].species)} nível ${S.av.novos[0].level}` : `${S.av.novos.length} leilões novos`, "go", "leilao", S.av.novos.length,
+    S.av.novos.slice(0, 3).map(l => `${pkName(l.species)} nv ${l.level} (${charName(l.seller)})`).join(" · "));
+  if (S.av.market.length) add("🤝", S.av.market.length === 1 ? "Item novo no Mercado" : `${S.av.market.length} itens novos no Mercado`, "go", "mercado", S.av.market.length,
+    S.av.market.slice(0, 3).map(x => `${itemLabel(x.item_kind, x.item_id, x.qty)} (${x.price ? x.price + " moedas" : "troca"})`).join(" · "));
+  add("🎧", "Resposta nova no SAC", "go", "sac", sacUnread());
+  if (S.war?.st?.unseen) add("🏰", "Sua vila foi atacada", "go", "guerras", S.war.st.unseen);
+  for (const [f, ic] of [[huntAlert, "🎯"], [rocketAlert, "🚀"], [quizAlert, "❓"], [leagueAlert, "👑"]]) { let it = null; try { it = avFromAlert(f(), ic); } catch {} if (it) L.push(it); }
+  const evo = (S.pk?.mons || []).filter(m => evoReady(m).length || m.pending_moves?.length).length;
+  add("✨", evo === 1 ? "Um Pokémon pode evoluir ou aprender ataque" : `${evo} Pokémon podem evoluir ou aprender ataque`, "go", "pokedex", evo);
+  // só informação (não conta no sino)
+  const info = [];
+  if (S.av.meus.length) info.push({ ic: "🔨", t: S.av.meus.length === 1 ? `Seu leilão do ${pkName(S.av.meus[0].species)} está em ${S.av.meus[0].top_bid} moedas` : `${S.av.meus.length} leilões seus com lance`, act: "go", v: "leilao", n: 0 });
+  const fer = S.treino?.st?.feridos?.length || 0; if (fer) info.push({ ic: "🏥", t: fer === 1 ? "Um Pokémon ferido" : `${fer} Pokémon feridos`, sub: "Cura no Centro Pokémon (ou sozinho com o tempo)", act: "go", v: "centro", n: 0 });
+  const cr = S.creche?.st?.treino; if (cr) info.push({ ic: "🏡", t: `Creche: ${pkName(cr.species)} com ${cr.entregues} de ${cr.niveis} níveis`, act: "go", v: "creche", n: 0 });
+  return { L, info };
+}
+const avCount = () => avItems().L.reduce((t, x) => t + (x.n || 0), 0);
+function avBell(mobile) {
+  if (!S.me) return "";
+  const n = avCount(), label = n ? `${n} ${n === 1 ? "aviso novo" : "avisos novos"}` : "Avisos: nada novo";
+  return mobile ? `<button class="av-chip ${n ? "on" : ""}" data-act="av-open" aria-label="${label}" title="${label}">🔔${n ? `<b>${n > 99 ? "99+" : n}</b>` : ""}</button>`
+    : `<button class="av-pill ${n ? "on" : ""}" data-act="av-open" title="${label}">🔔 ${n ? `<b>${n > 99 ? "99+" : n}</b> ${n === 1 ? "novidade" : "novidades"}` : "Avisos"}</button>`;
+}
+function avPanelHTML() {
+  const { L, info } = avItems();
+  const row = x => `<button class="av-row ${x.n ? "new" : ""}" data-act="${x.act}" data-v="${esc(x.v)}"><span class="av-ic" aria-hidden="true">${x.ic}</span><span class="av-t"><b>${esc(x.t)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ""}</span><span class="av-go">Abrir ›</span></button>`;
+  return `<div class="av-panel"><div class="av-head"><h2>🔔 O que está acontecendo</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    ${L.length ? `<div class="av-list">${L.map(row).join("")}</div>` : `<p class="muted av-empty">Nada novo por aqui. Quando alguém puser algo no Mercado ou no Leilão, mandar mensagem no Chat, te desafiar ou te mandar presente, aparece aqui.</p>`}
+    ${info.length ? `<h3 class="av-sub">Acompanhando</h3><div class="av-list">${info.map(row).join("")}</div>` : ""}
+    ${L.some(x => ["mercado", "leilao", "chat"].includes(x.v)) ? `<button class="btn ghost small av-clear" data-avclear="1">Marcar Mercado, Leilão e Chat como vistos</button>` : ""}</div>`;
+}
+ACTIONS["av-open"] = () => {
+  const m = openModal(avPanelHTML()); m.querySelector(".modal").classList.add("modal-av");
+  m.addEventListener("click", e => {
+    if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
+    if (e.target.closest("[data-avclear]")) {
+      const now = new Date().toISOString(), cob = { ...(avSeen()?.cob || {}) }; S.av.cobertos.forEach(l => { cob[l.id] = l.top_bid; });
+      avSave({ mercado: now, leilao: now, cob, chat: Math.max(avSeen()?.chat || 0, ...S.chat.msgs.map(x => x.id)) });
+      S.av.market = []; S.av.novos = []; S.av.cobertos = []; S.av.chat = 0; S.chatUnread = 0;
+      closeModal(); renderHUD(); return toast("Pronto: marcados como vistos.");
+    }
+    if (e.target.closest("[data-act]")) closeModal();
+  });
+  // atualiza na hora em que abre
+  avCheck().then(() => { const p = $("#modal-root .av-panel"); if (p) p.outerHTML = avPanelHTML(); });
+};
+setInterval(() => { if (S.session && S.me && !document.hidden) avCheck(); }, 60000);
+
+// ---------- botão da equipe (Pokémon e time num toque) ----------
+const pkTeam = () => (S.pk?.mons || []).filter(m => m.team_slot).sort((a, b) => a.team_slot - b.team_slot);
+function pkDock() {
+  const el = $("#pk-dock"); if (!el) return;
+  if (S.win || !S.me || S.pk?.on === false || !S.pk?.mons) { el.innerHTML = ""; return; }
+  const team = pkTeam(), show = (team.length ? team : S.pk.mons.slice(0, 3)).slice(0, 6);
+  const alert = S.pk.mons.some(m => evoReady(m).length || m.pending_moves?.length);
+  el.innerHTML = `<button class="pkd ${alert ? "on" : ""}" data-act="pk-quick" title="Seus Pokémon e sua equipe" aria-label="Abrir seus Pokémon e sua equipe">
+    <span class="pkd-mons">${show.length ? show.map(m => `<img src="${SPRITE(m.species_id)}" alt="" loading="lazy" width="40" height="40">`).join("") : `<span class="pkd-empty">🐾</span>`}</span>
+    <span class="pkd-t"><b>Meus Pokémon</b><small>${team.length ? `Equipe: ${team.length}` : `${S.pk.mons.length} na coleção`}</small></span>${alert ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : ""}</button>`;
+}
+function pkQuickHTML() {
+  const team = pkTeam(), all = S.pk.mons || [], fer = new Set((S.treino?.st?.feridos || []).map(f => f.id));
+  const hp = m => m.tr_hp ?? 100;
+  const card = m => { const ev = evoReady(m).length, mv = m.pending_moves?.length, x = pkXp(m);
+    return `<button class="pkq-mon" data-act="pk-open-mon" data-v="${m.id}"><img src="${SPRITE(m.species_id)}" alt="" width="96" height="96" loading="lazy" style="margin:-12px 0 -10px">
+      <b>${esc(pkName(m.species_id))}</b><small>Nível ${m.level}${m.team_slot ? ` · ${m.team_slot}º da equipe` : ""}</small>
+      <span class="pkq-bar" title="Vida no treino: ${hp(m)}%"><i style="width:${hp(m)}%;background:${hp(m) > 50 ? "#4CC38A" : hp(m) > 0 ? "#E5B92E" : "#E05A5A"}"></i></span>
+      <span class="pkq-bar xp" title="XP: ${x.pct}% até o próximo nível"><i style="width:${x.pct}%"></i></span>
+      ${ev ? `<em class="pkq-tag">✨ Pode evoluir</em>` : mv ? `<em class="pkq-tag">📘 Ataque novo</em>` : fer.has(m.id) ? `<em class="pkq-tag hurt">${hp(m) ? "🩹 Ferido" : "💤 Desmaiado"}</em>` : ""}</button>`; };
+  const fast = [["equipe", "👥", "Montar equipe"], ["pokedex", "📕", "Coleção e Pokédex"], ["treino", "🌿", "Grama de Treino"], ["centro", "🏥", fer.size ? `Centro (${fer.size})` : "Centro Pokémon"],
+    ["creche", "🏡", "Creche"], ["batalhas", "⚔️", "Batalhas"], ["leilao", "🔨", "Leilão"], ["pkloja", "🛒", "Loja Pokémon"]];
+  return `<div class="pkq"><div class="av-head"><h2>🐾 Meus Pokémon</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <h3 class="av-sub">${team.length ? `Sua equipe (${team.length} de 6)` : "Você ainda não montou a equipe"}</h3>
+    ${team.length ? `<div class="pkq-grid">${team.map(card).join("")}</div>` : `<p class="muted">Monte a equipe para batalhar: entram os 3 primeiros. Toque em "Montar equipe".</p>`}
+    <p class="muted pkq-n">${all.length} Pokémon na coleção${all.length > team.length ? ` · ${all.length - team.length} fora da equipe` : ""}.</p>
+    <div class="pkq-fast">${fast.map(([v, ic, t]) => `<button class="mf-btn" data-act="go" data-v="${v}"><span class="mf-ic" aria-hidden="true">${ic}</span><span class="mf-t">${t}</span></button>`).join("")}</div></div>`;
+}
+ACTIONS["pk-quick"] = async () => {
+  const m = openModal(`<p class="muted">Abrindo…</p>`); m.querySelector(".modal").classList.add("modal-av");
+  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-avx]")) return closeModal(); if (e.target.closest("[data-act]")) closeModal(); });
+  try { if (S.pk.on !== false) { await loadPkStatic(); if (!S.pk.mons) await loadPk(); } } catch {}
+  const box = $("#modal-root .modal"); if (box) box.innerHTML = pkQuickHTML();
+};
+ACTIONS["pk-open-mon"] = v => { S.pk.sel = v; S.pk.tab = "colecao"; ACTIONS.go("pokedex"); };
+
+// =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
 // Usa a tabela gifts do arquivo 34 (cada um lê só os seus); confere a cada minuto e avisa quando chega um novo.
 // =================================================================
@@ -10212,6 +10415,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "avisos-2026-11-06", sql: "80", title: "🔔 Sino de avisos e botão dos Pokémon", body: () => `Ficou bem mais fácil saber o que está acontecendo:
+• 🔔 Sino no mapa (no celular, no alto da tela): mostra tudo o que é novo, com atalho para abrir. Item novo no Mercado, leilão novo, lance coberto, mensagens no Chat, presentes, Jornal, SAC, batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à vila e Pokémon prontos para evoluir.
+• 🔊 Chegou algo novo com o jogo aberto? Aparece um aviso na tela com som.
+• 🔴 Selos vermelhos no menu também no Mercado, no Leilão e no Chat.
+• 🐾 Botão "Meus Pokémon" no canto do mapa: sua equipe com vida e XP, quem pode evoluir ou está ferido, e atalhos para equipe, Pokédex, Grama, Centro, Creche, batalhas, Leilão e Loja.` },
   { id: "quartel-2026-11-06", sql: "79", title: "🪖 O Quartel agora vale a pena", body: () => `O Quartel Pokémon ganhou vantagens para quem tem (a guerra continua opcional):
 • 💰 Soldo: 20, 40 ou 60 moedas por dia (nível 1, 2 ou 3), coletadas na vila junto com a Mina.
 • ⚔️ Mais batalhas com XP: +1, +2 ou +3 por dia, além das 5 de sempre.
