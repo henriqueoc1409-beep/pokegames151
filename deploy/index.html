@@ -2005,7 +2005,7 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 #pokebound{position:fixed;inset:0;z-index:46;background:#0E1A22;display:flex;flex-direction:column;user-select:none;-webkit-user-select:none}
 body.pb-on{overflow:hidden}
 .pb-palco{flex:1;min-height:0;position:relative}
-#pb-cv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0E1A22;display:block}
+#pb-cv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0E1A22;display:block;cursor:grab;touch-action:none}#pb-cv.arrastando{cursor:grabbing}#pb-mini{cursor:pointer}
 #pb-mini{position:absolute;right:12px;top:10px;width:240px;height:100px;border:2px solid rgba(255,231,168,.6);border-radius:8px}
 .pb-pot i{position:relative}#pb-potmk{position:absolute;top:-3px;bottom:-3px;width:3px;margin-left:-1px;background:#FFF;box-shadow:0 0 0 1px #1E150C}
 #pb-esp.on{border-color:#F5C542;background:rgba(245,197,66,.25);color:#FFE37A}
@@ -9581,7 +9581,7 @@ const PB_TEMAS = {
   vulcao: { nome: "Vulcão", ceu: ["#3A1E2A", "#7A2E2A", "#D2683A"], longe: "#4A2A2E", meio: "#3A2426", topo: "#5A4A44", topo2: "#3A302C", terra: ["#4A3A34", "#2E2420", "#1A1412"], enfeites: ["rocha_lava", "pedra", "pedra", "fumaca"] }
 };
 const PB = { open: false, raf: 0, last: 0, keys: new Set(), phase: "escolha", terr: null, terr0: null, terrCv: null, dirty: true, players: [], turn: 0, wind: 0, windLeft: 0,
-  projs: [], parts: [], shake: 0, charge: null, esp: false, timerEnd: 0, msg: "", cpuAt: 0, seed: 1, clouds: [], imgs: {}, tema: "campo", deco: [], cam: { x: 0, y: 0 }, foco: null };
+  projs: [], parts: [], shake: 0, charge: null, esp: false, timerEnd: 0, msg: "", cpuAt: 0, seed: 1, clouds: [], imgs: {}, tema: "campo", deco: [], cam: { x: 0, y: 0 }, foco: null, z: 0, livre: false, drag: null };
 const pbRand = s => () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 function pbTerreno(seed) {
   const r = pbRand(seed), n = PB_W / PB_COL + 1, h = new Float32Array(n);
@@ -9627,7 +9627,7 @@ function pbNovoTurno() {
   PB.timerEnd = performance.now() + c.turno_seg * 1000; PB.phase = "mira"; PB.charge = null; PB.esp = false;
   p.folego = c.folego; p.pot = 0; if (p.cd > 0) p.cd--;
   PB.msg = p.cpu ? "Vez do computador…" : "Sua vez!"; PB.cpuAt = p.cpu ? performance.now() + 1600 : 0;
-  PB.foco = null; pbHud();
+  PB.foco = null; PB.livre = false; PB.verAdv = false; const vb = $("#pb-ver"); if (vb) vb.textContent = "👁 Ver adversário"; pbHud();
 }
 function pbComecar(ch) {
   const outros = Object.keys(PB_CHARS).filter(k => k !== ch), temas = Object.keys(PB_TEMAS);
@@ -9637,7 +9637,7 @@ function pbComecar(ch) {
   PB.deco = pbEnfeites(PB.seed);
   PB.projs = []; PB.parts = []; PB.turn = Math.random() < 0.5 ? 0 : 1; PB.windLeft = 0;
   PB.clouds = Array.from({ length: 9 }, () => ({ x: Math.random() * PB_CW, y: 30 + Math.random() * 220, s: 0.5 + Math.random() * 0.9, p: 0.2 + Math.random() * 0.4 }));
-  const P = PB.players[PB.turn]; PB.cam = { x: P.x - PB_CW / pbCfg().zoom / 2, y: P.y - 520 };
+  const P = PB.players[PB.turn]; PB.cam = { x: P.x - PB_CW / pbZ() / 2, y: P.y - 520 };
   $("#pb-escolha").hidden = true; $("#pb-fim").hidden = true;
   pbNovoTurno();
 }
@@ -9655,7 +9655,7 @@ function pbDisparar() {
   if (esp) p.cd = pbCfg().recarga + 1;
   p.ultima = p.pot;
   PB.projs = tiros.map(t => { const r = pbSimular(t); return { ...t, path: r.path, hit: r.hit, i: 0, dono: p, C, esp }; });
-  PB.phase = "voo"; PB.charge = null; PB.esp = false; sfx("raio"); pbHud();
+  PB.phase = "voo"; PB.charge = null; PB.esp = false; PB.livre = false; sfx("raio"); pbHud();
 }
 function pbExplodir(pr) {
   const c = pbCfg(), h = pr.hit, raio = pr.C.raio * (pr.raioMult || 1), hits = [];
@@ -9764,10 +9764,25 @@ function pbDesenhaJogador(g, p, ativo) {
   const nm = p.cpu ? "Computador" : "Você"; g.strokeText(nm, p.x, p.y - 164); g.fillStyle = "#FFF"; g.fillText(nm, p.x, p.y - 164); g.textAlign = "left";
   if (ativo) { g.fillStyle = "#FFE37A"; g.beginPath(); g.moveTo(p.x - 10, p.y - 192); g.lineTo(p.x + 10, p.y - 192); g.lineTo(p.x, p.y - 179); g.fill(); }
 }
-// câmera: segue quem joga, o tiro em voo e a explosão; o zoom deixa tudo maior
+// câmera: segue quem joga, o tiro em voo e a explosão; o zoom deixa tudo maior.
+// O jogador pode arrastar a tela e mudar o zoom com a rodinha (PB.livre): a câmera para de seguir até o tiro.
+const PB_ZMIN = PB_CW / PB_W, PB_ZMAX = 2.2;
+const pbZ = () => PB.z || pbCfg().zoom;
+function pbCamLimite() {
+  const z = pbZ(), vw = PB_CW / z, vh = PB_CH / z;
+  PB.cam.x = Math.max(0, Math.min(PB_W - vw, PB.cam.x)); PB.cam.y = Math.max(-400, Math.min(PB_H - vh, PB.cam.y));
+}
+// posição do mouse em coordenadas do mapa (o canvas é encaixado com object-fit: contain)
+function pbMouseMapa(e) {
+  const cv = $("#pb-cv"), r = cv.getBoundingClientRect(), k = Math.min(r.width / PB_CW, r.height / PB_CH);
+  const ox = r.left + (r.width - PB_CW * k) / 2, oy = r.top + (r.height - PB_CH * k) / 2, z = pbZ();
+  const sx = (e.clientX - ox) / k, sy = (e.clientY - oy) / k;
+  return { sx, sy, k, x: PB.cam.x + sx / z, y: PB.cam.y + sy / z };
+}
 function pbCamera(dt) {
-  const c = pbCfg(), vw = PB_CW / c.zoom, vh = PB_CH / c.zoom, p = PB.players[PB.turn];
+  const z = pbZ(), vw = PB_CW / z, vh = PB_CH / z, p = PB.players[PB.turn];
   let fx, fy;
+  if (PB.livre && PB.phase !== "voo") { pbCamLimite(); return; }
   const voo = PB.projs.find(pr => pr.i < pr.path.length - 1);
   if (PB.phase === "voo" && voo) { [fx, fy] = voo.path[voo.i]; }
   else if (PB.foco && performance.now() < PB.foco.ate) { fx = PB.foco.x; fy = PB.foco.y; }
@@ -9794,7 +9809,7 @@ function pbDesenhar(dt) {
     for (const [dx, dy, r] of [[0, 0, 30], [28, 8, 22], [-28, 8, 22], [12, -14, 20]]) { g.beginPath(); g.arc(x + dx * cl.s, cl.y + dy * cl.s, r * cl.s, 0, 6.28); g.fill(); }
   }
   // mundo com zoom
-  g.save(); g.setTransform(c.zoom, 0, 0, c.zoom, -PB.cam.x * c.zoom, -PB.cam.y * c.zoom);
+  const zz = pbZ(); g.save(); g.setTransform(zz, 0, 0, zz, -PB.cam.x * zz, -PB.cam.y * zz);
   if (PB.shake > 0) { g.translate((Math.random() - 0.5) * PB.shake, (Math.random() - 0.5) * PB.shake); PB.shake = Math.max(0, PB.shake - dt * 30); }
   for (const d of PB.deco) if (d.k === "pinheiro" || d.k === "arvore" || d.k === "cacto") pbEnfeite(g, d);
   g.drawImage(PB.terrCv, 0, 0);
@@ -9840,7 +9855,7 @@ function pbMinimapa() {
   for (let i = 0; i < PB.terr.length; i += 4) g.lineTo(i * PB_COL * k, PB.terr[i] * k); g.lineTo(w, h); g.fill();
   PB.players.forEach((p, i) => { g.fillStyle = p.cpu ? "#E05A5A" : "#FFE37A"; g.beginPath(); g.arc(p.x * k, (p.y - 20) * k, 4, 0, 6.28); g.fill(); });
   for (const pr of PB.projs) if (pr.i < pr.path.length - 1) { g.fillStyle = "#FFF"; g.fillRect(pr.path[pr.i][0] * k - 1.5, pr.path[pr.i][1] * k - 1.5, 3, 3); }
-  g.strokeStyle = "rgba(255,255,255,.7)"; g.lineWidth = 1; g.strokeRect(PB.cam.x * k, PB.cam.y * k, PB_CW / c.zoom * k, PB_CH / c.zoom * k);
+  g.strokeStyle = "rgba(255,255,255,.7)"; g.lineWidth = 1; g.strokeRect(PB.cam.x * k, PB.cam.y * k, PB_CW / pbZ() * k, PB_CH / pbZ() * k);
 }
 // ---------- controles e laço ----------
 function pbAndar(p, dir, dt) {
@@ -9895,9 +9910,9 @@ function pbRoot() {
       <div class="pb-meio"><b class="pb-logo">💥 PokeBound <small id="pb-tema"></small></b><span id="pb-vento"></span><span id="pb-msg"></span><b id="pb-tempo"></b></div>
       <div class="pb-hp dir"><span id="pb-nome1"></span><i><u id="pb-hp1"></u></i><b id="pb-hpn1"></b></div></div>
     <div class="pb-palco"><canvas id="pb-cv" width="${PB_CW}" height="${PB_CH}"></canvas><canvas id="pb-mini" width="240" height="100"></canvas></div>
-    <div class="pb-bot"><div class="pb-dica">↑ ↓ ângulo · ← → andar · <b>segure ESPAÇO</b> (ou o botão Atirar) para a força e solte para atirar · ⭐ arma o especial antes</div>
+    <div class="pb-bot"><div class="pb-dica">↑ ↓ ângulo · ← → andar · <b>segure ESPAÇO</b> (ou o botão Atirar) para a força e solte para atirar · ⭐ arma o especial antes · <b>arraste a tela</b> para olhar o campo e use a <b>rodinha do mouse</b> para o zoom (ou clique no minimapa)</div>
       <div class="pb-ctl"><span>Ângulo <b id="pb-ang"></b></span><span class="pb-pot">Força<i><u id="pb-potbar"></u><em id="pb-potmk" hidden></em></i></span><span class="pb-fol">Fôlego<i><u id="pb-fol"></u></i></span>
-      <button class="btn" id="pb-tiro">🎯 Segure para atirar</button><button class="btn ghost" id="pb-esp"></button><button class="btn ghost small" id="pb-sair">Sair</button></div></div>
+      <button class="btn" id="pb-tiro">🎯 Segure para atirar</button><button class="btn ghost" id="pb-esp"></button><button class="btn ghost small" id="pb-ver" title="Mostra o adversário; clique de novo para voltar">👁 Ver adversário</button><button class="btn ghost small" id="pb-sair">Sair</button></div></div>
     <div class="pb-over" id="pb-escolha"><div class="pb-box"><h2>💥 PokeBound</h2><p>Escolha quem vai para o canhão. Cada um tem o mesmo total de força, distribuído de um jeito diferente.</p>
       <div class="pb-chars">${Object.entries(PB_CHARS).map(([k, c]) => `<button class="pb-char" data-pb="${k}"><img src="${SPRITE(c.sp)}" alt=""><b>${c.nome}</b>
         <small>Dano ${c.dano} · Raio ${c.raio} · Vida ${c.hp}<br>Velocidade ${Math.round(c.vel * 100)}% · Vento ${Math.round(c.vento * 100)}%</small><em>⭐ ${c.esp}: ${c.espTxt}</em></button>`).join("")}</div>
@@ -9907,8 +9922,29 @@ function pbRoot() {
   el.addEventListener("click", e => {
     const ch = e.target.closest("[data-pb]"); if (ch) return pbComecar(ch.dataset.pb);
     if (e.target.closest("#pb-esp")) { const p = PB.players[PB.turn]; if (p && !p.cpu && PB.phase === "mira" && p.cd === 0 && PB.charge == null) { PB.esp = !PB.esp; sfx("tick"); pbHud(); } return; }
+    if (e.target.closest("#pb-ver")) { pbVer(PB.verAdv ? null : PB.players.find(q => q.cpu)); return; }   // o adversário (no protótipo, o computador)
     if (e.target.closest("#pb-denovo")) { $("#pb-fim").hidden = true; $("#pb-escolha").hidden = false; PB.phase = "escolha"; return; }
     if (e.target.closest("#pb-sair,#pb-sair2,#pb-sair3")) return pbClose();
+  });
+  // arrastar a tela, rodinha para o zoom (mantém o ponto do mouse parado) e clique no minimapa
+  const cv = $("#pb-cv", el), mini = $("#pb-mini", el);
+  cv.addEventListener("pointerdown", e => { if (!PB.terr) return; PB.drag = { x: e.clientX, y: e.clientY, cx: PB.cam.x, cy: PB.cam.y }; cv.setPointerCapture(e.pointerId); cv.classList.add("arrastando"); });
+  cv.addEventListener("pointermove", e => {
+    if (!PB.drag) return; const m = pbMouseMapa(e), z = pbZ();
+    PB.cam.x = PB.drag.cx - (e.clientX - PB.drag.x) / m.k / z; PB.cam.y = PB.drag.cy - (e.clientY - PB.drag.y) / m.k / z;
+    PB.livre = true; PB.verAdv = false; pbCamLimite();
+  });
+  const solta = () => { PB.drag = null; cv.classList.remove("arrastando"); };
+  cv.addEventListener("pointerup", solta); cv.addEventListener("pointercancel", solta);
+  cv.addEventListener("wheel", e => {
+    if (!PB.terr) return; e.preventDefault();
+    const m = pbMouseMapa(e), z = Math.max(PB_ZMIN, Math.min(PB_ZMAX, pbZ() * (e.deltaY < 0 ? 1.12 : 1 / 1.12)));
+    PB.z = z; PB.cam.x = m.x - m.sx / z; PB.cam.y = m.y - m.sy / z; PB.livre = true; pbCamLimite();
+  }, { passive: false });
+  mini.addEventListener("pointerdown", e => {
+    if (!PB.terr) return; e.stopPropagation(); const r = mini.getBoundingClientRect(), z = pbZ();
+    const mx = (e.clientX - r.left) / r.width * PB_W, my = (e.clientY - r.top) / r.height * PB_H;
+    PB.cam.x = mx - PB_CW / z / 2; PB.cam.y = my - PB_CH / z / 2; PB.livre = true; PB.verAdv = false; pbCamLimite();
   });
   // segurar o botão Atirar carrega a força; soltar atira
   const tiro = $("#pb-tiro", el);
@@ -9916,6 +9952,13 @@ function pbRoot() {
   tiro.addEventListener("pointerup", () => pbCarregar(false));
   tiro.addEventListener("pointerleave", () => { if (PB.charge != null) pbCarregar(false); });
   return el;
+}
+// "Ver adversário": afasta o zoom e centraliza no outro; de novo volta para você
+function pbVer(q) {
+  const b = $("#pb-ver");
+  if (!q) { PB.verAdv = false; PB.livre = false; if (b) b.textContent = "👁 Ver adversário"; return; }
+  const z = pbZ(); PB.cam.x = q.x - PB_CW / z / 2; PB.cam.y = q.y - 60 - PB_CH / z * 0.58; PB.livre = true; PB.verAdv = true; pbCamLimite();
+  if (b) b.textContent = "↩ Voltar para mim";
 }
 function pbCarregar(on) {
   const p = PB.players[PB.turn], minha = p && !p.cpu && PB.phase === "mira";
