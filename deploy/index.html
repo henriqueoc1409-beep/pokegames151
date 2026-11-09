@@ -1879,6 +1879,9 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .vila-bonus{margin:10px 0}.vb-list{margin:6px 0 0;padding-left:4px;list-style:none;display:flex;flex-direction:column;gap:4px}.vb-list.on li{color:#BFE8C9}.vb-next summary{cursor:pointer;margin-top:8px;font-weight:700}
 .enc-vila{margin:4px 0 0;font:700 13px/1.3 var(--sans);color:#BFE8C9}
 .mv-lock{margin:6px 0 2px;font-size:13px;color:#F5C542}.mv.locked{opacity:.5}
+.qb summary{cursor:pointer}.qb-list{display:flex;flex-direction:column;gap:4px;margin-top:8px;max-height:420px;overflow:auto}
+.qb-row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:8px;border-radius:8px;background:rgba(255,255,255,.04)}.qb-row.off{opacity:.5}
+.qb-row .qb-p{grid-column:1}.qb-row b{grid-column:2;grid-row:1;color:#F5C542}.qb-row small{grid-column:1}.qb-btns{grid-column:2;grid-row:2;display:flex;gap:4px}
 .av-pill{display:flex;align-items:center;gap:6px;min-height:34px;padding:0 14px;border-radius:999px;border:2px solid #6B5A3A;background:rgba(22,30,38,.92);color:#F3DFA8;font:800 12.5px/1 var(--sans);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.45)}
 .av-pill b{min-width:22px;padding:4px 7px;border-radius:999px;background:#E05A5A;color:#fff;text-align:center}
 .av-pill.on{border-color:#F5C542;animation:news-pulse 1.6s infinite}
@@ -5558,7 +5561,7 @@ function LIB() {
       <p>Antes de andar, o jogo pergunta: <b>ir atrás do Pokémon</b> ou <b>continuar o jogo</b>. Vale para todo mundo, até para quem já está na frente.</p>
       <p>Quem vai anda pelo caminho da Caçada. O <b>primeiro</b> a parar na casa do Pokémon tenta capturar com 3 bolas. <b>Pegando ou não, você volta para a casa onde estava antes</b>: não perde posição, mas não avança na corrida enquanto caça. Dá para desistir no meio e voltar; cada um vai atrás uma vez só.</p>
       <p>A Caçada tem prazo: se ninguém chegar, o Pokémon foge e todos voltam.</p>` },
-    { id: "quiz", ic: "❓", t: "Quiz surpresa", h: `<p>De vez em quando aparece um <b>quiz</b> valendo prêmio. Você vê o aviso e o prêmio, conta 3, 2, 1 e responde um número antes do tempo acabar.</p>
+    { id: "quiz", ic: "❓", t: "Quiz surpresa", h: `<p>🎲 <b>Quiz automático:</b> ${S.cfg.quiz_auto?.on === false ? "às vezes o admin abre um quiz." : `aparece sozinho ${(S.cfg.quiz_auto?.dias || [1, 3, 5]).length} vezes por semana, num horário surpresa entre ${S.cfg.quiz_auto?.hora_min ?? 18}h e ${S.cfg.quiz_auto?.hora_max ?? 22}h.`} As perguntas são absurdas, do mundo Pokémon (tipo "quantos kg de sushi o Snorlax come em uma hora?"), e a resposta oficial é segredo: quem chutar mais perto ganha um prêmio sorteado.</p><p>De vez em quando aparece um <b>quiz</b> valendo prêmio. Você vê o aviso e o prêmio, conta 3, 2, 1 e responde um número antes do tempo acabar.</p>
       <p>Vale uma tentativa só. Vence quem chegar <b>mais perto</b> da resposta; no empate, quem respondeu primeiro. Dá para responder pelo aviso no mapa ou pelo Jornal.</p>
       <p>O prêmio cai sozinho na conta do vencedor assim que o quiz fecha, e aparece no 📬 Correio.</p>` },
     { id: "social", ic: "🤝", t: "Duelos, bolão, times e mercado", h: `<p><b>Duelos:</b> desafie um amigo valendo moedas, no quiz (adivinhar um Pokémon: menos tentativas vence; empate, quem foi mais rápido) ou na sorte.</p>
@@ -8731,7 +8734,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8747,6 +8750,8 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  quiz_auto: { on: "Quiz automático ligado", dias: "Dias (0 = domingo, 1 = segunda … 6 = sábado)", hora_min: "Horário surpresa a partir de (hora)", hora_max: "Horário surpresa até (hora)",
+    segundos: "Segundos para responder", prazo_horas: "O quiz fica aberto por (horas)", premios: "Prêmios sorteados (lista técnica: coins = moedas, hints = dicas, retries = tente outra vez, bag = bolas e itens)" },
   tm_nivel: { on: "TMs com nível mínimo", fraca_poder: "Ataque fraco: poder até", fraca_nivel: "Ataque fraco: a partir do nível", media_poder: "Ataque médio: poder até", media_nivel: "Ataque médio: a partir do nível", forte_nivel: "Ataque forte: a partir do nível" },
   vila_bonus: { on: "Bônus da vila ligados", "centro.casas": "Centro da Vila: casas a mais por andada (por nível)", "pomar.captura_pct": "Pomar: % a mais de captura",
     "taverna.bolas": "Taverna: bolas a mais por encontro", "vigia.raro_pct": "Torre de Vigia: % de chance de Pokémon mais raro (por nível)", "academia.grama_xp_pct": "Academia: % a mais de XP na Grama (por nível)",
@@ -10115,6 +10120,65 @@ setInterval(async () => {
   if (S.quiz?.status === "aberto" && S.quiz.me === "novo" && !$("#modal-root").innerHTML.trim() && !S.win) { sfx("acerto"); quizPopup(false); }
 }, 60000);
 // ---------- admin: aba Quiz ----------
+
+// ---------- banco de perguntas absurdas e quiz automático (arquivo 86) ----------
+async function loadQuizBanco() {
+  const { data, error } = await sb.from("quiz_banco").select("*").order("id", { ascending: false });
+  S.qzBanco = error ? false : data;
+}
+function quizBancoHTML() {
+  if (S.qzBanco === false) return "";
+  const L = S.qzBanco || [], q = norm(S.qbQ || ""), A = { dias: [1, 3, 5], ...(S.cfg.quiz_auto || {}) };
+  const dias = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"], shown = L.filter(b => !q || norm(b.pergunta).includes(q));
+  const nunca = L.filter(b => b.ativo && !b.usos).length;
+  return `<details class="panel lo qb"><summary><b>🎲 Quiz automático e banco de perguntas</b> <span class="muted">(${L.length} perguntas, ${nunca} ainda não saíram)</span></summary>
+    <p>${A.on === false ? "⛔ O quiz automático está <b>desligado</b>." : `✅ Abre sozinho às <b>${(A.dias || []).map(d => dias[d]).join(", ") || "nenhum dia"}</b>, num horário surpresa entre <b>${A.hora_min ?? 18}h e ${A.hora_max ?? 22}h</b>, com ${A.segundos ?? 20} s para responder e prêmio sorteado.`}
+      Mude em Administração → Ajustes do jogo → ❓ Quiz automático. Se já houver um quiz aberto, o automático daquele dia não abre.</p>
+    <form id="qbform" class="qz-grid" style="align-items:end"><label style="grid-column:1/-1">Nova pergunta (resposta oficial inventada por você)<input id="qb-perg" maxlength="300" placeholder="Ex.: Quantos pastéis o Snorlax come na feira de domingo?"></label>
+      <label>Resposta oficial (número)<input id="qb-resp" inputmode="decimal" placeholder="12"></label><button class="btn">Adicionar ao banco</button></form>
+    <label style="display:block;margin-top:10px">Buscar no banco<input id="qb-q" type="search" value="${esc(S.qbQ || "")}" placeholder="Ex.: Snorlax"></label>
+    <div class="qb-list">${shown.slice(0, 60).map(b => `<div class="qb-row ${b.ativo ? "" : "off"}"><span class="qb-p">${esc(b.pergunta)}</span><b class="num">${qzNum(b.resposta)}</b>
+      <small class="muted">${b.autor === "admin" ? "sua" : "do jogo"} · saiu ${b.usos}×</small>
+      <span class="qb-btns"><button class="btn ghost small" data-act="qb-edit" data-v="${b.id}">Editar</button><button class="btn ghost small" data-act="qb-tog" data-v="${b.id}">${b.ativo ? "Desligar" : "Ligar"}</button><button class="btn ghost small" data-act="qb-del" data-v="${b.id}">Apagar</button></span></div>`).join("")}
+      ${shown.length > 60 ? `<p class="muted">Mostrando 60 de ${shown.length}. Use a busca.</p>` : ""}</div></details>`;
+}
+ACTIONS["qz-sortear"] = async () => {
+  await guarded(async () => {
+    const s = await rpc("admin_quiz_sortear"); if (!s) return toast("O banco de perguntas está vazio.", true);
+    const set = (id, v) => { const el = $(id); if (el) el.value = v; };
+    set("#qz-title", "Quiz surpresa!"); set("#qz-intro", "Pergunta absurda do mundo Pokémon! A resposta oficial é segredo: quem chutar mais perto ganha.");
+    set("#qz-q", s.question); set("#qz-ans", String(s.answer).replace(".", ",")); set("#qz-sec-in", s.seconds || 20);
+    const p = s.prize || {}; set("#qz-coins", p.coins || 0); set("#qz-hints", p.hints || 0); set("#qz-retries", p.retries || 0); set("#qz-prize", s.prize_txt || "");
+    document.querySelectorAll('[name="qz-bag"]').forEach(i => { i.value = p.bag?.[i.dataset.id] || 0; });
+    toast("🎲 Pergunta sorteada! Confira e clique em publicar.");
+  });
+};
+ACTIONS["qb-edit"] = async v => {
+  const b = (S.qzBanco || []).find(x => String(x.id) === String(v)); if (!b) return;
+  const f = await formModal("Editar pergunta", [{ k: "p", label: "Pergunta", value: b.pergunta, required: true }, { k: "r", label: "Resposta oficial (número)", value: String(b.resposta).replace(".", ","), required: true }], "Salvar");
+  if (!f) return; const r = qzParse(f.r); if (!isFinite(r)) return toast("A resposta precisa ser um número.", true);
+  await guarded(async () => { await rpc("admin_quiz_banco_save", { _id: b.id, _pergunta: f.p, _resposta: r, _ativo: b.ativo }); await loadQuizBanco(); render(); toast("Pergunta salva."); });
+};
+ACTIONS["qb-tog"] = async v => {
+  const b = (S.qzBanco || []).find(x => String(x.id) === String(v)); if (!b) return;
+  await guarded(async () => { await rpc("admin_quiz_banco_save", { _id: b.id, _pergunta: b.pergunta, _resposta: b.resposta, _ativo: !b.ativo }); await loadQuizBanco(); render(); });
+};
+ACTIONS["qb-del"] = async v => {
+  if (!(await confirmModal("Apagar a pergunta?", "Ela sai do banco e não vai mais ser sorteada.", "Apagar"))) return;
+  await guarded(async () => { await rpc("admin_quiz_banco_delete", { _id: +v }); await loadQuizBanco(); render(); });
+};
+document.addEventListener("submit", e => {
+  if (e.target.id !== "qbform") return; e.preventDefault();
+  const p = $("#qb-perg").value.trim(), r = qzParse($("#qb-resp").value);
+  if (p.length < 5) return toast("Escreva a pergunta.", true);
+  if (!isFinite(r)) return toast("A resposta oficial precisa ser um número.", true);
+  guarded(async () => { await rpc("admin_quiz_banco_save", { _id: null, _pergunta: p, _resposta: r, _ativo: true }); await loadQuizBanco(); render(); toast("Pergunta adicionada ao banco!"); });
+});
+document.addEventListener("input", e => {
+  if (e.target.id !== "qb-q") return;
+  S.qbQ = e.target.value; clearTimeout(S.qbT);
+  S.qbT = setTimeout(() => { render(); const el = $("#qb-q"); if (el) { el.closest("details")?.setAttribute("open", ""); el.focus(); el.setSelectionRange(el.value.length, el.value.length); } }, 300);
+});
 async function loadQuizAdmin() {
   try { S.qzAdm = await rpc("admin_quiz_list"); } catch (e) { if (isMissingFn(e)) S.qzAdm = false; else throw e; }
 }
@@ -10157,9 +10221,10 @@ function adminQuizView() {
         ${q.winner ? (q.prize_given_at ? `<span class="tag ok">✅ Prêmio entregue sozinho a ${esc(charName(q.winner))}</span>` : `<button class="btn small" data-act="adq-prize" data-v="${q.id}">🎁 Dar o prêmio a ${esc(charName(q.winner))}</button>`) : ""}
         <button class="btn ghost small" data-act="adq-del" data-v="${q.id}">Apagar</button></div></details>`;
   };
-  return `<div class="qz-adm">
+  if (S.qzBanco === undefined) { S.qzBanco = null; loadQuizBanco().then(() => { if (S.win === "admin" && S.adminTab === "quiz") render(); }); }
+  return `<div class="qz-adm">${quizBancoHTML()}
     ${open ? `<div class="sac-link"><span>🔗 Link do quiz para mandar no WhatsApp: <code>${esc(quizLink())}</code></span><button class="btn small" data-act="quiz-copy">Copiar link</button></div>
-      <p class="muted">Já existe um quiz aberto. Para criar outro, encerre o atual.</p>` : `<section class="panel lo"><h3>❓ Criar quiz surpresa</h3>
+      <p class="muted">Já existe um quiz aberto. Para criar outro, encerre o atual.</p>` : `<section class="panel lo"><h3>❓ Criar quiz surpresa <button type="button" class="btn small" data-act="qz-sortear" style="margin-left:8px">🎲 Sortear pergunta</button></h3>
       <p class="muted" style="margin-top:0">Abre numa tela grande para todos ao entrar no jogo (e para quem já está online, em até 1 minuto). A pessoa clica em "Revelar pergunta" e tem o tempo escolhido para responder com um número. Vence quem chegar mais perto; no empate, quem respondeu antes.</p>
       <form id="quizform" class="inv-form" style="display:block">
         <div class="qz-grid">
@@ -10513,6 +10578,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "quiz-auto-2026-11-09", sql: "86", title: "❓ Quiz surpresa automático!", body: () => `Agora o Quiz surpresa aparece sozinho, 3 vezes por semana (segunda, quarta e sexta), num horário surpresa entre 18h e 22h.
+• As perguntas são absurdas, do mundo Pokémon: "Quantos kg de sushi o Snorlax come em uma hora?", "Quanto o Mr. Mime ganha por dia como mímico no circo?"...
+• Cada uma tem uma resposta oficial secreta: quem chutar mais perto ganha.
+• O prêmio é sorteado (moedas, dicas, "tente outra vez" ou Great Balls) e cai na sua conta na hora.
+Fique de olho no jogo à noite!` },
   { id: "numero-casas-2026-11-09", sql: "85", title: "🔢 Agora toda casa tem número", body: () => `Ficou fácil saber onde cada um está:
 • Cada casa do mapa mostra o número dela, embaixo do círculo.
 • No seu painel aparece "Você está na casa nº ...".
