@@ -1878,6 +1878,7 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .hp-top .lv-cap{color:#F5C542}.hp-top .lv-cap small{opacity:.8}
 .vila-bonus{margin:10px 0}.vb-list{margin:6px 0 0;padding-left:4px;list-style:none;display:flex;flex-direction:column;gap:4px}.vb-list.on li{color:#BFE8C9}.vb-next summary{cursor:pointer;margin-top:8px;font-weight:700}
 .enc-vila{margin:4px 0 0;font:700 13px/1.3 var(--sans);color:#BFE8C9}
+.mv-lock{margin:6px 0 2px;font-size:13px;color:#F5C542}.mv.locked{opacity:.5}
 .av-pill{display:flex;align-items:center;gap:6px;min-height:34px;padding:0 14px;border-radius:999px;border:2px solid #6B5A3A;background:rgba(22,30,38,.92);color:#F3DFA8;font:800 12.5px/1 var(--sans);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.45)}
 .av-pill b{min-width:22px;padding:4px 7px;border-radius:999px;background:#E05A5A;color:#fff;text-align:center}
 .av-pill.on{border-color:#F5C542;animation:news-pulse 1.6s infinite}
@@ -5483,7 +5484,7 @@ function LIB() {
       <ul class="hero-list">${Object.entries(HEROES).map(([k, h]) => { const x = heroStats(k, 1); return `<li><strong>${h.nome}.</strong> ${h.passiva(x.pv)} <strong>${h.skill}:</strong> ${h.efeito(x.sv)} <em>Em tudo:</em> ${heroPerk(k)}</li>`; }).join("")}</ul>` },
     { id: "pokemon", ic: "🐾", t: "Pokémon: captura e coleção", h: `<p>Depois de cada andada aparece um <b>Pokémon selvagem</b> na casa onde você parou. Você tem <b>3 bolas</b> para tentar capturar. A Poké Bola é grátis; a Great Ball (${balls.great?.price ?? 40} moedas) e a Ultra Ball (${balls.ultra?.price ?? 90}) aumentam a chance. Pokémon raros são mais difíceis, e cada região tem os seus tipos preferidos. Os Pokémon selvagens sempre aparecem fracos, entre os <b>níveis 1 e 5</b>, em qualquer parte do tabuleiro: para ficarem fortes, é preciso treinar.</p>
       <p><b>Equipe:</b> até 6 Pokémon. A equipe ganha XP toda vez que você anda, dividido entre eles, e também nas batalhas.</p>
-      <p><b>Evolução:</b> por nível ou por pedra (${pk.stones?.price ?? 250} moedas), como na Red/Blue. Você escolhe a hora de evoluir.</p>
+      <p><b>Evolução:</b> por nível ou por pedra (${pk.stones?.price ?? 250} moedas), como na Red/Blue. O nível em que cada um evolui é segredo: o jogo avisa quando o seu Pokémon já pode evoluir, e você escolhe a hora.</p>
       <p><b>Mascote:</b> um Pokémon que anda com você no mapa. <b>Roupas:</b> só visual, não mudam nada na batalha.</p>${genOn() ? `<p><b>2ª geração ligada:</b> os Pokémon 152 a 251 também aparecem.</p>` : ""}` },
     { id: "treino", ic: "🌿", t: "Grama de Treino", h: `<p>A <b>Grama de Treino</b> é uma área fora do tabuleiro (menu Pokémon), como a Safari Zone. Escolha quem vai treinar e quanto tempo quer ficar: <b>${(S.treino?.st?.opcoes || [5, 10]).join(" ou ")} minutos</b>.</p>
       <p>Lá dentro, ande com o seu personagem (<b>WASD ou as setas</b> no computador; botões na tela no celular). Na <b>grama alta</b> aparecem Pokémon selvagens do nível do seu, e <b>você comanda a batalha</b>: ataques, itens da bolsa ou fugir. Vencendo, ganha experiência; perdendo, não ganha nada.</p>
@@ -5511,7 +5512,7 @@ function LIB() {
     { id: "itens", ic: "🎒", t: "Itens, TMs e HMs", h: `<p>Na Loja Pokémon há itens como na Red/Blue:</p><ul>
       <li><b>Poções e curas</b>: Potion, Super Potion, Hyper Potion, Max Potion, Full Restore, Antidote, Parlyz Heal, Awakening, Burn Heal, Ice Heal, Full Heal e Revive.</li>
       <li><b>Itens X</b>: sobem um atributo do Pokémon em campo durante a batalha.</li>
-      <li><b>TMs</b>: ensinam um ataque e acabam. Nem todo Pokémon aprende todas, igual à Red/Blue.</li>
+      <li><b>TMs</b>: ensinam um ataque e acabam. Nem todo Pokémon aprende todas, igual à Red/Blue. Cada TM pede um nível mínimo pela força do ataque: fraca (até 60 de poder, ou sem dano) a partir do nível ${S.cfg.tm_nivel?.fraca_nivel ?? 10}, média (até 90) a partir do ${S.cfg.tm_nivel?.media_nivel ?? 25} e forte (acima de 90) a partir do ${S.cfg.tm_nivel?.forte_nivel ?? 40}. Quem ensinou antes dessa regra fica com o ataque, mas ele aparece com 🔒 e só entra na batalha quando o Pokémon chega ao nível (nas batalhas com limite de nível, conta o nível da batalha). As HMs continuam livres.</li>
       <li><b>Cabo Link</b>: faz evoluir quem, na Red/Blue, só evolui por troca (Kadabra, Machoke, Graveler e Haunter). Acaba ao usar.</li>
       <li><b>HMs</b>: raras, nunca acabam e abrem atalhos no mapa (veja "HMs e atalhos").</li></ul>
       <p>Para ensinar, abra o Pokémon na coleção e toque em <b>📀 Ensinar TM/HM</b>. Na batalha, toque em <b>🎒 Bolsa</b>.</p>
@@ -6446,7 +6447,7 @@ function pkXp(m) {
 }
 const evosOf = sp => (S.pk.evos || []).filter(e => e.from_id === sp && (genOn() || (e.from_id <= 151 && e.to_id <= 151)));
 function evoReady(m) {
-  return evosOf(m.species_id).filter(e => (e.method === "nivel" && m.level >= e.level) || (e.method === "pedra" && (S.pk.bag[e.item] || 0) > 0)
+  return evosOf(m.species_id).filter(e => (e.method === "nivel" && (S.pk.evoPronta ? S.pk.evoPronta.has(`${m.id}:${e.to_id}`) : e.level != null && m.level >= e.level)) || (e.method === "pedra" && (S.pk.bag[e.item] || 0) > 0)
     || (e.method === "troca" && (S.pk.bag.cabo_link || 0) > 0));
 }
 const moveOf = id => S.pk.moves?.[id];
@@ -6464,7 +6465,8 @@ const pkItemsOf = kinds => Object.values(S.pk.items || {}).filter(i => kinds.inc
 const PKI_BATTLE = ["cura", "estado", "reviver", "x"];
 async function loadPkStatic() {
   if (S.pk.moves) return loadPkItems();
-  const [mv, ev, rules] = await Promise.all([sb.from("pk_moves").select("*"), sb.from("pk_evolutions").select("*"), rpc("pk_rules")]);
+  const evo = async () => { try { return { data: await rpc("pk_evolucoes") }; } catch (e) { if (isMissingFn(e)) return sb.from("pk_evolutions").select("*"); throw e; } };   // arquivo 83: sem o nível
+  const [mv, ev, rules] = await Promise.all([sb.from("pk_moves").select("*"), evo(), rpc("pk_rules")]);
   if (mv.error) throw mv.error; if (ev.error) throw ev.error;
   S.pk.moves = Object.fromEntries(mv.data.map(m => [m.id, m])); S.pk.evos = ev.data; S.pk.rules = rules;
   await Promise.all([loadPkItems(), loadTeto()]);
@@ -6486,6 +6488,14 @@ async function loadPk() {
     sb.from("bag_items").select("*").eq("user_id", me)]);
   for (const r of [mons, dex, bag]) if (r.error) throw r.error;
   S.pk.mons = mons.data; S.pk.dex = Object.fromEntries(dex.data.map(d => [d.species_id, d])); S.pk.bag = Object.fromEntries(bag.data.map(b => [b.item, b.qty]));
+  // arquivo 83: quem já pode evoluir por nível e quais ataques de TM estão bloqueados (só dos meus)
+  try { const x = await rpc("pk_meus_extras"); S.pk.evoPronta = new Set((x.evo || []).map(([m, t]) => `${m}:${t}`)); S.pk.travas = x.travas || {}; }
+  catch (e) { if (!isMissingFn(e)) console.warn(e); S.pk.evoPronta = null; S.pk.travas = {}; }
+}
+// nível mínimo de uma TM pela força do ataque (mesma conta do banco: tm_nivel_move)
+function tmReq(moveId) {
+  const c = { on: true, fraca_poder: 60, fraca_nivel: 10, media_poder: 90, media_nivel: 25, forte_nivel: 40, ...(S.cfg.tm_nivel || {}) }, p = moveOf(moveId)?.power || 0;
+  return c.on === false ? 0 : p <= c.fraca_poder ? c.fraca_nivel : p <= c.media_poder ? c.media_nivel : c.forte_nivel;
 }
 async function loadBattles() {
   const me = pkMe();
@@ -6722,13 +6732,13 @@ function viewPokedex() {
 function statBar(label, v, max = 300) { return `<div class="sb"><span>${label}</span><b>${v}</b><i><u style="width:${Math.min(100, Math.round(v / max * 100))}%"></u></i></div>`; }
 function monDetail(m) {
   const p = S.pokeById[m.species_id], st = pkStats(m), xp = pkXp(m), ready = evoReady(m), allEv = evosOf(m.species_id);
-  const moves = m.moves.map((id, i) => moveRow(id, i)).join("");
+  const moves = m.moves.map((id, i) => moveRow(id, i, m)).join("");
   const pend = (m.pending_moves || []).map(id => { const mv = moveOf(id);
     return `<div class="learn"><p><strong>${esc(p.name)}</strong> quer aprender <strong>${esc(mv?.name)}</strong> ${typeChip(mv?.type)}. Escolha um ataque para esquecer:</p>
       <div class="act-btns">${m.moves.map((old, i) => `<button class="btn ghost small" data-act="pk-learn" data-v="${m.id}" data-m="${id}" data-f="${i + 1}">Esquecer ${esc(moveOf(old)?.name)}</button>`).join("")}
       <button class="btn ghost small" data-act="pk-learn" data-v="${m.id}" data-m="${id}" data-f="0">Não aprender</button></div></div>`; }).join("");
   const evoTxt = allEv.map(e => {
-    const can = ready.includes(e), why = e.method === "nivel" ? `no nível ${e.level}` : e.method === "pedra" ? `com ${PK_STONES[e.item]}${(S.pk.bag[e.item] || 0) ? "" : " (compre na Loja Pokémon)"}` : `por troca, com um Cabo Link${(S.pk.bag.cabo_link || 0) ? "" : " (compre na Loja Pokémon)"}`;
+    const can = ready.includes(e), why = e.method === "nivel" ? (can ? "por nível" : "por nível (o nível é segredo: continue treinando)") : e.method === "pedra" ? `com ${PK_STONES[e.item]}${(S.pk.bag[e.item] || 0) ? "" : " (compre na Loja Pokémon)"}` : `por troca, com um Cabo Link${(S.pk.bag.cabo_link || 0) ? "" : " (compre na Loja Pokémon)"}`;
     return `<li>${esc(pkName(e.to_id))} <span class="muted">${why}</span> ${can ? `<button class="btn small" data-act="pk-evolve" data-v="${m.id}" data-to="${e.to_id}">Evoluir agora</button>` : ""}</li>`; }).join("");
   return `<div class="md-head">${monCv(m.species_id, m.outfit, 144)}<div>
       <h3>${esc(p.name)} <small>Nº ${String(p.id).padStart(3, "0")}</small></h3>
@@ -6756,18 +6766,19 @@ function teachPanel(m) {
   if (!T.compat) body = `<p class="muted">Carregando…</p>`;
   else {
     const mine = pkItemsOf(["hm", "tm"]).filter(i => (S.pk.bag[i.id] || 0) > 0);
-    const ok = mine.filter(i => T.compat.includes(i.move_id) && !m.moves.includes(i.move_id));
+    const ok = mine.filter(i => T.compat.includes(i.move_id) && !m.moves.includes(i.move_id) && (i.kind === "hm" || m.level >= tmReq(i.move_id)));
     const pick = T.item && S.pk.items[T.item], pmv = pick && moveOf(pick.move_id);
     if (!mine.length) body = `<p class="muted">Você não tem nenhuma TM ou HM. Compre na Loja Pokémon ou ache nos baús.</p><div class="act-btns"><button class="btn small" data-act="go" data-v="pkloja">Ir para a Loja Pokémon</button></div>`;
-    else if (!pick) body = `<p>Qual ataque ${nm} vai aprender?</p><div class="act-btns">${mine.map(i => { const can = ok.includes(i); return `<button class="btn ${can ? "" : "ghost"} small" data-act="pk-teach-pick" data-v="${i.id}" ${can ? "" : `disabled title="${m.moves.includes(i.move_id) ? "Já sabe esse ataque" : "Não aprende esse ataque"}"`}>${esc(i.name)}${i.kind === "tm" && S.pk.bag[i.id] > 1 ? ` ×${S.pk.bag[i.id]}` : ""}</button>`; }).join("")}</div>${ok.length ? "" : `<p class="muted">Nenhuma das suas TMs/HMs serve para ${nm} (igual à Red/Blue).</p>`}`;
+    else if (!pick) body = `<p>Qual ataque ${nm} vai aprender?</p><div class="act-btns">${mine.map(i => { const can = ok.includes(i); return `<button class="btn ${can ? "" : "ghost"} small" data-act="pk-teach-pick" data-v="${i.id}" ${can ? "" : `disabled title="${m.moves.includes(i.move_id) ? "Já sabe esse ataque" : !T.compat.includes(i.move_id) ? "Não aprende esse ataque" : `Só a partir do nível ${tmReq(i.move_id)}`}"`}>${esc(i.name)}${i.kind === "tm" && T.compat.includes(i.move_id) && !m.moves.includes(i.move_id) && m.level < tmReq(i.move_id) ? ` 🔒 nv ${tmReq(i.move_id)}` : ""}${i.kind === "tm" && S.pk.bag[i.id] > 1 ? ` ×${S.pk.bag[i.id]}` : ""}</button>`; }).join("")}</div>${ok.length ? "" : `<p class="muted">Nenhuma das suas TMs/HMs serve para ${nm} (igual à Red/Blue).</p>`}`;
     else if (m.moves.length < 4) body = `<p>Ensinar <b>${esc(pmv?.name)}</b> ${typeChip(pmv?.type)} para ${nm}? ${pick.kind === "tm" ? "A TM acaba." : "A HM continua com você."}</p><div class="act-btns"><button class="btn small" data-act="pk-teach-go" data-v="0">Ensinar</button><button class="btn ghost small" data-act="pk-teach-pick" data-v="">Voltar</button></div>`;
     else body = `<p>Para aprender <b>${esc(pmv?.name)}</b> ${typeChip(pmv?.type)}, ${nm} precisa esquecer um ataque${pick.kind === "tm" ? " (a TM acaba)" : ""}:</p><div class="act-btns">${m.moves.map((old, i) => `<button class="btn ghost small" data-act="pk-teach-go" data-v="${i + 1}">Esquecer ${esc(moveOf(old)?.name)}</button>`).join("")}<button class="btn ghost small" data-act="pk-teach-pick" data-v="">Voltar</button></div>`;
   }
   return `<div class="learn teach"><p><strong>📀 Ensinar TM/HM</strong> <button class="btn ghost small" data-act="pk-teach-close">Fechar</button></p>${body}</div>`;
 }
-function moveRow(id, i) {
+function moveRow(id, i, m) {
   const mv = moveOf(id); if (!mv) return "";
-  return `<div class="mv" style="--tc:${PK_TYPES[mv.type]?.[1] || "#888"}"><b>${esc(mv.name)}</b>${typeChip(mv.type)}<small>${mv.power ? `Poder ${mv.power}` : "Sem dano"} · Precisão ${mv.accuracy}% · PP ${mv.pp} · ${["NORMAL", "LUTA", "VOADOR", "VENENO", "TERRA", "PEDRA", "INSETO", "FANTASMA", "METALICO"].includes(mv.type) ? "físico" : "especial"}</small></div>`;
+  const lock = m && S.pk.travas?.[m.id]?.[id];
+  return `${lock ? `<p class="mv-lock">🔒 <b>${esc(mv.name)}</b> foi ensinado por TM e fica bloqueado até o nível ${lock}: até lá ele não aparece na batalha.</p>` : ""}<div class="mv${lock ? " locked" : ""}" style="--tc:${PK_TYPES[mv.type]?.[1] || "#888"}"><b>${esc(mv.name)}</b>${typeChip(mv.type)}<small>${mv.power ? `Poder ${mv.power}` : "Sem dano"} · Precisão ${mv.accuracy}% · PP ${mv.pp} · ${["NORMAL", "LUTA", "VOADOR", "VENENO", "TERRA", "PEDRA", "INSETO", "FANTASMA", "METALICO"].includes(mv.type) ? "físico" : "especial"}</small></div>`;
 }
 function dexView(caught, seen) {
   const f = S.pk.f, q = norm(f.q || "");
@@ -8696,7 +8707,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8712,6 +8723,7 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  tm_nivel: { on: "TMs com nível mínimo", fraca_poder: "Ataque fraco: poder até", fraca_nivel: "Ataque fraco: a partir do nível", media_poder: "Ataque médio: poder até", media_nivel: "Ataque médio: a partir do nível", forte_nivel: "Ataque forte: a partir do nível" },
   vila_bonus: { on: "Bônus da vila ligados", "centro.casas": "Centro da Vila: casas a mais por andada (por nível)", "pomar.captura_pct": "Pomar: % a mais de captura",
     "taverna.bolas": "Taverna: bolas a mais por encontro", "vigia.raro_pct": "Torre de Vigia: % de chance de Pokémon mais raro (por nível)", "academia.grama_xp_pct": "Academia: % a mais de XP na Grama (por nível)",
     "arena.grama_min": "Arena: minutos a mais na Grama", "centropk.centro_desc_pct": "Centro Pokémon de Guerra: % de desconto no Centro (por nível)", "centropk.cura_rapida_pct": "Centro Pokémon de Guerra: % mais rápida a cura grátis (por nível)",
@@ -8923,7 +8935,7 @@ function viewCreche() {
   const m = mons.find(x => x.id === C.sel) || mons.find(x => x.level < st.nivel_max) || mons[0]; C.sel = m.id;
   const maxN = crecheMaxN(m.level, st), n = Math.max(1, Math.min(C.n || 1, maxN || 1));
   const custo = Math.ceil(crechePreco(m.level, n, st) * (100 - (st.desconto_pct || 0)) / 100), coins = S.me?.coins ?? 0;
-  const evo = evosOf(m.species_id).find(e => e.method === "nivel" && e.level > m.level && e.level <= m.level + n);
+  const evo = null;   // arquivo 83: o nível de evolução é segredo
   const used = Math.round(st.usados / Math.max(1, st.niveis_semana) * 100);
   return `<div class="creche">
     <div class="ce-head" style="background:linear-gradient(180deg,#FFF3DC,#F2DDB6);border-color:#C9A05A;color:#3A2A12"><p><b style="color:#7A4A12">🏡 Bem-vindo à Creche Pokémon!</b></p>
@@ -10477,6 +10489,13 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "tm-nivel-2026-11-09", sql: "83", title: "📀 TMs agora têm nível mínimo", body: () => `As TMs agora pedem um nível mínimo, pela força do ataque:
+• Ataque fraco (até 60 de poder, ou sem dano): a partir do nível 10.
+• Ataque médio (até 90 de poder): a partir do nível 25.
+• Ataque forte (acima de 90, como Earthquake, Thunder e Hyper Beam): a partir do nível 40.
+• Quem já ensinou não perde nada: o ataque fica na ficha com um cadeado 🔒 e só aparece na batalha quando o Pokémon chegar ao nível. Nas batalhas com limite de nível, conta o nível da batalha.
+• As HMs continuam livres.
+• E agora o nível em que cada Pokémon evolui é segredo: o jogo só avisa quando o seu Pokémon já pode evoluir.` },
   { id: "vila-em-tudo-2026-11-09", sql: "82", title: "🏰 A vila agora ajuda em tudo no jogo!", body: () => `Cada construção da sua vila dá uma vantagem (quanto maior o nível, maior o bônus):
 • 🗺️ Andar: Estábulo dá casas extras com mais frequência, e o Centro da Vila nível 3 e 6 dá casas a mais por dia.
 • 🎯 Captura: Pomar dá mais chance de captura, Taverna dá +1 Poké Bola por encontro, e a Torre de Vigia traz mais Pokémon raros.
