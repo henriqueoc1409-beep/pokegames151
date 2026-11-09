@@ -3401,7 +3401,7 @@ function composeWorld(art) {
   return cv;
 }
 // a arte do mapa fica guardada no aparelho: só é desenhada de novo quando o tabuleiro ou esta versão mudam
-const MAP_ART_VERSION = "mapa-pintado-5";   // 2: casas novas (arquivos 42 e 43); 4: obstáculos das HMs (arquivo 47)
+const MAP_ART_VERSION = "mapa-pintado-6";   // 2: casas novas (arquivos 42 e 43); 4: obstáculos das HMs (arquivo 47)
 function mapArtKey() {
   let h = 0;
   for (const n of S.nodes) h = (Math.imul(h, 31) + n.id * 7 + n.x * 13 + n.y * 17 + (n.next_a ?? -1) * 3 + (n.next_b ?? -1) * 5 + n.kind.length + n.region.length + (n.hm ? n.hm.length * 11 : 0)) | 0;
@@ -3559,6 +3559,15 @@ function drawBoardNodes(g) {
       drawSprite(g, { s, rows: ic, pal: { x: "#FFF8E6", o: "rgba(18,26,43,.45)", y: "#1B1626" } }, n.x - iw * s / 2, n.y - ic.length * s / 2);
     }
   }
+  // número de cada casa (pedido do dono em 09/11/2026), embaixo do medalhão
+  g.font = "800 11px Inter, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.lineJoin = "round";
+  for (const n of S.nodes) {
+    const r = n.kind === "normal" || n.kind === "treinador" ? 12 : n.kind === "cacada" ? 10 : n.kind === "alvo" ? 15 : n.kind === "bifurcacao" ? 21 : n.kind === "castelo" ? 23 : 18;
+    const y = n.y + r + 9;
+    g.lineWidth = 3.5; g.strokeStyle = "rgba(20,14,6,.85)"; g.strokeText(String(n.id), n.x, y);
+    g.fillStyle = "#FFF4D6"; g.fillText(String(n.id), n.x, y);
+  }
+  g.textAlign = "left"; g.textBaseline = "alphabetic"
 }
 function roundRect(g, x, y, w, h, r) {
   g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
@@ -3901,7 +3910,7 @@ function renderHUD() {
     <button class="hud-card player" data-act="go" data-v="loja" aria-label="Abrir personagem">
       <span class="pc-av">${avatarSVG(me, 2.6)}</span>
       <span class="pc-main"><span class="pc-name"><span class="pc-n">${esc(me.name)}</span><span class="lvl">Nv ${me.level}</span></span>
-        <span class="pc-sub">${HEROES[me.class]?.nome || ""}<span class="m-only">, ${me.arrived_rank ? `no Castelo (${me.arrived_rank}º)` : `faltam ${S.nodeById[me.node]?.dist ?? 0} casas`}</span></span>
+        <span class="pc-sub">${HEROES[me.class]?.nome || ""}<span class="m-only">, ${me.arrived_rank ? `no Castelo (${me.arrived_rank}º)` : `casa nº ${me.node}, faltam ${S.nodeById[me.node]?.dist ?? 0}`}</span></span>
         <span class="pc-coins m-only"><span class="coins">${me.coins} moedas</span> <span class="muted">Dicas ${me.hints ?? 0}, outra vez ${me.retries ?? 0}</span></span>
         <span class="xpbar" title="${me.xp_total} de ${xp.next} XP"><i style="width:${xp.pct}%"></i></span><span class="xp-txt">XP: ${me.xp_total ?? 0} / ${xp.next} (${xp.pct}%)</span></span>
     </button>
@@ -3910,6 +3919,7 @@ function renderHUD() {
   const champ = (T?.yesterday || []).find(y => y.rank === 1);
   $("#hud-info-text").innerHTML = `
     <div class="info-line"><span>Temporada ${se?.id ?? ""}</span><span class="muted">${se?.status === "encerrada" ? "encerrada" : `${(se?.arrivals || []).length}/${S.cfg.season_arrivals} no Castelo`}</span></div>
+    <div class="info-line"><span>Você está na</span><span class="num">casa nº ${me.node}</span></div>
     <div class="info-line"><span>${me.arrived_rank ? `No Castelo (${me.arrived_rank}º)` : "Faltam"}</span><span class="num">${me.arrived_rank ? "" : `${dist} casas`}</span></div>
     <div class="info-line"><span>Novo desafio</span><span class="countdown">${countdownText()}</span></div>
     ${champ ? `<div class="info-line"><span>Campeão de ontem</span><span>${esc(champ.name)}</span></div>` : ""}`;
@@ -3958,7 +3968,7 @@ function hudTip() {
     return `<div class="hud-card tip">${close}<div class="who">${avatarSVG(c, 2.4)}<div><div class="pc-name"><span class="pc-n">${esc(c.name)}</span><span class="lvl">Nv ${c.level}</span></div>
       <div class="pc-sub">${HEROES[c.class]?.nome || ""}${c.team && teamOf(c.team) ? `, ${esc(teamOf(c.team).nome)}` : ""}${c.user_id === S.session.user.id ? " (você)" : ""}</div></div></div>
       ${titleChips(c.user_id)}
-      <p class="tip-p">${c.arrived_rank ? `Chegou ao Castelo em ${c.arrived_rank}º lugar.` : `Em ${esc(n?.region || "")}, faltam <span class="num">${n?.dist}</span> casas.`} <span class="coins">${c.coins} moedas</span></p>
+      <p class="tip-p">${c.arrived_rank ? `Chegou ao Castelo em ${c.arrived_rank}º lugar.` : `Na <b>casa nº ${c.node}</b> (${esc(n?.region || "")}), faltam <span class="num">${n?.dist}</span> casas.`} <span class="coins">${c.coins} moedas</span></p>
       ${c.user_id === leaderId() ? `<p class="tip-p wanted">Procurado: vencê-lo num duelo ou acertá-lo com o raio rende ${S.cfg.bounty_coins ?? 60} moedas.</p>` : ""}
       ${c.user_id !== S.session.user.id ? `<div class="tip-actions"><button class="btn small" data-act="duel-new" data-v="${c.user_id}">Desafiar</button>${S.pk?.on ? `<button class="btn small" data-act="bt-challenge" data-v="${c.user_id}">Batalha Pokémon</button>` : ""}<button class="btn ghost small" data-act="react" data-v="${c.user_id}">Reagir</button></div>` : ""}</div>`;
   }
@@ -3967,13 +3977,13 @@ function hudTip() {
   const k = KIND[n.kind], here = S.chars.filter(c => c.node === n.id);
   if (n.kind === "treinador" && n.npc === "red") return `<div class="hud-card tip">${close}<span class="npc-tip"><img class="npc-ic" src="${redCanvas().toDataURL()}" alt=""><span><strong>🔴 Red, o treinador lendário</strong><br><span class="muted">em ${esc(n.region)}</span></span></span>
       <p class="tip-p">Tem um time de <b>6 Pokémon dos níveis 73 a 81</b>. Todo mundo que passa por aqui (parando ou não) tem que enfrentá-lo. Dizem que ninguém vence… quem conseguir ganha <b>${S.cfg.casas?.red_premio ?? 1000} moedas</b>. Perder não tira nada.</p>
-      <p class="tip-p muted">Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p></div>`;
+      <p class="tip-p muted"><b>Casa nº ${n.id}.</b> Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p></div>`;
   if (n.kind === "treinador") { const t = npcAt(n.id), lv = npcTeamLevel();
     return `<div class="hud-card tip">${close}<span class="npc-tip">${npcImg(n.id)}<span><strong>🧢 ${esc(t.full)}</strong><br><span class="muted">${esc(t.title)} · em ${esc(n.region)}</span></span></span>
       <p class="tip-p">Usa Pokémon do tipo <b>${t.types.map(x => esc(PK_TYPES[x]?.[0] || x)).join(" e ")}</b>${lv ? `, mais ou menos no nível <b>${lv}</b> (o da sua equipe)` : ", no nível da sua equipe"}. Quem passar por aqui (parando ou não) enfrenta essa batalha: vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
-      <p class="tip-p muted">Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p></div>`; }
+      <p class="tip-p muted"><b>Casa nº ${n.id}.</b> Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p></div>`; }
   return `<div class="hud-card tip">${close}<strong>${k.nome}</strong><span class="muted"> em ${esc(n.region)}</span>
-    <p class="tip-p">${k.desc}${n.value ? ` (${n.value} casas)` : ""} Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p>
+    <p class="tip-p">${k.desc}${n.value ? ` (${n.value} casas)` : ""} <b>Casa nº ${n.id}.</b> Daqui faltam <span class="num">${n.dist}</span> casas para o Castelo.</p>
     ${n.hm ? hmTip(n) : ""}
     ${here.length ? `<p class="tip-p muted">Aqui agora: ${here.map(c => `${esc(c.name)} (Nv ${c.level})`).join(", ")}.${!["inicio", "castelo"].includes(n.kind) ? " Quem parar aqui duela com eles." : ""}</p>` : ""}
     ${S.myTraps.some(t => t.node === n.id) ? `<p class="tip-p">Sua armadilha está armada aqui.</p>` : ""}
@@ -5063,7 +5073,7 @@ function rkSeasonView() {
   const rows = [...S.chars].sort((a, b) => (a.arrived_rank ?? 999) - (b.arrived_rank ?? 999) || (S.nodeById[a.node]?.dist ?? 0) - (S.nodeById[b.node]?.dist ?? 0));
   return `${seasonBlock()}<div class="table-scroll"><table class="list rk-table rk-plain"><thead><tr><th>#</th><th>Aventureiro</th><th>Onde está</th><th>Faltam</th><th>Nível</th><th>Moedas</th></tr></thead><tbody>
     ${rows.map((r, i) => `<tr class="${r.user_id === S.session.user.id ? "rk-me" : ""}"><td class="rk-pos">${medal(i + 1)}</td><td><div class="who">${avatarSVG(r, 2)}<span>${displayName(r)}</span></div></td>
-      <td>${r.arrived_rank ? `Castelo (${r.arrived_rank}º)` : esc(S.nodeById[r.node]?.region || "")}</td><td class="num">${r.arrived_rank ? "–" : S.nodeById[r.node]?.dist}</td><td class="num">${r.level}</td><td class="num">${r.coins}</td></tr>`).join("")}</tbody></table></div>`;
+      <td>${r.arrived_rank ? `Castelo (${r.arrived_rank}º)` : `Casa nº ${r.node} · ${esc(S.nodeById[r.node]?.region || "")}`}</td><td class="num">${r.arrived_rank ? "–" : S.nodeById[r.node]?.dist}</td><td class="num">${r.level}</td><td class="num">${r.coins}</td></tr>`).join("")}</tbody></table></div>`;
 }
 async function openPlay(uid) {
   const B = S.rk.board, date = B?.date || tzNowParts().date;
@@ -5422,7 +5432,7 @@ function viewRanking() {
   } else if (S.rankTab === "temporada") {
     const rows = [...S.chars].sort((a, b) => (a.arrived_rank ?? 999) - (b.arrived_rank ?? 999) || (S.nodeById[a.node]?.dist ?? 0) - (S.nodeById[b.node]?.dist ?? 0));
     table = `<table class="list"><thead><tr><th>#</th><th>Aventureiro</th><th>Onde está</th><th>Faltam</th><th>Nível</th><th>Moedas</th></tr></thead><tbody>
-      ${rows.map((r, i) => `<tr><td class="num">${i + 1}</td><td>${who(r)}</td><td>${r.arrived_rank ? `Castelo (${r.arrived_rank}º)` : esc(S.nodeById[r.node]?.region || "")}</td><td class="num">${r.arrived_rank ? "–" : S.nodeById[r.node]?.dist}</td><td class="num">${r.level}</td><td class="num">${r.coins}</td></tr>`).join("")}</tbody></table>`;
+      ${rows.map((r, i) => `<tr><td class="num">${i + 1}</td><td>${who(r)}</td><td>${r.arrived_rank ? `Castelo (${r.arrived_rank}º)` : `Casa nº ${r.node} · ${esc(S.nodeById[r.node]?.region || "")}`}</td><td class="num">${r.arrived_rank ? "–" : S.nodeById[r.node]?.dist}</td><td class="num">${r.level}</td><td class="num">${r.coins}</td></tr>`).join("")}</tbody></table>`;
   } else if (S.rankRows) {
     if (S.rankTab === "hoje") {
       const can = S.today?.moved || S.isAdmin;
@@ -10503,6 +10513,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "numero-casas-2026-11-09", sql: "85", title: "🔢 Agora toda casa tem número", body: () => `Ficou fácil saber onde cada um está:
+• Cada casa do mapa mostra o número dela, embaixo do círculo.
+• No seu painel aparece "Você está na casa nº ...".
+• Ao tocar numa casa ou num jogador, aparece o número da casa.
+• No ranking, ao lado da região, aparece a casa de cada um.` },
   { id: "pousada-2026-11-09", sql: "84", title: "🏠 Pousadas: passou, pagou!", body: () => `As pousadas ficaram mais fortes:
 • Agora paga pedágio quem PASSA pela pousada, não só quem para nela (uma vez por pousada em cada andada).
 • A pousada continua sua na próxima temporada.
