@@ -9568,10 +9568,10 @@ const PB_W = 2400, PB_H = 1000, PB_COL = 4, PB_DT = 1 / 60, PB_CW = 1600, PB_CH 
 const pbCfg = () => ({ gravidade: 520, vento_max: 10, vento_forca: 14, vento_turnos: 4, vel_max: 980, turno_seg: 45, recarga: 3, raio_jogador: 42, folego: 160, zoom: 1.45, ...(S.cfg.pokebound || {}) });
 // mesma soma de pontos para todos; cada um troca dano por raio, velocidade ou resistência ao vento
 const PB_CHARS = {
-  blastoise: { sp: 9, olha: 1, nome: "Blastoise", hp: 1000, dano: 300, raio: 80, vel: 0.95, vento: 0.7, cor: "#4A8FE7", tiro: "#7FD3FF", esp: "Jato duplo", espTxt: "2 tiros um pouco abertos, com 60% do dano cada" },
-  electrode: { sp: 101, olha: 1, nome: "Electrode", hp: 900, dano: 240, raio: 65, vel: 1.15, vento: 0.5, cor: "#E0553A", tiro: "#FFE35A", esp: "Raio reto", espTxt: "Tiro 25% mais rápido que quase não sente o vento" },
-  golem: { sp: 76, olha: -1, nome: "Golem", hp: 1100, dano: 260, raio: 105, vel: 0.9, vento: 1.2, cor: "#9A8460", tiro: "#B8B0A0", esp: "Pedregulho", espTxt: "Explosão com o dobro do raio e 70% do dano" },
-  dragonite: { sp: 149, olha: 1, nome: "Dragonite", hp: 950, dano: 270, raio: 80, vel: 1.0, vento: 0.9, cor: "#F0A23A", tiro: "#FF8A3D", esp: "Mergulho", espTxt: "No ponto mais alto, o tiro cai reto e rápido" }
+  blastoise: { sp: 9, tipo: "agua", olha: 1, nome: "Blastoise", hp: 1000, dano: 300, raio: 80, vel: 0.95, vento: 0.7, cor: "#4A8FE7", tiro: "#7FD3FF", esp: "Jato duplo", espTxt: "2 tiros um pouco abertos, com 60% do dano cada" },
+  electrode: { sp: 101, tipo: "eletrico", olha: 1, nome: "Electrode", hp: 900, dano: 240, raio: 65, vel: 1.15, vento: 0.5, cor: "#E0553A", tiro: "#FFE35A", esp: "Raio reto", espTxt: "Tiro 25% mais rápido que quase não sente o vento" },
+  golem: { sp: 76, tipo: "pedra", olha: -1, nome: "Golem", hp: 1100, dano: 260, raio: 105, vel: 0.9, vento: 1.2, cor: "#9A8460", tiro: "#B8B0A0", esp: "Pedregulho", espTxt: "Explosão com o dobro do raio e 70% do dano" },
+  dragonite: { sp: 149, tipo: "fogo", olha: 1, nome: "Dragonite", hp: 950, dano: 270, raio: 80, vel: 1.0, vento: 0.9, cor: "#F0A23A", tiro: "#FF8A3D", esp: "Mergulho", espTxt: "No ponto mais alto, o tiro cai reto e rápido" }
 };
 // cenários (cores e enfeites desenhados por nós)
 const PB_TEMAS = {
@@ -9675,9 +9675,8 @@ function pbExplodir(pr) {
   PB.deco = PB.deco.filter(d => Math.hypot(d.x - h.x, d.base - h.y) > cr + 10);
   PB.dirty = true;
   for (const q of PB.players) q.y = pbChao(q.x);
-  for (let k = 0; k < 50; k++) { const a = Math.random() * 6.28, v = 80 + Math.random() * 320; PB.parts.push({ x: h.x, y: h.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 160, t: 0.6 + Math.random() * 0.7, cor: Math.random() < 0.5 ? pr.C.tiro : "#FFB347", r: 3 + Math.random() * 4 }); }
-  for (let k = 0; k < 16; k++) { const a = -Math.PI * Math.random(), v = 60 + Math.random() * 160; PB.parts.push({ x: h.x, y: h.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0.9 + Math.random() * 0.6, cor: PB_TEMAS[PB.tema].terra[0], r: 4 + Math.random() * 4 }); }
-  PB.parts.push({ ring: true, x: h.x, y: h.y, t: 0.45, max: raio });
+  pbExplosaoTipo(pr, h, raio);
+  PB.parts.push({ ring: true, x: h.x, y: h.y, t: 0.45, max: raio, cor: PB_FX[pr.C.tipo].anel });
   PB.shake = Math.min(16, 5 + raio / 10); sfx("dado");
   for (const [q, dmg] of hits) PB.parts.push({ txt: `-${dmg}`, x: q.x, y: q.y - 130, vx: 0, vy: -40, t: 1.3 });
   PB.foco = { x: h.x, y: h.y, ate: performance.now() + 900 };
@@ -9751,6 +9750,122 @@ function pbEnfeite(g, d) {
     case "fumaca": { const t = performance.now() / 900; for (let k = 0; k < 3; k++) { g.fillStyle = `rgba(90,80,80,${0.35 - k * 0.1})`; g.beginPath(); g.arc(Math.sin(t + k) * 6, -20 - k * 18 - ((t * 10) % 18), 10 + k * 4, 0, 6.28); g.fill(); } break; }
   }
   g.restore();
+}
+// ---------- efeitos dos tiros (arte nossa, desenhada por código): cada Pokémon tem o seu ----------
+// água (jato com gotas e respingo), elétrico (bola com raios e faíscas), pedra (pedregulho girando e poeira), fogo (bola de fogo com brasas e fumaça)
+const PB_FX = {
+  agua: { anel: "120,200,255", nome: "Hidro Bomba" },
+  eletrico: { anel: "255,240,120", nome: "Choque" },
+  pedra: { anel: "210,190,150", nome: "Pedregulho" },
+  fogo: { anel: "255,150,60", nome: "Chama" }
+};
+const pbP = (o) => { o.vida = o.t; PB.parts.push(o); };
+function pbZigue(g, x1, y1, x2, y2, n, amp) {
+  g.beginPath(); g.moveTo(x1, y1);
+  for (let i = 1; i < n; i++) { const k = i / n, nx = -(y2 - y1), ny = x2 - x1, l = Math.hypot(nx, ny) || 1, d = (Math.random() * 2 - 1) * amp; g.lineTo(x1 + (x2 - x1) * k + nx / l * d, y1 + (y2 - y1) * k + ny / l * d); }
+  g.lineTo(x2, y2); g.stroke();
+}
+// rastro deixado no ar a cada quadro
+function pbRastro(pr, x, y, a) {
+  const tp = pr.C.tipo, bx = -Math.cos(a), by = -Math.sin(a), r = Math.random;
+  if (tp === "agua") {
+    for (let k = 0; k < 2; k++) pbP({ k: "gota", x: x + bx * 14 + (r() - 0.5) * 8, y: y + by * 14 + (r() - 0.5) * 8, vx: bx * 40 + (r() - 0.5) * 60, vy: by * 40 + (r() - 0.5) * 40, t: 0.5 + r() * 0.4, r: 2 + r() * 3 });
+    pbP({ k: "bolha", x: x + bx * 20, y: y + by * 20, vx: (r() - 0.5) * 20, vy: -20 - r() * 20, t: 0.6, r: 3 + r() * 4 });
+  } else if (tp === "eletrico") {
+    for (let k = 0; k < 2; k++) { const aa = r() * 6.28, v = 60 + r() * 140; pbP({ k: "faisca", x, y, vx: Math.cos(aa) * v, vy: Math.sin(aa) * v, t: 0.25 + r() * 0.25 }); }
+  } else if (tp === "pedra") {
+    pbP({ k: "fumaca", x: x + bx * 16, y: y + by * 16, vx: (r() - 0.5) * 20, vy: -10, t: 0.7, r: 6 + r() * 6, cor: "170,150,120" });
+    if (r() < 0.4) pbP({ k: "lasca", x, y, vx: (r() - 0.5) * 80, vy: (r() - 0.5) * 80, t: 0.6, r: 3 + r() * 3, rot: r() * 6, vr: (r() - 0.5) * 12, cor: "#8A7E70" });
+  } else {
+    for (let k = 0; k < 2; k++) pbP({ k: "brasa", x: x + bx * 10 + (r() - 0.5) * 10, y: y + by * 10 + (r() - 0.5) * 10, vx: bx * 30 + (r() - 0.5) * 50, vy: -30 - r() * 40, t: 0.4 + r() * 0.4, r: 2 + r() * 3 });
+    if (r() < 0.3) pbP({ k: "fumaca", x: x + bx * 24, y: y + by * 24, vx: 0, vy: -30, t: 0.7, r: 5 + r() * 4, cor: "120,110,110" });
+  }
+}
+// o tiro em voo
+function pbTiroDesenho(g, pr, x, y, a) {
+  const tp = pr.C.tipo, s = pr.esp ? 1.8 : 1.4, now = performance.now(), cauda = pr.path.slice(Math.max(0, pr.i - 14), pr.i + 1);
+  g.save();
+  if (tp === "agua") {
+    // jato: corpo d'água afinando para trás, com brilho branco e espuma na frente
+    for (let k = 0; k < cauda.length; k++) { const f = k / cauda.length, [tx, ty] = cauda[k]; g.fillStyle = `rgba(${60 + 120 * f},${150 + 80 * f},255,${0.25 + 0.6 * f})`; g.beginPath(); g.arc(tx, ty, (4 + 10 * f) * s, 0, 6.28); g.fill(); }
+    g.translate(x, y); g.rotate(a);
+    const gr = g.createRadialGradient(4, -4, 2, 0, 0, 16 * s); gr.addColorStop(0, "#FFFFFF"); gr.addColorStop(0.35, "#9FE3FF"); gr.addColorStop(1, "#2F7FE0");
+    g.fillStyle = gr; g.beginPath(); g.ellipse(0, 0, 20 * s, 13 * s, 0, 0, 6.28); g.fill();
+    g.strokeStyle = "rgba(255,255,255,.9)"; g.lineWidth = 2.5; g.beginPath(); g.arc(4, 0, 15 * s, -1, 1); g.stroke();
+    g.fillStyle = "rgba(255,255,255,.85)"; g.beginPath(); g.ellipse(6, -5, 6, 3, 0, 0, 6.28); g.fill();
+  } else if (tp === "eletrico") {
+    g.globalCompositeOperation = "lighter";
+    const gl = g.createRadialGradient(x, y, 2, x, y, 40 * s); gl.addColorStop(0, "rgba(255,255,220,.95)"); gl.addColorStop(0.3, "rgba(255,230,80,.6)"); gl.addColorStop(1, "rgba(255,200,0,0)");
+    g.fillStyle = gl; g.beginPath(); g.arc(x, y, 40 * s, 0, 6.28); g.fill();
+    g.strokeStyle = "rgba(255,240,140,.9)"; g.lineWidth = 3; g.lineCap = "round"; g.lineJoin = "round";
+    for (let k = 0; k < 4; k++) { const aa = Math.random() * 6.28, l = (22 + Math.random() * 20) * s; pbZigue(g, x, y, x + Math.cos(aa) * l, y + Math.sin(aa) * l, 4, 6); }
+    // raio ligando a cauda
+    if (cauda.length > 3) { g.strokeStyle = "rgba(180,220,255,.8)"; g.lineWidth = 2; pbZigue(g, cauda[0][0], cauda[0][1], x, y, 7, 7); }
+    g.globalCompositeOperation = "source-over";
+    g.fillStyle = "#FFFFFF"; g.beginPath(); g.arc(x, y, 9 * s, 0, 6.28); g.fill();
+    g.strokeStyle = "#FFE35A"; g.lineWidth = 3; g.stroke();
+  } else if (tp === "pedra") {
+    for (let k = 0; k < cauda.length; k += 3) { const [tx, ty] = cauda[k]; g.fillStyle = `rgba(160,140,110,${0.1 + 0.25 * k / cauda.length})`; g.beginPath(); g.arc(tx, ty, 10 * s, 0, 6.28); g.fill(); }
+    g.translate(x, y); g.rotate(now / 90); const R = 17 * s;
+    g.fillStyle = "#7A6E62"; g.beginPath();
+    for (let k = 0; k < 8; k++) { const aa = k / 8 * 6.28, rr = R * (0.8 + 0.2 * Math.sin(k * 2.7)); k ? g.lineTo(Math.cos(aa) * rr, Math.sin(aa) * rr) : g.moveTo(Math.cos(aa) * rr, Math.sin(aa) * rr); } g.closePath(); g.fill();
+    g.strokeStyle = "#3E352C"; g.lineWidth = 3; g.stroke();
+    g.fillStyle = "#A89A88"; g.beginPath(); g.ellipse(-5, -5, 7 * s, 4 * s, 0.5, 0, 6.28); g.fill();
+    g.strokeStyle = "#4E443A"; g.lineWidth = 2; g.beginPath(); g.moveTo(-3, 6); g.lineTo(5, 1); g.lineTo(9, 7); g.stroke();
+  } else {
+    // bola de fogo: cauda de chamas (vermelho → laranja → amarelo) e miolo branco
+    g.globalCompositeOperation = "lighter";
+    for (let k = 0; k < cauda.length; k++) { const f = k / cauda.length, [tx, ty] = cauda[k], j = (Math.random() - 0.5) * 6; g.fillStyle = `rgba(255,${80 + 120 * f},${30 * f},${0.15 + 0.45 * f})`; g.beginPath(); g.arc(tx + j, ty + j, (5 + 14 * f) * s, 0, 6.28); g.fill(); }
+    const gl = g.createRadialGradient(x, y, 2, x, y, 30 * s); gl.addColorStop(0, "rgba(255,255,230,1)"); gl.addColorStop(0.3, "rgba(255,210,80,.9)"); gl.addColorStop(0.7, "rgba(255,90,30,.5)"); gl.addColorStop(1, "rgba(255,60,0,0)");
+    g.fillStyle = gl; g.beginPath(); g.arc(x, y, 30 * s, 0, 6.28); g.fill();
+    g.globalCompositeOperation = "source-over";
+  }
+  g.restore();
+}
+// a explosão de cada tipo
+function pbExplosaoTipo(pr, h, raio) {
+  const tp = pr.C.tipo, r = Math.random, n = Math.round(30 + raio / 3);
+  pbP({ k: "flash", x: h.x, y: h.y, t: 0.35, r: raio * 1.1, cor: PB_FX[tp].anel });
+  if (tp === "agua") {
+    for (let k = 0; k < n; k++) { const aa = -Math.PI * (0.1 + 0.8 * r()), v = 150 + r() * 380; pbP({ k: "gota", x: h.x, y: h.y, vx: Math.cos(aa) * v, vy: Math.sin(aa) * v, t: 0.8 + r() * 0.6, r: 3 + r() * 5 }); }
+    for (let k = 0; k < 10; k++) pbP({ k: "bolha", x: h.x + (r() - 0.5) * raio, y: h.y - r() * 20, vx: (r() - 0.5) * 30, vy: -40 - r() * 50, t: 1 + r() * 0.6, r: 4 + r() * 7 });
+    pbP({ k: "coluna", x: h.x, y: h.y, t: 0.7, r: raio * 0.5 });
+  } else if (tp === "eletrico") {
+    for (let k = 0; k < 9; k++) pbP({ k: "raio", x: h.x, y: h.y, a: r() * 6.28, l: raio * (0.7 + r() * 0.6), t: 0.3 + r() * 0.25 });
+    for (let k = 0; k < n; k++) { const aa = r() * 6.28, v = 150 + r() * 420; pbP({ k: "faisca", x: h.x, y: h.y, vx: Math.cos(aa) * v, vy: Math.sin(aa) * v, t: 0.35 + r() * 0.45 }); }
+  } else if (tp === "pedra") {
+    for (let k = 0; k < Math.round(n / 2); k++) { const aa = -Math.PI * r(), v = 120 + r() * 300; pbP({ k: "lasca", x: h.x, y: h.y, vx: Math.cos(aa) * v, vy: Math.sin(aa) * v, t: 1 + r() * 0.6, r: 4 + r() * 8, rot: r() * 6, vr: (r() - 0.5) * 14, cor: ["#7A6E62", "#8A7E70", "#5E544A"][k % 3] }); }
+    for (let k = 0; k < 14; k++) { const aa = -Math.PI * r(), v = 30 + r() * 90; pbP({ k: "fumaca", x: h.x, y: h.y, vx: Math.cos(aa) * v, vy: Math.sin(aa) * v - 20, t: 1.2 + r() * 0.8, r: 14 + r() * 18, cor: "175,155,125" }); }
+  } else {
+    for (let k = 0; k < n; k++) { const aa = r() * 6.28, v = 80 + r() * 300; pbP({ k: "brasa", x: h.x, y: h.y, vx: Math.cos(aa) * v, vy: Math.sin(aa) * v - 120, t: 0.7 + r() * 0.8, r: 2 + r() * 4 }); }
+    for (let k = 0; k < 12; k++) { const aa = r() * 6.28, v = 20 + r() * 80; pbP({ k: "chama", x: h.x + Math.cos(aa) * raio * 0.3, y: h.y + Math.sin(aa) * raio * 0.2, vx: Math.cos(aa) * v, vy: -60 - r() * 60, t: 0.6 + r() * 0.4, r: 14 + r() * 16 }); }
+    for (let k = 0; k < 10; k++) pbP({ k: "fumaca", x: h.x + (r() - 0.5) * raio * 0.6, y: h.y - r() * 20, vx: (r() - 0.5) * 30, vy: -50 - r() * 40, t: 1.5 + r() * 0.8, r: 14 + r() * 14, cor: "60,52,52" });
+  }
+  // terra voando, igual para todos
+  for (let k = 0; k < 14; k++) { const aa = -Math.PI * r(), v = 60 + r() * 160; pbP({ k: "terra", x: h.x, y: h.y, vx: Math.cos(aa) * v, vy: Math.sin(aa) * v, t: 0.9 + r() * 0.6, r: 4 + r() * 4, cor: PB_TEMAS[PB.tema].terra[0] }); }
+}
+// desenha uma partícula (devolve false para as que o laço antigo ainda desenha: anel e texto)
+function pbParticula(g, q, dt) {
+  if (!q.k) return false;
+  const f = Math.max(0, q.t / q.vida);   // 1 no começo, 0 no fim
+  const grav = { gota: 600, terra: 600, lasca: 700, faisca: 120 }[q.k] || 0;
+  if (q.k !== "flash" && q.k !== "raio" && q.k !== "coluna") { q.x += q.vx * dt; q.y += q.vy * dt; q.vy += grav * dt; }
+  switch (q.k) {
+    case "gota": g.fillStyle = `rgba(110,190,255,${0.4 + 0.6 * f})`; g.beginPath(); g.arc(q.x, q.y, q.r, 0, 6.28); g.fill(); g.fillStyle = `rgba(255,255,255,${0.8 * f})`; g.beginPath(); g.arc(q.x - q.r * 0.3, q.y - q.r * 0.3, q.r * 0.35, 0, 6.28); g.fill(); break;
+    case "bolha": g.strokeStyle = `rgba(200,240,255,${0.8 * f})`; g.lineWidth = 2; g.beginPath(); g.arc(q.x, q.y, q.r, 0, 6.28); g.stroke(); break;
+    case "coluna": { const k = 1 - f, hgt = q.r * 3.2 * Math.sin(Math.min(1, k * 1.6) * Math.PI / 2); const gr = g.createLinearGradient(0, q.y - hgt, 0, q.y); gr.addColorStop(0, `rgba(255,255,255,${0.7 * f})`); gr.addColorStop(1, `rgba(80,160,255,${0.8 * f})`); g.fillStyle = gr; g.beginPath(); g.moveTo(q.x - q.r, q.y); g.quadraticCurveTo(q.x - q.r * 0.3, q.y - hgt * 0.6, q.x, q.y - hgt); g.quadraticCurveTo(q.x + q.r * 0.3, q.y - hgt * 0.6, q.x + q.r, q.y); g.fill(); break; }
+    case "faisca": g.save(); g.globalCompositeOperation = "lighter"; g.strokeStyle = `rgba(255,${230 + 25 * f},${120 + 135 * f},${f})`; g.lineWidth = 2.5; g.beginPath(); g.moveTo(q.x, q.y); g.lineTo(q.x - q.vx * 0.03, q.y - q.vy * 0.03); g.stroke(); g.restore(); break;
+    case "raio": g.save(); g.globalCompositeOperation = "lighter"; g.lineCap = "round"; g.lineJoin = "round"; const l = q.l * (1.2 - f * 0.6);
+      g.strokeStyle = `rgba(160,210,255,${f * 0.6})`; g.lineWidth = 9; pbZigue(g, q.x, q.y, q.x + Math.cos(q.a) * l, q.y + Math.sin(q.a) * l, 6, 14);
+      g.strokeStyle = `rgba(255,255,255,${f})`; g.lineWidth = 3; pbZigue(g, q.x, q.y, q.x + Math.cos(q.a) * l, q.y + Math.sin(q.a) * l, 6, 14); g.restore(); break;
+    case "lasca": q.rot += q.vr * dt; g.save(); g.translate(q.x, q.y); g.rotate(q.rot); g.globalAlpha = Math.min(1, f * 2); g.fillStyle = q.cor; g.beginPath(); g.moveTo(-q.r, -q.r * 0.6); g.lineTo(q.r * 0.8, -q.r); g.lineTo(q.r, q.r * 0.5); g.lineTo(-q.r * 0.5, q.r); g.closePath(); g.fill(); g.strokeStyle = "rgba(40,30,20,.6)"; g.lineWidth = 1.5; g.stroke(); g.restore(); break;
+    case "fumaca": q.vx *= 0.97; q.vy *= 0.97; g.fillStyle = `rgba(${q.cor},${0.45 * f})`; g.beginPath(); g.arc(q.x, q.y, q.r * (1.8 - f * 0.8), 0, 6.28); g.fill(); break;
+    case "brasa": g.save(); g.globalCompositeOperation = "lighter"; g.fillStyle = `rgba(255,${120 + 120 * f},40,${f})`; g.beginPath(); g.arc(q.x, q.y, q.r * (0.5 + f * 0.5), 0, 6.28); g.fill(); g.restore(); q.vy -= 60 * dt; break;
+    case "chama": { g.save(); g.globalCompositeOperation = "lighter"; const rr = q.r * (0.6 + 0.6 * f), gr = g.createRadialGradient(q.x, q.y, 1, q.x, q.y, rr); gr.addColorStop(0, `rgba(255,240,170,${f})`); gr.addColorStop(0.5, `rgba(255,140,40,${0.8 * f})`); gr.addColorStop(1, "rgba(220,40,0,0)"); g.fillStyle = gr; g.beginPath(); g.arc(q.x, q.y, rr, 0, 6.28); g.fill(); g.restore(); break; }
+    case "flash": { g.save(); g.globalCompositeOperation = "lighter"; const rr = q.r * (1.3 - f * 0.5), gr = g.createRadialGradient(q.x, q.y, 1, q.x, q.y, rr); gr.addColorStop(0, `rgba(255,255,255,${f})`); gr.addColorStop(0.4, `rgba(${q.cor},${0.7 * f})`); gr.addColorStop(1, `rgba(${q.cor},0)`); g.fillStyle = gr; g.beginPath(); g.arc(q.x, q.y, rr, 0, 6.28); g.fill(); g.restore(); break; }
+    case "terra": g.fillStyle = q.cor; g.globalAlpha = Math.min(1, f * 2); g.fillRect(q.x, q.y, q.r, q.r); g.globalAlpha = 1; break;
+  }
+  return true;
 }
 function pbDesenhaJogador(g, p, ativo) {
   const C = PB_CHARS[p.ch], now = performance.now();
@@ -9852,17 +9967,16 @@ function pbDesenhar(dt) {
       if (pr.i >= pr.path.length - 1) continue;
       pr.i = Math.min(pr.path.length - 1, pr.i + Math.max(1, Math.round(dt / PB_DT)));
       andando = true;
-      const [x, y] = pr.path[pr.i];
-      g.strokeStyle = pr.C.tiro; g.globalAlpha = 0.55; g.lineWidth = 5; g.beginPath();
-      for (let k = Math.max(0, pr.i - 12); k <= pr.i; k++) { const [tx, ty] = pr.path[k]; k === Math.max(0, pr.i - 12) ? g.moveTo(tx, ty) : g.lineTo(tx, ty); } g.stroke(); g.globalAlpha = 1;
-      g.fillStyle = pr.C.tiro; g.beginPath(); g.arc(x, y, pr.esp ? 12 : 9, 0, 6.28); g.fill(); g.strokeStyle = "#1E150C"; g.lineWidth = 3; g.stroke();
+      const [x, y] = pr.path[pr.i], [ax, ay] = pr.path[Math.max(0, pr.i - 2)], a = Math.atan2(y - ay, x - ax);
+      pbRastro(pr, x, y, a); pbTiroDesenho(g, pr, x, y, a);
       if (pr.i >= pr.path.length - 1 && pr.hit) pbExplodir(pr);
     }
     if (!andando && !PB.parts.some(q => q.ring)) { PB.phase = "pausa"; setTimeout(pbFimDoVoo, 900); }
   }
-  PB.parts = PB.parts.filter(q => (q.t -= dt) > 0);
+  PB.parts = PB.parts.filter(q => (q.t -= dt) > 0); if (PB.parts.length > 700) PB.parts.splice(0, PB.parts.length - 700);
   for (const q of PB.parts) {
-    if (q.ring) { const k = 1 - q.t / 0.45; g.strokeStyle = `rgba(255,220,120,${1 - k})`; g.lineWidth = 8; g.beginPath(); g.arc(q.x, q.y, q.max * k, 0, 6.28); g.stroke(); g.fillStyle = `rgba(255,255,220,${0.65 * (1 - k)})`; g.beginPath(); g.arc(q.x, q.y, q.max * 0.55 * (1 - k), 0, 6.28); g.fill(); continue; }
+    if (pbParticula(g, q, dt)) continue;
+    if (q.ring) { const k = 1 - q.t / 0.45; g.strokeStyle = `rgba(${q.cor || "255,220,120"},${1 - k})`; g.lineWidth = 8; g.beginPath(); g.arc(q.x, q.y, q.max * k, 0, 6.28); g.stroke(); g.fillStyle = `rgba(255,255,220,${0.65 * (1 - k)})`; g.beginPath(); g.arc(q.x, q.y, q.max * 0.55 * (1 - k), 0, 6.28); g.fill(); continue; }
     q.x += q.vx * dt; q.y += q.vy * dt; if (!q.txt) q.vy += 520 * dt;
     if (q.txt) { g.font = "900 34px Inter, sans-serif"; g.textAlign = "center"; g.lineWidth = 6; g.strokeStyle = "#1E150C"; g.strokeText(q.txt, q.x, q.y); g.fillStyle = "#FF5A5A"; g.fillText(q.txt, q.x, q.y); g.textAlign = "left"; }
     else { g.fillStyle = q.cor; g.fillRect(q.x, q.y, q.r, q.r); }
