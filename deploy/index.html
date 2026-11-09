@@ -3681,12 +3681,7 @@ function drawWorld() {
   ctx.drawImage(W.base, 0, 0);
   // armadilha própria e casa selecionada
   drawBoss(ctx);
-  for (const p of Object.values(S.props || {})) {
-    const n = S.nodeById[p.node]; if (!n) continue;
-    const owner = S.chars.find(c => c.user_id === p.owner), mine = p.owner === S.session.user.id;
-    const roof = mine ? "#E0B44C" : (CLASS_COLORS[owner?.class]?.c || "#B8473A");
-    drawSprite(ctx, { s: 2, rows: ["..rrrr..", ".rrrrrr.", "rrrrrrrr", ".wwwwww.", ".wwddww.", ".wwddww."], pal: { r: roof, w: "#F4EEDC", d: "#5A3A24" } }, n.x - 26, n.y - 30);
-  }
+  for (const p of Object.values(S.props || {})) drawPousada(ctx, p);
   for (const tr of S.myTraps) { const n = S.nodeById[tr.node]; if (n) drawSprite(ctx, { s: 3, rows: ICONS.trap, pal: { x: "#FF6B57" } }, n.x + 4, n.y - 26); }
   if (S.selectedNode != null) {
     const n = S.nodeById[S.selectedNode];
@@ -3984,22 +3979,41 @@ function hudTip() {
     ${S.myTraps.some(t => t.node === n.id) ? `<p class="tip-p">Sua armadilha está armada aqui.</p>` : ""}
     ${propInfo(n)}</div>`;
 }
+
+// ---------- pousada no mapa (arquivo 84): casa grande com telhado da cor do dono e placa com nome e pedágio ----------
+const POUSADA_PX = ["......rr.......", ".....rrrr...cc.", "....rrrrrr..cc.", "...rrrrrrrr.cc.", "..rrrrrrrrrrcc.", ".rrrrrrrrrrrrr.", "rrrrrrrrrrrrrrr",
+  ".kkkkkkkkkkkkk.", ".wwwwwwwwwwwww.", ".wggwwwddwwwgg.", ".wggwwwddwwwgg.", ".wwwwwwddwwwww.", ".wwwwwwddwwwww.", "sssssssssssssss"];
+const pousadaToll = p => Math.max(S.cfg.property_min_toll ?? 15, Math.ceil(p.price * (S.cfg.property_toll_pct ?? 10) / 100));
+function drawPousada(ctx, p) {
+  const n = S.nodeById[p.node]; if (!n) return;
+  const owner = S.chars.find(c => c.user_id === p.owner), mine = p.owner === S.session.user.id;
+  const roof = mine ? "#E0B44C" : (CLASS_COLORS[owner?.class]?.c || "#B8473A"), sc = 3, w = 15 * sc, h = 14 * sc;
+  const x = Math.round(n.x - w / 2), y = Math.round(n.y - 26 - h);
+  ctx.fillStyle = "rgba(0,0,0,.28)"; ctx.beginPath(); ctx.ellipse(n.x, y + h, w / 2 + 2, 5, 0, 0, Math.PI * 2); ctx.fill();
+  drawSprite(ctx, { s: sc, rows: POUSADA_PX, pal: { r: roof, k: "#3A2614", w: "#F4EEDC", g: "#8FD3FF", d: "#5A3A24", c: "#7A7A7A", s: "#6B5A3A" } }, x, y);
+  const txt = `🏠 ${owner?.name || "Pousada"} · ${pousadaToll(p)}`;
+  ctx.font = "800 11px Inter, sans-serif"; const tw = ctx.measureText(txt).width + 12, ty = y - 18;
+  ctx.fillStyle = mine ? "rgba(224,180,76,.95)" : "rgba(20,24,30,.88)"; ctx.strokeStyle = mine ? "#7A5A12" : roof; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.roundRect ? ctx.roundRect(n.x - tw / 2, ty, tw, 16, 5) : ctx.rect(n.x - tw / 2, ty, tw, 16); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = mine ? "#2A1E0A" : "#FFE7A8"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, n.x, ty + 8.5);
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+}
 function propInfo(n) {
   if (n.kind !== "normal") return "";
   const p = S.props?.[n.id], me = S.me, cfg = S.cfg;
   const toll = p ? Math.max(cfg.property_min_toll ?? 15, Math.ceil(p.price * (cfg.property_toll_pct ?? 10) / 100)) : 0;
   if (p && p.owner === S.session.user.id) {
-    return `<div class="prop"><strong>Sua pousada.</strong> Pedágio de ${toll} moedas. Já rendeu ${p.tolls_earned} moedas desde que é sua.
+    return `<div class="prop"><strong>Sua pousada.</strong> Pedágio de ${toll} moedas para quem ${S.cfg.property_pedagio_passou === false ? "parar" : "passar"} aqui. Já rendeu ${p.tolls_earned} moedas desde que é sua.
       <div class="tip-actions"><button class="btn ghost small" data-act="prop-sell" data-v="${n.id}">Vender por ${Math.floor(p.price * (cfg.property_refund_pct ?? 50) / 100)}</button></div></div>`;
   }
   if (p) {
     const offer = Math.ceil(p.price * (1 + (cfg.property_raise_pct ?? 30) / 100));
-    return `<div class="prop"><strong>Pousada de ${esc(charName(p.owner))}.</strong> Quem parar aqui paga ${toll} moedas de pedágio.
+    return `<div class="prop"><strong>Pousada de ${esc(charName(p.owner))}.</strong> ${S.cfg.property_pedagio_passou === false ? "Quem parar aqui" : "Quem passar por aqui"} paga ${toll} moedas de pedágio.
       <div class="tip-actions"><button class="btn small" data-act="prop-buy" data-v="${n.id}" ${me.coins < offer || me.level < (cfg.property_min_level ?? 5) ? "disabled" : ""}>Tomar por ${offer} moedas</button></div></div>`;
   }
   const price = cfg.property_base_price ?? 600;
   const why = me.level < (cfg.property_min_level ?? 5) ? `Precisa do nível ${cfg.property_min_level ?? 5}.` : me.coins < price ? `Você tem ${me.coins} moedas.` : "";
-  return `<div class="prop"><strong>Casa à venda.</strong> Vire dono e cobre pedágio de quem parar aqui. ${why}
+  return `<div class="prop"><strong>Casa à venda.</strong> Vire dono e cobre pedágio de quem ${S.cfg.property_pedagio_passou === false ? "parar" : "passar"} aqui (${Math.max(S.cfg.property_min_toll ?? 15, Math.ceil((S.cfg.property_base_price ?? 600) * (S.cfg.property_toll_pct ?? 10) / 100))} moedas). A pousada continua sua na próxima temporada. ${why}
     <div class="tip-actions"><button class="btn small" data-act="prop-buy" data-v="${n.id}" ${why ? "disabled" : ""}>Comprar por ${price} moedas</button></div></div>`;
 }
 function modeChip(k, md) {
@@ -5472,7 +5486,7 @@ function LIB() {
       <p><b>Casas especiais</b> (toque numa casa do mapa para ver o que ela faz):</p><ul class="lib-kinds">${kinds.map(([, k]) => `<li><i style="background:${k.cor}"></i><b>${k.nome}</b>: ${esc(k.desc)}</li>`).join("")}</ul>
       <p><b>Encontro:</b> parar na mesma casa de outro jogador gera um duelo rápido: quem perde entrega moedas e volta casas.</p>
       <p><b>Armadilhas:</b> compre na loja e arme numa casa; quem cair volta casas e você ganha moedas.</p>
-      <p><b>Pousadas:</b> a partir do nível ${libN(c.property_min_level, 5)}, compre uma Trilha por ${libN(c.property_base_price, 600)} moedas e cobre pedágio de quem parar nela. Outro jogador pode tomá-la pagando ${libN(c.property_raise_pct, 30)}% a mais.</p>` },
+      <p><b>Pousadas:</b> a partir do nível ${libN(c.property_min_level, 5)}, compre uma Trilha por ${libN(c.property_base_price, 600)} moedas e cobre pedágio (${libN(c.property_toll_pct, 10)}% do preço, no mínimo ${libN(c.property_min_toll, 15)} moedas) de quem ${c.property_pedagio_passou === false ? "parar" : "passar"} nela, uma vez por andada. Ela aparece no mapa como uma casa com o seu nome e continua sua na próxima temporada. Outro jogador pode tomá-la pagando ${libN(c.property_raise_pct, 30)}% a mais; vendendo, você recebe ${libN(c.property_refund_pct, 50)}% de volta. Cada um tem no máximo ${libN(c.property_max_per_player, 2)}.</p>` },
     { id: "hm", ic: "🌳", t: "HMs e atalhos no mapa", h: `<p>Algumas casas do tabuleiro têm um obstáculo grande desenhado em cima:</p><ul>
       <li>🌳 <b>Árvore</b>: passa quem tiver um Pokémon que saiba <b>Cut</b>.</li><li>🌊 <b>Água</b>: passa quem tiver <b>Surf</b>.</li>
       <li>💪 <b>Pedra</b>: passa quem tiver <b>Strength</b>.</li><li>💡 <b>Caverna escura</b>: passa quem tiver <b>Flash</b>.</li></ul>
@@ -10489,6 +10503,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "pousada-2026-11-09", sql: "84", title: "🏠 Pousadas: passou, pagou!", body: () => `As pousadas ficaram mais fortes:
+• Agora paga pedágio quem PASSA pela pousada, não só quem para nela (uma vez por pousada em cada andada).
+• A pousada continua sua na próxima temporada.
+• No mapa, cada pousada aparece como uma casa grande com o nome do dono e o valor do pedágio.
+• Continua valendo: quem paga 30% a mais toma a pousada, e quem vende recebe metade de volta.` },
   { id: "tm-nivel-2026-11-09", sql: "83", title: "📀 TMs agora têm nível mínimo", body: () => `As TMs agora pedem um nível mínimo, pela força do ataque:
 • Ataque fraco (até 60 de poder, ou sem dano): a partir do nível 10.
 • Ataque médio (até 90 de poder): a partir do nível 25.
