@@ -1875,6 +1875,7 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
   .help-chip{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:999px;border:1px solid rgba(245,197,66,.6);background:rgba(58,42,16,.6);font-size:16px;cursor:pointer}
 }
 /* ---------- central de avisos e botão da equipe (06/11/2026) ---------- */
+.hp-top .lv-cap{color:#F5C542}.hp-top .lv-cap small{opacity:.8}
 .av-pill{display:flex;align-items:center;gap:6px;min-height:34px;padding:0 14px;border-radius:999px;border:2px solid #6B5A3A;background:rgba(22,30,38,.92);color:#F3DFA8;font:800 12.5px/1 var(--sans);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.45)}
 .av-pill b{min-width:22px;padding:4px 7px;border-radius:999px;background:#E05A5A;color:#fff;text-align:center}
 .av-pill.on{border-color:#F5C542;animation:news-pulse 1.6s infinite}
@@ -5451,7 +5452,7 @@ function LIB() {
     { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon sobe de nível pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${S.creche?.st?.horas_por_nivel ?? 12} horas</b>, e um Pokémon por vez. Cancelando, as moedas dos níveis que ainda não chegaram voltam. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 5} moedas até o nível ${S.creche?.st?.nivel_alto ?? 30} e × ${S.creche?.st?.preco_por_nivel_alto ?? 10} acima dele.</p>
       <p>Limite: ${S.creche?.st?.niveis_semana ?? 10} níveis por semana até o nível ${S.creche?.st?.nivel_alto ?? 30} e ${S.creche?.st?.niveis_semana_alto ?? 5} acima dele, somando todos os seus Pokémon, e só até o nível ${S.creche?.st?.nivel_max ?? 40}. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p>` },
     { id: "batalha", ic: "⚔️", t: "Batalhas Pokémon e Arena", h: `<p>Precisa de 3 Pokémon capturados. Entram os <b>3 primeiros da equipe</b>. Os dois escolhem a ação do turno em segredo (atacar, trocar ou usar um item) e o servidor resolve.</p>
-      <p>📏 <b>Teto de nível:</b> nas batalhas valendo moedas, ninguém luta acima do teto da temporada (nível ${S.teto?.nivel ?? 20} agora; sobe 5 por temporada, até 40). Quem está acima luta com a força do nível do teto, e o XP também sai por esse nível. Na Liga Pokémon não há teto.</p>
+      <p>📏 <b>Teto de nível:</b> nas batalhas valendo moedas, ninguém luta acima do nível ${S.teto?.nivel ?? 20}, em qualquer temporada. Quem está acima luta com a força do nível ${S.teto?.nivel ?? 20} (vida, ataque, defesa, velocidade e especial), o XP também sai por esse nível, e na batalha aparece "Nv ${S.teto?.nivel ?? 20} (nível real)". Ataques e evolução não mudam, e depois da batalha o Pokémon segue no nível dele. Na Liga Pokémon não há teto.</p>
       <p><b>Aposta:</b> quem desafia escolhe de ${bet[0]} a ${bet[1]} moedas. Quem vence leva tudo; empate devolve.</p>
       <p><b>Sem prazo por turno:</b> jogue quando puder. Ninguém perde por demora.</p>
       <p><b>Itens:</b> até ${ic.per_battle} por batalha, e cada um gasta a sua vez.</p>
@@ -6421,7 +6422,7 @@ async function loadPkStatic() {
 // teto de nível nas batalhas valendo moedas (arquivo 77); sem o 77, não aparece nada
 async function loadTeto() { try { S.teto = await rpc("teto_estado"); } catch { S.teto = null; } }
 const tetoOn = () => S.teto?.on && S.teto?.nivel;
-const tetoTxt = () => tetoOn() ? `<p class="bt-quiet bt-teto">📏 <b>Nesta temporada, os Pokémon lutam no máximo no nível ${S.teto.nivel}.</b> Quem estiver acima luta como se fosse do nível ${S.teto.nivel} (força e XP). Na Liga não há limite.</p>` : "";
+const tetoTxt = () => tetoOn() ? `<p class="bt-quiet bt-teto">📏 <b>Nas batalhas valendo moedas, os Pokémon lutam no máximo no nível ${S.teto.nivel}.</b> Quem estiver acima luta como se fosse do nível ${S.teto.nivel} (força e XP), e na batalha aparece "Nv ${S.teto.nivel} (nível real)". Ataques e evolução não mudam, e o Pokémon não perde nada. Na Liga não há limite.</p>` : "";
 async function loadLearnsets() {
   if (S.pk.learn) return;
   const { data, error } = await sb.from("pk_learnset").select("*").order("level"); if (error) throw error;
@@ -6920,7 +6921,7 @@ function btBagPanel(M) {
 }
 function btHp(m, mine) {
   const pct = Math.max(0, Math.round(m.hp / m.maxhp * 100)), col = pct > 50 ? "#3DBE7A" : pct > 20 ? "#E5C04A" : "#E0533A";
-  return `<div class="hpbox"><div class="hp-top"><b>${esc(m.name)}</b>${m.status && PK_STATUS[m.status] ? `<span class="st" style="--sc:${PK_STATUS[m.status][1]}">${PK_STATUS[m.status][0]}</span>` : ""}<span>Nv${m.level}</span></div>
+  return `<div class="hpbox"><div class="hp-top"><b>${esc(m.name)}</b>${m.status && PK_STATUS[m.status] ? `<span class="st" style="--sc:${PK_STATUS[m.status][1]}">${PK_STATUS[m.status][0]}</span>` : ""}<span${m.real_level ? ` class="lv-cap" title="Nível real ${m.real_level}: nesta batalha luta no nível ${m.level}"` : ""}>Nv${m.level}${m.real_level ? ` <small>(${m.real_level})</small>` : ""}</span></div>
     <div class="hpbar"><span>HP</span><i><u style="width:${pct}%;background:${col}"></u></i></div>${mine ? `<small class="hpnum">${m.hp} / ${m.maxhp}</small>` : ""}</div>`;
 }
 function viewBattle() {
@@ -8659,7 +8660,7 @@ const AJ_LABELS = {
     pesq_comp_pct: "Pesquisador: % de experiência do acompanhante", merc_loja_desc_pct: "Mercador: desconto nas lojas (%)", merc_salario_pct: "Mercador: % a mais no salário", merc_leilao_taxa_pct: "Mercador: taxa no Leilão (%)" },
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
-  teto: { on: "Teto ligado nas batalhas valendo moedas", nivel_inicial: "Teto na 1ª temporada com teto", por_temporada: "Quanto o teto sobe a cada temporada", nivel_max: "Teto máximo", temporada_ref: "Temporada de partida (número interno, não mexa)" },
+  teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
   boas_vindas: { on: "Dar Pokémon a quem cria o herói", iniciais: "Iniciais possíveis (números da Pokédex)", inicial_nivel: "Nível do inicial", pacote_qtd: "Quantos Pokémon no pacote do jogador novo", pacote_abaixo_teto: "Pacote: quantos níveis abaixo do teto" },
   creche: { on: "Creche aberta", preco_por_nivel: "Preço até o nível alto: nível alcançado × este número", preco_por_nivel_alto: "Preço acima do nível alto: nível × este número", nivel_alto: "Nível alto (a partir dele, preço e limite mudam)", niveis_semana_alto: "Níveis por semana acima do nível alto", niveis_semana: "Níveis por semana até o nível alto (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina", horas_por_nivel: "Horas para cada nível chegar" },
   desafio: { desc_progressiva: "Descrição em partes (cada erro revela mais um pedaço); desligado = o verbete inteiro de uma vez" },
@@ -10415,6 +10416,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "teto-fixo-2026-11-09", sql: "81", title: "📏 Batalhas sempre niveladas no 20", body: () => `Nas batalhas Pokémon valendo moedas, ninguém luta acima do nível 20, em todas as temporadas (o limite não sobe mais).
+• Quem está acima do 20 luta com a força do nível 20 (vida, ataque, defesa, velocidade e especial), e o XP também sai pelo 20.
+• Ataques e evolução continuam os mesmos, e o Pokémon não perde nada: acabou a batalha, ele segue no nível dele.
+• Na batalha aparece "Nv 20 (25)" para quem foi limitado.
+• A Liga Pokémon continua sem limite: cada um luta no nível real.` },
   { id: "avisos-2026-11-06", sql: "80", title: "🔔 Sino de avisos e botão dos Pokémon", body: () => `Ficou bem mais fácil saber o que está acontecendo:
 • 🔔 Sino no mapa (no celular, no alto da tela): mostra tudo o que é novo, com atalho para abrir. Item novo no Mercado, leilão novo, lance coberto, mensagens no Chat, presentes, Jornal, SAC, batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à vila e Pokémon prontos para evoluir.
 • 🔊 Chegou algo novo com o jogo aberto? Aparece um aviso na tela com som.
