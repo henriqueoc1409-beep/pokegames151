@@ -59,6 +59,7 @@ from (values
   ('79_quartel_beneficios', to_regprocedure('public.quartel_treino(uuid)') is not null),
   ('80_avisos_jornal', exists (select 1 from public.posts where title = '🔔 Sino de avisos e botão dos Pokémon')),
   ('81_teto_fixo', position('nivel' in pg_get_functiondef('public.teto_calc()'::regprocedure)) > 0 and position('seasons' in pg_get_functiondef('public.teto_calc()'::regprocedure)) = 0),
+  ('82_vila_em_tudo', to_regprocedure('public.vb(uuid,text,text)') is not null),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),

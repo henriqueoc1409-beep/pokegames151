@@ -1876,6 +1876,8 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 }
 /* ---------- central de avisos e botão da equipe (06/11/2026) ---------- */
 .hp-top .lv-cap{color:#F5C542}.hp-top .lv-cap small{opacity:.8}
+.vila-bonus{margin:10px 0}.vb-list{margin:6px 0 0;padding-left:4px;list-style:none;display:flex;flex-direction:column;gap:4px}.vb-list.on li{color:#BFE8C9}.vb-next summary{cursor:pointer;margin-top:8px;font-weight:700}
+.enc-vila{margin:4px 0 0;font:700 13px/1.3 var(--sans);color:#BFE8C9}
 .av-pill{display:flex;align-items:center;gap:6px;min-height:34px;padding:0 14px;border-radius:999px;border:2px solid #6B5A3A;background:rgba(22,30,38,.92);color:#F3DFA8;font:800 12.5px/1 var(--sans);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.45)}
 .av-pill b{min-width:22px;padding:4px 7px;border-radius:999px;background:#E05A5A;color:#fff;text-align:center}
 .av-pill.on{border-color:#F5C542;animation:news-pulse 1.6s infinite}
@@ -4525,7 +4527,7 @@ const VSPR = {
   trash:   { s: 4, rows: ["gg.", "gGg", ".g."], pal: { g: "#6B6F5A", G: "#A3A48A" } },
   mud:     { s: 6, rows: ["..mmm...", ".mmmmmm.", "mmMmmmmm", ".mmmmMm.", "..mmm..."], pal: { m: "#6B4F2A", M: "#8A6A3A" } }
 };
-async function loadVila() { S.vila = await rpc("village_state", { _user: S.vilaUser || null }); }
+async function loadVila() { S.vila = await rpc("village_state", { _user: S.vilaUser || null }); if (S.vila?.mine) { S.myVila = S.vila; S.myVilaAt = Date.now(); } }
 // ---------- Lendário ----------
 async function loadBoss() { try { S.boss = await rpc("boss_state"); } catch (e) { console.warn(e); } }
 function bossImg() {
@@ -5095,6 +5097,53 @@ const VCAT_OF = { mina: "economia", torre: "economia", pomar: "economia", estabu
   arena: "guerra", catapulta: "guerra", centro: "desenvolvimento", ferreiro: "desenvolvimento" };
 const WCOL = { centro: "center", cofre: "vault", quartel: "barracks", defesa: "dtower", armadilhas: "traps", vigia: "watch", centropk: "wcenter", academia: "academy", muralha: "wall", ferreiro: "forge" };
 S.vilaCat = "economia";
+// ---------- a vila ajuda em tudo no jogo (arquivo 82): bônus de cada construção, números em S.cfg.vila_bonus ----------
+const VBON_DEF = { on: true, centro: { casas: [0, 0, 1, 1, 1, 2] }, pomar: { captura_pct: [10] }, taverna: { bolas: [1] }, vigia: { raro_pct: [15, 25, 35] },
+  academia: { grama_xp_pct: [10, 20, 30] }, arena: { grama_min: [10] }, centropk: { centro_desc_pct: [10, 20, 30, 40], cura_rapida_pct: [10, 20, 30, 40] },
+  poco: { creche_desc_pct: [10] }, defesa: { rocket_dano_pct: [10, 20, 30] }, muralha: { lama_desc_pct: [30, 60, 100] }, mina: { salario_pct: [5, 10, 15] }, cofre: { taxa_menos: [1, 2, 3, 4] } };
+const VBON = () => ({ ...VBON_DEF, ...(S.cfg.vila_bonus || {}) });
+const VBON_COL = () => ({ mina: "mine", torre: "tower", catapulta: "catapult", pomar: "orchard", ferreiro: "forge", estabulo: "stable", taverna: "tavern", muralha: "wall", poco: "well", arena: "arena", ...WCOL });
+function vbLvl(v, k) { if (!v || v.damaged?.[k]) return 0; return v[VBON_COL()[k] + "_level"] || 0; }
+function vbVal(v, k, f, lvl) {
+  const C = VBON(); if (C.on === false) return 0;
+  const l = C[k]?.[f], n = lvl ?? vbLvl(v, k);
+  return Array.isArray(l) && l.length && n > 0 ? +l[Math.min(n, l.length) - 1] || 0 : 0;
+}
+const vbMax = k => S.cfg.war?.buildings?.[k]?.max || (k === "mina" ? 3 : 1);
+// [construção, número, ícone, nome, texto do bônus]
+const VBON_TXT = [
+  ["centro", "casas", "🗺️", "Centro da Vila", x => `+${x} ${x === 1 ? "casa" : "casas"} em toda andada`],
+  ["estabulo", null, "🐎", "Estábulo", () => `1 casa de bônus a cada ${S.cfg.stable_days ?? 2} dias (colete na vila)`],
+  ["pomar", "captura_pct", "🍎", "Pomar", x => `+${x}% de chance de captura`],
+  ["taverna", "bolas", "🍺", "Taverna", x => `+${x} Poké Bola em cada encontro`],
+  ["vigia", "raro_pct", "🔭", "Torre de Vigia", x => `${x}% de chance de um Pokémon comum virar incomum ou mais raro`],
+  ["academia", "grama_xp_pct", "🎓", "Academia", x => `+${x}% de XP na Grama de Treino`],
+  ["arena", "grama_min", "🏟️", "Arena", x => `+${x} minutos por dia na Grama de Treino`],
+  ["centropk", "centro_desc_pct", "🏥", "Centro Pokémon de Guerra", (x, l) => `Centro Pokémon ${x}% mais barato e cura grátis ${vbVal(null, "centropk", "cura_rapida_pct", l)}% mais rápida`],
+  ["poco", "creche_desc_pct", "⛲", "Poço dos Desejos", x => `Creche ${x}% mais barata`],
+  ["defesa", "rocket_dano_pct", "🛡️", "Torre de Defesa", x => `+${x}% de dano contra a Equipe Rocket`],
+  ["muralha", "lama_desc_pct", "🧱", "Muralha", x => x >= 100 ? "limpar a lama sai de graça" : `limpar a lama ${x}% mais barato`],
+  ["mina", "salario_pct", "⛏️", "Mina de Ouro", x => `salário ${x}% maior no Dia de pagamento`],
+  ["cofre", "taxa_menos", "🔐", "Cofre", x => `taxa do Mercado e do Leilão ${x} ${x === 1 ? "ponto" : "pontos"} menor`]];
+function vilaBonusHTML(v) {
+  if (VBON().on === false) return "";
+  const on = [], next = [];
+  for (const [k, f, ic, nome, txt] of VBON_TXT) {
+    if (k === "estabulo") { if (vbLvl(v, k)) on.push(`<li>${ic} <b>${nome}:</b> ${txt()}</li>`); else next.push(`<li>${ic} <b>${nome}</b> (construa): ${txt()}</li>`); continue; }
+    if (k !== "centro" && !S.cfg.war?.buildings?.[k] && !VB().some(b => b.k === k)) continue;
+    const raw = v[VBON_COL()[k] + "_level"] || 0;
+    if (v.damaged?.[k] && raw) { const x = vbVal(v, k, f, raw); if (x > 0) next.push(`<li>${ic} <b>${nome}</b> (danificada: conserte para voltar): ${txt(x, raw)}</li>`); continue; }
+    const l = vbLvl(v, k), cur = vbVal(v, k, f, l);
+    if (cur > 0) on.push(`<li>${ic} <b>${nome}${vbMax(k) > 1 ? ` nv ${l}` : ""}:</b> ${txt(cur, l)}</li>`);
+    let nl = l + 1; while (nl <= vbMax(k) && vbVal(v, k, f, nl) <= cur) nl++;
+    if (nl <= vbMax(k)) next.push(`<li>${ic} <b>${nome}</b> ${l ? `no nível ${nl}` : nl > 1 ? `(construa e chegue ao nível ${nl})` : "(construa)"}: ${txt(vbVal(v, k, f, nl), nl)}</li>`);
+  }
+  return `<section class="panel lo vila-bonus"><h3>🏰 O que sua vila te dá agora no jogo</h3>
+    ${on.length ? `<ul class="vb-list on">${on.join("")}</ul>` : `<p class="muted">Ainda nada. Construa e melhore a vila para andar mais, capturar melhor, treinar mais rápido e gastar menos.</p>`}
+    ${next.length ? `<details class="vb-next"><summary>Para ganhar mais (${next.length})</summary><ul class="vb-list">${next.join("")}</ul></details>` : ""}
+    <p class="muted" style="margin:6px 0 0">Construção danificada na guerra para de dar o bônus até ser consertada.</p></section>`;
+}
+
 // o que cada nível faz (os números vêm das regras do banco)
 function wbBenefit(k, l) {
   const W = S.cfg.war, B = W.buildings[k], at = f => B[f]?.[l - 1];
@@ -5224,7 +5273,7 @@ function viewVila() {
     <div class="act-btns" style="margin:12px 0"><button class="btn" data-act="vila-collect" ${pend.length && !v.mud ? "" : "disabled"}>${pend.length ? `Coletar: ${pend.join(", ")}` : "Nada para coletar ainda"}</button></div>` : `<p class="muted">Visitando a vila de ${esc(v.name)}, nível ${v.level}.</p>`;
   return `<div class="vila"><div class="vila-head"><h3>${mine ? "Minha Vila" : `Vila de ${esc(v.name)}`}</h3>${visit}</div>
     <canvas id="vila-cv" width="960" height="600" aria-label="Desenho da vila: toque numa construção para ver os detalhes"></canvas>
-    ${stats}${top}
+    ${stats}${top}${mine ? vilaBonusHTML(v) : ""}
     ${war ? `<div class="vila-cats" role="group" aria-label="Categorias">${VCAT.map(([k, t]) => { const n = all.filter(b => VCAT_OF[b.k] === k && v.damaged?.[b.k]).length; return `<button data-act="vila-cat" data-v="${k}" aria-pressed="${S.vilaCat === k}">${t}${n ? `<b>${n}</b>` : ""}</button>`; }).join("")}</div>` : ""}
     <div class="vila-grid">${all.filter(b => !war || VCAT_OF[b.k] === S.vilaCat).map(b => vilaCard(b, v)).join("")}</div>
     <p class="muted mk-note">Toque numa construção no desenho para ir até ela. A barraca vira Castelo da Liga quando você vence uma temporada; cada vitória na rodada soma um troféu (🏆) no painel; quem termina a rodada em último acorda com a vila cheia de lama.</p></div>`;
@@ -5494,6 +5543,7 @@ function LIB() {
       <p><b>Reações:</b> toque num jogador no mapa para mandar uma reação.</p>` },
     { id: "vila", ic: "🏰", t: "Vila e Guerras", h: `<p><b>Minha Vila</b> tem construções que produzem moedas e outras vantagens. Melhore as construções com moedas e colete a produção.</p>
       <p>O Snorlax da Rodada acorda com a vila <b>enlameada</b>: a produção para até limpar.</p>
+      <p>🏰 <b>A vila ajuda em tudo:</b> cada construção dá um bônus no resto do jogo. Centro da Vila: casas a mais em toda andada (a partir do nível 3). Estábulo: casa de bônus a cada ${S.cfg.stable_days ?? 2} dias. Pomar: mais chance de captura. Taverna: +1 Poké Bola por encontro. Torre de Vigia: mais Pokémon raros. Academia: mais XP na Grama. Arena: mais minutos na Grama. Centro Pokémon de Guerra: Centro Pokémon mais barato e cura grátis mais rápida. Poço: Creche mais barata. Torre de Defesa: mais dano na Equipe Rocket. Muralha: limpar a lama mais barato. Mina: salário maior. Cofre: taxa menor no Mercado e no Leilão. Na Minha Vila aparece o que a sua vila te dá agora. Construção danificada para de dar o bônus até ser consertada.</p>
       <p><b>Guerras (opcionais):</b> monte esquadrões de ataque e defesa com 3 Pokémon cada e ataque outras vilas parecidas com a sua. A luta é automática. Quem vence leva uma parte das moedas (o Cofre protege), e as construções atingidas precisam de conserto. Os Pokémon feridos se curam no Centro Pokémon ou sozinhos com o tempo.</p>
       <p>🪖 <b>Quartel Pokémon:</b> é ele que coloca você na guerra, mas também dá vantagens todo dia: <b>soldo</b> em moedas (coletado na vila), <b>batalhas extras com XP</b>, <b>XP diário</b> para os Pokémon dos seus esquadrões e mais moedas protegidas no saque. Quartel novo vem com alguns dias de escudo.</p>` },
     { id: "lojas", ic: "🛍️", t: "Lojas, Caixa e ajuda", h: `<p><b>Loja do herói:</b> visuais, ajudas e armadilhas. <b>Loja Pokémon:</b> bolas, pedras, itens, TMs e roupas para Pokémon. <b>Bandeira da vila:</b> compre e hasteie na sua vila.</p>
@@ -6555,6 +6605,7 @@ async function encounterModal(enc) {
       <h2 class="enc-title">Um ${esc(p.name)} selvagem apareceu!</h2>
       <p class="enc-sub">Nível ${enc.level} · ${typeChip(p.g1_type1)}${typeChip(p.g1_type2)} ${rarityChip(p)}</p>
       <p class="enc-msg" id="enc-msg" aria-live="polite">${PK_RARITY[rarityOf(p)][2]}. Você tem ${enc.throws_left} ${enc.throws_left === 1 ? "chance" : "chances"}.</p>
+      ${(() => { const V = S.myVila, a = vbVal(V, "pomar", "captura_pct"), b = vbVal(V, "taverna", "bolas"); return a || b ? `<p class="enc-vila">🏰 Sua vila: ${[a && `🍎 +${a}% de captura (Pomar)`, b && `🍺 +${b} bola (Taverna)`].filter(Boolean).join(" · ")}</p>` : ""; })()}
       <div class="enc-balls">${Object.entries(balls).map(([k, b]) => { const have = b.price > 0 ? (S.pk.bag[k + "_ball"] || 0) : null;
         return `<label class="ball-opt"><input type="radio" name="ball" value="${k}" ${k === "poke" ? "checked" : ""} ${have === 0 ? "disabled" : ""}><span>${esc(b.name)}</span><small>${have === null ? "à vontade" : `${have} na bolsa`}</small></label>`; }).join("")}</div>
       <div class="actions"><button class="btn ghost" data-skip="1">Deixar ir</button><button class="btn big" data-throw="1">Jogar a bola</button></div></div>`);
@@ -8208,7 +8259,7 @@ function viewTreino() {
   return `<div class="treino">
     <div class="tr-field">
       <div class="tr-clock"><b>⏱️ Relógio de treino de hoje</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
-        <span>${st.minutos} de ${tot} min usados${st.bonus > 0 ? ` (🎁 +${st.bonus} min de presente do admin)` : ""} · ${rest ? `faltam ${rest} min` : "acabou por hoje"}</span></div>
+        <span>${st.minutos} de ${tot} min usados${st.bonus > 0 ? ` (🎁 +${st.bonus} min de presente do admin)` : ""}${st.vila_min ? ` (🏟️ +${st.vila_min} min da Arena da vila)` : ""} · ${rest ? `faltam ${rest} min` : "acabou por hoje"}</span></div>
       <div class="tr-stage">
         <div class="tr-mon">${monCv(m.species_id, m.outfit, 120)}<b>${esc(pkName(m.species_id))}</b><span>Nível ${m.level}</span>
           <span class="mini-xp" title="Faltam ${xp.falta} de experiência para o próximo nível"><i style="width:${xp.pct}%"></i></span>
@@ -8645,7 +8696,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8661,6 +8712,11 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  vila_bonus: { on: "Bônus da vila ligados", "centro.casas": "Centro da Vila: casas a mais por andada (por nível)", "pomar.captura_pct": "Pomar: % a mais de captura",
+    "taverna.bolas": "Taverna: bolas a mais por encontro", "vigia.raro_pct": "Torre de Vigia: % de chance de Pokémon mais raro (por nível)", "academia.grama_xp_pct": "Academia: % a mais de XP na Grama (por nível)",
+    "arena.grama_min": "Arena: minutos a mais na Grama", "centropk.centro_desc_pct": "Centro Pokémon de Guerra: % de desconto no Centro (por nível)", "centropk.cura_rapida_pct": "Centro Pokémon de Guerra: % mais rápida a cura grátis (por nível)",
+    "poco.creche_desc_pct": "Poço: % de desconto na Creche", "defesa.rocket_dano_pct": "Torre de Defesa: % a mais de dano na Rocket (por nível)", "muralha.lama_desc_pct": "Muralha: % de desconto para limpar a lama (por nível)",
+    "mina.salario_pct": "Mina: % a mais de salário (por nível)", "cofre.taxa_menos": "Cofre: pontos a menos na taxa do Mercado e do Leilão (por nível)" },
   boas_vindas: { on: "Dar Pokémon a quem cria o herói", iniciais: "Iniciais possíveis (números da Pokédex)", inicial_nivel: "Nível do inicial", pacote_qtd: "Quantos Pokémon no pacote do jogador novo", pacote_abaixo_teto: "Pacote: quantos níveis abaixo do teto" },
   creche: { on: "Creche aberta", preco_por_nivel: "Preço até o nível alto: nível alcançado × este número", preco_por_nivel_alto: "Preço acima do nível alto: nível × este número", nivel_alto: "Nível alto (a partir dele, preço e limite mudam)", niveis_semana_alto: "Níveis por semana acima do nível alto", niveis_semana: "Níveis por semana até o nível alto (somando todos os Pokémon)", nivel_max: "Nível máximo que a Creche treina", horas_por_nivel: "Horas para cada nível chegar" },
   desafio: { desc_progressiva: "Descrição em partes (cada erro revela mais um pedaço); desligado = o verbete inteiro de uma vez" },
@@ -8872,7 +8928,7 @@ function viewCreche() {
   return `<div class="creche">
     <div class="ce-head" style="background:linear-gradient(180deg,#FFF3DC,#F2DDB6);border-color:#C9A05A;color:#3A2A12"><p><b style="color:#7A4A12">🏡 Bem-vindo à Creche Pokémon!</b></p>
       <p>Aqui o seu Pokémon treina e sobe de nível, pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${st.horas_por_nivel ?? 12} horas</b>. Enquanto isso, ele continua jogando normalmente. Cada nível custa <b>o nível que ele vai alcançar × ${st.preco_por_nivel}</b> (do 10 para o 11: ${11 * st.preco_por_nivel} moedas)${st.nivel_alto ? `; acima do nível ${st.nivel_alto}, <b>× ${st.preco_por_nivel_alto}</b>` : ""}.</p>
-      ${st.desconto_pct ? `<p>🐎 Domador: você paga ${st.desconto_pct}% a menos.</p>` : ""}<p>Limite: <b>${st.niveis_semana} níveis por semana${st.nivel_alto ? ` até o nível ${st.nivel_alto} e ${st.niveis_semana_alto} acima dele` : ""}</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
+      ${st.desconto_pct ? `<p>💸 Desconto (Domador e Poço da vila): você paga ${st.desconto_pct}% a menos.</p>` : ""}<p>Limite: <b>${st.niveis_semana} níveis por semana${st.nivel_alto ? ` até o nível ${st.nivel_alto} e ${st.niveis_semana_alto} acima dele` : ""}</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
     <div class="tr-clock" style="margin-bottom:10px"><b>📅 Esta semana</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
       <span>${st.usados} de ${st.niveis_semana} níveis usados${st.nivel_alto ? ` até o ${st.nivel_alto} · ${st.usados_alto} de ${st.niveis_semana_alto} acima` : ""} · renova em ${chatWhen(st.renova)}</span></div>
     ${st.treino ? (() => { const t = st.treino, tm = S.pk.mons.find(x => x.id === t.mon_id);
@@ -8957,6 +9013,8 @@ async function avCheck() {
       else if (nm.length) { sfx("moeda"); toast(`🤝 Novo no Mercado: ${charName(nm[0].seller_id)} ${nm[0].price ? "vende" : "troca"} ${itemLabel(nm[0].item_kind, nm[0].item_id, nm[0].qty)}.`); }
     }
   } catch (e) { console.warn("avisos", e); }
+  // minha vila (produção para coletar e lama), a cada 5 minutos no máximo
+  if (!S.myVilaAt || Date.now() - S.myVilaAt > 300000) { try { S.myVila = await rpc("village_state", { _user: null }); S.myVilaAt = Date.now(); } catch {} }
   if ($("#game")) renderHUD();
 }
 // abriu a janela = viu o que tinha de novo nela
@@ -8995,6 +9053,9 @@ function avItems() {
   if (S.av.market.length) add("🤝", S.av.market.length === 1 ? "Item novo no Mercado" : `${S.av.market.length} itens novos no Mercado`, "go", "mercado", S.av.market.length,
     S.av.market.slice(0, 3).map(x => `${itemLabel(x.item_kind, x.item_id, x.qty)} (${x.price ? x.price + " moedas" : "troca"})`).join(" · "));
   add("🎧", "Resposta nova no SAC", "go", "sac", sacUnread());
+  const VP = S.myVila?.pending || {}, vpl = [VP.coins && `${VP.coins} moedas`, VP.hints && `${VP.hints} dica(s)`, VP.xp && `${VP.xp} XP`, VP.retries && `${VP.retries} tente outra vez`, VP.steps && `${VP.steps} casa(s)`].filter(Boolean);
+  if (S.myVila?.mud) add("🟫", "Sua vila está com lama: nada é produzido até limpar", "go", "vila", 1);
+  else if (vpl.length && S.win !== "vila") add("🏰", "Produção pronta para coletar na vila", "go", "vila", 1, vpl.join(" · "));
   if (S.war?.st?.unseen) add("🏰", "Sua vila foi atacada", "go", "guerras", S.war.st.unseen);
   for (const [f, ic] of [[huntAlert, "🎯"], [rocketAlert, "🚀"], [quizAlert, "❓"], [leagueAlert, "👑"]]) { let it = null; try { it = avFromAlert(f(), ic); } catch {} if (it) L.push(it); }
   const evo = (S.pk?.mons || []).filter(m => evoReady(m).length || m.pending_moves?.length).length;
@@ -10416,6 +10477,14 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "vila-em-tudo-2026-11-09", sql: "82", title: "🏰 A vila agora ajuda em tudo no jogo!", body: () => `Cada construção da sua vila dá uma vantagem (quanto maior o nível, maior o bônus):
+• 🗺️ Andar: Estábulo dá casas extras com mais frequência, e o Centro da Vila nível 3 e 6 dá casas a mais por dia.
+• 🎯 Captura: Pomar dá mais chance de captura, Taverna dá +1 Poké Bola por encontro, e a Torre de Vigia traz mais Pokémon raros.
+• 🌿 Treino: Academia dá mais XP na Grama, a Arena dá mais minutos na Grama, e o Poço deixa a Creche mais barata.
+• 🏥 Cura: o Centro Pokémon de Guerra deixa o Centro Pokémon mais barato e a cura grátis mais rápida.
+• ⚔️ Rocket e lama: Torre de Defesa dá mais dano na Equipe Rocket, e a Muralha deixa a limpeza da lama mais barata.
+• 💰 Moedas: Mina dá salário maior, e o Cofre dá taxa menor no Mercado e no Leilão.
+Na Minha Vila você vê tudo o que a sua vila te dá agora.` },
   { id: "teto-fixo-2026-11-09", sql: "81", title: "📏 Batalhas sempre niveladas no 20", body: () => `Nas batalhas Pokémon valendo moedas, ninguém luta acima do nível 20, em todas as temporadas (o limite não sobe mais).
 • Quem está acima do 20 luta com a força do nível 20 (vida, ataque, defesa, velocidade e especial), e o XP também sai pelo 20.
 • Ataques e evolução continuam os mesmos, e o Pokémon não perde nada: acabou a batalha, ele segue no nível dele.
