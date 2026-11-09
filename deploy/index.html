@@ -1989,6 +1989,18 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
   .tcg-field>.tcard{width:150px;font-size:9px}.tcg-hand .tcard{width:96px;font-size:8px}
   .flip{width:44vw}.flip .tcard{font-size:8px}.tcard{width:200px}
 }
+/* duelo de cartas compacto no computador: as duas mesas lado a lado, tudo sem rolar (pedido do dono em 09/11/2026) */
+@media (min-width:900px){
+  .tcg-duel{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"op me" "mid mid" "acts acts" "dica dica" "log log";gap:8px;align-items:start}
+  .tcg-duel>.tcg-side.op{grid-area:op}.tcg-duel>.tcg-side.me{grid-area:me}.tcg-duel>.tcg-mid{grid-area:mid}
+  .tcg-duel>.tcg-acts,.tcg-duel>.act-btns{grid-area:acts;justify-content:center;margin:0}.tcg-duel>.tcg-dica{grid-area:dica;text-align:center}.tcg-duel>.tcg-log{grid-area:log;max-height:110px}
+  .tcg-side{padding:8px}.tcg-side.me{display:flex;flex-direction:column-reverse}
+  .tcg-field{gap:8px;flex-wrap:nowrap;align-items:flex-start}
+  .tcg-field>.tcard{width:175px;font-size:10px}
+  .tcg-hand{flex-wrap:nowrap;gap:6px}.tcg-hand .tcard{width:105px;font-size:8px}
+  .tcg-backs{flex-wrap:wrap;max-width:110px}
+  .tcg-mid{min-height:0}.tcg-vez{font-size:18px}
+}
 </style>
 </head>
 <body>
@@ -9398,7 +9410,7 @@ function tcgDuelView() {
         <button class="btn" data-act="tcg-jogada" data-v="forte" ${vez && me.energia >= cf.custo_forte ? "" : "disabled"}>${esc(at?.Fn || "Forte")} · ${at?.Fd} <small>(${cf.custo_forte}⚡)</small></button>
         <button class="btn ghost" data-act="tcg-jogada" data-v="passar" ${vez ? "" : "disabled"}>Passar e guardar ⚡</button>
         <button class="btn ghost small" data-act="tcg-jogada" data-v="desistir">Desistir</button></div>
-        <p class="muted" style="margin:4px 0 0">Para trocar o Pokémon em campo (${cf.custo_trocar} ⚡), toque numa carta da sua mão.</p>` : `<div class="act-btns"><button class="btn" data-act="tcg-tab" data-v="duelos">Voltar aos duelos</button>${d.treino ? `<button class="btn ghost" data-act="tcg-treino">Treinar de novo</button>` : ""}</div>`}
+        <p class="muted tcg-dica" style="margin:4px 0 0">Para trocar o Pokémon em campo (${cf.custo_trocar} ⚡), toque numa carta da sua mão.</p>` : `<div class="act-btns"><button class="btn" data-act="tcg-tab" data-v="duelos">Voltar aos duelos</button>${d.treino ? `<button class="btn ghost" data-act="tcg-treino">Treinar de novo</button>` : ""}</div>`}
     <div class="tcg-side me"><div class="tcg-field">${at ? tcgCard(at, { hp: true }) : ""}
         <div class="tcg-hand">${(me?.mao || []).map((c, i) => tcgCard(c, { small: true, hp: true, attr: vez && me.energia >= cf.custo_trocar ? `data-act="tcg-trocar" data-v="${i}" role="button" tabindex="0" title="Trocar por esta (${cf.custo_trocar} ⚡)"` : "", cls: vez && me.energia >= cf.custo_trocar ? "pick" : "dim" })).join("")}</div></div>
       <div class="tcg-info"><b>Você</b> ${bar(me?.energia || 0)} ${kos(me?.perdidos || 0)} <small class="muted">pilha ${me?.pilha_n ?? 0}</small></div>
