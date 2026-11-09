@@ -64,6 +64,7 @@ from (values
   ('84_pousada_passou_pagou', position('property_pedagio_passou' in pg_get_functiondef('public.do_move(date,boolean)'::regprocedure)) > 0),
   ('85_numero_das_casas', exists (select 1 from public.posts where title = '🔢 Agora toda casa tem número')),
   ('86_quiz_automatico', to_regclass('public.quiz_banco') is not null),
+  ('87_cartas_pokegames', to_regclass('public.tcg_cartas') is not null),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),

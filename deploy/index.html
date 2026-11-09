@@ -1921,6 +1921,74 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
   .pkd{padding:3px 8px 3px 4px}.pkd-t{display:none}.pkd-mons img{width:34px;height:34px;margin-right:-14px}
   .pkq-grid{grid-template-columns:repeat(2,1fr)}.pkq-fast{grid-template-columns:repeat(2,1fr)}
 }
+/* ---------- Cartas Pokegames (arquivo 87) ---------- */
+.tcg-tabs{flex-wrap:wrap}
+.tcg-count{margin:6px 0 10px}
+.tcg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:8px}
+.tcard{position:relative;width:240px;aspect-ratio:5/7;border-radius:14px;padding:8px;box-sizing:border-box;background:#3A2614;box-shadow:0 0 0 3px #1E150C,0 8px 18px rgba(0,0,0,.5);font-family:var(--sans);color:#1E150C;flex:none}
+.tcard.small{width:100%;max-width:190px;padding:5px;border-radius:10px;font-size:11px}
+.tcard.gold{background:linear-gradient(135deg,#FFE37A,#C9A05A 30%,#FFF4C2 50%,#B8862B 70%,#FFE37A);background-size:200% 200%;animation:tc-shine 3s linear infinite;box-shadow:0 0 0 3px #7A5A12,0 0 18px rgba(255,215,90,.6)}
+@keyframes tc-shine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.tc-in{height:100%;border-radius:8px;border:3px solid #1E150C;display:flex;flex-direction:column;gap:4px;padding:6px;box-sizing:border-box;background:linear-gradient(color-mix(in srgb,var(--tc) 55%,#fff),var(--tc))}
+.tcard.small .tc-in{gap:2px;padding:4px;border-width:2px}
+.tc-top{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
+.tc-nm{font:900 1.15em/1.1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-pv{font:900 1.05em/1 var(--sans);white-space:nowrap}.tc-pv small{font-size:.6em}
+.tc-art{flex:1;min-height:0;border:3px solid #1E150C;border-radius:5px;background:repeating-linear-gradient(45deg,rgba(255,255,255,.55) 0 8px,rgba(255,255,255,.35) 8px 16px);display:grid;place-items:center;overflow:hidden}
+.tcard.small .tc-art{border-width:2px}
+.tc-art img{width:92%;height:92%;object-fit:contain;image-rendering:auto}
+.tcard.gold .tc-art{background:radial-gradient(circle at 30% 30%,#FFFBE6,#FFE37A 45%,#F5C542)}
+.tc-hp{display:block;height:6px;border-radius:3px;background:rgba(0,0,0,.35);overflow:hidden}.tc-hp i{display:block;height:100%}
+.tc-meta{font:700 .72em/1.2 var(--sans);text-align:center;background:rgba(255,255,255,.5);border-radius:3px;padding:1px}
+.tc-atk{display:grid;grid-template-columns:auto 1fr auto;gap:4px;align-items:center;background:rgba(255,255,255,.6);border:2px solid #1E150C;border-radius:5px;padding:2px 5px;font:800 .82em/1.15 var(--sans)}
+.tc-atk span:nth-child(2){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tc-atk b{font-size:1.15em}
+.tc-en{display:flex;gap:1px}.tc-en i{display:inline-grid;place-items:center;width:1.25em;height:1.25em;border-radius:50%;background:#FFD23F;border:1.5px solid #1E150C;font-style:normal;font-size:.62em}
+.tc-bot{display:flex;justify-content:space-between;gap:4px;font:800 .62em/1.2 var(--sans)}
+.tc-ft{display:flex;justify-content:space-between;font:800 .6em/1.2 var(--sans)}
+.tcard.small .tc-bot,.tcard.small .tc-meta{display:none}
+.tc-q{position:absolute;right:6px;top:-8px;padding:1px 7px;border-radius:999px;background:#1E150C;color:#FFE7A8;font:800 11px/1.4 var(--sans);font-style:normal}
+.tc-nova{position:absolute;left:50%;top:-10px;transform:translateX(-50%);padding:2px 10px;border-radius:999px;background:#E05A5A;color:#fff;font:900 12px/1.4 var(--sans);font-style:normal}
+.tc-sell{position:absolute;left:6px;right:6px;bottom:-12px;display:flex;justify-content:space-between;align-items:center;gap:4px;background:rgba(20,24,30,.92);border-radius:8px;padding:3px 6px;color:#FFE7A8}
+.tcard.miss{display:grid;place-items:center;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 2px rgba(255,255,255,.12);color:#9AA7B4;font:800 12px var(--sans)}
+.tcard.miss b{font-size:28px;opacity:.5}
+.tcard.dim{opacity:.45}.tcard[data-act]{cursor:pointer}.tcard[data-act]:hover{transform:translateY(-2px)}
+.tcard.back,.tc-back{background:linear-gradient(135deg,#2A1F4A,#4B2A84);}
+.tc-back{height:100%;border-radius:8px;border:3px solid #E0B44C;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#FFE7A8;font:900 1.1em var(--serif,serif)}
+.tc-back span{font-size:2.6em}
+.tcard.back.small{width:46px;padding:3px;border-radius:6px}.tcard.back.small .tc-back{font-size:7px;border-width:2px}.tcard.back.small .tc-back span{font-size:16px}
+.tcard.back.big{width:150px}
+.tcg-pk-top{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.modal.modal-tcg{width:min(1100px,100%);max-height:92vh;overflow:auto;text-align:center}
+.tcg-open-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:12px 0}
+.flip{width:180px;aspect-ratio:5/7;perspective:900px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.flip .tcard{position:absolute;inset:0;width:100%;backface-visibility:hidden;font-size:9px}
+.flip .tcard:last-child{transform:rotateY(180deg)}
+.tcg-ver{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;justify-content:center;text-align:left}
+.tcg-ver-op{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.tcg-duel{display:flex;flex-direction:column;gap:10px}
+.tcg-side{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;background:rgba(255,255,255,.04)}
+.tcg-side.op{background:rgba(224,90,90,.06)}.tcg-side.me{background:rgba(76,195,138,.06)}
+.tcg-info{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tcg-field{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.tcg-field>.tcard{width:210px;font-size:12px}
+.tcg-backs{display:flex;gap:4px}
+.tcg-hand{display:flex;gap:8px;flex-wrap:wrap}.tcg-hand .tcard{width:130px}
+.tcard.pick{box-shadow:0 0 0 3px #F5C542,0 8px 18px rgba(0,0,0,.5)}
+.tcg-en{display:inline-flex;gap:2px}.tcg-en i{font-style:normal;opacity:.25;filter:grayscale(1)}.tcg-en i.on{opacity:1;filter:none}
+.tcg-ko{letter-spacing:2px}
+.tcg-mid{display:flex;gap:10px;justify-content:center;align-items:center;min-height:30px}
+.tcg-vez{color:#F5C542;font-size:20px;animation:news-pulse 1.6s infinite;padding:2px 10px;border-radius:999px}
+.tcg-fim{font-size:24px;color:#FFE37A}
+.tcg-acts{justify-content:center}.tcg-acts .btn small{opacity:.8}
+.tcg-log{margin:0;padding-left:18px;font-size:13px;color:var(--muted,#9AA7B4);max-height:180px;overflow:auto}
+.tcg-rank{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+@media (max-width:760px){
+  .tcg-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}.tcard.small{font-size:9px}
+  .tcg-field>.tcard{width:150px;font-size:9px}.tcg-hand .tcard{width:96px;font-size:8px}
+  .flip{width:44vw}.flip .tcard{font-size:8px}.tcard{width:200px}
+}
 </style>
 </head>
 <body>
@@ -5479,6 +5547,9 @@ function LIB() {
   const bet = [libN(c.battle_bet_min, 10), libN(c.battle_bet_max, 100)], rs = c.round_bonus_steps || [3, 2, 1], rc = c.round_bonus_coins || [100, 50, 0];
   const kinds = Object.entries(KIND).filter(([k]) => !["inicio", "normal", "cacada", "alvo"].includes(k));
   return [
+    { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b> (${S.cfg.cartas?.brilhante_pct ?? 1}% das cartas): dourada e um pouco mais forte.</p>
+      <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
+      <p><b>Duelo:</b> monte um deck de ${S.cfg.cartas?.deck ?? 10} cartas (no máximo ${S.cfg.cartas?.max_iguais ?? 2} iguais). Você começa com 1 em campo e 3 na mão. Cada turno dá +1 ⚡ (até ${S.cfg.cartas?.energia_max ?? 5}); o ataque fraco custa ${S.cfg.cartas?.custo_fraco ?? 1} ⚡, o forte ${S.cfg.cartas?.custo_forte ?? 3} ⚡, e trocar o Pokémon em campo custa ${S.cfg.cartas?.custo_trocar ?? 1} ⚡. Fraqueza dá dano ×2 e resistência ×½, pela tabela de tipos das batalhas. Quando um Pokémon cai, entra o de mais vida da mão. Vence quem derrubar ${S.cfg.cartas?.nocautes ?? 3}. Contra outro jogador vale moedas (de ${S.cfg.cartas?.aposta_min ?? 10} a ${S.cfg.cartas?.aposta_max ?? 100}); contra o computador é só treino, sem prêmio.</p>` },
     { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
       <p>Quando chega algo novo com o jogo aberto, aparece um aviso na tela com som. Abrir o Mercado, o Leilão ou o Chat marca como visto (ou toque em "Marcar como vistos").</p>
       <p>O botão <b>Meus Pokémon 🐾</b> (canto do mapa) mostra a sua equipe com vida e XP, avisa quem pode evoluir ou está ferido e tem atalhos para montar a equipe, a Pokédex, a Grama, o Centro, a Creche, as batalhas, o Leilão e a Loja Pokémon.</p>` },
@@ -5828,6 +5899,7 @@ const ACTIONS = {
     if (v === "treino" || v === "centro") return treinoOpen(v);
     if (v === "creche") return crecheOpen();
     if (v === "leilao") return leilaoOpen();
+    if (v === "cartas") return cartasOpen();
     if (v === "arena") return arenaOpen();
     if (v === "guerras") return warOpen();
     if (v === "liga") return leagueOpen();
@@ -6239,6 +6311,7 @@ function menuHTML() {
     leilao: S.leilao?.missing ? null : S.av.cobertos.length + S.av.novos.length ? `<b class="mb red" title="Leilão novo ou lance coberto">${S.av.cobertos.length + S.av.novos.length}</b>` : S.leilao?.st?.abertos?.length ? `<b class="mb live">${S.leilao.st.abertos.length}</b>` : "",
     creche: S.creche?.missing ? null : S.creche?.st?.treino ? `<b class="mb live">⏳ ${S.creche.st.treino.entregues}/${S.creche.st.treino.niveis}</b>` : S.creche?.st?.restante ? `<b class="mb">${S.creche.st.restante} nív.</b>` : "",
     mercado: S.av.market.length ? `<b class="mb red" title="Itens novos no Mercado">${S.av.market.length}</b>` : "",
+    cartas: S.tcgRes ? (S.tcgRes.novas || S.tcgRes.convites || S.tcgRes.vez ? `<b class="mb red">${(S.tcgRes.novas ? 1 : 0) + S.tcgRes.convites + S.tcgRes.vez}</b>` : S.tcgRes.pacotes ? `<b class="mb">🎁 ${S.tcgRes.pacotes}</b>` : "") : "",
     vila: "", loja: "", pkloja: "", equipe: "", regras: ""
   };
   const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
@@ -6257,13 +6330,13 @@ function menuHTML() {
 const MENU = {
   desafio: ["🎯", "Desafio do dia"], pokedex: ["📕", "Pokédex & Coleção"], equipe: ["👥", "Equipe & Mascote"], treino: ["🌿", "Grama de Treino"],
   centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
-  pkloja: ["🛒", "Loja Pokémon"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
+  pkloja: ["🛒", "Loja Pokémon"], cartas: ["🃏", "Cartas Pokegames"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
   mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
   presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
   regras: ["📚", "Biblioteca"], sac: ["🎧", "SAC: fale com a gente"], admin: ["⚙️", "Administração"], batalha: ["⚔️", "Batalha"]
 };
 const MENU_GROUPS = [
-  ["pk", "🐾 Pokémon", ["arena", "batalhas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "pkloja", "pokedex"]],
+  ["pk", "🐾 Pokémon", ["arena", "batalhas", "cartas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "pkloja", "pokedex"]],
   ["vila", "🏰 Vila e lojas", ["guerras", "loja", "mercado", "vila"]],
   ["comp", "🏆 Competir", ["duelos", "liga", "presence", "ranking"]],
   ["com", "💬 Comunidade", ["caixa", "chat", "correio"]],
@@ -8734,7 +8807,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8750,6 +8823,11 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  cartas: { on: "Cartas ligadas", pacote_preco: "Preço do pacote (moedas)", pacote_inicial: "Pacotes de boas-vindas", carta_dia: "1 carta por dia ao andar", pacote_rodada: "Pacotes pela vitória na rodada",
+    pacote_quiz: "Pacotes por vencer o Quiz", pacote_temporada: "Pacotes por prêmio da temporada", bau_pct: "% de chance de pacote num baú", "chances.comum": "Chance de comum", "chances.incomum": "Chance de incomum",
+    "chances.rara": "Chance de rara", "chances.ultra": "Chance de ultra rara", brilhante_pct: "% de chance de brilhante", brilhante_bonus: "Bônus da brilhante (PV e dano)", deck: "Cartas no deck",
+    max_iguais: "Máximo de cartas iguais no deck", mao: "Cartas na mão", nocautes: "Derrubadas para vencer", energia_max: "Energia máxima", custo_fraco: "Energia do ataque fraco", custo_forte: "Energia do ataque forte",
+    custo_trocar: "Energia para trocar", turnos_max: "Turnos máximos do duelo", aposta_min: "Aposta mínima", aposta_max: "Aposta máxima", taxa_venda_pct: "Taxa do Mercado de cartas (%)" },
   quiz_auto: { on: "Quiz automático ligado", dias: "Dias (0 = domingo, 1 = segunda … 6 = sábado)", hora_min: "Horário surpresa a partir de (hora)", hora_max: "Horário surpresa até (hora)",
     segundos: "Segundos para responder", prazo_horas: "O quiz fica aberto por (horas)", premios: "Prêmios sorteados (lista técnica: coins = moedas, hints = dicas, retries = tente outra vez, bag = bolas e itens)" },
   tm_nivel: { on: "TMs com nível mínimo", fraca_poder: "Ataque fraco: poder até", fraca_nivel: "Ataque fraco: a partir do nível", media_poder: "Ataque médio: poder até", media_nivel: "Ataque médio: a partir do nível", forte_nivel: "Ataque forte: a partir do nível" },
@@ -9054,6 +9132,7 @@ async function avCheck() {
       else if (nm.length) { sfx("moeda"); toast(`🤝 Novo no Mercado: ${charName(nm[0].seller_id)} ${nm[0].price ? "vende" : "troca"} ${itemLabel(nm[0].item_kind, nm[0].item_id, nm[0].qty)}.`); }
     }
   } catch (e) { console.warn("avisos", e); }
+  try { S.tcgRes = await rpc("tcg_resumo"); } catch { S.tcgRes = null; }   // Cartas (arquivo 87): prêmios automáticos e avisos
   // minha vila (produção para coletar e lama), a cada 5 minutos no máximo
   if (!S.myVilaAt || Date.now() - S.myVilaAt > 300000) { try { S.myVila = await rpc("village_state", { _user: null }); S.myVilaAt = Date.now(); } catch {} }
   if ($("#game")) renderHUD();
@@ -9094,6 +9173,11 @@ function avItems() {
   if (S.av.market.length) add("🤝", S.av.market.length === 1 ? "Item novo no Mercado" : `${S.av.market.length} itens novos no Mercado`, "go", "mercado", S.av.market.length,
     S.av.market.slice(0, 3).map(x => `${itemLabel(x.item_kind, x.item_id, x.qty)} (${x.price ? x.price + " moedas" : "troca"})`).join(" · "));
   add("🎧", "Resposta nova no SAC", "go", "sac", sacUnread());
+  if (S.tcgRes) {
+    add("🃏", "Você ganhou cartas novas", "go", "cartas", S.tcgRes.novas ? 1 : 0, "Abra as Cartas para ver");
+    add("🃏", S.tcgRes.convites === 1 ? "Convite para um duelo de cartas" : `${S.tcgRes.convites} convites para duelos de cartas`, "go", "cartas", S.tcgRes.convites);
+    add("🃏", "Sua vez num duelo de cartas", "go", "cartas", S.tcgRes.vez);
+  }
   const VP = S.myVila?.pending || {}, vpl = [VP.coins && `${VP.coins} moedas`, VP.hints && `${VP.hints} dica(s)`, VP.xp && `${VP.xp} XP`, VP.retries && `${VP.retries} tente outra vez`, VP.steps && `${VP.steps} casa(s)`].filter(Boolean);
   if (S.myVila?.mud) add("🟫", "Sua vila está com lama: nada é produzido até limpar", "go", "vila", 1);
   else if (vpl.length && S.win !== "vila") add("🏰", "Produção pronta para coletar na vila", "go", "vila", 1, vpl.join(" · "));
@@ -9105,6 +9189,7 @@ function avItems() {
   const info = [];
   if (S.av.meus.length) info.push({ ic: "🔨", t: S.av.meus.length === 1 ? `Seu leilão do ${pkName(S.av.meus[0].species)} está em ${S.av.meus[0].top_bid} moedas` : `${S.av.meus.length} leilões seus com lance`, act: "go", v: "leilao", n: 0 });
   const fer = S.treino?.st?.feridos?.length || 0; if (fer) info.push({ ic: "🏥", t: fer === 1 ? "Um Pokémon ferido" : `${fer} Pokémon feridos`, sub: "Cura no Centro Pokémon (ou sozinho com o tempo)", act: "go", v: "centro", n: 0 });
+  if (S.tcgRes?.pacotes) info.push({ ic: "🎁", t: `${S.tcgRes.pacotes} ${S.tcgRes.pacotes === 1 ? "pacote de cartas" : "pacotes de cartas"} para abrir`, act: "go", v: "cartas", n: 0 });
   const cr = S.creche?.st?.treino; if (cr) info.push({ ic: "🏡", t: `Creche: ${pkName(cr.species)} com ${cr.entregues} de ${cr.niveis} níveis`, act: "go", v: "creche", n: 0 });
   return { L, info };
 }
@@ -9176,6 +9261,256 @@ ACTIONS["pk-quick"] = async () => {
 };
 ACTIONS["pk-open-mon"] = v => { S.pk.sel = v; S.pk.tab = "colecao"; ACTIONS.go("pokedex"); };
 
+// =================================================================
+// CARTAS POKEGAMES (arquivo 87, pedido do dono em 09/11/2026): jogo de cartas NOSSO (moldura, regras e números
+// nossos), só a 1ª geração. A imagem do Pokémon vem da PokeAPI, como no resto do jogo. Tudo é conferido no banco:
+// o site só mostra (a mão e o baralho do outro nunca chegam aqui).
+// =================================================================
+S.tcg = { st: null, cat: null, tab: "album", deckEdit: null, duel: null, rank: null, ofertas: null, f: "todas", timer: null, missing: false };
+const TCG_RAR = { comum: ["Comum", "◆"], incomum: ["Incomum", "◆◆"], rara: ["Rara", "◆◆◆"], ultra: ["Ultra rara", "★"] };
+const tcgCfg = () => ({ deck: 10, max_iguais: 2, custo_fraco: 1, custo_forte: 3, custo_trocar: 1, energia_max: 5, nocautes: 3, aposta_min: 10, aposta_max: 100, ...(S.cfg.cartas || {}) });
+async function loadTcgCat() {
+  if (S.tcg.cat) return;
+  const { data, error } = await sb.from("tcg_cartas").select("*").order("species");
+  if (error) { if (/does not exist|relation/i.test(error.message)) { S.tcg.missing = true; return; } throw error; }
+  S.tcg.cat = Object.fromEntries(data.map(c => [c.species, c]));
+}
+async function loadTcg() {
+  try { await loadTcgCat(); if (S.tcg.missing) return; S.tcg.st = await rpc("tcg_estado"); }
+  catch (e) { if (isMissingFn(e)) S.tcg.missing = true; else throw e; }
+}
+async function loadTcgOfertas() {
+  const { data } = await sb.from("tcg_ofertas").select("*").eq("status", "aberta").order("created_at", { ascending: false }).limit(120);
+  S.tcg.ofertas = data || [];
+}
+async function cartasOpen(tab) {
+  S.win = "cartas"; if (tab) S.tcg.tab = tab; render();
+  await guarded(async () => { await loadTcg(); if (S.tcg.tab === "mercado") await loadTcgOfertas(); if (S.tcg.tab === "ranking") S.tcg.rank = await rpc("tcg_ranking"); });
+  render();
+  if (S.tcg.st?.novas?.length) tcgNovasPopup();
+}
+// carta montada (do catálogo, com o bônus da brilhante; hp opcional para o duelo)
+function tcgData(s, b, inst) {
+  const c = S.tcg.cat?.[s]; if (!c && !inst) return null;
+  const bo = b ? (tcgCfg().brilhante_bonus ?? 10) : 0;
+  return inst ? { ...inst } : { s, b, nome: c.nome, t1: c.t1, t2: c.t2, r: c.raridade, pv: c.pv + bo, hp: c.pv + bo, fn: c.fraco_nome, fd: c.fraco_dano + bo, Fn: c.forte_nome, Fd: c.forte_dano + bo, fq: c.fraqueza, rs: c.resistencia };
+}
+function tcgCard(d, o = {}) {
+  if (!d) return "";
+  const cat = S.tcg.cat?.[d.s] || {}, cf = tcgCfg(), col = PK_TYPES[d.t1]?.[1] || "#A8A77A", rar = TCG_RAR[d.r || cat.raridade] || TCG_RAR.comum;
+  const fq = d.fq ?? cat.fraqueza, rs = d.rs ?? cat.resistencia, hpPct = Math.max(0, Math.round((d.hp ?? d.pv) / d.pv * 100));
+  const en = n => `<span class="tc-en">${"<i>⚡</i>".repeat(n)}</span>`;
+  return `<div class="tcard ${d.b ? "gold" : ""} ${o.small ? "small" : ""} ${o.cls || ""}" style="--tc:${col}" ${o.attr || ""}>
+    <div class="tc-in"><div class="tc-top"><b class="tc-nm">${esc(d.nome)}${d.b ? " ✨" : ""}</b><span class="tc-pv"><small>PV</small> ${o.hp ? `${d.hp}/` : ""}${d.pv}</span></div>
+      <div class="tc-art"><img src="${ART(d.s)}" alt="" loading="lazy"></div>
+      ${o.hp ? `<span class="tc-hp"><i style="width:${hpPct}%;background:${hpPct > 50 ? "#4CC38A" : hpPct > 20 ? "#E5B92E" : "#E05A5A"}"></i></span>` : ""}
+      <div class="tc-meta">Nº ${String(d.s).padStart(3, "0")} · ${PK_TYPES[d.t1]?.[0] || ""}${d.t2 ? "/" + (PK_TYPES[d.t2]?.[0] || "") : ""}</div>
+      <div class="tc-atk">${en(cf.custo_fraco)}<span>${esc(d.fn)}</span><b>${d.fd}</b></div>
+      <div class="tc-atk">${en(cf.custo_forte)}<span>${esc(d.Fn)}</span><b>${d.Fd}</b></div>
+      <div class="tc-bot"><span>Fraqueza ${fq ? PK_TYPES[fq]?.[0] || fq : "–"} ×2</span><span>Resiste ${rs ? PK_TYPES[rs]?.[0] || rs : "–"}</span></div>
+      <div class="tc-ft"><span>Cartas Pokegames</span><span>${d.b ? "✨ Brilhante" : `${rar[1]} ${rar[0]}`}</span></div></div>
+    ${o.badge || ""}</div>`;
+}
+const tcgBack = (o = "") => `<div class="tcard back ${o}"><div class="tc-back"><b>Pokegames</b><span>🃏</span><small>Cartas</small></div></div>`;
+// coleção indexada: "s:b" → quantidade
+const tcgHave = () => Object.fromEntries((S.tcg.st?.colecao || []).map(x => [`${x.s}:${x.b}`, x.q]));
+const tcgDeckUse = (deck, s, b) => deck.filter(x => x.s === s && !!x.b === !!b).length;
+
+function viewCartas() {
+  const T = S.tcg;
+  if (T.missing) return `<p class="muted rk-state">As Cartas precisam do arquivo <code>87_cartas_pokegames.sql</code> rodado no Supabase.</p>`;
+  if (!T.st || !T.cat) return `<p class="muted rk-state">Abrindo as Cartas…</p>`;
+  if (T.st.on === false) return `<div class="pk-empty"><p><strong>As Cartas estão fechadas no momento.</strong></p></div>`;
+  const D = T.st.duelos || [], vez = D.filter(d => d.minha_vez && !d.treino).length, conv = D.filter(d => d.status === "convite" && d.p2 === S.session.user.id).length;
+  const tabs = [["album", "📒 Álbum"], ["pacotes", `🎁 Pacotes${T.st.pacotes ? ` (${T.st.pacotes})` : ""}`], ["deck", "🗂️ Deck"], ["duelos", `⚔️ Duelos${vez + conv ? ` (${vez + conv})` : ""}`], ["mercado", "🤝 Mercado"], ["ranking", "🏆 Ranking"]];
+  const body = T.tab === "duelo" ? tcgDuelView() : T.tab === "pacotes" ? tcgPacotesView() : T.tab === "deck" ? tcgDeckView() : T.tab === "duelos" ? tcgDuelosView()
+    : T.tab === "mercado" ? tcgMercadoView() : T.tab === "ranking" ? tcgRankView() : tcgAlbumView();
+  return `<div class="tcg"><div class="rk-views tcg-tabs">${tabs.map(([k, t]) => `<button data-act="tcg-tab" data-v="${k}" aria-pressed="${T.tab === k || (k === "duelos" && T.tab === "duelo")}">${t}</button>`).join("")}</div>${body}</div>`;
+}
+function tcgAlbumView() {
+  const H = tcgHave(), cat = Object.values(S.tcg.cat), f = S.tcg.f;
+  const tem = s => (H[`${s}:false`] || 0) + (H[`${s}:true`] || 0) > 0, n = cat.filter(c => tem(c.species)).length;
+  const list = cat.filter(c => f === "tenho" ? tem(c.species) : f === "faltam" ? !tem(c.species) : true);
+  return `<p class="tcg-count">📒 Você tem <b>${n} de 151</b> cartas · ${(S.tcg.st.colecao || []).filter(x => x.b).length} brilhantes ✨</p>
+    <div class="rk-views">${[["todas", "Todas"], ["tenho", "Tenho"], ["faltam", "Faltam"]].map(([k, t]) => `<button data-act="tcg-f" data-v="${k}" aria-pressed="${f === k}">${t}</button>`).join("")}</div>
+    <div class="tcg-grid">${list.map(c => {
+      const q = H[`${c.species}:false`] || 0, qb = H[`${c.species}:true`] || 0;
+      if (!q && !qb) return `<div class="tcard small miss"><span>Nº ${String(c.species).padStart(3, "0")}</span><b>?</b></div>`;
+      return tcgCard(tcgData(c.species, qb > 0 && !q), { small: true, attr: `data-act="tcg-ver" data-v="${c.species}" role="button" tabindex="0"`, badge: `<em class="tc-q">${q ? `×${q}` : ""}${qb ? ` ✨×${qb}` : ""}</em>` });
+    }).join("")}</div>`;
+}
+function tcgPacotesView() {
+  const st = S.tcg.st;
+  return `<section class="panel lo tcg-pk"><div class="tcg-pk-top">${tcgBack("big")}<div>
+      <h3>🎁 Você tem ${st.pacotes} ${st.pacotes === 1 ? "pacote" : "pacotes"}</h3>
+      <p>Cada pacote tem <b>5 cartas</b>: 3 comuns, 1 incomum ou melhor e 1 rara ou melhor. Qualquer uma pode vir <b>✨ brilhante</b>.</p>
+      <div class="act-btns"><button class="btn big" data-act="tcg-abrir" ${st.pacotes ? "" : "disabled"}>Abrir pacote</button>
+      <button class="btn ghost" data-act="tcg-comprar">Comprar pacote (${st.preco} moedas)</button></div>
+      <p class="muted">Ganhe pacotes de graça: vencendo a rodada do dia, o Quiz, nos prêmios da temporada e às vezes nos baús. E 1 carta por dia só por andar.</p></div></div></section>`;
+}
+function tcgDeckView() {
+  const cf = tcgCfg(), T = S.tcg, H = tcgHave();
+  if (!T.deckEdit) T.deckEdit = (T.st.deck || []).map(x => ({ s: x.s, b: !!x.b }));
+  const dk = T.deckEdit, owned = (T.st.colecao || []).slice().sort((a, b) => (T.cat[b.s].forte_dano + T.cat[b.s].pv) - (T.cat[a.s].forte_dano + T.cat[a.s].pv));
+  const igual = JSON.stringify(dk) === JSON.stringify((T.st.deck || []).map(x => ({ s: x.s, b: !!x.b })));
+  return `<p class="tcg-count">🗂️ Seu deck: <b>${dk.length} de ${cf.deck}</b> cartas (no máximo ${cf.max_iguais} iguais). Toque numa carta do deck para tirar e numa da coleção para pôr.</p>
+    <div class="act-btns"><button class="btn" data-act="tcg-deck-salvar" ${dk.length === cf.deck && !igual ? "" : "disabled"}>${igual && dk.length === cf.deck ? "✅ Deck salvo" : "Salvar deck"}</button>
+      <button class="btn ghost" data-act="tcg-deck-auto">Montar automático (as mais fortes)</button><button class="btn ghost" data-act="tcg-deck-limpar">Limpar</button></div>
+    <div class="tcg-grid deck">${dk.map((x, i) => tcgCard(tcgData(x.s, x.b), { small: true, attr: `data-act="tcg-deck-tirar" data-v="${i}" role="button" tabindex="0"` })).join("")}
+      ${Array.from({ length: Math.max(0, cf.deck - dk.length) }, () => `<div class="tcard small miss"><b>+</b></div>`).join("")}</div>
+    <h3 style="margin-top:14px">Sua coleção</h3>
+    <div class="tcg-grid">${owned.map(x => { const used = tcgDeckUse(dk, x.s, x.b), sobra = x.q - used, iguais = dk.filter(y => y.s === x.s).length;
+      const ok = sobra > 0 && iguais < cf.max_iguais && dk.length < cf.deck;
+      return tcgCard(tcgData(x.s, x.b), { small: true, cls: ok ? "" : "dim", attr: ok ? `data-act="tcg-deck-por" data-v="${x.s}:${x.b}" role="button" tabindex="0"` : "", badge: `<em class="tc-q">×${x.q}${used ? ` (${used} no deck)` : ""}</em>` }); }).join("")}</div>`;
+}
+function tcgDuelosView() {
+  const me = S.session.user.id, D = S.tcg.st.duelos || [], cf = tcgCfg();
+  const nome = d => d.p1 === me ? d.p2_nome : d.p1_nome;
+  const conv = D.filter(d => d.status === "convite" && d.p2 === me), env = D.filter(d => d.status === "convite" && d.p1 === me);
+  const ativos = D.filter(d => d.status === "ativa"), fim = D.filter(d => d.status === "encerrada" && !d.treino).slice(0, 10);
+  const row = (d, btns) => `<div class="bt-row"><span>${d.treino ? "🤖 Treino contra o computador" : `<b>${esc(nome(d))}</b>`}${d.aposta ? ` · 💰 ${d.aposta}` : ""}</span>${btns}</div>`;
+  return `<section class="panel lo"><h3>⚔️ Duelar</h3>
+      <p class="muted">Cada turno dá +1 ⚡ (até ${cf.energia_max}). Ataque fraco custa ${cf.custo_fraco} ⚡, o forte custa ${cf.custo_forte} ⚡ e trocar o Pokémon em campo custa ${cf.custo_trocar} ⚡. Vence quem derrubar ${cf.nocautes} Pokémon do outro. Precisa de um deck de ${cf.deck} cartas.</p>
+      <div class="act-btns"><button class="btn" data-act="tcg-treino">🤖 Treinar contra o computador (sem prêmio)</button></div>
+      <form id="tcgform" class="bet-form"><label for="tcg-op" class="sr">Adversário</label><select id="tcg-op">${S.chars.filter(c => c.user_id !== me).map(c => `<option value="${c.user_id}">${esc(c.name)}</option>`).join("")}</select>
+        <label for="tcg-bet" class="sr">Aposta</label><input id="tcg-bet" type="number" min="${cf.aposta_min}" max="${cf.aposta_max}" value="${cf.aposta_min}" style="width:110px"><button class="btn">Desafiar valendo moedas</button></form>
+      <p class="bt-quiet">💰 De ${cf.aposta_min} a ${cf.aposta_max} moedas. As suas saem ao desafiar e voltam se recusarem; quem vencer leva tudo.</p></section>
+    ${conv.length ? `<section class="panel lo"><h3>Convites para você</h3>${conv.map(d => row(d, `<button class="btn small" data-act="tcg-aceitar" data-v="${d.id}">Aceitar</button><button class="btn ghost small" data-act="tcg-recusar" data-v="${d.id}">Recusar</button>`)).join("")}</section>` : ""}
+    ${ativos.length || env.length ? `<section class="panel lo"><h3>Em andamento</h3>${ativos.map(d => row(d, `${d.minha_vez ? `<em class="tag go">sua vez</em>` : `<em class="tag">esperando</em>`}<button class="btn small" data-act="tcg-abrir-duelo" data-v="${d.id}">Abrir</button>`)).join("")}
+      ${env.map(d => row(d, `<em class="tag">aguardando</em><button class="btn ghost small" data-act="tcg-cancelar" data-v="${d.id}">Cancelar</button>`)).join("")}</section>` : ""}
+    ${fim.length ? `<section class="panel lo"><h3>Últimos duelos</h3>${fim.map(d => row(d, `<em class="tag ${d.winner === me ? "ok" : ""}">${!d.winner ? "empate" : d.winner === me ? "vitória" : "derrota"}</em>`)).join("")}</section>` : ""}`;
+}
+function tcgDuelView() {
+  const d = S.tcg.duel; if (!d) return `<p class="muted">Abrindo o duelo…</p>`;
+  const cf = tcgCfg(), me = d.eu, op = d.op, vez = d.minha_vez && d.status === "ativa";
+  const bar = (e) => `<span class="tcg-en">${Array.from({ length: cf.energia_max }, (_, i) => `<i class="${i < e ? "on" : ""}">⚡</i>`).join("")}</span>`;
+  const kos = n => `<span class="tcg-ko">${"💥".repeat(n)}${"⚪".repeat(Math.max(0, cf.nocautes - n))}</span>`;
+  const fimTxt = d.status === "encerrada" ? (d.winner === S.session.user.id ? "🏆 Você venceu!" : !d.winner && d.fim?.lado == null ? "🤝 Empate" : "😵 Você perdeu") : "";
+  const at = me?.ativo, foe = op?.ativo;
+  const mult = (a, b) => { if (!a || !b) return 1; return 1; };
+  return `<div class="tcg-duel">
+    <div class="tcg-side op"><div class="tcg-info"><b>${esc(d.lado === 0 ? d.p2_nome : d.p1_nome)}</b> ${bar(op?.energia || 0)} ${kos(op?.perdidos || 0)} <small class="muted">mão ${op?.mao_n ?? 0} · pilha ${op?.pilha_n ?? 0}</small></div>
+      <div class="tcg-field">${foe ? tcgCard(foe, { hp: true }) : ""}<div class="tcg-backs">${Array.from({ length: op?.mao_n || 0 }, () => tcgBack("small")).join("")}</div></div></div>
+    <div class="tcg-mid">${fimTxt ? `<b class="tcg-fim">${fimTxt}</b>` : vez ? `<b class="tcg-vez">Sua vez!</b>` : `<span class="muted">Vez de ${esc(d.lado === 0 ? d.p2_nome : d.p1_nome)}…</span>`}
+      ${d.aposta ? `<span class="tag">💰 ${d.aposta}</span>` : d.treino ? `<span class="tag">🤖 treino</span>` : ""}</div>
+      ${d.status === "ativa" ? `<div class="act-btns tcg-acts">
+        <button class="btn" data-act="tcg-jogada" data-v="fraco" ${vez && me.energia >= cf.custo_fraco ? "" : "disabled"}>${esc(at?.fn || "Fraco")} · ${at?.fd} <small>(${cf.custo_fraco}⚡)</small></button>
+        <button class="btn" data-act="tcg-jogada" data-v="forte" ${vez && me.energia >= cf.custo_forte ? "" : "disabled"}>${esc(at?.Fn || "Forte")} · ${at?.Fd} <small>(${cf.custo_forte}⚡)</small></button>
+        <button class="btn ghost" data-act="tcg-jogada" data-v="passar" ${vez ? "" : "disabled"}>Passar e guardar ⚡</button>
+        <button class="btn ghost small" data-act="tcg-jogada" data-v="desistir">Desistir</button></div>
+        <p class="muted" style="margin:4px 0 0">Para trocar o Pokémon em campo (${cf.custo_trocar} ⚡), toque numa carta da sua mão.</p>` : `<div class="act-btns"><button class="btn" data-act="tcg-tab" data-v="duelos">Voltar aos duelos</button>${d.treino ? `<button class="btn ghost" data-act="tcg-treino">Treinar de novo</button>` : ""}</div>`}
+    <div class="tcg-side me"><div class="tcg-field">${at ? tcgCard(at, { hp: true }) : ""}
+        <div class="tcg-hand">${(me?.mao || []).map((c, i) => tcgCard(c, { small: true, hp: true, attr: vez && me.energia >= cf.custo_trocar ? `data-act="tcg-trocar" data-v="${i}" role="button" tabindex="0" title="Trocar por esta (${cf.custo_trocar} ⚡)"` : "", cls: vez && me.energia >= cf.custo_trocar ? "pick" : "dim" })).join("")}</div></div>
+      <div class="tcg-info"><b>Você</b> ${bar(me?.energia || 0)} ${kos(me?.perdidos || 0)} <small class="muted">pilha ${me?.pilha_n ?? 0}</small></div>
+</div>
+    <ol class="tcg-log">${(d.log || []).slice(-12).reverse().map(t => `<li>${esc(t)}</li>`).join("")}</ol></div>`;
+}
+function tcgMercadoView() {
+  const L = S.tcg.ofertas; if (!L) return `<p class="muted">Carregando…</p>`;
+  const me = S.session.user.id;
+  return `<p class="muted">Compre cartas de outros jogadores. Para vender uma repetida, abra a carta no Álbum e toque em "Vender no Mercado". Quem vende paga ${S.cfg.cartas?.taxa_venda_pct ?? 5}% de taxa.</p>
+    ${L.length ? `<div class="tcg-grid">${L.map(o => tcgCard(tcgData(o.species, o.brilhante), { small: true, badge: `<div class="tc-sell"><small>${esc(charName(o.seller))}</small>${o.seller === me ? `<button class="btn ghost small" data-act="tcg-of-cancel" data-v="${o.id}">Tirar</button>` : `<button class="btn small" data-act="tcg-of-buy" data-v="${o.id}">${o.preco} moedas</button>`}</div>` })).join("")}</div>`
+      : `<p class="muted">Nenhuma carta à venda agora.</p>`}`;
+}
+function tcgRankView() {
+  const R = S.tcg.rank; if (!R) return `<p class="muted">Carregando…</p>`;
+  return `<div class="tcg-rank"><section class="panel lo"><h3>⚔️ Mais vitórias em duelos (nesta temporada)</h3>${R.duelos.length ? `<ol>${R.duelos.map(x => `<li><b>${esc(x.name)}</b> · ${x.v} ${x.v === 1 ? "vitória" : "vitórias"} em ${x.j}</li>`).join("")}</ol>` : `<p class="muted">Ninguém duelou ainda.</p>`}</section>
+    <section class="panel lo"><h3>📒 Maiores coleções</h3>${R.colecao.length ? `<ol>${R.colecao.map(x => `<li><b>${esc(x.name)}</b> · ${x.n} de 151</li>`).join("")}</ol>` : `<p class="muted">Ninguém tem cartas ainda.</p>`}</section></div>`;
+}
+// abertura de pacote: cartas viradas que se revelam uma a uma
+function tcgReveal(cartas, titulo) {
+  return new Promise(res => {
+    const m = openModal(`<div class="tcg-open"><h2>${esc(titulo)}</h2><div class="tcg-open-row">${cartas.map((c, i) => `<div class="flip" data-i="${i}"><div class="flip-in">${tcgBack()}${tcgCard(tcgData(c.s, c.b), { badge: c.nova ? `<em class="tc-nova">NOVA!</em>` : "" })}</div></div>`).join("")}</div>
+      <p class="muted">Toque nas cartas para virar.</p><div class="actions"><button class="btn ghost" data-all="1">Virar todas</button><button class="btn" data-ok="1">Fechar</button></div></div>`);
+    m.querySelector(".modal").classList.add("modal-tcg");
+    const flip = el => { if (el.classList.contains("on")) return; el.classList.add("on"); const c = cartas[+el.dataset.i]; sfx(c.b || ["rara", "ultra"].includes(S.tcg.cat[c.s]?.raridade) ? "fanfarra" : "tick"); };
+    m.addEventListener("click", e => {
+      const f = e.target.closest(".flip"); if (f) return flip(f);
+      if (e.target.closest("[data-all]")) { m.querySelectorAll(".flip").forEach((el, i) => setTimeout(() => flip(el), i * 250)); return; }
+      if (e.target.closest("[data-ok]") || e.target === m) { closeModal(); res(); }
+    });
+  });
+}
+async function tcgNovasPopup() {
+  const N = S.tcg.st?.novas || []; if (!N.length) return;
+  const cartas = N.flatMap(a => a.cartas), origem = [...new Set(N.map(a => a.origem))].join(" e ");
+  try { await rpc("tcg_visto"); } catch {}
+  S.tcg.st.novas = [];
+  await tcgReveal(cartas, `🃏 Você ganhou ${cartas.length === 1 ? "uma carta" : `${cartas.length} cartas`}! (${origem})`);
+}
+function tcgPoll() {
+  clearInterval(S.tcg.timer);
+  S.tcg.timer = setInterval(async () => {
+    const d = S.tcg.duel;
+    if (S.win !== "cartas" || S.tcg.tab !== "duelo" || !d || d.status !== "ativa" || d.minha_vez || d.treino) return;
+    try { const n = await rpc("tcg_duelo_estado", { _id: d.id }); const virou = n.minha_vez && !d.minha_vez; S.tcg.duel = n; render(); if (virou) { sfx("tick"); toast("🃏 Sua vez no duelo de cartas!"); } } catch {}
+  }, 4000);
+}
+Object.assign(ACTIONS, {
+  "tcg-tab": async v => { S.tcg.tab = v; render(); await guarded(async () => { if (v === "mercado") await loadTcgOfertas(); if (v === "ranking") S.tcg.rank = await rpc("tcg_ranking"); if (v === "duelos" || v === "deck") await loadTcg(); }); render(); },
+  "tcg-f": v => { S.tcg.f = v; render(); },
+  "tcg-ver": async v => {
+    const s = +v, H = tcgHave(), q = H[`${s}:false`] || 0, qb = H[`${s}:true`] || 0, dk = S.tcg.st.deck || [];
+    const cf = tcgCfg(), des = cf.desmanchar || {}, rar = S.tcg.cat[s].raridade;
+    const sob = b => (b ? qb : q) - Math.max(1, tcgDeckUse(dk, s, b)), venda = b => (b ? qb : q) - tcgDeckUse(dk, s, b);
+    const opt = b => (b ? qb : q) ? `<div class="tcg-ver-op"><b>${b ? "✨ Brilhante" : "Normal"}: ×${b ? qb : q}</b>
+        <button class="btn small" data-tv="des" data-b="${b}" ${sob(b) > 0 ? "" : "disabled"}>Desmanchar 1 (+${b ? des.brilhante ?? 150 : des[rar] ?? 5} moedas)</button>
+        <button class="btn ghost small" data-tv="vend" data-b="${b}" ${venda(b) > 0 ? "" : "disabled"}>Vender no Mercado</button></div>` : "";
+    const m = openModal(`<div class="tcg-ver">${tcgCard(tcgData(s, qb > 0 && !q))}${qb && q ? tcgCard(tcgData(s, true)) : ""}<div>${opt(false)}${opt(true)}
+      <p class="muted">Só dá para desmanchar ou vender as repetidas: fica pelo menos 1 e as que estão no seu deck.</p><div class="actions"><button class="btn ghost" data-tv="x">Fechar</button></div></div></div>`);
+    m.querySelector(".modal").classList.add("modal-tcg");
+    m.addEventListener("click", async e => {
+      const b = e.target.closest("[data-tv]"); if (!b && e.target !== m) return;
+      if (!b || b.dataset.tv === "x") return closeModal();
+      const br = b.dataset.b === "true"; closeModal();
+      if (b.dataset.tv === "des") await guarded(async () => { const r = await rpc("tcg_desmanchar", { _s: s, _b: br, _qtd: 1 }); toast(`♻️ +${r.moedas} moedas.`); await Promise.all([loadTcg(), refreshMe()]); render(); });
+      if (b.dataset.tv === "vend") { const f = await formModal("Vender no Mercado de cartas", [{ k: "p", label: "Preço em moedas", type: "number", value: 100, required: true }], "Pôr à venda"); if (!f) return;
+        await guarded(async () => { await rpc("tcg_ofertar", { _s: s, _b: br, _preco: +f.p }); toast("🤝 Carta à venda no Mercado de cartas."); await loadTcg(); render(); }); }
+    });
+  },
+  "tcg-abrir": async () => { await guarded(async () => { const cs = await rpc("tcg_abrir_pacote"); await loadTcg(); render(); await tcgReveal(cs, "🎁 Pacote aberto!"); render(); }); },
+  "tcg-comprar": async () => {
+    if (!(await confirmModal("Comprar pacote?", `1 pacote com 5 cartas por ${S.tcg.st.preco} moedas.`, `Pagar ${S.tcg.st.preco}`))) return;
+    await guarded(async () => { await rpc("tcg_comprar_pacote", { _qtd: 1 }); await Promise.all([loadTcg(), refreshMe()]); render(); toast("🎁 Pacote comprado! Toque em Abrir pacote."); });
+  },
+  "tcg-deck-por": v => { const [s, b] = v.split(":"); S.tcg.deckEdit.push({ s: +s, b: b === "true" }); render(); },
+  "tcg-deck-tirar": v => { S.tcg.deckEdit.splice(+v, 1); render(); },
+  "tcg-deck-limpar": () => { S.tcg.deckEdit = []; render(); },
+  "tcg-deck-auto": () => {
+    const cf = tcgCfg(), T = S.tcg, out = [];
+    const all = (T.st.colecao || []).flatMap(x => Array.from({ length: x.q }, () => ({ s: x.s, b: x.b }))).sort((a, b) => (T.cat[b.s].forte_dano + T.cat[b.s].pv + (b.b ? 20 : 0)) - (T.cat[a.s].forte_dano + T.cat[a.s].pv + (a.b ? 20 : 0)));
+    for (const c of all) { if (out.length >= cf.deck) break; if (out.filter(y => y.s === c.s).length < cf.max_iguais) out.push(c); }
+    T.deckEdit = out; render(); if (out.length < cf.deck) toast(`Você ainda não tem cartas suficientes: abra mais pacotes (faltam ${cf.deck - out.length}).`, true);
+  },
+  "tcg-deck-salvar": async () => { await guarded(async () => { await rpc("tcg_deck_salvar", { _cartas: S.tcg.deckEdit }); await loadTcg(); S.tcg.deckEdit = null; render(); toast("🗂️ Deck salvo!"); }); },
+  "tcg-treino": async () => { await guarded(async () => { S.tcg.duel = await rpc("tcg_treino"); S.tcg.tab = "duelo"; render(); }); },
+  "tcg-abrir-duelo": async v => { await guarded(async () => { S.tcg.duel = await rpc("tcg_duelo_estado", { _id: +v }); S.tcg.tab = "duelo"; render(); tcgPoll(); }); },
+  "tcg-aceitar": async v => {
+    const d = (S.tcg.st.duelos || []).find(x => x.id === +v);
+    if (!(await confirmModal("Aceitar o duelo de cartas?", `Vale ${d?.aposta || 0} moedas: as suas saem agora, e quem vencer leva tudo.`, "Aceitar"))) return;
+    await guarded(async () => { S.tcg.duel = await rpc("tcg_responder", { _id: +v, _aceitar: true }); S.tcg.tab = "duelo"; await refreshMe(); render(); tcgPoll(); });
+  },
+  "tcg-recusar": async v => { await guarded(async () => { await rpc("tcg_responder", { _id: +v, _aceitar: false }); await loadTcg(); render(); }); },
+  "tcg-cancelar": async v => { await guarded(async () => { await rpc("tcg_cancelar", { _id: +v }); await Promise.all([loadTcg(), refreshMe()]); render(); toast("Convite cancelado, aposta devolvida."); }); },
+  "tcg-jogada": async v => {
+    const d = S.tcg.duel; if (!d) return;
+    if (v === "desistir" && !(await confirmModal("Desistir do duelo?", d.aposta ? `Você perde as ${d.aposta} moedas da aposta.` : "O duelo acaba agora.", "Desistir"))) return;
+    await guarded(async () => { const n = await rpc("tcg_jogar", { _id: d.id, _acao: v }); S.tcg.duel = n; sfx(v === "forte" ? "raio" : "tick"); render(); if (n.status === "encerrada") { await Promise.all([loadTcg(), refreshMe()]); render(); if (n.winner === S.session.user.id) sfx("fanfarra"); } tcgPoll(); });
+  },
+  "tcg-trocar": async v => { const d = S.tcg.duel; if (!d) return; await guarded(async () => { S.tcg.duel = await rpc("tcg_jogar", { _id: d.id, _acao: "trocar", _idx: +v }); render(); tcgPoll(); }); },
+  "tcg-of-buy": async v => {
+    const o = (S.tcg.ofertas || []).find(x => x.id === +v); if (!o) return;
+    if (!(await confirmModal("Comprar a carta?", `${S.tcg.cat[o.species]?.nome}${o.brilhante ? " ✨" : ""} de ${charName(o.seller)} por ${o.preco} moedas.`, `Pagar ${o.preco}`))) return;
+    await guarded(async () => { await rpc("tcg_oferta_comprar", { _id: o.id }); await Promise.all([loadTcg(), loadTcgOfertas(), refreshMe()]); render(); toast("🃏 Carta comprada!"); });
+  },
+  "tcg-of-cancel": async v => { await guarded(async () => { await rpc("tcg_oferta_cancelar", { _id: +v }); await Promise.all([loadTcg(), loadTcgOfertas()]); render(); }); }
+});
+document.addEventListener("submit", e => {
+  if (e.target.id !== "tcgform") return; e.preventDefault();
+  const op = $("#tcg-op").value, bet = +$("#tcg-bet").value;
+  guarded(async () => { await rpc("tcg_desafiar", { _op: op, _aposta: bet }); await Promise.all([loadTcg(), refreshMe()]); render(); toast(`🃏 Desafio enviado para ${charName(op)}!`); });
+});
+WINS.cartas = ["Cartas Pokegames", () => viewCartas()];
 // =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
 // Usa a tabela gifts do arquivo 34 (cada um lê só os seus); confere a cada minuto e avisa quando chega um novo.
@@ -10578,6 +10913,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "cartas-2026-11-09", sql: "87", title: "🃏 Chegaram as Cartas Pokegames!", body: () => `Aba nova no menu Pokémon: as Cartas Pokegames, com as 151 da 1ª geração.
+• Junte a coleção no álbum: comum, incomum, rara, ultra rara e a ✨ brilhante (1% das cartas, dourada e mais forte).
+• Todo mundo ganha 2 pacotes de boas-vindas. Depois: 1 carta por dia ao andar, pacote pela vitória na rodada, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja por moedas.
+• Monte um deck de 10 cartas e duele: cada turno dá +1 de energia ⚡, o ataque fraco custa 1 e o forte custa 3. Vence quem derrubar 3 Pokémon do outro.
+• Contra outro jogador vale moedas (de 10 a 100). Contra o computador é só treino.
+• Repetidas: desmanche em moedas ou venda no Mercado de cartas.` },
   { id: "quiz-auto-2026-11-09", sql: "86", title: "❓ Quiz surpresa automático!", body: () => `Agora o Quiz surpresa aparece sozinho, 3 vezes por semana (segunda, quarta e sexta), num horário surpresa entre 18h e 22h.
 • As perguntas são absurdas, do mundo Pokémon: "Quantos kg de sushi o Snorlax come em uma hora?", "Quanto o Mr. Mime ganha por dia como mímico no circo?"...
 • Cada uma tem uma resposta oficial secreta: quem chutar mais perto ganha.
