@@ -5586,6 +5586,10 @@ function LIB() {
   const bet = [libN(c.battle_bet_min, 10), libN(c.battle_bet_max, 100)], rs = c.round_bonus_steps || [3, 2, 1], rc = c.round_bonus_coins || [100, 50, 0];
   const kinds = Object.entries(KIND).filter(([k]) => !["inicio", "normal", "cacada", "alvo"].includes(k));
   return [
+    { id: "pokebound", ic: "💥", t: "PokeBound", h: `<p>O <b>PokeBound</b> (menu Competir, só no computador) é o nosso duelo de artilharia: cada um num lado do mapa, um tiro por vez, e vence quem derrubar o outro.</p>
+      <p><b>Pokémon:</b> Blastoise, Electrode, Golem e Dragonite. Todos têm a mesma força no total, distribuída de um jeito diferente (vida, dano, tamanho da explosão, alcance e quanto sentem o vento), e cada um tem um ataque especial que volta a cada ${S.cfg.pokebound?.recarga ?? 3} turnos.</p>
+      <p><b>Controles:</b> ↑ ↓ mudam o ângulo; segure ESPAÇO (ou o botão Atirar) e solte para atirar: a barra de força vai e volta, sem número, e fica a marca do seu último tiro; ← → andam enquanto houver fôlego (sobe ladeira e entra em cratera); ⭐ arma o especial antes de carregar a força. Arraste a tela, use a rodinha do mouse ou clique no minimapa para ver o campo; "👁 Ver adversário" mostra o outro lado.</p>
+      <p><b>Vento:</b> dura ${S.cfg.pokebound?.vento_turnos ?? 4} turnos e depois muda. Cada turno tem ${S.cfg.pokebound?.turno_seg ?? 45} segundos; se o tempo acabar, a vez passa. O tiro abre crateras e muda o mapa. Por enquanto é contra o computador, só por diversão: não vale moedas nem XP.</p>` },
     { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b> (${S.cfg.cartas?.brilhante_pct ?? 1}% das cartas): dourada e um pouco mais forte.</p>
       <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
       <p><b>Duelo:</b> monte um deck de ${S.cfg.cartas?.deck ?? 10} cartas (no máximo ${S.cfg.cartas?.max_iguais ?? 2} iguais). Você começa com 1 em campo e 3 na mão. Cada turno dá +1 ⚡ (até ${S.cfg.cartas?.energia_max ?? 5}); o ataque fraco custa ${S.cfg.cartas?.custo_fraco ?? 1} ⚡, o forte ${S.cfg.cartas?.custo_forte ?? 3} ⚡, e trocar o Pokémon em campo custa ${S.cfg.cartas?.custo_trocar ?? 1} ⚡. Fraqueza dá dano ×2 e resistência ×½, pela tabela de tipos das batalhas. Quando um Pokémon cai, entra o de mais vida da mão. Vence quem derrubar ${S.cfg.cartas?.nocautes ?? 3}. Contra outro jogador vale moedas (de ${S.cfg.cartas?.aposta_min ?? 10} a ${S.cfg.cartas?.aposta_max ?? 100}); contra o computador é só treino, sem prêmio.</p>` },
@@ -6352,7 +6356,7 @@ function menuHTML() {
     creche: S.creche?.missing ? null : S.creche?.st?.treino ? `<b class="mb live">⏳ ${S.creche.st.treino.entregues}/${S.creche.st.treino.niveis}</b>` : S.creche?.st?.restante ? `<b class="mb">${S.creche.st.restante} nív.</b>` : "",
     mercado: S.av.market.length ? `<b class="mb red" title="Itens novos no Mercado">${S.av.market.length}</b>` : "",
     cartas: S.tcgRes ? (S.tcgRes.novas || S.tcgRes.convites || S.tcgRes.vez ? `<b class="mb red">${(S.tcgRes.novas ? 1 : 0) + S.tcgRes.convites + S.tcgRes.vez}</b>` : S.tcgRes.pacotes ? `<b class="mb">🎁 ${S.tcgRes.pacotes}</b>` : "") : "",
-    pokebound: S.isAdmin && pbNoComputador() ? `<b class="mb live">BETA</b>` : null,   // protótipo: só o admin e só no computador
+    pokebound: pbNoComputador() && (S.isAdmin || S.cfg.pokebound?.on !== false) ? (S.cfg.pokebound?.on === false ? `<b class="mb">DESLIGADO</b>` : `<b class="mb live">NOVO</b>`) : null,   // para todos no computador; o admin desliga em Ajustes do jogo
     vila: "", loja: "", pkloja: "", equipe: "", regras: ""
   };
   const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
@@ -6371,7 +6375,7 @@ function menuHTML() {
 const MENU = {
   desafio: ["🎯", "Desafio do dia"], pokedex: ["📕", "Pokédex & Coleção"], equipe: ["👥", "Equipe & Mascote"], treino: ["🌿", "Grama de Treino"],
   centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
-  pkloja: ["🛒", "Loja Pokémon"], cartas: ["🃏", "Cartas Pokegames"], pokebound: ["💥", "PokeBound (teste)"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
+  pkloja: ["🛒", "Loja Pokémon"], cartas: ["🃏", "Cartas Pokegames"], pokebound: ["💥", "PokeBound"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
   mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
   presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
   regras: ["📚", "Biblioteca"], sac: ["🎧", "SAC: fale com a gente"], admin: ["⚙️", "Administração"], batalha: ["⚔️", "Batalha"]
@@ -8848,7 +8852,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8864,6 +8868,9 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
+    vel_max: "Velocidade máxima do tiro", carga_vel: "Velocidade da barra de força", turno_seg: "Segundos por turno", recarga: "Turnos de espera do especial",
+    raio_jogador: "Tamanho do alvo (acerto direto)", folego: "Fôlego para andar por turno", zoom: "Zoom inicial da câmera" },
   cartas: { on: "Cartas ligadas", pacote_preco: "Preço do pacote (moedas)", pacote_inicial: "Pacotes de boas-vindas", carta_dia: "1 carta por dia ao andar", pacote_rodada: "Pacotes pela vitória na rodada",
     pacote_quiz: "Pacotes por vencer o Quiz", pacote_temporada: "Pacotes por prêmio da temporada", bau_pct: "% de chance de pacote num baú", "chances.comum": "Chance de comum", "chances.incomum": "Chance de incomum",
     "chances.rara": "Chance de rara", "chances.ultra": "Chance de ultra rara", brilhante_pct: "% de chance de brilhante", brilhante_bonus: "Bônus da brilhante (PV e dano)", deck: "Cartas no deck",
@@ -10061,7 +10068,7 @@ function pbRoot() {
     <div class="pb-over" id="pb-escolha"><div class="pb-box"><h2>💥 PokeBound</h2><p>Escolha quem vai para o canhão. Cada um tem o mesmo total de força, distribuído de um jeito diferente.</p>
       <div class="pb-chars">${Object.entries(PB_CHARS).map(([k, c]) => `<button class="pb-char" data-pb="${k}"><img src="${ART(c.sp)}" alt=""><b>${c.nome}</b>
         <small>Dano ${c.dano} · Raio ${c.raio} · Vida ${c.hp}<br>Velocidade ${Math.round(c.vel * 100)}% · Vento ${Math.round(c.vento * 100)}%</small><em>⭐ ${c.esp}: ${c.espTxt}</em></button>`).join("")}</div>
-      <p class="muted">Protótipo contra o computador (só o admin vê). Nada aqui mexe no resto do jogo.</p><button class="btn ghost" id="pb-sair2">Sair</button></div></div>
+      <p class="muted">Duelo contra o computador, só por diversão: não vale moedas nem XP.</p><button class="btn ghost" id="pb-sair2">Sair</button></div></div>
     <div class="pb-over" id="pb-fim" hidden><div class="pb-box"><h2 id="pb-fim-t"></h2><div class="act-btns" style="justify-content:center"><button class="btn" id="pb-denovo">Jogar de novo</button><button class="btn ghost" id="pb-sair3">Sair</button></div></div></div>`;
   document.body.appendChild(el);
   el.addEventListener("click", e => {
@@ -11536,6 +11543,13 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "pokebound-2026-11-10", sql: "88", title: "💥 Chegou o PokeBound!", body: () => `Mini game novo no menu Competir: o PokeBound, duelo de artilharia com Pokémon. Só no computador.
+• Escolha Blastoise, Electrode, Golem ou Dragonite: cada um tem força, alcance e um ataque especial diferente.
+• ↑ ↓ mudam o ângulo. Segure ESPAÇO (ou o botão Atirar) e solte na hora certa: a barra de força vai e volta.
+• Leia o vento antes de atirar: ele dura alguns turnos e desvia o tiro.
+• ← → andam (sobe ladeira e entra em cratera). ⭐ arma o especial antes de carregar a força.
+• Arraste a tela e use a rodinha do mouse para ver o campo inteiro.
+• Por enquanto é contra o computador, só por diversão: não vale moedas nem XP.` },
   { id: "cartas-2026-11-09", sql: "87", title: "🃏 Chegaram as Cartas Pokegames!", body: () => `Aba nova no menu Pokémon: as Cartas Pokegames, com as 151 da 1ª geração.
 • Junte a coleção no álbum: comum, incomum, rara, ultra rara e a ✨ brilhante (1% das cartas, dourada e mais forte).
 • Todo mundo ganha 2 pacotes de boas-vindas. Depois: 1 carta por dia ao andar, pacote pela vitória na rodada, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja por moedas.
