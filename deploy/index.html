@@ -2028,6 +2028,87 @@ body.pb-on{overflow:hidden}
 .pb-char{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border-radius:12px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:inherit;cursor:pointer;font:inherit}
 .pb-char:hover{border-color:#F5C542;background:rgba(245,197,66,.1)}.pb-char img{width:110px;height:110px;object-fit:contain}
 .pb-char b{font-size:18px;color:#FFE37A}.pb-char small{color:#BFD0DD;line-height:1.4}.pb-char em{font-style:normal;font-size:12px;color:#FFE7A8}
+/* ---------- Visual novo (painéis por cima do mapa, só no computador) ---------- */
+#hx-left,#hx-right,#hx-chat,#hx-inv{display:none}
+@media (min-width:761px){
+  #game.hx #hx-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;position:absolute;top:10px;right:12px;z-index:6;pointer-events:none}
+  #game.hx #hx-right>*{pointer-events:auto}
+  #game.hx.dock-min #hx-left{display:flex;gap:10px;align-items:flex-start;position:absolute;top:10px;left:calc(var(--dock) + 12px);z-index:6;pointer-events:none}
+  #game.hx.dock-min #hx-left>*{pointer-events:auto}
+  #game.hx #hx-chat:not([hidden]){display:block;position:absolute;left:calc(var(--dock) + 12px);bottom:12px;width:min(620px,calc(100vw - var(--dock) - 330px));z-index:6;pointer-events:auto}
+  #game.hx #hx-inv:not([hidden]){display:block;position:absolute;top:104px;right:12px;width:412px;z-index:7;pointer-events:auto}
+  #game.hx .help-badge{top:104px}
+  #game.hx #hud-news{top:142px}
+  #game.hx #sac-dock,#game.hx #bt-dock{left:calc(var(--dock) + 14px);bottom:calc(var(--hxc,236px) + 22px)}
+  #game.hx.dock-min #sec-top:not(.hidden){top:196px}
+  #game.hx.dock-min #hud-banner{display:block}   /* a escolha da bifurcação aparece também com o menu recolhido */
+}
+.hx-mini,.hx-info,#hx-player,#hx-chat,#hx-inv{background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45);color:#E8ECF3}
+.hx-mini{padding:4px}.hx-mini-h{font:800 13px var(--sans);text-align:center;color:#FFE7A8;padding:3px 6px 5px}
+.hx-mini canvas{display:block;width:176px;height:auto;border-radius:6px;cursor:pointer}
+#hx-player{display:flex;align-items:center;gap:12px;padding:6px 14px 6px 6px;border-radius:999px 14px 14px 999px}
+.hx-av{all:unset;cursor:pointer;width:54px;height:54px;border-radius:50%;background:radial-gradient(#2A3A55,#141C2C);border:3px solid #E0B44C;display:grid;place-items:center;overflow:hidden}
+.hx-lv{display:flex;flex-direction:column;gap:4px;min-width:170px}.hx-lv b{font:800 16px var(--sans);color:#FFF}
+.hx-xp{position:relative;display:block;height:14px;border-radius:7px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);overflow:hidden}
+.hx-xp i{position:absolute;inset:0 auto 0 0;background:linear-gradient(#6BE07A,#2FA84A)}.hx-xp em{position:absolute;right:6px;top:-1px;font:800 10.5px/14px var(--sans);font-style:normal;color:#FFF;text-shadow:0 1px 2px #000}
+.hx-missao{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:4px 6px 4px 12px;border-left:1px solid rgba(255,255,255,.15)}
+.hx-missao b{display:block;font:800 14px var(--sans);color:#FFF}.hx-missao small{display:block;font:600 12.5px var(--sans);color:#C9D4E3;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hx-ex{width:26px;height:26px;border-radius:50%;background:#F5C542;color:#3A2606;font:900 17px/26px var(--sans);text-align:center;box-shadow:0 0 0 3px rgba(245,197,66,.25)}
+.hx-missao.ok .hx-ex{background:#4CC38A;color:#06301C;box-shadow:0 0 0 3px rgba(76,195,138,.25)}.hx-missao:hover small{color:#FFE7A8}
+.hx-info{display:flex;align-items:center;gap:10px;padding:7px 14px;font:600 13px var(--sans);color:#C9D4E3;white-space:nowrap}.hx-info b{color:#FFF}.hx-info i{width:1px;height:14px;background:rgba(255,255,255,.22)}
+.hx-rbs{display:flex;gap:6px}
+.hx-rb{all:unset;cursor:pointer;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:20px;background:linear-gradient(#2A3650,#161E30);border:2px solid rgba(201,160,90,.75);box-shadow:0 3px 0 rgba(0,0,0,.45)}
+.hx-rb:hover,.hx-rb.on{border-color:#FFE37A;background:linear-gradient(#3A4A6C,#1E2A44)}.hx-rb:active{transform:translateY(2px);box-shadow:none}
+/* chat fixo */
+#hx-chat{border-radius:12px;overflow:hidden}
+.hx-tabs{display:flex;gap:4px;padding:6px 6px 0;background:rgba(0,0,0,.25)}
+.hx-tabs button[role=tab]{all:unset;cursor:pointer;padding:7px 18px;border-radius:9px 9px 0 0;font:700 13.5px var(--sans);color:#AEBBD0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-bottom:0}
+.hx-tabs button[aria-selected=true]{background:rgba(201,160,90,.2);color:#FFE7A8;border-color:rgba(201,160,90,.7)}
+.hx-min{all:unset;cursor:pointer;margin-left:auto;padding:4px 12px;color:#C9D4E3;font-size:15px}
+#hx-chat.min .hx-tabs{padding-bottom:6px}#hx-chat.min .hx-tabs button[role=tab]{border-radius:9px;border-bottom:1px solid rgba(255,255,255,.1)}
+.hx-chat-body{height:140px;overflow:auto;padding:8px 12px;font:500 13.5px/1.55 var(--sans)}
+.hx-chat-list,.hx-jornal,.hx-missoes{list-style:none;margin:0;padding:0}
+.hx-chat-list{height:100%;overflow:auto}.hx-chat-list time{color:#8FA0B8;font-family:"IBM Plex Mono",monospace;font-size:12px}.hx-chat-list li{overflow-wrap:anywhere}
+.hx-jornal button,.hx-missoes button{all:unset;cursor:pointer;display:block;width:100%;padding:3px 0;color:#E8ECF3}.hx-jornal button:hover,.hx-missoes button:hover{color:#FFE7A8}
+.hx-jornal time{color:#8FA0B8;font-size:12px;margin-right:6px}
+.hx-missoes{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.hx-missoes i{font-style:normal;display:inline-block;width:20px;color:#8FA0B8}.hx-missoes .ok{color:#8FE0A8}.hx-missoes .ok i{color:#4CC38A}
+.hx-vazio{margin:0}
+.hx-chat-form{display:flex;gap:6px;padding:6px 8px 8px;border-top:1px solid rgba(255,255,255,.1)}.hx-chat-form[hidden]{display:none}
+.hx-chat-form input{flex:1;min-width:0;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.4);color:#FFF;padding:0 10px;font:500 13.5px var(--sans)}
+.hx-send{all:unset;cursor:pointer;width:38px;height:34px;border-radius:8px;text-align:center;background:rgba(201,160,90,.25);color:#FFE7A8;border:1px solid rgba(201,160,90,.7)}
+/* mochila */
+.hx-inv-h{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.12)}.hx-inv-h b{font:800 17px var(--sans);color:#FFE7A8}
+.hx-x{all:unset;cursor:pointer;width:26px;height:26px;border-radius:7px;text-align:center;font-size:18px;border:1px solid rgba(255,255,255,.25)}
+.hx-inv-top{display:grid;grid-template-columns:138px 1fr;gap:10px;padding:10px 12px 6px}
+.hx-boneco{display:grid;grid-template-columns:38px 1fr 38px;gap:4px;align-items:center}.hx-eqcol{display:grid;gap:5px}
+.hx-heroi{all:unset;cursor:pointer;display:grid;place-items:center;height:124px;border-radius:10px;background:radial-gradient(#2A3A55,#111827);border:1px solid rgba(255,255,255,.14);overflow:hidden}
+.hx-invtabs{display:flex;gap:4px;margin-bottom:6px}.hx-invtabs button{all:unset;cursor:pointer;flex:1;text-align:center;padding:5px 0;border-radius:7px;font:700 12.5px var(--sans);color:#AEBBD0;border:1px solid rgba(255,255,255,.14)}
+.hx-invtabs button[aria-selected=true]{background:rgba(201,160,90,.22);color:#FFE7A8;border-color:rgba(201,160,90,.7)}
+.hx-grade{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;max-height:150px;overflow:auto}
+.hx-slot{all:unset;position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:8px;background:linear-gradient(#222C42,#141B2B);border:1px solid rgba(255,255,255,.16);overflow:hidden;cursor:pointer}
+.hx-slot.vazio{cursor:default;opacity:.55}.hx-slot.on{border-color:#FFE37A;box-shadow:0 0 0 2px rgba(255,227,122,.35)}.hx-slot.eq{width:36px}
+.hx-slot svg,.hx-slot img{max-width:100%;max-height:100%}.hx-ic{font-size:22px;line-height:1}
+.hx-slot em{position:absolute;right:2px;bottom:0;font:800 11px var(--sans);font-style:normal;color:#FFF;text-shadow:0 1px 2px #000,0 0 3px #000}
+.hx-inv-info{display:flex;gap:8px;align-items:center;min-height:38px;padding:4px 12px;font:500 12.5px var(--sans)}.hx-inv-info b{color:#FFE7A8;white-space:nowrap}.hx-inv-info span{flex:1;color:#C9D4E3}
+.hx-inv-sub{padding:4px 12px 2px;font:800 14px var(--sans);color:#FFF}
+.hx-time{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:4px 12px 8px}
+.hx-mon{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;border-radius:9px;background:linear-gradient(#24324A,#141B2B);border:1px solid rgba(201,160,90,.55);padding:2px 0 4px}
+.hx-mon img{width:52px;height:52px;image-rendering:pixelated}.hx-mon small{font:700 11.5px var(--sans);color:#E8ECF3}.hx-mon.mais{justify-content:center;font-size:22px;color:#8FA0B8;border-style:dashed;min-height:70px}
+.hx-inv-pe{display:flex;gap:14px;align-items:center;padding:8px 12px;border-top:1px solid rgba(255,255,255,.12);font:700 13.5px var(--sans)}.hx-moedas{margin-left:auto;display:flex;align-items:center;gap:6px;color:#FFE37A}.hx-moedas .coin-ic{width:18px;height:18px}
+/* Grama de Treino no mesmo estilo */
+#gr-mini-box,#gr-chat{display:none}
+@media (min-width:761px){
+  body.hx-gr .gr-hud{left:214px;top:12px;right:12px}
+  body.hx-gr .gr-time,body.hx-gr .gr-mon{background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  body.hx-gr .gr-mon{padding:6px 10px}
+  body.hx-gr #gr-mini-box{display:block;position:absolute;left:12px;top:12px;padding:4px;background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  body.hx-gr #gr-mini-box b{display:block;font:800 13px var(--sans);text-align:center;color:#FFE7A8;padding:3px 6px 5px}
+  body.hx-gr #gr-mini{display:block;width:184px;height:auto;border-radius:6px;image-rendering:pixelated}
+  body.hx-gr #gr-chat{display:block;position:absolute;left:12px;bottom:12px;width:min(520px,calc(100vw - 420px));background:linear-gradient(rgba(16,24,40,.92),rgba(10,15,26,.92));border:2px solid rgba(201,160,90,.75);border-radius:12px;overflow:hidden;color:#E8ECF3;touch-action:auto;user-select:text;-webkit-user-select:text}
+  body.hx-gr #gr-chat .hx-chat-body{height:104px}
+  body.hx-gr #gr-chat h4{margin:0;padding:6px 12px;font:800 13px var(--sans);color:#FFE7A8;background:rgba(0,0,0,.25)}
+  body.hx-gr .gr-hint{bottom:auto;top:66px;max-width:none}
+}
 </style>
 </head>
 <body>
@@ -3984,6 +4065,8 @@ const logoSVG = () => `<svg viewBox="0 0 9 9" shape-rendering="crispEdges" aria-
 try { S.dockMin = localStorage.getItem("pg-dock") === "1"; } catch { S.dockMin = false; }
 function ensureGameShell() {
   if ($("#game")) return;
+  // visual novo: quem nunca escolheu começa com o menu lateral recolhido (tela cheia), se o admin deixou assim
+  try { if (localStorage.getItem("pg-dock") == null && hxCfg().on !== false && hxCfg().tela_cheia_padrao !== false && window.innerWidth > 760) S.dockMin = true; } catch {}
   app.innerHTML = `<div id="game" class="${S.dockMin ? "dock-min" : ""}">
     <canvas id="world" role="img" aria-label="Mapa do jogo. Arraste para mover, use a roda do mouse ou o gesto de pinça para aproximar."></canvas>
     <div class="hud">
@@ -4000,6 +4083,7 @@ function ensureGameShell() {
       </aside>
       <div id="hud-cam"></div>
       <div id="hud-news"></div>
+      ${HX_SHELL}
       <button class="help-badge" data-act="go" data-v="caixa" title="Caixa da Obra: ajude o jogo com PIX">💛 Ajude o jogo</button>
       <button class="m-eu" data-act="center" aria-label="Ir até o meu personagem">Eu</button>
       <div id="menu-back" data-act="menu-close"></div>
@@ -4050,6 +4134,7 @@ function renderHUD() {
   const hasTop = !!($("#hud-banner").innerHTML.trim() || $("#hud-tip").innerHTML.trim());
   $("#sec-top").classList.toggle("hidden", !hasTop);
   if (S.tip && !S.dockMin && window.innerWidth > 760) $("#sec-top").scrollIntoView({ block: "nearest" });
+  hxRender();
   $("#hud-cam").innerHTML = `<button class="cam-btn" data-act="zoom" data-v="1" aria-label="Aproximar">+</button><button class="cam-btn" data-act="zoom" data-v="-1" aria-label="Afastar">−</button><button class="cam-btn wide" data-act="center">Eu</button><button class="cam-btn wide" data-act="fit">Tudo</button>`;
   W.dirty = true;
 }
@@ -5593,7 +5678,7 @@ function LIB() {
     { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b> (${S.cfg.cartas?.brilhante_pct ?? 1}% das cartas): dourada e um pouco mais forte.</p>
       <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
       <p><b>Duelo:</b> monte um deck de ${S.cfg.cartas?.deck ?? 10} cartas (no máximo ${S.cfg.cartas?.max_iguais ?? 2} iguais). Você começa com 1 em campo e 3 na mão. Cada turno dá +1 ⚡ (até ${S.cfg.cartas?.energia_max ?? 5}); o ataque fraco custa ${S.cfg.cartas?.custo_fraco ?? 1} ⚡, o forte ${S.cfg.cartas?.custo_forte ?? 3} ⚡, e trocar o Pokémon em campo custa ${S.cfg.cartas?.custo_trocar ?? 1} ⚡. Fraqueza dá dano ×2 e resistência ×½, pela tabela de tipos das batalhas. Quando um Pokémon cai, entra o de mais vida da mão. Vence quem derrubar ${S.cfg.cartas?.nocautes ?? 3}. Contra outro jogador vale moedas (de ${S.cfg.cartas?.aposta_min ?? 10} a ${S.cfg.cartas?.aposta_max ?? 100}); contra o computador é só treino, sem prêmio.</p>` },
-    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
+    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p><b>Tela nova no computador:</b> o mapa ocupa a tela toda, com o menu em ícones na lateral (o botão » abre o menu completo e « recolhe). No alto ficam o mapinha, a sua barra (nível, EXP e a <b>Missão diária</b>, que é o próximo passo de hoje: clique nela) e, à direita, a temporada, a casa onde você está, a região e os botões 🎒 Mochila, Meus Pokémon, Pokédex, Ranking, Biblioteca e som. Embaixo fica o <b>chat fixo</b> com as abas Chat, Jornal e Missões (a setinha recolhe). A <b>🎒 Mochila</b> mostra em quadradinhos os seus itens, bolas e visuais, a equipe e as moedas. A Grama de Treino ganhou o mesmo visual, com mapinha e chat.</p><p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
       <p>Quando chega algo novo com o jogo aberto, aparece um aviso na tela com som. Abrir o Mercado, o Leilão ou o Chat marca como visto (ou toque em "Marcar como vistos").</p>
       <p>O botão <b>Meus Pokémon 🐾</b> (canto do mapa) mostra a sua equipe com vida e XP, avisa quem pode evoluir ou está ferido e tem atalhos para montar a equipe, a Pokédex, a Grama, o Centro, a Creche, as batalhas, o Leilão e a Loja Pokémon.</p>` },
     { id: "comecar", ic: "🚀", t: "Começando", h: `<p>Todo dia você faz três coisas:</p><ol>
@@ -6498,12 +6583,14 @@ function onChatInsert(m) {
   S.chat.msgs.push(m); if (S.chat.msgs.length > 200) S.chat.msgs.shift();
   const l = $("#chat-list");
   if (S.win === "chat" && S.comTab === "chat" && l) { l.querySelector(".chat-empty")?.remove(); l.insertAdjacentHTML("beforeend", chatMsgHTML(m)); chatScrollEnd(m.user_id === S.session.user.id); }
-  else if (m.user_id !== S.session.user.id) { S.chatUnread++; if ($("#game")) renderHUD(); }
+  else if (m.user_id !== S.session.user.id && !hxChatVisivel() && !grChatOn()) { S.chatUnread++; if ($("#game")) renderHUD(); }
+  hxChatNova();
 }
 function onChatDelete(id) {
   if (id == null) return;
   S.chat.msgs = S.chat.msgs.filter(x => x.id !== id);
   document.querySelector(`.cm[data-id="${id}"]`)?.remove();
+  hxChatNova();
 }
 async function sendChat() {
   const inp = $("#chat-in"); if (!inp) return;
@@ -8610,6 +8697,9 @@ function grRoot() {
       <button class="btn small ghost" data-gr="sair">Sair</button></div>
     <p class="gr-hint" id="gr-hint">Ande pela grama alta para achar Pokémon · WASD ou setas</p>
     <div class="gr-pad" aria-label="Controles"><button data-dir="up" aria-label="Cima">▲</button><button data-dir="left" aria-label="Esquerda">◀</button><button data-dir="right" aria-label="Direita">▶</button><button data-dir="down" aria-label="Baixo">▼</button></div>
+    <div id="gr-mini-box"><b>Grama de Treino</b><canvas id="gr-mini" width="184" height="184"></canvas></div>
+    <div id="gr-chat"><h4>💬 Chat</h4><div class="hx-chat-body"><ul class="hx-chat-list" id="gr-chat-list"></ul></div>
+      <form id="grchatform" class="hx-chat-form" autocomplete="off"><label for="gr-chat-in" class="sr">Mensagem</label><input id="gr-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form></div>
     <div class="gr-flash" id="gr-flash"></div>`;
   document.body.appendChild(el);
   el.addEventListener("click", e => {
@@ -8639,6 +8729,11 @@ async function grOpen() {
   GR.fx = GR.x; GR.fy = GR.y;
   $("#gr-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande pela grama alta para achar Pokémon" : "Ande pela grama alta para achar Pokémon · WASD ou setas";
   grHud(); grDecoInit(); grNetJoin(); await grBuildArt();
+  // mesmo visual do mapa (computador): mapinha no canto e chat embaixo
+  document.body.classList.toggle("hx-gr", hxOn());
+  const gm = $("#gr-mini", el); if (gm && GR.art) gm.height = Math.round(gm.width * GR.art.height / GR.art.width);
+  $("#gr-chat", el).hidden = hxCfg().chat_fixo === false;
+  if (grChatOn()) { if (!S.chat.loaded) loadChat().then(grChatRender); else grChatRender(); hxChatVisto(); }
   cancelAnimationFrame(GR.raf); GR.last = performance.now(); GR.raf = requestAnimationFrame(grLoop);
 }
 function grClose(battle = false) {
@@ -8697,7 +8792,7 @@ function grDraw(now) {
   cx = MW <= cv.width ? (MW - cv.width) / 2 : Math.max(0, Math.min(MW - cv.width, cx));
   cy = MH <= cv.height ? (MH - cv.height) / 2 : Math.max(0, Math.min(MH - cv.height, cy));
   g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
-  g.drawImage(GR.art, -cx, -cy, MW, MH);
+  g.drawImage(GR.art, -cx, -cy, MW, MH); grMiniDraw();
   // Pokémon de enfeite (meio escondidos na grama alta)
   for (const d of GR.deco || []) {
     if (!d.img.complete || !d.img.naturalWidth) continue;
@@ -8852,7 +8947,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8868,6 +8963,7 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
     vel_max: "Velocidade máxima do tiro", carga_vel: "Velocidade da barra de força", turno_seg: "Segundos por turno", recarga: "Turnos de espera do especial",
     raio_jogador: "Tamanho do alvo (acerto direto)", folego: "Fôlego para andar por turno", zoom: "Zoom inicial da câmera" },
@@ -10141,6 +10237,158 @@ function pbOpen() {
 function pbClose() { PB.open = false; PB.keys.clear(); PB.charge = null; cancelAnimationFrame(PB.raf); const el = $("#pokebound"); if (el) el.hidden = true; document.body.classList.remove("pb-on"); }
 // só no computador (tela larga e mouse)
 const pbNoComputador = () => !matchMedia("(max-width: 760px)").matches && !matchMedia("(pointer:coarse)").matches;
+// =================================================================
+// VISUAL NOVO (pedido do dono em 10/11/2026): painéis por cima do mapa, no computador.
+// Barra do jogador (nível, XP, missão do dia) e mapinha no canto de cima, faixa de informações e
+// botões redondos à direita, chat fixo com abas embaixo e a Mochila em janela com quadradinhos.
+// Não muda regra nenhuma: só mostra de outro jeito o que o jogo já tem. Liga/desliga e padrões em
+// S.cfg.visual (Ajustes do jogo → Visual novo). No celular nada muda.
+// =================================================================
+const hxCfg = () => ({ on: true, tela_cheia_padrao: true, chat_fixo: true, ...(S.cfg?.visual || {}) });
+const hxOn = () => hxCfg().on !== false && window.innerWidth > 760;
+S.hx = { tab: "chat", min: false, inv: false, invTab: "itens", sel: null };
+try { S.hx.min = localStorage.getItem("pg-hx-chat") === "0"; } catch {}
+const HX_SHELL = `<div id="hx-left"><div class="hx-mini"><div class="hx-mini-h" id="hx-mini-h"></div><div id="hx-mini-slot"></div></div><div id="hx-player"></div></div>
+  <div id="hx-right"></div>
+  <div id="hx-chat"><div class="hx-tabs" id="hx-chat-tabs"></div><div class="hx-chat-body" id="hx-chat-body"></div>
+    <form id="hxchatform" class="hx-chat-form" autocomplete="off"><label for="hx-chat-in" class="sr">Mensagem</label><input id="hx-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form></div>
+  <div id="hx-inv" hidden></div>`;
+// o mapinha é um só: fica no painel lateral aberto, ou no canto do mapa com o painel recolhido
+function hxPlaceMini() {
+  const cv = $("#minimap"); if (!cv) return;
+  const alvo = hxOn() && S.dockMin ? $("#hx-mini-slot") : $("#sec-info");
+  if (!alvo || cv.parentNode === alvo) return;
+  if (alvo.id === "sec-info") alvo.insertBefore(cv, $("#hud-info-text")); else alvo.appendChild(cv);
+}
+// a "missão do dia" é o próximo passo de hoje
+function hxMissao() {
+  const T = S.today; if (!T) return { txt: "Carregando…", act: "go", v: "desafio" };
+  if (T.moved) { const m = T.move, tot = m.base_steps + m.roll + m.bonus_steps + (m.skill_steps || 0); return { txt: `Concluída: você andou ${tot} casas`, act: "bet-open", v: "", ok: true }; }
+  const ms = Object.values(T.modes).filter(m => m.available), feitos = ms.filter(m => m.solved || m.failed).length;
+  if (feitos < ms.length) return { txt: `Adivinhe os Pokémon de hoje (${feitos}/${ms.length})`, act: "go", v: "desafio" };
+  if (!T.spin) return { txt: "Gire a roleta", act: "spin", v: "" };
+  return { txt: "Ande no mapa", act: "move", v: "" };
+}
+function hxRender() {
+  const game = $("#game"); if (!game || !$("#hx-right")) return;
+  const on = hxOn(); game.classList.toggle("hx", on); hxPlaceMini();
+  if (!on) return;
+  const me = S.me, xp = xpInfo(me), no = S.nodeById[me.node], ms = hxMissao();
+  $("#hx-mini-h").textContent = no?.region || "Mapa";
+  $("#hx-player").innerHTML = `<button class="hx-av" data-act="go" data-v="loja" title="Seu herói">${avatarSVG(me, 2.2)}</button>
+    <div class="hx-lv"><b>Lv. ${me.level}</b><span class="hx-xp" title="${me.xp_total} de ${xp.next} XP"><i style="width:${xp.pct}%"></i><em>EXP ${xp.pct}%</em></span></div>
+    <button class="hx-missao ${ms.ok ? "ok" : ""}" data-act="${ms.act}" data-v="${ms.v}"><span class="hx-ex">${ms.ok ? "✓" : "!"}</span><span><b>Missão diária</b><small>${esc(ms.txt)}</small></span></button>`;
+  const se = S.today?.season, btn = (ic, t, act, v = "", sel = "") => `<button class="hx-rb ${sel}" data-act="${act}" data-v="${v}" title="${t}" aria-label="${t}">${ic}</button>`;
+  $("#hx-right").innerHTML = `<div class="hx-info"><span>Temporada <b>${se?.id ?? ""}</b></span><i></i><span>Casa <b>nº ${me.node}</b></span><i></i><span>${me.arrived_rank ? `<b>No Castelo</b>` : `Faltam <b>${no?.dist ?? 0}</b>`}</span><i></i><span>Região: <b>${esc(no?.region || "")}</b></span></div>
+    <div class="hx-rbs">${btn("🎒", "Mochila", "hx-inv", "", S.hx.inv ? "on" : "")}${btn(MENU.equipe[0], "Meus Pokémon", "go", "equipe")}${btn(MENU.pokedex[0], "Pokédex", "go", "pokedex")}${btn(MENU.ranking[0], "Ranking", "go", "ranking")}${btn(MENU.regras[0], "Biblioteca", "go", "regras")}${btn(S.sound ? "🔊" : "🔇", S.sound ? "Desligar o som" : "Ligar o som", "sound")}</div>`;
+  hxChatRender(); hxInvRender();
+}
+// ---------- chat fixo ----------
+const hxChatVisivel = () => hxOn() && hxCfg().chat_fixo !== false && !S.hx.min && S.hx.tab === "chat" && !document.hidden;
+function hxChatVisto() { S.chatUnread = 0; try { if (S.av?.chat) { avSave({ chat: new Date().toISOString() }); S.av.chat = 0; } } catch {} }
+const hxCor = uid => { let h = 0; for (const ch of String(uid)) h = (h * 31 + ch.charCodeAt(0)) % 360; return `hsl(${h} 75% 68%)`; };
+const hxLinha = m => `<li data-id="${m.id}"><time>[${hhmm(m.created_at)}]</time> <b style="color:${m.user_id === S.session.user.id ? "#FFE37A" : hxCor(m.user_id)}">${esc(m.name)}:</b> ${esc(m.body)}</li>`;
+function hxChatLista(n = 40) {
+  const C = S.chat;
+  return !C.loaded ? `<li class="muted">Carregando…</li>` : C.error ? `<li class="muted">${esc(C.error)}</li>` : C.msgs.length ? C.msgs.slice(-n).map(hxLinha).join("") : `<li class="muted">Nenhuma mensagem ainda. Diga oi!</li>`;
+}
+function hxMissoes() {
+  const T = S.today; if (!T) return "";
+  const li = (ok, txt, act, v = "") => `<li><button data-act="${act}" data-v="${v}" class="${ok ? "ok" : ""}"><i>${ok ? "✓" : "○"}</i>${txt}</button></li>`;
+  const modos = Object.keys(MODES).filter(k => T.modes[k]?.available).map(k => li(T.modes[k].solved || T.modes[k].failed, `${MODES[k].nome}${T.modes[k].solved ? " (acertou)" : T.modes[k].failed ? " (não acertou)" : ""}`, "go", "desafio"));
+  const st = S.treino?.st, gr = st && !S.treino.missing ? li(st.minutos >= st.minutos_dia + (st.bonus || 0), `Grama de Treino${st.minutos < st.minutos_dia + (st.bonus || 0) ? ` (${st.minutos_dia + (st.bonus || 0) - st.minutos} min livres)` : ""}`, "go", "treino") : "";
+  const H = HEROES[S.me.class] || HEROES.guerreiro, hab = !T.moved && !T.skill?.used ? li(false, `Usar ${H.skill}`, "skill") : "";
+  return `<ul class="hx-missoes">${modos.join("")}${hab}${li(!!T.spin, "Girar a roleta", T.spin ? "go" : "spin", T.spin ? "desafio" : "")}${li(!!T.moved, "Andar no mapa", T.moved ? "bet-open" : "move")}${gr}</ul>`;
+}
+function hxChatRender() {
+  const box = $("#hx-chat"); if (!box) return;
+  const liga = hxCfg().chat_fixo !== false; box.hidden = !liga;
+  $("#game").style.setProperty("--hxc", !liga ? "0px" : S.hx.min ? "42px" : "236px");
+  if (!liga) return;
+  box.classList.toggle("min", S.hx.min);
+  const nChat = hxChatVisivel() ? 0 : Math.max(S.chatUnread, S.av?.chat || 0), nJor = unreadPosts();
+  const tab = (k, t, n) => `<button role="tab" data-act="hx-tab" data-v="${k}" aria-selected="${!S.hx.min && S.hx.tab === k}">${t}${n ? ` <b class="mb red">${n > 99 ? "99+" : n}</b>` : ""}</button>`;
+  $("#hx-chat-tabs").innerHTML = tab("chat", "Chat", nChat) + tab("jornal", "Jornal", nJor) + tab("missoes", "Missões", 0) + `<button class="hx-min" data-act="hx-min" title="${S.hx.min ? "Abrir" : "Recolher"}" aria-label="${S.hx.min ? "Abrir o chat" : "Recolher o chat"}">${S.hx.min ? "▴" : "▾"}</button>`;
+  $("#hxchatform").hidden = S.hx.min || S.hx.tab !== "chat";
+  const body = $("#hx-chat-body"); body.hidden = S.hx.min; if (S.hx.min) return;
+  if (S.hx.tab === "chat") {
+    if (!S.chat.loaded && !S.hx.carregando) { S.hx.carregando = true; loadChat().then(() => { S.hx.carregando = false; hxChatRender(); }); }
+    const ult = S.chat.msgs.length ? S.chat.msgs[S.chat.msgs.length - 1].id : 0, chave = `${S.chat.loaded}:${S.chat.msgs.length}:${ult}`;
+    if (body.dataset.k !== "chat:" + chave) { body.innerHTML = `<ul class="hx-chat-list" id="hx-chat-list">${hxChatLista()}</ul>`; body.dataset.k = "chat:" + chave; const l = $("#hx-chat-list"); l.scrollTop = l.scrollHeight; }
+    if (hxChatVisivel()) hxChatVisto();
+  } else if (S.hx.tab === "jornal") {
+    const ps = (S.posts || []).filter(p => !p.archived).slice(0, 8);
+    body.innerHTML = ps.length ? `<ul class="hx-jornal">${ps.map(p => `<li><button data-act="com-tab" data-v="jornal"><time>${chatWhen(p.created_at)}</time> ${esc(p.title)}</button></li>`).join("")}</ul>` : `<p class="muted hx-vazio">Nenhum aviso no Jornal.</p>`;
+    body.dataset.k = "jornal";
+  } else { body.innerHTML = hxMissoes(); body.dataset.k = "missoes"; }
+}
+async function hxChatEnviar(inp) {
+  const txt = inp.value.trim(); if (!txt) return;
+  inp.disabled = true;
+  try { const m = await rpc("chat_send", { _body: txt }); inp.value = ""; onChatInsert(m); }
+  catch (e) { toast(isMissingFn(e) ? "O chat precisa do arquivo 15_trava_ranking_chat.sql rodado no Supabase." : errMsg(e), true); }
+  inp.disabled = false; inp.focus();
+}
+document.addEventListener("submit", e => {
+  if (e.target.id !== "hxchatform" && e.target.id !== "grchatform") return;
+  e.preventDefault(); hxChatEnviar(e.target.querySelector("input"));
+});
+// mensagem nova (chamado pelo onChatInsert): atualiza o chat fixo e o da Grama
+function hxChatNova() { hxChatRender(); grChatRender(); }
+// ---------- Mochila ----------
+const HX_IC = { cura: "🧪", estado: "💊", reviver: "✨", x: "⚔️", tm: "📀", hm: "💿", evo: "🔗", pedra: "💎" };
+function hxInvItens() {
+  const me = S.me, bag = S.pk?.bag || {}, out = [];
+  out.push({ ic: "💡", n: me.hints ?? 0, nome: "Dica", d: "Revela uma pista no desafio do dia.", v: "loja" });
+  out.push({ ic: "🔁", n: me.retries ?? 0, nome: "Tente outra vez", d: "Apaga o último palpite errado no desafio.", v: "loja" });
+  for (const i of Object.values(S.pk?.items || {}).sort((a, b) => a.sort - b.sort)) { const n = bag[i.id] || 0; if (!n) continue;
+    const k = i.kind;
+    out.push({ ic: HX_IC[k] || "📦", n: i.kind === "hm" ? "∞" : n, nome: i.name, d: i.descr || "", v: "pkloja" }); }
+  for (const [k, nome] of Object.entries(PK_STONES)) if (bag[k]) out.push({ ic: "💎", n: bag[k], nome, d: "Pedra de evolução.", v: "pkloja" });
+  return out;
+}
+function hxInvBolas() {
+  const balls = S.pk?.rules?.capture?.balls || { poke: { name: "Poké Bola", price: 0 } }, bag = S.pk?.bag || {}, cor = { poke: "🔴", great: "🔵", ultra: "🟡" };
+  return Object.entries(balls).map(([k, b]) => ({ ic: cor[k] || "⚪", n: b.price > 0 ? (bag[k + "_ball"] || 0) : "∞", nome: b.name, d: b.price > 0 ? "Aumenta a chance de captura." : "Grátis, à vontade em todo encontro.", v: "pkloja" }));
+}
+function hxInvVisuais() {
+  return (S.me.owned_items || []).filter(id => S.shopById[id]).map(id => ({ html: itemThumb("item", id), n: Object.values(S.me.outfit || {}).includes(id) ? "✓" : "", nome: S.shopById[id].name, d: Object.values(S.me.outfit || {}).includes(id) ? "Em uso." : "Guardado. Vista na Loja & Visuais.", v: S.shopById[id].slot?.startsWith("pk_") ? "pkloja" : S.shopById[id].slot?.startsWith("vila") ? "vila" : "loja" }));
+}
+function hxInvRender() {
+  const el = $("#hx-inv"); if (!el) return;
+  el.hidden = !S.hx.inv || !hxOn(); if (el.hidden) return;
+  const me = S.me, lista = S.hx.invTab === "bolas" ? hxInvBolas() : S.hx.invTab === "visuais" ? hxInvVisuais() : hxInvItens();
+  const vagas = Math.max(15, Math.ceil(lista.length / 5) * 5), sel = lista[S.hx.sel] || null;
+  const grade = Array.from({ length: vagas }, (_, i) => { const it = lista[i];
+    return it ? `<button class="hx-slot ${S.hx.sel === i ? "on" : ""}" data-act="hx-sel" data-v="${i}" title="${esc(it.nome)}">${it.html || `<span class="hx-ic">${it.ic}</span>`}${it.n !== "" ? `<em>${it.n}</em>` : ""}</button>` : `<span class="hx-slot vazio"></span>`; }).join("");
+  const usados = Object.values(me.outfit || {}).filter(id => S.shopById[id]).slice(0, 6);
+  const eq = Array.from({ length: 6 }, (_, i) => usados[i] ? `<button class="hx-slot eq" data-act="go" data-v="loja" title="${esc(S.shopById[usados[i]].name)}">${itemThumb("item", usados[i])}</button>` : `<span class="hx-slot eq vazio"></span>`);
+  const time = pkTeam(), tab = (k, t) => `<button role="tab" data-act="hx-invtab" data-v="${k}" aria-selected="${S.hx.invTab === k}">${t}</button>`;
+  el.innerHTML = `<div class="hx-inv-h"><b>Mochila</b><button class="hx-x" data-act="hx-inv" aria-label="Fechar">×</button></div>
+    <div class="hx-inv-top"><div class="hx-boneco"><div class="hx-eqcol">${eq.slice(0, 3).join("")}</div><button class="hx-heroi" data-act="go" data-v="loja" title="Loja & Visuais">${avatarSVG(me, 5)}</button><div class="hx-eqcol">${eq.slice(3).join("")}</div></div>
+      <div class="hx-inv-dir"><div class="hx-invtabs" role="tablist">${tab("itens", "Itens")}${tab("bolas", "Bolas")}${tab("visuais", "Visuais")}</div><div class="hx-grade">${grade}</div></div></div>
+    <div class="hx-inv-info">${sel ? `<b>${esc(sel.nome)}</b> <span>${esc(sel.d)}</span><button class="btn small ghost" data-act="go" data-v="${sel.v}">Abrir</button>` : `<span class="muted">Toque num item para ver o que ele faz.</span>`}</div>
+    <div class="hx-inv-sub">Equipe</div>
+    <div class="hx-time">${time.map(m => `<button class="hx-mon" data-act="pk-open-mon" data-v="${m.id}" title="${esc(pkName(m.species_id))}"><img src="${SPRITE(m.species_id)}" alt=""><small>Lv. ${m.level}</small></button>`).join("")}${time.length < 6 ? `<button class="hx-mon mais" data-act="go" data-v="equipe" title="Montar a equipe">＋</button>` : ""}</div>
+    <div class="hx-inv-pe"><span title="Pokémon na coleção">🐾 <b>${(S.pk?.mons || []).length}</b></span><span title="Espécies na Pokédex">📕 <b>${Object.keys(S.pk?.dex || {}).length}</b></span><span class="hx-moedas" title="Moedas">${coinSVG()}<b>${(me.coins ?? 0).toLocaleString("pt-BR")}</b></span></div>`;
+}
+ACTIONS["hx-inv"] = () => { S.hx.inv = !S.hx.inv; S.hx.sel = null; sfx("tick"); renderHUD(); };
+ACTIONS["hx-invtab"] = v => { S.hx.invTab = v; S.hx.sel = null; hxInvRender(); };
+ACTIONS["hx-sel"] = v => { S.hx.sel = S.hx.sel === +v ? null : +v; hxInvRender(); };
+ACTIONS["hx-tab"] = v => { S.hx.tab = v; S.hx.min = false; try { localStorage.setItem("pg-hx-chat", "1"); } catch {} renderHUD(); if (v === "chat") $("#hx-chat-in")?.focus(); };
+ACTIONS["hx-min"] = () => { S.hx.min = !S.hx.min; try { localStorage.setItem("pg-hx-chat", S.hx.min ? "0" : "1"); } catch {} renderHUD(); };
+// ---------- Grama de Treino com o mesmo visual ----------
+function grChatRender() {
+  const l = $("#gr-chat-list"); if (!l || !GR.open) return;
+  l.innerHTML = hxChatLista(25); l.scrollTop = l.scrollHeight;
+}
+function grMiniDraw() {
+  const cv = $("#gr-mini"); if (!cv || !GR.art || cv.offsetParent === null) return;
+  const g = cv.getContext("2d"), kx = cv.width / GR.art.width, ky = cv.height / GR.art.height;
+  g.imageSmoothingEnabled = false; g.drawImage(GR.art, 0, 0, cv.width, cv.height);
+  g.fillStyle = "#FFE37A"; g.strokeStyle = "#0F1420"; g.lineWidth = 1.5; g.beginPath(); g.arc((GR.fx + .5) * 32 * kx, (GR.fy + .5) * 32 * ky, 4, 0, 6.28); g.fill(); g.stroke();
+}
+const grChatOn = () => GR.open && hxOn() && hxCfg().chat_fixo !== false;
 // =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
 // Usa a tabela gifts do arquivo 34 (cada um lê só os seus); confere a cada minuto e avisa quando chega um novo.
@@ -11543,6 +11791,13 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "visual-2026-11-10", sql: "89", title: "🖥️ Tela nova no computador!", body: () => `O jogo ganhou cara nova para quem joga no computador (no celular nada muda):
+• O mapa agora ocupa a tela toda. O menu fica em ícones na lateral: o botão » abre o menu completo e « recolhe.
+• No alto: mapinha, sua barra com nível e EXP e a Missão diária (o próximo passo de hoje: é só clicar).
+• À direita: temporada, casa, região e botões rápidos (🎒 Mochila, Pokémon, Pokédex, Ranking, Biblioteca e som).
+• Embaixo: chat fixo com as abas Chat, Jornal e Missões. A setinha recolhe.
+• 🎒 Mochila nova: seus itens, bolas e visuais em quadradinhos, com a equipe e as moedas.
+• A Grama de Treino ganhou o mesmo visual, com mapinha e chat.` },
   { id: "pokebound-2026-11-10", sql: "88", title: "💥 Chegou o PokeBound!", body: () => `Mini game novo no menu Competir: o PokeBound, duelo de artilharia com Pokémon. Só no computador.
 • Escolha Blastoise, Electrode, Golem ou Dragonite: cada um tem força, alcance e um ataque especial diferente.
 • ↑ ↓ mudam o ângulo. Segure ESPAÇO (ou o botão Atirar) e solte na hora certa: a barra de força vai e volta.
