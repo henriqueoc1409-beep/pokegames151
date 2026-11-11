@@ -70,6 +70,7 @@ from (values
   ('90_praca_central', to_regprocedure('public.praca_cfg()') is not null),
   ('91_herois_estilo_novo', exists (select 1 from public.posts where title = '🧙 Os heróis ganharam visual novo!')),
   ('92_mapa_bonito', exists (select 1 from public.posts where title = '🗺️ O mapa ficou mais bonito!')),
+  ('93_rpg_aventura', to_regclass('public.rpg_dias') is not null),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
