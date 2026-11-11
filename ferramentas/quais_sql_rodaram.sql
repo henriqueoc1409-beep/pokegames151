@@ -68,6 +68,7 @@ from (values
   ('88_pokebound_para_todos', to_regprocedure('public.pokebound_cfg()') is not null),
   ('89_visual_novo', to_regprocedure('public.visual_cfg()') is not null),
   ('90_praca_central', to_regprocedure('public.praca_cfg()') is not null),
+  ('91_herois_estilo_novo', exists (select 1 from public.posts where title = '🧙 Os heróis ganharam visual novo!')),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
