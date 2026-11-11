@@ -2297,6 +2297,149 @@ function mixWhite(hex, t) {
   const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255, f = v => Math.round(v + (255 - v) * t);
   return "#" + [f(r), f(g), f(b)].map(v => v.toString(16).padStart(2, "0")).join("");
 }
+// =================================================================
+// HERÓIS NO ESTILO NOVO (arquivo 91, pedido do dono em 10/11/2026): desenho em formas (cabeça grande,
+// contorno grosso, cores chapadas), arte ORIGINAL do Pokegames feita por código. Cada herói é uma lista de
+// formas (caminhos de SVG) que serve tanto para o SVG das telas quanto para o canvas do mapa (Path2D).
+// As skins da loja continuam valendo: roupa (cores, listras, detalhes), capa (comum, estrelada, asas),
+// os 12 chapéus, acessórios e auras. Liga/desliga em S.cfg.visual.herois_novos (Ajustes do jogo).
+// =================================================================
+const HN_K = "#1E1420", HN_PELE = "#F6C9A0";
+const hnOn = () => S.cfg?.visual?.herois_novos !== false;
+const hnRR = (x, y, w, h, r) => `M${x + r} ${y}H${x + w - r}Q${x + w} ${y} ${x + w} ${y + r}V${y + h - r}Q${x + w} ${y + h} ${x + w - r} ${y + h}H${x + r}Q${x} ${y + h} ${x} ${y + h - r}V${y + r}Q${x} ${y} ${x + r} ${y}Z`;
+const hnEL = (cx, cy, rx, ry = rx) => `M${cx - rx} ${cy}A${rx} ${ry} 0 1 0 ${cx + rx} ${cy}A${rx} ${ry} 0 1 0 ${cx - rx} ${cy}Z`;
+const hnP = (d, f, o = {}) => ({ d, f, s: o.s === undefined ? HN_K : o.s, w: o.w ?? 6, o: o.o });
+const hnTubo = (d, cor, w = 12) => [hnP(d, "none", { w: w + 10 }), hnP(d, "none", { s: cor, w })];
+const hnEstrela = (cx, cy, r) => { let d = ""; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; d += `${i ? "L" : "M"}${(cx + Math.cos(a) * rr).toFixed(1)} ${(cy + Math.sin(a) * rr).toFixed(1)}`; } return d + "Z"; };
+function hnEscuro(hex, t) { const n = parseInt(hex.slice(1), 16), f = v => Math.round(v * (1 - t)); return "#" + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map(v => v.toString(16).padStart(2, "0")).join(""); }
+// posição de um "pixel" das skins antigas (grade do boneco de 12×16) no desenho novo
+const hnPX = x => 30.3 + 12.67 * x, hnPY = y => y <= 4 ? 110 - (4 - y) * 16 : [128, 141, 151, 162, 174, 186, 197][y - 5] ?? 204 + (y - 12) * 7;
+const hnPixels = lista => (lista || []).map(([x, y, cor]) => hnP(hnRR(hnPX(x) - 6.6, hnPY(y) - (y <= 6 ? 7 : 6.2), 13.2, y <= 6 ? 14 : 12.4, 3), cor, { s: null }));
+// ---------- chapéus da loja (c1 = cor principal, c2 = detalhe) ----------
+const HN_CAPUZ = "M38 112Q30 52 100 46Q170 52 162 112Q164 134 150 142Q156 96 132 84Q100 74 68 84Q44 96 50 142Q36 134 38 112Z";
+const HN_HATS = {
+  chapeu_palha: (c, d) => [hnP(hnEL(100, 72, 78, 16), c), hnP("M58 70Q60 34 100 34Q140 34 142 70Q100 60 58 70Z", c), hnP("M58 62Q100 52 142 62L142 70Q100 60 58 70Z", d)],
+  capuz_verde: c => [hnP(HN_CAPUZ, c), hnP("M100 46L112 30L118 50Z", c)],
+  chapeu_estrela: (c, d) => [hnP("M28 70Q100 44 172 70Q176 82 164 84Q100 62 36 84Q24 82 28 70Z", hnEscuro(c, .15)), hnP("M52 66Q76 30 118 4Q110 34 148 66Q100 50 52 66Z", c), hnP(hnEstrela(104, 36, 14), d, { w: 3 })],
+  elmo_ferro: (c, d) => [hnP("M42 96Q38 44 100 42Q162 44 158 96Q100 82 42 96Z", c), hnP("M42 84Q100 70 158 84L158 96Q100 82 42 96Z", d), hnP("M100 42V82", "none", { w: 5 }), hnP(hnRR(92, 82, 16, 30, 5), c)],
+  coroa: (c, d) => [hnP("M52 76L52 40L74 58L100 30L126 58L148 40L148 76Q100 64 52 76Z", c), hnP(hnEL(100, 60, 7), d, { w: 3 }), hnP(hnEL(70, 66, 5), d, { w: 3 }), hnP(hnEL(130, 66, 5), d, { w: 3 })],
+  bone_reto: (c, d) => [hnP("M44 84Q42 40 100 40Q158 40 156 84Q100 70 44 84Z", c), hnP("M150 70Q186 68 190 86Q170 90 152 84Z", d || c), hnP(hnEL(100, 42, 6), d || c, { w: 3 })],
+  chapeu_pirata: (c, d) => [hnP("M22 78Q40 40 100 34Q160 40 178 78Q140 62 100 64Q60 62 22 78Z", c), hnP("M44 66Q100 52 156 66", "none", { s: d, w: 6 }), hnP(hnEL(100, 50, 9), "#F4F1EA", { w: 3 }), hnP("M96 49h2M102 49h2", "none", { w: 3 })],
+  cartola: (c, d) => [hnP(hnEL(100, 70, 70, 13), c), hnP(hnRR(64, 8, 72, 62, 8), c), hnP(hnRR(64, 50, 72, 14, 3), d)],
+  louros: (c, d) => [...[-1, 1].flatMap(s => [0, 1, 2, 3].map(i => hnP(hnEL(100 + s * (22 + i * 13), 62 + i * 7, 9, 5.5), i % 2 ? d : c, { w: 3 })))],
+  capuz_dragao: (c, d) => [hnP("M54 60L42 22L72 48Z", d), hnP("M146 60L158 22L128 48Z", d), hnP(HN_CAPUZ, c), hnP(hnEL(78, 64, 5), d, { w: 3 }), hnP(hnEL(122, 64, 5), d, { w: 3 })],
+  capuz_raposa: c => [hnP("M50 64L40 18L78 46Z", c), hnP("M150 64L160 18L122 46Z", c), hnP("M54 50L48 30L66 44Z", "#F6EFE0", { s: null }), hnP("M146 50L152 30L134 44Z", "#F6EFE0", { s: null }), hnP(HN_CAPUZ, c)],
+  capuz_sapo: (c, d) => [hnP(HN_CAPUZ, c), hnP(hnEL(66, 48, 17), d || c), hnP(hnEL(134, 48, 17), d || c), hnP(hnEL(66, 48, 7), HN_K, { s: null }), hnP(hnEL(134, 48, 7), HN_K, { s: null })]
+};
+// ---------- cada herói: cabelo, enfeite de cabeça, detalhes da roupa e o que carrega ----------
+const HN_CABELO = {
+  guerreiro: "M42 100Q36 60 62 50L58 34L80 46L92 26L106 44L128 30L128 50Q164 60 158 100Q150 84 132 80Q100 90 68 80Q50 84 42 100Z",
+  mago: "M40 104Q34 56 100 54Q166 56 160 104Q160 122 150 132Q152 96 132 84Q100 96 68 84Q48 96 50 132Q40 122 40 104Z",
+  arqueiro: "M42 104Q36 56 100 52Q164 56 158 104Q150 86 128 80Q96 92 70 78Q52 86 42 104Z",
+  ladino: "M42 100Q38 56 100 52Q162 56 158 100Q140 78 100 84Q60 78 42 100Z",
+  clerigo: "M42 110Q36 54 100 52Q164 54 158 110Q156 84 130 78Q110 76 100 88Q90 76 70 78Q44 84 42 110Z",
+  domador: "M42 102Q36 56 100 52Q164 56 158 102Q152 88 136 86L124 76L112 88L96 76L84 88L68 80Q50 86 42 102Z",
+  pesquisador: "M42 100Q38 54 100 52Q162 54 158 100Q150 80 120 78L70 92Q50 90 42 100Z",
+  mercador: "M42 98Q38 56 100 52Q162 56 158 98Q146 80 100 80Q54 80 42 98Z"
+};
+const HN_ROBE = { mago: 1, clerigo: 1 };
+function hnHeroi(ch) {
+  const cl = HN_CABELO[ch.class] ? ch.class : "guerreiro", outfit = ch.outfit || {}, it = k => S.shopById?.[outfit[k]];
+  const cc = { ...(CLASS_COLORS[cl] || CLASS_COLORS.guerreiro) }, roupa = it("roupa");
+  if (roupa) { cc.c = roupa.data.c1; cc.d = roupa.data.c2;
+    if (roupa.data.custom && Array.isArray(outfit.cores) && outfit.cores.length === 2) { cc.c = outfit.cores[0]; cc.d = outfit.cores[1]; } }
+  const ouro = "#F2C14E", aco = "#AEBBC8", couro = "#6E4A2C", robe = !!HN_ROBE[cl], ops = [], add = (...a) => ops.push(...a.flat());
+  add(hnP(hnEL(100, 226, 56, 10), "rgba(0,0,0,.28)", { s: null }));
+  // capa ou asas (atrás de tudo)
+  const capa = it("capa");
+  if (capa?.data.shape === "asas") for (const s of [-1, 1]) { const X = v => 100 + s * v;
+    add(hnP(`M${X(34)} 150Q${X(96)} 96 ${X(92)} 168Q${X(78)} 164 ${X(74)} 184Q${X(60)} 176 ${X(52)} 190Q${X(40)} 180 ${X(34)} 150Z`, capa.data.c1), hnP(`M${X(44)} 156Q${X(72)} 132 ${X(78)} 160M${X(48)} 170Q${X(62)} 158 ${X(66)} 174`, "none", { s: capa.data.c2, w: 4 })); }
+  else if (capa) { add(hnP("M54 136Q100 124 146 136L178 210Q100 228 22 210Z", capa.data.c1), hnP("M26 200Q100 218 174 200L178 210Q100 228 22 210Z", capa.data.c2, { w: 4 }));
+    if (capa.data.shape === "estrelas") [[40, 176], [160, 170], [34, 192], [166, 190]].forEach(([x, y]) => add(hnP(hnEstrela(x, y, 7), capa.data.c2, { s: null }))); }
+  // o que vai atrás do corpo: cajados e a aljava
+  if (cl === "mago") add(hnTubo("M166 92L160 218", "#8A5A32", 6), hnP(hnEL(167, 76, 26), "rgba(110,220,255,.28)", { s: null }), hnP("M167 52L183 76L167 100L151 76Z", "#6FE0FF"), hnP("M167 60L174 76L167 76Z", "#E6FBFF", { s: null }));
+  if (cl === "clerigo") add(hnTubo("M166 84L160 218", "#C9A24A", 6), hnP(hnEL(167, 66, 26), "rgba(255,225,120,.3)", { s: null }), hnP(hnEstrela(167, 66, 20), "#FFE37A", { w: 4 }), hnP(hnEL(167, 66, 6), "#FFF8D8", { s: null }));
+  if (cl === "arqueiro") add(hnP("M132 120L150 112L158 178L140 184Z", couro), hnP("M136 116L132 96M144 112L144 92M152 112L156 94", "none", { s: "#EFE6CC", w: 4 }));
+  // pernas e botas
+  if (robe) add(hnP(hnRR(68, 204, 26, 20, 8), hnEscuro(cc.c, .45)), hnP(hnRR(104, 204, 26, 20, 8), hnEscuro(cc.c, .45)));
+  else add(hnP("M70 190h24v18h-24zM106 190h24v18h-24z", hnEscuro(cc.d, .25)), hnP(hnRR(64, 204, 32, 20, 8), couro), hnP(hnRR(104, 204, 32, 20, 8), couro));
+  // corpo
+  const corpo = robe ? "M62 142Q100 128 138 142L150 208Q100 220 50 208Z" : "M62 140Q100 128 138 140L142 196Q100 206 58 196Z";
+  add(hnP(corpo, cc.c));
+  if (roupa?.data.pattern === "listras") { [74, 98, 122].forEach(x => add(hnP(`M${x} 138h8L${x + 9} ${robe ? 206 : 194}h-10Z`, cc.d, { s: null }))); add(hnP(corpo, "none")); }
+  add(robe ? hnP("M52 198Q100 210 148 198L150 208Q100 220 50 208Z", cl === "mago" || cl === "clerigo" ? ouro : cc.d) : hnP("M60 190Q100 200 140 190L142 196Q100 206 58 196Z", hnEscuro(cc.c, .22)));
+  if (cl === "mago") add(hnP("M100 134V204", "none", { s: hnEscuro(cc.c, .25), w: 5 }));
+  if (cl === "clerigo") add(hnP("M84 136L80 200M116 136L120 200", "none", { s: ouro, w: 7 }));
+  if (cl === "guerreiro" || cl === "arqueiro" || cl === "domador") add(hnP("M84 138L100 160L116 138", HN_PELE));
+  if (cl === "pesquisador") add(hnP("M84 138L100 176L116 138", "#5A7A8A"), hnP("M84 138L92 168M116 138L108 168", "none", { w: 4 }));
+  if (cl === "mercador") add(hnP("M100 136V190", "none", { s: cc.d, w: 6 }), ...[150, 166, 182].map(y => hnP(hnEL(100, y, 4), ouro, { w: 2 })));
+  if (cl === "domador") add(hnP("M66 142L84 196M134 142L116 196", "none", { s: hnEscuro(cc.d, .1), w: 8 }));
+  if (cl === "ladino") add(hnP("M64 150L136 186", "none", { s: couro, w: 7 }));
+  add(hnP(hnRR(robe ? 64 : 60, robe ? 166 : 170, robe ? 72 : 80, 13, 5), cl === "mago" || cl === "clerigo" || cl === "mercador" ? ouro : couro), hnP(hnRR(92, robe ? 163 : 167, 16, 19, 4), cl === "mago" || cl === "clerigo" ? "#FFF1B8" : ouro));
+  add(hnPixels(roupa?.data.extra));
+  // braços e mãos
+  const esq = "M66 148Q44 160 46 184", dir = cl === "guerreiro" || cl === "ladino" ? "M134 150Q154 152 160 164" : "M134 148Q156 156 160 172";
+  add(hnTubo(esq, cc.c), hnP(hnEL(46, 188, 10), HN_PELE), hnTubo(dir, cc.c), hnP(hnEL(160, cl === "guerreiro" || cl === "ladino" ? 166 : 176, 10), HN_PELE));
+  if (cl === "guerreiro") add(hnP("M52 150Q52 132 74 136Q78 150 68 158Z", aco), hnP("M148 150Q148 132 126 136Q122 150 132 158Z", aco),
+    hnP("M18 150Q44 140 70 150Q72 190 44 206Q16 190 18 150Z", "#3D6FD6"), hnP("M44 150V200M24 170H64", "none", { s: ouro, w: 6 }));
+  // cabeça, cabelo e rosto
+  add(hnP(hnRR(44, 60, 112, 86, 34), HN_PELE));
+  if (cl === "arqueiro") add(hnP("M150 76Q182 80 174 116Q160 106 152 96Z", cc.h));
+  add(hnP(HN_CABELO[cl], cc.h));
+  const olhoY = 102;
+  add(hnP(hnRR(76, olhoY, 10, 20, 5), HN_K, { s: null }), hnP(hnRR(114, olhoY, 10, 20, 5), HN_K, { s: null }));
+  if (cl === "guerreiro" || cl === "ladino") add(hnP("M70 98L90 102M130 98L110 102", "none", { w: 5 }));
+  add(hnP(hnEL(66, 126, 9, 5), "#F29A8A", { s: null, o: .8 }), hnP(hnEL(134, 126, 9, 5), "#F29A8A", { s: null, o: .8 }));
+  if (cl === "ladino") add(hnP("M46 120Q100 112 154 120L152 132Q148 146 124 146H76Q52 146 48 132Z", hnEscuro(cc.c, .1)));
+  else if (cl === "guerreiro") add(hnP("M92 132H108", "none", { w: 4 }));
+  else if (cl === "mercador") add(hnP("M80 130Q90 122 100 130Q110 122 120 130Q110 138 100 132Q90 138 80 130Z", cc.h, { w: 3 }));
+  else add(hnP("M92 128Q100 134 108 128", "none", { w: 4 }));
+  if (cl === "pesquisador") add(hnP(hnEL(81, 112, 15), "rgba(255,255,255,.35)", { w: 4 }), hnP(hnEL(119, 112, 15), "rgba(255,255,255,.35)", { w: 4 }), hnP("M96 112H104", "none", { w: 4 }));
+  add(hnPixels(it("acessorio")?.data.px));
+  // chapéu da loja, ou o enfeite de cabeça do herói
+  const hat = HN_HATS[outfit.chapeu], hatItem = it("chapeu");
+  if (hat && hatItem) add(hat(hatItem.data.c1, hatItem.data.c2 || hatItem.data.c1));
+  else if (cl === "mago") add(HN_HATS.chapeu_estrela(hnEscuro(cc.c, .2), "#FFE37A"), hnP("M56 62Q100 46 144 62L148 66Q100 50 52 66Z", ouro));
+  else if (cl === "guerreiro") add(hnP("M44 86Q100 72 156 86L156 98Q100 84 44 98Z", cc.c), hnP("M156 90L178 82L172 96L182 104L158 100Z", cc.c));
+  else if (cl === "arqueiro") add(hnP("M40 80Q60 36 118 40Q150 44 168 78Q100 62 40 80Z", hnEscuro(cc.c, .12)), hnP("M132 48Q150 14 170 12Q166 36 146 56Z", "#E0553A", { w: 4 }));
+  else if (cl === "ladino") add(hnP(HN_CAPUZ, cc.c), hnP("M100 46L114 28L120 50Z", cc.c));
+  else if (cl === "clerigo") add(hnP("M46 84Q100 68 154 84", "none", { w: 12 }), hnP("M46 84Q100 68 154 84", "none", { s: ouro, w: 6 }), hnP(hnEL(100, 74, 6), "#7FD3FF", { w: 3 }));
+  else if (cl === "domador") add(hnP(hnEL(100, 74, 80, 15), cc.d), hnP("M60 72Q62 38 100 38Q138 38 140 72Q100 62 60 72Z", cc.d), hnP("M60 64Q100 54 140 64L140 72Q100 62 60 72Z", hnEscuro(cc.d, .35)));
+  else if (cl === "mercador") add(hnP("M46 84Q40 44 100 40Q160 44 154 84Q100 68 46 84Z", cc.d), hnP("M56 70Q100 54 144 70M62 54Q100 42 138 54", "none", { s: hnEscuro(cc.d, .25), w: 4 }), hnP(hnEL(100, 52, 8), "#E0553A", { w: 3 }));
+  // o que carrega na frente
+  if (cl === "guerreiro") add(hnTubo("M168 60L160 150", "#DDE6EE", 8), hnP("M170 62L164 130", "none", { s: "#FFFFFF", w: 3 }), hnTubo("M142 150L178 156", ouro, 6));
+  if (cl === "ladino") add(hnTubo("M166 120L161 160", "#DDE6EE", 6), hnTubo("M150 158L174 162", couro, 5), hnTubo("M40 178L34 206", "#DDE6EE", 5));
+  if (cl === "arqueiro") add(hnP("M34 132Q4 182 34 232", "none", { w: 16 }), hnP("M34 132Q4 182 34 232", "none", { s: "#8A5A2B", w: 7 }), hnP("M34 132L34 232", "none", { s: "#EFE6CC", w: 3 }));
+  if (cl === "domador") add(hnP(hnEL(164, 192, 15, 13), "none", { w: 15 }), hnP(hnEL(164, 192, 15, 13), "none", { s: "#8A5A2B", w: 6 }));
+  if (cl === "pesquisador") add(hnTubo("M160 176L152 206", "#8A5A2B", 6), hnP(hnEL(164, 158, 19), "rgba(168,224,255,.6)"), hnP(hnEL(164, 158, 19), "none", { s: "#C9D6DF", w: 3 }), hnP(hnRR(26, 176, 30, 34, 5), "#E8E0C8"), hnP("M32 188H50M32 198H50", "none", { s: "#C94A4A", w: 3 }));
+  if (cl === "mercador") add(hnP("M24 196Q22 172 36 170L32 160H58L54 170Q68 172 66 196Q66 210 45 210Q24 210 24 196Z", "#B8743A"), hnP(hnEL(45, 190, 8), ouro, { w: 3 }));
+  // brilho raro
+  if (it("aura")?.data.shiny) [[22, 44, 9], [182, 70, 7], [16, 190, 6], [186, 200, 8], [150, 20, 6]].forEach(([x, y, r]) => add(hnP(hnEstrela(x, y, r), "#FFF3B0", { s: null })));
+  return { ops, aura: it("aura")?.data.c1 || null };
+}
+const HN_CACHE = new Map();
+function hnChave(ch) { return `${ch.class}|${JSON.stringify(ch.outfit || {})}`; }
+function hnPartes(ch) { const k = hnChave(ch); let v = HN_CACHE.get(k); if (!v) { v = hnHeroi(ch); v.svg = v.ops.map(p => `<path d="${p.d}" fill="${p.f}"${p.s ? ` stroke="${p.s}" stroke-width="${p.w}"` : ""}${p.o ? ` opacity="${p.o}"` : ""}/>`).join(""); if (HN_CACHE.size > 600) HN_CACHE.clear(); HN_CACHE.set(k, v); } return v; }
+function hnSVG(ch, px = 3, opts = {}) {
+  const { svg, aura } = hnPartes(ch);
+  const style = aura ? `filter:drop-shadow(0 0 2px ${aura}) drop-shadow(0 0 5px ${aura})` : "";
+  return `<svg viewBox="0 0 200 240" width="${(16 * px).toFixed(1)}" height="${(19 * px).toFixed(1)}" style="${style}" stroke-linejoin="round" stroke-linecap="round" aria-hidden="${opts.title ? "false" : "true"}" role="img">${opts.title ? `<title>${esc(opts.title)}</title>` : ""}${svg}</svg>`;
+}
+function hnCanvas(ch) {
+  const key = "hn:" + hnChave(ch);
+  if (W.sprites[key]) return W.sprites[key];
+  const { ops, aura } = hnPartes(ch), cv = document.createElement("canvas"); cv.width = 150; cv.height = 180;
+  const g = cv.getContext("2d"); g.scale(0.75, 0.75); g.lineJoin = "round"; g.lineCap = "round";
+  for (const p of ops) { const path = new Path2D(p.d); g.globalAlpha = p.o ?? 1;
+    if (p.f !== "none") { g.fillStyle = p.f; g.fill(path); }
+    if (p.s) { g.strokeStyle = p.s; g.lineWidth = p.w; g.stroke(path); } }
+  return (W.sprites[key] = { cv, aura, liso: true });
+}
+// desenha o boneco no canvas: o estilo novo precisa de suavização (o pixel art antigo, não)
+function avDraw(g, sp, x, y, w, h) {
+  const antes = g.imageSmoothingEnabled; g.imageSmoothingEnabled = !!sp.liso; if (sp.liso) g.imageSmoothingQuality = "high";
+  g.drawImage(sp.cv, x, y, w, h); g.imageSmoothingEnabled = antes;
+}
 function avatarPixels(ch) {
   const outfit = ch.outfit || {};
   const cc = { ...(CLASS_COLORS[ch.class] || CLASS_COLORS.guerreiro) };
@@ -2341,6 +2484,7 @@ function avatarPixels(ch) {
   return { cells, aura: aura?.data.c1 || null };
 }
 function avatarSVG(ch, px = 3, opts = {}) {
+  if (hnOn()) return hnSVG(ch, px, opts);
   const { cells, aura } = avatarPixels(ch);
   const style = aura ? `filter:drop-shadow(0 0 2px ${aura}) drop-shadow(0 0 5px ${aura})` : "";
   const title = opts.title ? `<title>${esc(opts.title)}</title>` : "";
@@ -3786,6 +3930,7 @@ function roundRect(g, x, y, w, h, r) {
   g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
 }
 function avatarCanvas(ch) {
+  if (hnOn()) return hnCanvas(ch);
   const key = ch.class + JSON.stringify(ch.outfit || {});
   if (W.sprites[key]) return W.sprites[key];
   const { cells, aura } = avatarPixels(ch);
@@ -3954,7 +4099,7 @@ function drawChars(ctx) {
       const mcv = mascotCanvas(c.mascot);
       if (mcv) { const ms = sw * 1.45; ctx.drawImage(mcv, Math.round(s.x + sw * .45), Math.round(s.y + sh - ms * .82), Math.round(ms), Math.round(ms)); }
       if (spr.aura) { ctx.shadowColor = spr.aura; ctx.shadowBlur = 14; }
-      ctx.drawImage(spr.cv, Math.round(s.x), Math.round(s.y), Math.round(sw), Math.round(sh));
+      avDraw(ctx, spr, Math.round(s.x), Math.round(s.y), Math.round(sw), Math.round(sh));
       ctx.shadowBlur = 0;
       W.hits.push({ x: s.x, y: s.y, w: sw, h: sh, user_id: c.user_id });
       groupPlates.push({ c, mine, cx: fx, top: s.y, champ: c.user_id === champ, stack: list.length - 1 - i, nid: n.id });
@@ -5477,7 +5622,7 @@ function drawVila(cv, v) {
   }
   drawVilaFlag(g, v);
   const av = avatarCanvas(v);
-  g.drawImage(av.cv, 480, 250, 48, 57);
+  avDraw(g, av, 480, 250, 48, 57);
   if (v.mud > 0) {
     const mr = mulberry(7 + v.mud);
     g.fillStyle = `rgba(80,58,30,${0.12 * v.mud})`; g.fillRect(0, 0, W2, H2);
@@ -5693,6 +5838,8 @@ function LIB() {
   const bet = [libN(c.battle_bet_min, 10), libN(c.battle_bet_max, 100)], rs = c.round_bonus_steps || [3, 2, 1], rc = c.round_bonus_coins || [100, 50, 0];
   const kinds = Object.entries(KIND).filter(([k]) => !["inicio", "normal", "cacada", "alvo"].includes(k));
   return [
+    { id: "visual-herois", ic: "🧙", t: "Visual dos heróis", h: `<p>Os 8 heróis têm um desenho próprio do Pokegames: cabeça grande, traço grosso e cores vivas. Cada um carrega a sua marca: o Guerreiro a espada e o escudo, o Mago o chapéu e o cajado de cristal, o Arqueiro o arco, o Ladino o capuz e as adagas, o Clérigo o cajado dourado, o Domador o chapéu e o chicote, o Pesquisador os óculos e a lupa, e o Mercador a bolsa de moedas.</p>
+      <p>As skins da <b>Loja & Visuais</b> mudam o desenho: a <b>roupa</b> troca as cores (algumas têm listras ou detalhes), a <b>capa</b> aparece nas costas (ou vira asas), o <b>chapéu</b> substitui o enfeite de cabeça do herói, o <b>acessório</b> vai no rosto ou no peito e a <b>aura</b> deixa um brilho em volta.</p>` },
     { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
       <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
       <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
@@ -8146,7 +8293,7 @@ function drawStadium(ctx) {
       const a = Math.PI * .1 + i / Math.max(1, n) * Math.PI * 1.8 + Math.PI * .05, ring = 1.08 + (i % 2) * .14;
       const x = s.x + sw / 2 + Math.cos(a + Math.PI / 2) * sw * .5 * ring - cw / 2, y = s.y + sh * .58 + Math.sin(a + Math.PI / 2) * sh * .5 * ring - ch;
       ctx.globalAlpha = p.out_stage == null ? 1 : .45;
-      ctx.drawImage(avatarCanvas(c).cv, x, y + (p.out_stage == null ? Math.sin(t * 4 + i) * 1.5 * z : 0), cw, ch);
+      avDraw(ctx, avatarCanvas(c), x, y + (p.out_stage == null ? Math.sin(t * 4 + i) * 1.5 * z : 0), cw, ch);
       ctx.globalAlpha = 1;
       if (z > .7 && p.out_stage == null) { ctx.font = `700 ${Math.max(9, 9 * z)}px Inter, system-ui, sans-serif`; ctx.textAlign = "center"; ctx.lineWidth = 3; ctx.strokeStyle = "rgba(15,20,32,.85)"; ctx.strokeText(c.name, x + cw / 2, y + ch + 10 * z); ctx.fillStyle = "#fff"; ctx.fillText(c.name, x + cw / 2, y + ch + 10 * z); }
     });
@@ -8838,7 +8985,7 @@ function grDraw(now) {
     const osp = avatarCanvas(ch), ox = (o.fx + .5) * tile - cx, oy = (o.fy + 1) * tile - cy, h = tile * 1.15, w = h * osp.cv.width / osp.cv.height;
     g.globalAlpha = o.b ? .55 : 1;
     g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(ox, oy - 3 * dpr, tile * .28, tile * .1, 0, 0, Math.PI * 2); g.fill();
-    g.save(); g.translate(ox, oy - 2 * dpr); if (o.f < 0) g.scale(-1, 1); g.drawImage(osp.cv, -w / 2, -h, w, h); g.restore();
+    g.save(); g.translate(ox, oy - 2 * dpr); if (o.f < 0) g.scale(-1, 1); avDraw(g, osp, -w / 2, -h, w, h); g.restore();
     g.globalAlpha = 1;
     nameTag((o.b ? "⚔️ " : "") + (o.n || "Treinador"), ox, oy - h - 6 * dpr);
   }
@@ -8849,7 +8996,7 @@ function grDraw(now) {
   if (sp) {
     const h = tile * 1.15, w = h * sp.cv.width / sp.cv.height;
     g.save(); g.translate(px, py - bob - 2 * dpr); if (GR.face < 0) g.scale(-1, 1);
-    g.drawImage(sp.cv, -w / 2, -h, w, h); g.restore();
+    avDraw(g, sp, -w / 2, -h, w, h); g.restore();
   }
   // a grama alta cobre os pés
   const on = grAt(Math.round(GR.fx), Math.round(GR.fy)) === "g";
@@ -8991,7 +9138,7 @@ const AJ_LABELS = {
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
-  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela" },
+  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
     vel_max: "Velocidade máxima do tiro", carga_vel: "Velocidade da barra de força", turno_seg: "Segundos por turno", recarga: "Turnos de espera do especial",
     raio_jogador: "Tamanho do alvo (acerto direto)", folego: "Fôlego para andar por turno", zoom: "Zoom inicial da câmera" },
@@ -10614,7 +10761,7 @@ function pzDraw(now) {
         g.save(); g.translate(mx, my - Math.abs(Math.sin(now / 260 + ox)) * 2 * dpr); if ((o.f || 1) > 0) g.scale(-1, 1); g.drawImage(im, -sz / 2, -sz * .95, sz, sz); g.restore(); } }
     const sp = avatarCanvas(o.ch), h = tile * 1.15, w = h * sp.cv.width / sp.cv.height;
     g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(ox, oy - 3 * dpr, tile * .28, tile * .1, 0, 0, 6.28); g.fill();
-    g.save(); g.translate(ox, oy - (o.pulo || 0) - 2 * dpr); if ((o.f || 1) < 0) g.scale(-1, 1); g.drawImage(sp.cv, -w / 2, -h, w, h); g.restore();
+    g.save(); g.translate(ox, oy - (o.pulo || 0) - 2 * dpr); if ((o.f || 1) < 0) g.scale(-1, 1); avDraw(g, sp, -w / 2, -h, w, h); g.restore();
     texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : "#F4F8E8");
     // balão com a última fala no chat
     const bl = PZ.baloes[o.uid];
@@ -12077,6 +12224,10 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "herois-2026-11-10", sql: "91", title: "🧙 Os heróis ganharam visual novo!", body: () => `Os 8 heróis foram redesenhados: cabeça grande, traço grosso e cores vivas, cada um com a sua marca.
+• Guerreiro com espada e escudo, Mago de chapéu e cajado, Arqueiro com arco, Ladino de capuz, Clérigo com o cajado dourado, Domador de chapéu e chicote, Pesquisador de óculos e lupa, Mercador com a bolsa de moedas.
+• Suas skins continuam valendo: roupas, capas, asas, os 12 chapéus, acessórios e auras aparecem no desenho novo.
+• Vale no mapa, na Praça, na Grama, no chat, no ranking e na loja.` },
   { id: "praca-2026-11-10", sql: "90", title: "⛲ Abriu a Praça Central!", body: () => `Lugar novo para passear com a galera: a Praça Central (menu Comunidade, ou o botão ⛲ no alto do mapa).
 • Ande com o seu herói (WASD ou setas; no celular, os botões na tela) e veja quem mais está na praça.
 • O primeiro Pokémon da sua equipe anda atrás de você.
