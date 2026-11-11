@@ -2109,6 +2109,27 @@ body.pb-on{overflow:hidden}
   body.hx-gr #gr-chat h4{margin:0;padding:6px 12px;font:800 13px var(--sans);color:#FFE7A8;background:rgba(0,0,0,.25)}
   body.hx-gr .gr-hint{bottom:auto;top:66px;max-width:none}
 }
+/* ---------- Praça Central ---------- */
+#praca{position:fixed;inset:0;z-index:45;background:#0E1A10;touch-action:none;user-select:none;-webkit-user-select:none}
+#praca[hidden]{display:none}
+#pz-cv{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.pz-hud{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:10px;right:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pz-tit,.pz-on{background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;padding:8px 14px;color:#FFE7A8;font:800 15px var(--sans)}
+.pz-on{color:#E8ECF3;font-weight:700;font-size:13.5px}.pz-hud .btn{margin-left:auto}
+#pz-acao{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px));padding:12px 22px;border-radius:14px;border:3px solid #1E150C;background:linear-gradient(#FFE37A,#F5B942);color:#2A1206;font:700 16px var(--sans);cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.4);z-index:2}
+#pz-acao[hidden]{display:none}#pz-acao kbd{margin-left:8px;padding:2px 8px;border-radius:6px;background:#2A1206;color:#FFE37A;font:800 13px var(--sans)}
+#pz-mini-box,#pz-chat{display:none}
+@media (min-width:761px){
+  body.hx-gr .pz-hud{left:214px;top:12px;right:12px}
+  body.hx-gr #pz-mini-box{display:block;position:absolute;left:12px;top:12px;padding:4px;background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  body.hx-gr #pz-mini-box b{display:block;font:800 13px var(--sans);text-align:center;color:#FFE7A8;padding:3px 6px 5px}
+  body.hx-gr #pz-mini{display:block;width:184px;height:auto;border-radius:6px;image-rendering:pixelated}
+  body.hx-gr #pz-chat:not([hidden]){display:block;position:absolute;left:12px;bottom:12px;width:min(520px,calc(100vw - 420px));background:linear-gradient(rgba(16,24,40,.92),rgba(10,15,26,.92));border:2px solid rgba(201,160,90,.75);border-radius:12px;overflow:hidden;color:#E8ECF3;touch-action:auto;user-select:text;-webkit-user-select:text}
+  body.hx-gr #pz-chat .hx-chat-body{height:104px}
+  body.hx-gr #pz-chat h4{margin:0;padding:6px 12px;font:800 13px var(--sans);color:#FFE7A8;background:rgba(0,0,0,.25)}
+  #praca .gr-pad{display:none}
+  #pz-acao{bottom:calc(40px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -2530,6 +2551,7 @@ async function enterGame() {
 // RENDERIZAÇÃO
 // =================================================================
 function render() {
+  try { pzVoltaCheck(); } catch {}
   if (!configured) return renderSetup();
   if (S.recovery) return renderRecovery();
   if (!S.session || !S.profile) return renderAuth();
@@ -5671,6 +5693,9 @@ function LIB() {
   const bet = [libN(c.battle_bet_min, 10), libN(c.battle_bet_max, 100)], rs = c.round_bonus_steps || [3, 2, 1], rc = c.round_bonus_coins || [100, 50, 0];
   const kinds = Object.entries(KIND).filter(([k]) => !["inicio", "normal", "cacada", "alvo"].includes(k));
   return [
+    { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
+      <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
+      <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
     { id: "pokebound", ic: "💥", t: "PokeBound", h: `<p>O <b>PokeBound</b> (menu Competir, só no computador) é o nosso duelo de artilharia: cada um num lado do mapa, um tiro por vez, e vence quem derrubar o outro.</p>
       <p><b>Pokémon:</b> Blastoise, Electrode, Golem e Dragonite. Todos têm a mesma força no total, distribuída de um jeito diferente (vida, dano, tamanho da explosão, alcance e quanto sentem o vento), e cada um tem um ataque especial que volta a cada ${S.cfg.pokebound?.recarga ?? 3} turnos.</p>
       <p><b>Controles:</b> ↑ ↓ mudam o ângulo; segure ESPAÇO (ou o botão Atirar) e solte para atirar: a barra de força vai e volta, sem número, e fica a marca do seu último tiro; ← → andam enquanto houver fôlego (sobe ladeira e entra em cratera); ⭐ arma o especial antes de carregar a força. Arraste a tela, use a rodinha do mouse ou clique no minimapa para ver o campo; "👁 Ver adversário" mostra o outro lado.</p>
@@ -6029,6 +6054,7 @@ const ACTIONS = {
     if (v === "leilao") return leilaoOpen();
     if (v === "cartas") return cartasOpen();
     if (v === "pokebound") return pbOpen();
+    if (v === "praca") return pzOpen();
     if (v === "arena") return arenaOpen();
     if (v === "guerras") return warOpen();
     if (v === "liga") return leagueOpen();
@@ -6442,6 +6468,7 @@ function menuHTML() {
     mercado: S.av.market.length ? `<b class="mb red" title="Itens novos no Mercado">${S.av.market.length}</b>` : "",
     cartas: S.tcgRes ? (S.tcgRes.novas || S.tcgRes.convites || S.tcgRes.vez ? `<b class="mb red">${(S.tcgRes.novas ? 1 : 0) + S.tcgRes.convites + S.tcgRes.vez}</b>` : S.tcgRes.pacotes ? `<b class="mb">🎁 ${S.tcgRes.pacotes}</b>` : "") : "",
     pokebound: pbNoComputador() && (S.isAdmin || S.cfg.pokebound?.on !== false) ? (S.cfg.pokebound?.on === false ? `<b class="mb">DESLIGADO</b>` : `<b class="mb live">NOVO</b>`) : null,   // para todos no computador; o admin desliga em Ajustes do jogo
+    praca: S.isAdmin || S.cfg.praca?.on !== false ? (S.cfg.praca?.on === false ? `<b class="mb">FECHADA</b>` : `<b class="mb live">NOVO</b>`) : null,
     vila: "", loja: "", pkloja: "", equipe: "", regras: ""
   };
   const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
@@ -6462,14 +6489,14 @@ const MENU = {
   centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
   pkloja: ["🛒", "Loja Pokémon"], cartas: ["🃏", "Cartas Pokegames"], pokebound: ["💥", "PokeBound"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
   mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
-  presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
+  presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], praca: ["⛲", "Praça Central"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
   regras: ["📚", "Biblioteca"], sac: ["🎧", "SAC: fale com a gente"], admin: ["⚙️", "Administração"], batalha: ["⚔️", "Batalha"]
 };
 const MENU_GROUPS = [
   ["pk", "🐾 Pokémon", ["arena", "batalhas", "cartas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "pkloja", "pokedex"]],
   ["vila", "🏰 Vila e lojas", ["guerras", "loja", "mercado", "vila"]],
   ["comp", "🏆 Competir", ["duelos", "liga", "pokebound", "presence", "ranking"]],
-  ["com", "💬 Comunidade", ["caixa", "chat", "correio"]],
+  ["com", "💬 Comunidade", ["caixa", "chat", "correio", "praca"]],
   ["ajuda", "❓ Ajuda", ["admin", "regras", "sac"]]
 ];
 const MENU_FAST = ["desafio", "pokedex", "treino", "batalhas", "vila", "ranking"];
@@ -6584,7 +6611,7 @@ function onChatInsert(m) {
   const l = $("#chat-list");
   if (S.win === "chat" && S.comTab === "chat" && l) { l.querySelector(".chat-empty")?.remove(); l.insertAdjacentHTML("beforeend", chatMsgHTML(m)); chatScrollEnd(m.user_id === S.session.user.id); }
   else if (m.user_id !== S.session.user.id && !hxChatVisivel() && !grChatOn()) { S.chatUnread++; if ($("#game")) renderHUD(); }
-  hxChatNova();
+  hxChatNova(m);
 }
 function onChatDelete(id) {
   if (id == null) return;
@@ -8947,7 +8974,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8963,6 +8990,7 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
   visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
     vel_max: "Velocidade máxima do tiro", carga_vel: "Velocidade da barra de força", turno_seg: "Segundos por turno", recarga: "Turnos de espera do especial",
@@ -10280,7 +10308,7 @@ function hxRender() {
     <button class="hx-missao ${ms.ok ? "ok" : ""}" data-act="${ms.act}" data-v="${ms.v}"><span class="hx-ex">${ms.ok ? "✓" : "!"}</span><span><b>Missão diária</b><small>${esc(ms.txt)}</small></span></button>`;
   const se = S.today?.season, btn = (ic, t, act, v = "", sel = "") => `<button class="hx-rb ${sel}" data-act="${act}" data-v="${v}" title="${t}" aria-label="${t}">${ic}</button>`;
   $("#hx-right").innerHTML = `<div class="hx-info"><span>Temporada <b>${se?.id ?? ""}</b></span><i></i><span>Casa <b>nº ${me.node}</b></span><i></i><span>${me.arrived_rank ? `<b>No Castelo</b>` : `Faltam <b>${no?.dist ?? 0}</b>`}</span><i></i><span>Região: <b>${esc(no?.region || "")}</b></span></div>
-    <div class="hx-rbs">${btn("🎒", "Mochila", "hx-inv", "", S.hx.inv ? "on" : "")}${btn(MENU.equipe[0], "Meus Pokémon", "go", "equipe")}${btn(MENU.pokedex[0], "Pokédex", "go", "pokedex")}${btn(MENU.ranking[0], "Ranking", "go", "ranking")}${btn(MENU.regras[0], "Biblioteca", "go", "regras")}${btn(S.sound ? "🔊" : "🔇", S.sound ? "Desligar o som" : "Ligar o som", "sound")}</div>`;
+    <div class="hx-rbs">${S.isAdmin || S.cfg.praca?.on !== false ? btn("⛲", "Praça Central", "go", "praca") : ""}${btn("🎒", "Mochila", "hx-inv", "", S.hx.inv ? "on" : "")}${btn(MENU.equipe[0], "Meus Pokémon", "go", "equipe")}${btn(MENU.pokedex[0], "Pokédex", "go", "pokedex")}${btn(MENU.ranking[0], "Ranking", "go", "ranking")}${btn(MENU.regras[0], "Biblioteca", "go", "regras")}${btn(S.sound ? "🔊" : "🔇", S.sound ? "Desligar o som" : "Ligar o som", "sound")}</div>`;
   hxChatRender(); hxInvRender();
 }
 // ---------- chat fixo ----------
@@ -10330,11 +10358,11 @@ async function hxChatEnviar(inp) {
   inp.disabled = false; inp.focus();
 }
 document.addEventListener("submit", e => {
-  if (e.target.id !== "hxchatform" && e.target.id !== "grchatform") return;
+  if (!["hxchatform", "grchatform", "pzchatform"].includes(e.target.id)) return;
   e.preventDefault(); hxChatEnviar(e.target.querySelector("input"));
 });
 // mensagem nova (chamado pelo onChatInsert): atualiza o chat fixo e o da Grama
-function hxChatNova() { hxChatRender(); grChatRender(); }
+function hxChatNova(m) { hxChatRender(); grChatRender(); pzChatNova(m); }
 // ---------- Mochila ----------
 const HX_IC = { cura: "🧪", estado: "💊", reviver: "✨", x: "⚔️", tm: "📀", hm: "💿", evo: "🔗", pedra: "💎" };
 function hxInvItens() {
@@ -10388,7 +10416,265 @@ function grMiniDraw() {
   g.imageSmoothingEnabled = false; g.drawImage(GR.art, 0, 0, cv.width, cv.height);
   g.fillStyle = "#FFE37A"; g.strokeStyle = "#0F1420"; g.lineWidth = 1.5; g.beginPath(); g.arc((GR.fx + .5) * 32 * kx, (GR.fy + .5) * 32 * ky, 4, 0, 6.28); g.fill(); g.stroke();
 }
-const grChatOn = () => GR.open && hxOn() && hxCfg().chat_fixo !== false;
+const grChatOn = () => (GR.open || PZ.open) && hxOn() && hxCfg().chat_fixo !== false;
+// =================================================================
+// PRAÇA CENTRAL (arquivo 90, pedido do dono em 10/11/2026): área pequena e fechada para andar, fora do
+// tabuleiro (como a Grama de Treino), onde os jogadores se veem, conversam e entram nas lojas andando até
+// a porta. Não tem regra nova: cada casa só abre uma janela que o jogo já tem. O tabuleiro não muda.
+// Cenário com os tiles da Pipoya (mesma folha do tabuleiro), com as casas em tamanho dobrado.
+// Cada um avisa a posição no máximo a cada `envio_seg` (padrão 1,5 s) para poupar a cota grátis do Realtime.
+// =================================================================
+const pzCfg = () => ({ on: true, envio_seg: 1.5, mascote: true, baloes: true, ...(S.cfg?.praca || {}) });
+const PZ_W = 34, PZ_H = 22;
+// casas: [janela, nome, símbolo, objeto da Pipoya, coluna, linha, porta em cima (1) ou embaixo (0)]
+const PZ_LOCAIS = [
+  ["pkloja", "Loja Pokémon", "🛒", "casa_bege", 4, 5, 0], ["loja", "Loja & Visuais", "👕", "casa_cinza", 8, 5, 0], ["centro", "Centro Pokémon", "➕", "mansao", 12, 5, 0],
+  ["creche", "Creche", "🏡", "fazenda", 20, 5, 0], ["leilao", "Leilão", "🔨", "templo", 24, 5, 0], ["mercado", "Mercado", "🤝", "tenda", 28, 5, 0],
+  ["regras", "Biblioteca", "📚", "casinha", 4, 12, 0], ["jornal", "Jornal", "📰", "casa_bege", 8, 12, 0], ["sac", "SAC", "🎧", "casa_cinza", 24, 12, 0], ["caixa", "Caixa da Obra", "💛", "mansao", 28, 12, 0],
+  ["arena", "Arena Pokémon", "🏟️", "piramide", 4, 16, 1], ["batalhas", "Batalhas", "⚔️", "ruinas", 8, 16, 1], ["cartas", "Cartas", "🃏", "casinha", 12, 16, 1],
+  ["pokebound", "PokeBound", "💥", "colmeia", 20, 16, 1], ["treino", "Grama de Treino", "🌿", "tenda", 24, 16, 1], ["ranking", "Ranking", "🏆", "templo", 28, 16, 1]
+].map(([win, nome, ic, obj, x, y, cima]) => ({ win, nome, ic, obj, x, y, px: x, py: cima ? y - 1 : y + 2 }));
+const PZ_ARV = [[3, 3], [30, 3], [3, 10], [30, 10], [11, 10], [22, 10], [3, 18], [30, 18], [14, 18], [19, 18]], PZ_ARB = [[6, 10], [26, 10], [10, 18], [22, 18], [16, 4], [17, 4]];
+const PZ_MAP = (() => {
+  const m = Array.from({ length: PZ_H }, (_, y) => Array.from({ length: PZ_W }, (_, x) => x < 2 || y < 2 || x >= PZ_W - 2 || y >= PZ_H - 2 ? "T" : "."));
+  for (let x = 3; x <= 30; x++) for (const y of [7, 8, 14, 15]) m[y][x] = "=";
+  for (let y = 7; y < PZ_H; y++) for (const x of [16, 17]) m[y][x] = "=";
+  for (let y = 9; y <= 12; y++) for (let x = 13; x <= 20; x++) m[y][x] = "=";
+  for (let y = 10; y <= 11; y++) for (let x = 16; x <= 17; x++) m[y][x] = "~";
+  for (const [x, y] of PZ_ARV) m[y][x] = "a";
+  for (const [x, y] of PZ_ARB) m[y][x] = "b";
+  for (const l of PZ_LOCAIS) for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) m[l.y + dy][l.x + dx] = "#";
+  return m;
+})();
+const PZ = { open: false, art: null, x: 16, y: 18, fx: 16, fy: 18, ax: 16, ay: 19, face: 1, moving: null, keys: new Set(), raf: 0, others: {}, baloes: {}, perto: null, volta: false };
+const pzAt = (x, y) => (PZ_MAP[y] || [])[x] || "T";
+const pzSolid = (x, y) => "T~ab#".includes(pzAt(x, y));
+const pzLocais = () => PZ_LOCAIS.filter(l => l.win !== "pokebound" || (pbNoComputador() && S.cfg.pokebound?.on !== false));
+async function pzBuildArt() {
+  if (PZ.art) return PZ.art;
+  const T = 32, cv = document.createElement("canvas"); cv.width = PZ_W * T; cv.height = PZ_H * T;
+  const g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
+  let imgs = null; try { imgs = await loadPipoImages(); } catch {}
+  if (!imgs) {   // sem as imagens: desenho simples
+    for (let y = 0; y < PZ_H; y++) for (let x = 0; x < PZ_W; x++) { g.fillStyle = { T: "#1F4D22", "~": "#2F6FB0", "=": "#B79A6A", "#": "#8A5A3A" }[pzAt(x, y)] || "#6DB24F"; g.fillRect(x * T, y * T, T, T); }
+    return (PZ.art = cv);
+  }
+  const { obj, at } = imgs, [gc, gr] = PIPO_OBJ.grama;
+  for (let y = 0; y < PZ_H; y++) for (let x = 0; x < PZ_W; x++) g.drawImage(obj, gc * T, gr * T, T, T, x * T, y * T, T, T);
+  const auto = (is, base) => {
+    const M = (x, y) => x < 0 || y < 0 || x >= PZ_W || y >= PZ_H || is(pzAt(x, y));
+    for (let y = 0; y < PZ_H; y++) for (let x = 0; x < PZ_W; x++) {
+      if (!is(pzAt(x, y))) continue;
+      const t = M(x, y - 1), r = M(x + 1, y), b = M(x, y + 1), l = M(x - 1, y);
+      const bits = (t ? 1 : 0) | (t && r && M(x + 1, y - 1) ? 2 : 0) | (r ? 4 : 0) | (r && b && M(x + 1, y + 1) ? 8 : 0)
+        | (b ? 16 : 0) | (b && l && M(x - 1, y + 1) ? 32 : 0) | (l ? 64 : 0) | (l && t && M(x - 1, y - 1) ? 128 : 0);
+      const id = base + (PIPO_WANG[bits] ?? 22);
+      g.drawImage(at, (id % 16) * T, Math.floor(id / 16) * T, T, T, x * T, y * T, T, T);
+    }
+  };
+  auto(c => c === "=" || c === "~", PIPO_BASE.pedras); auto(c => c === "~", PIPO_BASE.agua); auto(c => c === "T", PIPO_BASE.floresta);
+  // flores (arte nossa) na grama livre
+  const r = pbRand(77), cores = ["#F25C8A", "#FFD23F", "#FFFFFF", "#9B6CF0"];
+  for (let k = 0; k < 130; k++) { const x = 2 + Math.floor(r() * (PZ_W - 4)), y = 2 + Math.floor(r() * (PZ_H - 4)); if (pzAt(x, y) !== ".") continue;
+    const fx = x * T + 4 + r() * 22, fy = y * T + 6 + r() * 20; g.fillStyle = "#2F7A2A"; g.fillRect(fx, fy + 2, 2, 4); g.fillStyle = cores[k % 4]; g.fillRect(fx - 1, fy, 4, 3); }
+  const put = (key, x, y, k = 1) => { const [c, rr, w, h] = PIPO_OBJ[key]; g.drawImage(obj, c * T, rr * T, w * T, h * T, x * T, y * T, w * T * k, h * T * k); };
+  for (const [x, y] of PZ_ARV) put("arvore", x, y);
+  for (const [x, y] of PZ_ARB) put("arbusto", x, y);
+  for (const l of PZ_LOCAIS) { g.fillStyle = "rgba(0,0,0,.22)"; g.beginPath(); g.ellipse((l.x + 1) * T, (l.y + 2) * T - 4, T * 0.95, 7, 0, 0, 6.28); g.fill(); put(l.obj, l.x, l.y, 2); }
+  // chafariz no meio da praça (arte nossa)
+  const cx = 17 * T, cy = 11 * T; g.fillStyle = "#C9C2B0"; g.beginPath(); g.arc(cx, cy, 12, 0, 6.28); g.fill(); g.fillStyle = "#EAF6FF"; g.beginPath(); g.arc(cx, cy, 6, 0, 6.28); g.fill();
+  return (PZ.art = cv);
+}
+function pzRoot() {
+  let el = $("#praca"); if (el) return el;
+  el = document.createElement("div"); el.id = "praca"; el.hidden = true;
+  el.innerHTML = `<canvas id="pz-cv" aria-label="Praça Central: ande com WASD ou as setas"></canvas>
+    <div class="pz-hud"><span class="pz-tit">⛲ Praça Central</span><span class="pz-on" id="pz-on"></span><button class="btn small ghost" data-pz="sair">Voltar ao mapa</button></div>
+    <div id="pz-mini-box"><b>Praça Central</b><canvas id="pz-mini" width="184" height="119"></canvas></div>
+    <button id="pz-acao" hidden></button>
+    <p class="gr-hint" id="pz-hint">Ande até a porta de uma casa para entrar · WASD ou setas</p>
+    <div id="pz-chat"><h4>💬 Chat da galera</h4><div class="hx-chat-body"><ul class="hx-chat-list" id="pz-chat-list"></ul></div>
+      <form id="pzchatform" class="hx-chat-form" autocomplete="off"><label for="pz-chat-in" class="sr">Mensagem</label><input id="pz-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form></div>
+    <div class="gr-pad" aria-label="Controles"><button data-dir="up" aria-label="Cima">▲</button><button data-dir="left" aria-label="Esquerda">◀</button><button data-dir="right" aria-label="Direita">▶</button><button data-dir="down" aria-label="Baixo">▼</button></div>`;
+  document.body.appendChild(el);
+  el.addEventListener("click", e => {
+    if (e.target.closest("[data-pz='sair']")) return pzSair();
+    if (e.target.closest("#pz-acao")) return pzEntrar();
+  });
+  const pad = el.querySelector(".gr-pad");
+  const press = e => { const b = e.target.closest("[data-dir]"); if (!b) return; e.preventDefault(); PZ.keys.clear(); PZ.keys.add(b.dataset.dir); b.setPointerCapture?.(e.pointerId); };
+  const lift = e => { e.preventDefault?.(); PZ.keys.clear(); };
+  pad.addEventListener("pointerdown", press); pad.addEventListener("pointerup", lift); pad.addEventListener("pointercancel", lift); pad.addEventListener("pointerleave", lift);
+  pad.addEventListener("contextmenu", e => e.preventDefault());
+  return el;
+}
+document.addEventListener("keydown", e => {
+  if (!PZ.open || document.querySelector(".modal-bg") || e.target.matches?.("input,textarea,select")) return;
+  const k = e.key.toLowerCase();
+  if ((k === "e" || k === "enter") && PZ.perto) { e.preventDefault(); return pzEntrar(); }
+  if (k === "escape") { e.preventDefault(); return pzSair(); }
+  const d = GR_KEYS[k]; if (!d) return;
+  e.preventDefault(); PZ.keys.add(d);
+});
+document.addEventListener("keyup", e => { const d = GR_KEYS[e.key?.toLowerCase?.()]; if (d) PZ.keys.delete(d); });
+window.addEventListener("blur", () => PZ.keys.clear());
+async function pzOpen() {
+  if (pzCfg().on === false && !S.isAdmin) return toast("A Praça está fechada no momento.", true);
+  const el = pzRoot(); S.win = null; render();
+  PZ.open = true; PZ.volta = false; PZ.keys.clear(); el.hidden = false; document.body.classList.add("gr-on", "pz-on");
+  if (PZ.moving) { PZ.x = PZ.moving.tx; PZ.y = PZ.moving.ty; PZ.moving = null; }
+  if (pzSolid(PZ.x, PZ.y)) { PZ.x = 16; PZ.y = 18; }
+  PZ.fx = PZ.x; PZ.fy = PZ.y;
+  document.body.classList.toggle("hx-gr", hxOn());
+  $("#pz-chat", el).hidden = hxCfg().chat_fixo === false;
+  $("#pz-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande até a porta de uma casa para entrar" : "Ande até a porta de uma casa para entrar · WASD ou setas · E entra";
+  if (grChatOn()) { if (!S.chat.loaded) loadChat().then(pzChatRender); else pzChatRender(); hxChatVisto(); }
+  pzNetJoin(); pzPerto(); await pzBuildArt();
+  cancelAnimationFrame(PZ.raf); PZ.last = performance.now(); PZ.raf = requestAnimationFrame(pzLoop);
+}
+function pzClose(sai = true) {
+  PZ.open = false; PZ.keys.clear(); cancelAnimationFrame(PZ.raf);
+  if (sai) pzNetLeave();
+  const el = $("#praca"); if (el) el.hidden = true; document.body.classList.remove("gr-on", "pz-on");
+}
+function pzSair() { PZ.volta = false; pzClose(); if ($("#game")) renderHUD(); }
+// entra na casa: fecha a praça, abre a janela de sempre e, quando a janela fechar, volta para a porta
+function pzEntrar() {
+  const l = PZ.perto; if (!l) return;
+  sfx("tick"); pzClose(false); PZ.volta = true;
+  if (l.win === "jornal") return ACTIONS["com-tab"]("jornal");
+  if (l.win === "pokebound") { PZ.volta = false; pzNetLeave(); return pbOpen(); }
+  ACTIONS.go(l.win);
+}
+// chamado pelo render(): fechou a janela aberta por uma casa → volta para a praça
+function pzVoltaCheck() { if (PZ.volta && !PZ.open && !S.win && !GR.open && $("#game")) { PZ.volta = false; pzOpen(); } }
+function pzPerto() {
+  const l = pzLocais().find(l => PZ.y === l.py && (PZ.x === l.px || PZ.x === l.px + 1)) || null;
+  if (l === PZ.perto) return; PZ.perto = l;
+  const b = $("#pz-acao"); if (!b) return;
+  b.hidden = !l; if (l) b.innerHTML = `${l.ic} Entrar: <b>${esc(l.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`;
+}
+function pzLoop(now) {
+  if (!PZ.open) return;
+  PZ.raf = requestAnimationFrame(pzLoop);
+  const dt = Math.min(80, now - (PZ.last || now)); PZ.last = now;
+  if (PZ.moving) { PZ.moving.t += dt / 150; if (PZ.moving.t >= 1) { PZ.ax = PZ.x; PZ.ay = PZ.y; PZ.x = PZ.moving.tx; PZ.y = PZ.moving.ty; PZ.moving = null; pzNetSend(); pzPerto();
+    if (PZ.y >= PZ_H - 2) { PZ.y = 18; return pzSair(); } } }   // saiu pela estrada de baixo
+  if (!PZ.moving && PZ.keys.size) {
+    const d = [...PZ.keys].at(-1), [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[d];
+    if (dx) PZ.face = dx;
+    const tx = PZ.x + dx, ty = PZ.y + dy;
+    if (!pzSolid(tx, ty)) PZ.moving = { fx: PZ.x, fy: PZ.y, tx, ty, t: 0 };
+  }
+  const mv = PZ.moving; PZ.fx = mv ? mv.fx + (mv.tx - mv.fx) * mv.t : PZ.x; PZ.fy = mv ? mv.fy + (mv.ty - mv.fy) * mv.t : PZ.y;
+  for (const o of Object.values(PZ.others)) {
+    if (o.x == null) continue;
+    const sp = dt / 150, dx = o.x - o.fx, dy = o.y - o.fy, d = Math.hypot(dx, dy);
+    if (d > 6) { o.fx = o.x; o.fy = o.y; continue; }
+    if (d > 0.02) { if (Math.abs(dx) > 0.02) o.f = Math.sign(dx); o.tx = o.fx; o.ty = o.fy; }
+    if (d <= sp) { o.fx = o.x; o.fy = o.y; } else { o.fx += dx / d * sp; o.fy += dy / d * sp; }
+  }
+  pzDraw(now);
+}
+function pzDraw(now) {
+  const cv = $("#pz-cv"); if (!cv || !PZ.art) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1), W0 = cv.clientWidth, H0 = cv.clientHeight;
+  if (cv.width !== Math.round(W0 * dpr) || cv.height !== Math.round(H0 * dpr)) { cv.width = Math.round(W0 * dpr); cv.height = Math.round(H0 * dpr); }
+  const g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
+  const tile = Math.max(36, Math.min(64, Math.round(Math.min(W0 / 14, H0 / 9)))) * dpr, k = tile / 32;
+  const MW = PZ.art.width * k, MH = PZ.art.height * k;
+  let cx = (PZ.fx + .5) * tile - cv.width / 2, cy = (PZ.fy + .5) * tile - cv.height / 2;
+  cx = MW <= cv.width ? (MW - cv.width) / 2 : Math.max(0, Math.min(MW - cv.width, cx));
+  cy = MH <= cv.height ? (MH - cv.height) / 2 : Math.max(0, Math.min(MH - cv.height, cy));
+  g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
+  g.drawImage(PZ.art, -cx, -cy, MW, MH);
+  // água do chafariz brilhando
+  { const fx = 17 * tile - cx, fy = 11 * tile - cy; for (let i = 0; i < 6; i++) { const a = now / 600 + i * 1.05, rr = (0.35 + 0.25 * Math.sin(now / 300 + i)) * tile; g.fillStyle = "rgba(220,245,255,.8)"; g.beginPath(); g.arc(fx + Math.cos(a) * rr, fy + Math.sin(a) * rr * 0.6 - tile * 0.15, 2.2 * dpr, 0, 6.28); g.fill(); } }
+  const texto = (txt, x, y, px, cor = "#F4F8E8") => { g.font = `700 ${Math.round(px * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(10,14,24,.92)"; g.strokeText(txt, x, y); g.fillStyle = cor; g.fillText(txt, x, y); };
+  // placas das casas
+  for (const l of pzLocais()) {
+    const x = (l.x + 1) * tile - cx, y = l.py < l.y ? (l.y + 2) * tile - cy + 26 * dpr : l.y * tile - cy - 4 * dpr; if (x < -tile * 3 || x > cv.width + tile * 3) continue;   // porta em cima: a placa vai embaixo da casa
+    const perto = PZ.perto === l; g.font = `700 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`;
+    const w = g.measureText(l.nome).width + 34 * dpr, h = 22 * dpr;
+    g.fillStyle = perto ? "rgba(245,197,66,.95)" : "rgba(16,24,40,.88)"; g.strokeStyle = perto ? "#1E150C" : "rgba(201,160,90,.9)"; g.lineWidth = 1.5 * dpr;
+    g.beginPath(); g.roundRect(x - w / 2, y - h, w, h, 8 * dpr); g.fill(); g.stroke();
+    g.textAlign = "center"; g.fillStyle = perto ? "#1E150C" : "#FFE7A8"; g.fillText(`${l.ic} ${l.nome}`, x, y - 6 * dpr);
+    // tapete da porta
+    g.fillStyle = perto ? "rgba(245,197,66,.55)" : "rgba(255,255,255,.16)"; g.fillRect(l.px * tile - cx + 3 * dpr, l.py * tile - cy + 3 * dpr, tile * 2 - 6 * dpr, tile - 6 * dpr);
+  }
+  // quem está na praça, de trás para a frente
+  const eu = { uid: pkMe(), fx: PZ.fx, fy: PZ.fy, f: PZ.face, n: S.me?.name, ch: S.me, eu: true, m: pzCfg().mascote !== false ? pkTeam()[0]?.species_id : null, tx: PZ.ax, ty: PZ.ay, pulo: PZ.moving ? Math.abs(Math.sin(PZ.moving.t * Math.PI)) * 3 * dpr : 0 };
+  const todos = [...Object.values(PZ.others).map(o => ({ ...o, ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } })), eu].filter(o => o.ch?.class && o.fx != null).sort((a, b) => a.fy - b.fy);
+  for (const o of todos) {
+    const ox = (o.fx + .5) * tile - cx, oy = (o.fy + 1) * tile - cy; if (ox < -tile * 2 || oy < -tile * 2 || ox > cv.width + tile * 2 || oy > cv.height + tile * 3) continue;
+    // o Pokémon da frente da equipe acompanha (imagem pronta da PokeAPI)
+    if (o.m && pzCfg().mascote !== false) { const im = grImg(o.m);
+      if (im.complete && im.naturalWidth) { const mx = ((o.tx ?? o.fx - (o.f || 1)) + .5) * tile - cx, my = ((o.ty ?? o.fy) + 1) * tile - cy, sz = tile * 0.95;
+        g.fillStyle = "rgba(0,0,0,.25)"; g.beginPath(); g.ellipse(mx, my - 3 * dpr, tile * .22, tile * .08, 0, 0, 6.28); g.fill();
+        g.save(); g.translate(mx, my - Math.abs(Math.sin(now / 260 + ox)) * 2 * dpr); if ((o.f || 1) > 0) g.scale(-1, 1); g.drawImage(im, -sz / 2, -sz * .95, sz, sz); g.restore(); } }
+    const sp = avatarCanvas(o.ch), h = tile * 1.15, w = h * sp.cv.width / sp.cv.height;
+    g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(ox, oy - 3 * dpr, tile * .28, tile * .1, 0, 0, 6.28); g.fill();
+    g.save(); g.translate(ox, oy - (o.pulo || 0) - 2 * dpr); if ((o.f || 1) < 0) g.scale(-1, 1); g.drawImage(sp.cv, -w / 2, -h, w, h); g.restore();
+    texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : "#F4F8E8");
+    // balão com a última fala no chat
+    const bl = PZ.baloes[o.uid];
+    if (bl && bl.ate > now && pzCfg().baloes !== false) {
+      g.font = `600 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`; const t = bl.txt, bw = Math.min(g.measureText(t).width + 16 * dpr, 260 * dpr), bh = 24 * dpr, by = oy - h - 22 * dpr;
+      g.globalAlpha = Math.min(1, (bl.ate - now) / 600); g.fillStyle = "#FFFFFF"; g.strokeStyle = "#1E150C"; g.lineWidth = 1.5 * dpr; g.beginPath(); g.roundRect(ox - bw / 2, by - bh, bw, bh, 9 * dpr); g.fill(); g.stroke();
+      g.beginPath(); g.moveTo(ox - 5 * dpr, by - 1); g.lineTo(ox, by + 6 * dpr); g.lineTo(ox + 5 * dpr, by - 1); g.fill();
+      g.fillStyle = "#1E150C"; g.textAlign = "center"; g.fillText(t, ox, by - 7 * dpr, bw - 10 * dpr); g.globalAlpha = 1;
+    }
+  }
+  // mapinha
+  const mc = $("#pz-mini");
+  if (mc && mc.offsetParent !== null) { const mg = mc.getContext("2d"), kx = mc.width / PZ.art.width, ky = mc.height / PZ.art.height; mg.imageSmoothingEnabled = false; mg.drawImage(PZ.art, 0, 0, mc.width, mc.height);
+    for (const o of todos) { mg.fillStyle = o.eu ? "#FFE37A" : "#FFFFFF"; mg.strokeStyle = "#0F1420"; mg.lineWidth = 1; mg.beginPath(); mg.arc((o.fx + .5) * 32 * kx, (o.fy + .5) * 32 * ky, o.eu ? 4 : 3, 0, 6.28); mg.fill(); mg.stroke(); } }
+  const n = todos.length, on = $("#pz-on"); if (on && on.dataset.n !== String(n)) { on.dataset.n = n; on.textContent = n === 1 ? "👥 Só você por aqui" : `👥 ${n} na praça`; }
+}
+// ---------- quem está na praça (Realtime) ----------
+let pzChannel = null;
+const pzMeta = () => ({ n: S.me.name, c: S.me.class, o: S.me.outfit || {}, x: PZ.x, y: PZ.y, f: PZ.face, m: pzCfg().mascote !== false ? (pkTeam()[0]?.species_id || null) : null });
+function pzNetJoin() {
+  if (!sb || !S.me) return;
+  if (pzChannel) { try { pzChannel.track(pzMeta()); } catch {} return; }
+  PZ.others = {};
+  pzChannel = sb.channel("praca", { config: { presence: { key: pkMe() }, broadcast: { self: false } } })
+    .on("presence", { event: "sync" }, () => {
+      let st = {}; try { st = pzChannel.presenceState(); } catch {}
+      const seen = new Set();
+      for (const [uid, metas] of Object.entries(st)) {
+        if (uid === pkMe()) continue; const p = metas.at(-1) || {}; seen.add(uid);
+        const o = PZ.others[uid] || (PZ.others[uid] = { uid, fx: p.x, fy: p.y, x: p.x, y: p.y });
+        Object.assign(o, { n: p.n, c: p.c, o: p.o, m: p.m, f: p.f ?? o.f, x: o.x ?? p.x, y: o.y ?? p.y });
+      }
+      for (const uid of Object.keys(PZ.others)) if (!seen.has(uid)) delete PZ.others[uid];
+    })
+    .on("broadcast", { event: "pos" }, ({ payload: p }) => {
+      if (!p?.u || p.u === pkMe()) return;
+      const o = PZ.others[p.u] || (PZ.others[p.u] = { uid: p.u, fx: p.x, fy: p.y });
+      Object.assign(o, { x: p.x, y: p.y, f: p.f });
+    })
+    .subscribe(st => { if (st === "SUBSCRIBED") { try { pzChannel.track(pzMeta()); } catch {} } });
+}
+function pzNetSend() {
+  if (!pzChannel) return;
+  const now = Date.now(), esp = Math.max(500, (pzCfg().envio_seg || 1.5) * 1000); clearTimeout(PZ.sendT);
+  const go = () => { PZ.lastSend = Date.now(); try { pzChannel.send({ type: "broadcast", event: "pos", payload: { u: pkMe(), x: PZ.x, y: PZ.y, f: PZ.face } }); } catch {} };
+  if (now - (PZ.lastSend || 0) >= esp) go(); else PZ.sendT = setTimeout(go, esp - (now - PZ.lastSend));
+}
+function pzNetLeave() {
+  clearTimeout(PZ.sendT);
+  if (pzChannel) { try { pzChannel.untrack(); sb.removeChannel(pzChannel); } catch {} }
+  pzChannel = null; PZ.others = {};
+}
+// fechou a aba ou ficou muito tempo numa janela: sai da praça para não ocupar o Realtime à toa
+setInterval(() => { if (pzChannel && !PZ.open && (!PZ.volta || (PZ.foraDesde && Date.now() - PZ.foraDesde > 180000))) { PZ.volta = false; pzNetLeave(); } PZ.foraDesde = PZ.open ? 0 : (PZ.foraDesde || Date.now()); }, 5000);
+// ---------- chat na praça ----------
+function pzChatRender() { const l = $("#pz-chat-list"); if (!l || !PZ.open) return; l.innerHTML = hxChatLista(25); l.scrollTop = l.scrollHeight; }
+function pzChatNova(m) {
+  pzChatRender();
+  if (m && PZ.open && m.user_id) PZ.baloes[m.user_id] = { txt: String(m.body || "").slice(0, 60), ate: performance.now() + 6000 };
+}
 // =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
 // Usa a tabela gifts do arquivo 34 (cada um lê só os seus); confere a cada minuto e avisa quando chega um novo.
@@ -11791,6 +12077,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "praca-2026-11-10", sql: "90", title: "⛲ Abriu a Praça Central!", body: () => `Lugar novo para passear com a galera: a Praça Central (menu Comunidade, ou o botão ⛲ no alto do mapa).
+• Ande com o seu herói (WASD ou setas; no celular, os botões na tela) e veja quem mais está na praça.
+• O primeiro Pokémon da sua equipe anda atrás de você.
+• Converse pelo chat: o que você escreve aparece num balão em cima da sua cabeça.
+• Chegue na porta de uma casa e aperte E para entrar: lojas, Centro Pokémon, Creche, Leilão, Mercado, Arena, Cartas, Biblioteca, Ranking e mais.
+• É só um jeito novo de chegar nas mesmas janelas: o tabuleiro e as regras não mudam.` },
   { id: "visual-2026-11-10", sql: "89", title: "🖥️ Tela nova no computador!", body: () => `O jogo ganhou cara nova para quem joga no computador (no celular nada muda):
 • O mapa agora ocupa a tela toda. O menu fica em ícones na lateral: o botão » abre o menu completo e « recolhe.
 • No alto: mapinha, sua barra com nível e EXP e a Missão diária (o próximo passo de hoje: é só clicar).
