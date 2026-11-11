@@ -2028,6 +2028,108 @@ body.pb-on{overflow:hidden}
 .pb-char{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border-radius:12px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:inherit;cursor:pointer;font:inherit}
 .pb-char:hover{border-color:#F5C542;background:rgba(245,197,66,.1)}.pb-char img{width:110px;height:110px;object-fit:contain}
 .pb-char b{font-size:18px;color:#FFE37A}.pb-char small{color:#BFD0DD;line-height:1.4}.pb-char em{font-style:normal;font-size:12px;color:#FFE7A8}
+/* ---------- Visual novo (painéis por cima do mapa, só no computador) ---------- */
+#hx-left,#hx-right,#hx-chat,#hx-inv{display:none}
+@media (min-width:761px){
+  #game.hx #hx-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;position:absolute;top:10px;right:12px;z-index:6;pointer-events:none}
+  #game.hx #hx-right>*{pointer-events:auto}
+  #game.hx.dock-min #hx-left{display:flex;gap:10px;align-items:flex-start;position:absolute;top:10px;left:calc(var(--dock) + 12px);z-index:6;pointer-events:none}
+  #game.hx.dock-min #hx-left>*{pointer-events:auto}
+  #game.hx #hx-chat:not([hidden]){display:block;position:absolute;left:calc(var(--dock) + 12px);bottom:12px;width:min(620px,calc(100vw - var(--dock) - 330px));z-index:6;pointer-events:auto}
+  #game.hx #hx-inv:not([hidden]){display:block;position:absolute;top:104px;right:12px;width:412px;z-index:7;pointer-events:auto}
+  #game.hx .help-badge{top:104px}
+  #game.hx #hud-news{top:142px}
+  #game.hx #sac-dock,#game.hx #bt-dock{left:calc(var(--dock) + 14px);bottom:calc(var(--hxc,236px) + 22px)}
+  #game.hx.dock-min #sec-top:not(.hidden){top:196px}
+  #game.hx.dock-min #hud-banner{display:block}   /* a escolha da bifurcação aparece também com o menu recolhido */
+}
+.hx-mini,.hx-info,#hx-player,#hx-chat,#hx-inv{background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45);color:#E8ECF3}
+.hx-mini{padding:4px}.hx-mini-h{font:800 13px var(--sans);text-align:center;color:#FFE7A8;padding:3px 6px 5px}
+.hx-mini canvas{display:block;width:176px;height:auto;border-radius:6px;cursor:pointer}
+#hx-player{display:flex;align-items:center;gap:12px;padding:6px 14px 6px 6px;border-radius:999px 14px 14px 999px}
+.hx-av{all:unset;cursor:pointer;width:54px;height:54px;border-radius:50%;background:radial-gradient(#2A3A55,#141C2C);border:3px solid #E0B44C;display:grid;place-items:center;overflow:hidden}
+.hx-lv{display:flex;flex-direction:column;gap:4px;min-width:170px}.hx-lv b{font:800 16px var(--sans);color:#FFF}
+.hx-xp{position:relative;display:block;height:14px;border-radius:7px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);overflow:hidden}
+.hx-xp i{position:absolute;inset:0 auto 0 0;background:linear-gradient(#6BE07A,#2FA84A)}.hx-xp em{position:absolute;right:6px;top:-1px;font:800 10.5px/14px var(--sans);font-style:normal;color:#FFF;text-shadow:0 1px 2px #000}
+.hx-missao{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:4px 6px 4px 12px;border-left:1px solid rgba(255,255,255,.15)}
+.hx-missao b{display:block;font:800 14px var(--sans);color:#FFF}.hx-missao small{display:block;font:600 12.5px var(--sans);color:#C9D4E3;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hx-ex{width:26px;height:26px;border-radius:50%;background:#F5C542;color:#3A2606;font:900 17px/26px var(--sans);text-align:center;box-shadow:0 0 0 3px rgba(245,197,66,.25)}
+.hx-missao.ok .hx-ex{background:#4CC38A;color:#06301C;box-shadow:0 0 0 3px rgba(76,195,138,.25)}.hx-missao:hover small{color:#FFE7A8}
+.hx-info{display:flex;align-items:center;gap:10px;padding:7px 14px;font:600 13px var(--sans);color:#C9D4E3;white-space:nowrap}.hx-info b{color:#FFF}.hx-info i{width:1px;height:14px;background:rgba(255,255,255,.22)}
+.hx-rbs{display:flex;gap:6px}
+.hx-rb{all:unset;cursor:pointer;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:20px;background:linear-gradient(#2A3650,#161E30);border:2px solid rgba(201,160,90,.75);box-shadow:0 3px 0 rgba(0,0,0,.45)}
+.hx-rb:hover,.hx-rb.on{border-color:#FFE37A;background:linear-gradient(#3A4A6C,#1E2A44)}.hx-rb:active{transform:translateY(2px);box-shadow:none}
+/* chat fixo */
+#hx-chat{border-radius:12px;overflow:hidden}
+.hx-tabs{display:flex;gap:4px;padding:6px 6px 0;background:rgba(0,0,0,.25)}
+.hx-tabs button[role=tab]{all:unset;cursor:pointer;padding:7px 18px;border-radius:9px 9px 0 0;font:700 13.5px var(--sans);color:#AEBBD0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-bottom:0}
+.hx-tabs button[aria-selected=true]{background:rgba(201,160,90,.2);color:#FFE7A8;border-color:rgba(201,160,90,.7)}
+.hx-min{all:unset;cursor:pointer;margin-left:auto;padding:4px 12px;color:#C9D4E3;font-size:15px}
+#hx-chat.min .hx-tabs{padding-bottom:6px}#hx-chat.min .hx-tabs button[role=tab]{border-radius:9px;border-bottom:1px solid rgba(255,255,255,.1)}
+.hx-chat-body{height:140px;overflow:auto;padding:8px 12px;font:500 13.5px/1.55 var(--sans)}
+.hx-chat-list,.hx-jornal,.hx-missoes{list-style:none;margin:0;padding:0}
+.hx-chat-list{height:100%;overflow:auto}.hx-chat-list time{color:#8FA0B8;font-family:"IBM Plex Mono",monospace;font-size:12px}.hx-chat-list li{overflow-wrap:anywhere}
+.hx-jornal button,.hx-missoes button{all:unset;cursor:pointer;display:block;width:100%;padding:3px 0;color:#E8ECF3}.hx-jornal button:hover,.hx-missoes button:hover{color:#FFE7A8}
+.hx-jornal time{color:#8FA0B8;font-size:12px;margin-right:6px}
+.hx-missoes{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.hx-missoes i{font-style:normal;display:inline-block;width:20px;color:#8FA0B8}.hx-missoes .ok{color:#8FE0A8}.hx-missoes .ok i{color:#4CC38A}
+.hx-vazio{margin:0}
+.hx-chat-form{display:flex;gap:6px;padding:6px 8px 8px;border-top:1px solid rgba(255,255,255,.1)}.hx-chat-form[hidden]{display:none}
+.hx-chat-form input{flex:1;min-width:0;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.4);color:#FFF;padding:0 10px;font:500 13.5px var(--sans)}
+.hx-send{all:unset;cursor:pointer;width:38px;height:34px;border-radius:8px;text-align:center;background:rgba(201,160,90,.25);color:#FFE7A8;border:1px solid rgba(201,160,90,.7)}
+/* mochila */
+.hx-inv-h{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.12)}.hx-inv-h b{font:800 17px var(--sans);color:#FFE7A8}
+.hx-x{all:unset;cursor:pointer;width:26px;height:26px;border-radius:7px;text-align:center;font-size:18px;border:1px solid rgba(255,255,255,.25)}
+.hx-inv-top{display:grid;grid-template-columns:138px 1fr;gap:10px;padding:10px 12px 6px}
+.hx-boneco{display:grid;grid-template-columns:38px 1fr 38px;gap:4px;align-items:center}.hx-eqcol{display:grid;gap:5px}
+.hx-heroi{all:unset;cursor:pointer;display:grid;place-items:center;height:124px;border-radius:10px;background:radial-gradient(#2A3A55,#111827);border:1px solid rgba(255,255,255,.14);overflow:hidden}
+.hx-invtabs{display:flex;gap:4px;margin-bottom:6px}.hx-invtabs button{all:unset;cursor:pointer;flex:1;text-align:center;padding:5px 0;border-radius:7px;font:700 12.5px var(--sans);color:#AEBBD0;border:1px solid rgba(255,255,255,.14)}
+.hx-invtabs button[aria-selected=true]{background:rgba(201,160,90,.22);color:#FFE7A8;border-color:rgba(201,160,90,.7)}
+.hx-grade{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;max-height:150px;overflow:auto}
+.hx-slot{all:unset;position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:8px;background:linear-gradient(#222C42,#141B2B);border:1px solid rgba(255,255,255,.16);overflow:hidden;cursor:pointer}
+.hx-slot.vazio{cursor:default;opacity:.55}.hx-slot.on{border-color:#FFE37A;box-shadow:0 0 0 2px rgba(255,227,122,.35)}.hx-slot.eq{width:36px}
+.hx-slot svg,.hx-slot img{max-width:100%;max-height:100%}.hx-ic{font-size:22px;line-height:1}
+.hx-slot em{position:absolute;right:2px;bottom:0;font:800 11px var(--sans);font-style:normal;color:#FFF;text-shadow:0 1px 2px #000,0 0 3px #000}
+.hx-inv-info{display:flex;gap:8px;align-items:center;min-height:38px;padding:4px 12px;font:500 12.5px var(--sans)}.hx-inv-info b{color:#FFE7A8;white-space:nowrap}.hx-inv-info span{flex:1;color:#C9D4E3}
+.hx-inv-sub{padding:4px 12px 2px;font:800 14px var(--sans);color:#FFF}
+.hx-time{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:4px 12px 8px}
+.hx-mon{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;border-radius:9px;background:linear-gradient(#24324A,#141B2B);border:1px solid rgba(201,160,90,.55);padding:2px 0 4px}
+.hx-mon img{width:52px;height:52px;image-rendering:pixelated}.hx-mon small{font:700 11.5px var(--sans);color:#E8ECF3}.hx-mon.mais{justify-content:center;font-size:22px;color:#8FA0B8;border-style:dashed;min-height:70px}
+.hx-inv-pe{display:flex;gap:14px;align-items:center;padding:8px 12px;border-top:1px solid rgba(255,255,255,.12);font:700 13.5px var(--sans)}.hx-moedas{margin-left:auto;display:flex;align-items:center;gap:6px;color:#FFE37A}.hx-moedas .coin-ic{width:18px;height:18px}
+/* Grama de Treino no mesmo estilo */
+#gr-mini-box,#gr-chat{display:none}
+@media (min-width:761px){
+  body.hx-gr .gr-hud{left:214px;top:12px;right:12px}
+  body.hx-gr .gr-time,body.hx-gr .gr-mon{background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  body.hx-gr .gr-mon{padding:6px 10px}
+  body.hx-gr #gr-mini-box{display:block;position:absolute;left:12px;top:12px;padding:4px;background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  body.hx-gr #gr-mini-box b{display:block;font:800 13px var(--sans);text-align:center;color:#FFE7A8;padding:3px 6px 5px}
+  body.hx-gr #gr-mini{display:block;width:184px;height:auto;border-radius:6px;image-rendering:pixelated}
+  body.hx-gr #gr-chat{display:block;position:absolute;left:12px;bottom:12px;width:min(520px,calc(100vw - 420px));background:linear-gradient(rgba(16,24,40,.92),rgba(10,15,26,.92));border:2px solid rgba(201,160,90,.75);border-radius:12px;overflow:hidden;color:#E8ECF3;touch-action:auto;user-select:text;-webkit-user-select:text}
+  body.hx-gr #gr-chat .hx-chat-body{height:104px}
+  body.hx-gr #gr-chat h4{margin:0;padding:6px 12px;font:800 13px var(--sans);color:#FFE7A8;background:rgba(0,0,0,.25)}
+  body.hx-gr .gr-hint{bottom:auto;top:66px;max-width:none}
+}
+/* ---------- Praça Central ---------- */
+#praca{position:fixed;inset:0;z-index:45;background:#0E1A10;touch-action:none;user-select:none;-webkit-user-select:none}
+#praca[hidden]{display:none}
+#pz-cv{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.pz-hud{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:10px;right:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pz-tit,.pz-on{background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;padding:8px 14px;color:#FFE7A8;font:800 15px var(--sans)}
+.pz-on{color:#E8ECF3;font-weight:700;font-size:13.5px}.pz-hud .btn{margin-left:auto}
+#pz-acao{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px));padding:12px 22px;border-radius:14px;border:3px solid #1E150C;background:linear-gradient(#FFE37A,#F5B942);color:#2A1206;font:700 16px var(--sans);cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.4);z-index:2}
+#pz-acao[hidden]{display:none}#pz-acao kbd{margin-left:8px;padding:2px 8px;border-radius:6px;background:#2A1206;color:#FFE37A;font:800 13px var(--sans)}
+#pz-mini-box,#pz-chat{display:none}
+@media (min-width:761px){
+  body.hx-gr .pz-hud{left:214px;top:12px;right:12px}
+  body.hx-gr #pz-mini-box{display:block;position:absolute;left:12px;top:12px;padding:4px;background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  body.hx-gr #pz-mini-box b{display:block;font:800 13px var(--sans);text-align:center;color:#FFE7A8;padding:3px 6px 5px}
+  body.hx-gr #pz-mini{display:block;width:184px;height:auto;border-radius:6px;image-rendering:pixelated}
+  body.hx-gr #pz-chat:not([hidden]){display:block;position:absolute;left:12px;bottom:12px;width:min(520px,calc(100vw - 420px));background:linear-gradient(rgba(16,24,40,.92),rgba(10,15,26,.92));border:2px solid rgba(201,160,90,.75);border-radius:12px;overflow:hidden;color:#E8ECF3;touch-action:auto;user-select:text;-webkit-user-select:text}
+  body.hx-gr #pz-chat .hx-chat-body{height:104px}
+  body.hx-gr #pz-chat h4{margin:0;padding:6px 12px;font:800 13px var(--sans);color:#FFE7A8;background:rgba(0,0,0,.25)}
+  #praca .gr-pad{display:none}
+  #pz-acao{bottom:calc(40px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -2449,6 +2551,7 @@ async function enterGame() {
 // RENDERIZAÇÃO
 // =================================================================
 function render() {
+  try { pzVoltaCheck(); } catch {}
   if (!configured) return renderSetup();
   if (S.recovery) return renderRecovery();
   if (!S.session || !S.profile) return renderAuth();
@@ -3984,6 +4087,8 @@ const logoSVG = () => `<svg viewBox="0 0 9 9" shape-rendering="crispEdges" aria-
 try { S.dockMin = localStorage.getItem("pg-dock") === "1"; } catch { S.dockMin = false; }
 function ensureGameShell() {
   if ($("#game")) return;
+  // visual novo: quem nunca escolheu começa com o menu lateral recolhido (tela cheia), se o admin deixou assim
+  try { if (localStorage.getItem("pg-dock") == null && hxCfg().on !== false && hxCfg().tela_cheia_padrao !== false && window.innerWidth > 760) S.dockMin = true; } catch {}
   app.innerHTML = `<div id="game" class="${S.dockMin ? "dock-min" : ""}">
     <canvas id="world" role="img" aria-label="Mapa do jogo. Arraste para mover, use a roda do mouse ou o gesto de pinça para aproximar."></canvas>
     <div class="hud">
@@ -4000,6 +4105,7 @@ function ensureGameShell() {
       </aside>
       <div id="hud-cam"></div>
       <div id="hud-news"></div>
+      ${HX_SHELL}
       <button class="help-badge" data-act="go" data-v="caixa" title="Caixa da Obra: ajude o jogo com PIX">💛 Ajude o jogo</button>
       <button class="m-eu" data-act="center" aria-label="Ir até o meu personagem">Eu</button>
       <div id="menu-back" data-act="menu-close"></div>
@@ -4050,6 +4156,7 @@ function renderHUD() {
   const hasTop = !!($("#hud-banner").innerHTML.trim() || $("#hud-tip").innerHTML.trim());
   $("#sec-top").classList.toggle("hidden", !hasTop);
   if (S.tip && !S.dockMin && window.innerWidth > 760) $("#sec-top").scrollIntoView({ block: "nearest" });
+  hxRender();
   $("#hud-cam").innerHTML = `<button class="cam-btn" data-act="zoom" data-v="1" aria-label="Aproximar">+</button><button class="cam-btn" data-act="zoom" data-v="-1" aria-label="Afastar">−</button><button class="cam-btn wide" data-act="center">Eu</button><button class="cam-btn wide" data-act="fit">Tudo</button>`;
   W.dirty = true;
 }
@@ -5586,6 +5693,9 @@ function LIB() {
   const bet = [libN(c.battle_bet_min, 10), libN(c.battle_bet_max, 100)], rs = c.round_bonus_steps || [3, 2, 1], rc = c.round_bonus_coins || [100, 50, 0];
   const kinds = Object.entries(KIND).filter(([k]) => !["inicio", "normal", "cacada", "alvo"].includes(k));
   return [
+    { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
+      <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
+      <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
     { id: "pokebound", ic: "💥", t: "PokeBound", h: `<p>O <b>PokeBound</b> (menu Competir, só no computador) é o nosso duelo de artilharia: cada um num lado do mapa, um tiro por vez, e vence quem derrubar o outro.</p>
       <p><b>Pokémon:</b> Blastoise, Electrode, Golem e Dragonite. Todos têm a mesma força no total, distribuída de um jeito diferente (vida, dano, tamanho da explosão, alcance e quanto sentem o vento), e cada um tem um ataque especial que volta a cada ${S.cfg.pokebound?.recarga ?? 3} turnos.</p>
       <p><b>Controles:</b> ↑ ↓ mudam o ângulo; segure ESPAÇO (ou o botão Atirar) e solte para atirar: a barra de força vai e volta, sem número, e fica a marca do seu último tiro; ← → andam enquanto houver fôlego (sobe ladeira e entra em cratera); ⭐ arma o especial antes de carregar a força. Arraste a tela, use a rodinha do mouse ou clique no minimapa para ver o campo; "👁 Ver adversário" mostra o outro lado.</p>
@@ -5593,7 +5703,7 @@ function LIB() {
     { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b> (${S.cfg.cartas?.brilhante_pct ?? 1}% das cartas): dourada e um pouco mais forte.</p>
       <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
       <p><b>Duelo:</b> monte um deck de ${S.cfg.cartas?.deck ?? 10} cartas (no máximo ${S.cfg.cartas?.max_iguais ?? 2} iguais). Você começa com 1 em campo e 3 na mão. Cada turno dá +1 ⚡ (até ${S.cfg.cartas?.energia_max ?? 5}); o ataque fraco custa ${S.cfg.cartas?.custo_fraco ?? 1} ⚡, o forte ${S.cfg.cartas?.custo_forte ?? 3} ⚡, e trocar o Pokémon em campo custa ${S.cfg.cartas?.custo_trocar ?? 1} ⚡. Fraqueza dá dano ×2 e resistência ×½, pela tabela de tipos das batalhas. Quando um Pokémon cai, entra o de mais vida da mão. Vence quem derrubar ${S.cfg.cartas?.nocautes ?? 3}. Contra outro jogador vale moedas (de ${S.cfg.cartas?.aposta_min ?? 10} a ${S.cfg.cartas?.aposta_max ?? 100}); contra o computador é só treino, sem prêmio.</p>` },
-    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
+    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p><b>Tela nova no computador:</b> o mapa ocupa a tela toda, com o menu em ícones na lateral (o botão » abre o menu completo e « recolhe). No alto ficam o mapinha, a sua barra (nível, EXP e a <b>Missão diária</b>, que é o próximo passo de hoje: clique nela) e, à direita, a temporada, a casa onde você está, a região e os botões 🎒 Mochila, Meus Pokémon, Pokédex, Ranking, Biblioteca e som. Embaixo fica o <b>chat fixo</b> com as abas Chat, Jornal e Missões (a setinha recolhe). A <b>🎒 Mochila</b> mostra em quadradinhos os seus itens, bolas e visuais, a equipe e as moedas. A Grama de Treino ganhou o mesmo visual, com mapinha e chat.</p><p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
       <p>Quando chega algo novo com o jogo aberto, aparece um aviso na tela com som. Abrir o Mercado, o Leilão ou o Chat marca como visto (ou toque em "Marcar como vistos").</p>
       <p>O botão <b>Meus Pokémon 🐾</b> (canto do mapa) mostra a sua equipe com vida e XP, avisa quem pode evoluir ou está ferido e tem atalhos para montar a equipe, a Pokédex, a Grama, o Centro, a Creche, as batalhas, o Leilão e a Loja Pokémon.</p>` },
     { id: "comecar", ic: "🚀", t: "Começando", h: `<p>Todo dia você faz três coisas:</p><ol>
@@ -5944,6 +6054,7 @@ const ACTIONS = {
     if (v === "leilao") return leilaoOpen();
     if (v === "cartas") return cartasOpen();
     if (v === "pokebound") return pbOpen();
+    if (v === "praca") return pzOpen();
     if (v === "arena") return arenaOpen();
     if (v === "guerras") return warOpen();
     if (v === "liga") return leagueOpen();
@@ -6357,6 +6468,7 @@ function menuHTML() {
     mercado: S.av.market.length ? `<b class="mb red" title="Itens novos no Mercado">${S.av.market.length}</b>` : "",
     cartas: S.tcgRes ? (S.tcgRes.novas || S.tcgRes.convites || S.tcgRes.vez ? `<b class="mb red">${(S.tcgRes.novas ? 1 : 0) + S.tcgRes.convites + S.tcgRes.vez}</b>` : S.tcgRes.pacotes ? `<b class="mb">🎁 ${S.tcgRes.pacotes}</b>` : "") : "",
     pokebound: pbNoComputador() && (S.isAdmin || S.cfg.pokebound?.on !== false) ? (S.cfg.pokebound?.on === false ? `<b class="mb">DESLIGADO</b>` : `<b class="mb live">NOVO</b>`) : null,   // para todos no computador; o admin desliga em Ajustes do jogo
+    praca: S.isAdmin || S.cfg.praca?.on !== false ? (S.cfg.praca?.on === false ? `<b class="mb">FECHADA</b>` : `<b class="mb live">NOVO</b>`) : null,
     vila: "", loja: "", pkloja: "", equipe: "", regras: ""
   };
   const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
@@ -6377,14 +6489,14 @@ const MENU = {
   centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
   pkloja: ["🛒", "Loja Pokémon"], cartas: ["🃏", "Cartas Pokegames"], pokebound: ["💥", "PokeBound"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
   mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
-  presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
+  presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], praca: ["⛲", "Praça Central"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
   regras: ["📚", "Biblioteca"], sac: ["🎧", "SAC: fale com a gente"], admin: ["⚙️", "Administração"], batalha: ["⚔️", "Batalha"]
 };
 const MENU_GROUPS = [
   ["pk", "🐾 Pokémon", ["arena", "batalhas", "cartas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "pkloja", "pokedex"]],
   ["vila", "🏰 Vila e lojas", ["guerras", "loja", "mercado", "vila"]],
   ["comp", "🏆 Competir", ["duelos", "liga", "pokebound", "presence", "ranking"]],
-  ["com", "💬 Comunidade", ["caixa", "chat", "correio"]],
+  ["com", "💬 Comunidade", ["caixa", "chat", "correio", "praca"]],
   ["ajuda", "❓ Ajuda", ["admin", "regras", "sac"]]
 ];
 const MENU_FAST = ["desafio", "pokedex", "treino", "batalhas", "vila", "ranking"];
@@ -6498,12 +6610,14 @@ function onChatInsert(m) {
   S.chat.msgs.push(m); if (S.chat.msgs.length > 200) S.chat.msgs.shift();
   const l = $("#chat-list");
   if (S.win === "chat" && S.comTab === "chat" && l) { l.querySelector(".chat-empty")?.remove(); l.insertAdjacentHTML("beforeend", chatMsgHTML(m)); chatScrollEnd(m.user_id === S.session.user.id); }
-  else if (m.user_id !== S.session.user.id) { S.chatUnread++; if ($("#game")) renderHUD(); }
+  else if (m.user_id !== S.session.user.id && !hxChatVisivel() && !grChatOn()) { S.chatUnread++; if ($("#game")) renderHUD(); }
+  hxChatNova(m);
 }
 function onChatDelete(id) {
   if (id == null) return;
   S.chat.msgs = S.chat.msgs.filter(x => x.id !== id);
   document.querySelector(`.cm[data-id="${id}"]`)?.remove();
+  hxChatNova();
 }
 async function sendChat() {
   const inp = $("#chat-in"); if (!inp) return;
@@ -8610,6 +8724,9 @@ function grRoot() {
       <button class="btn small ghost" data-gr="sair">Sair</button></div>
     <p class="gr-hint" id="gr-hint">Ande pela grama alta para achar Pokémon · WASD ou setas</p>
     <div class="gr-pad" aria-label="Controles"><button data-dir="up" aria-label="Cima">▲</button><button data-dir="left" aria-label="Esquerda">◀</button><button data-dir="right" aria-label="Direita">▶</button><button data-dir="down" aria-label="Baixo">▼</button></div>
+    <div id="gr-mini-box"><b>Grama de Treino</b><canvas id="gr-mini" width="184" height="184"></canvas></div>
+    <div id="gr-chat"><h4>💬 Chat</h4><div class="hx-chat-body"><ul class="hx-chat-list" id="gr-chat-list"></ul></div>
+      <form id="grchatform" class="hx-chat-form" autocomplete="off"><label for="gr-chat-in" class="sr">Mensagem</label><input id="gr-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form></div>
     <div class="gr-flash" id="gr-flash"></div>`;
   document.body.appendChild(el);
   el.addEventListener("click", e => {
@@ -8639,6 +8756,11 @@ async function grOpen() {
   GR.fx = GR.x; GR.fy = GR.y;
   $("#gr-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande pela grama alta para achar Pokémon" : "Ande pela grama alta para achar Pokémon · WASD ou setas";
   grHud(); grDecoInit(); grNetJoin(); await grBuildArt();
+  // mesmo visual do mapa (computador): mapinha no canto e chat embaixo
+  document.body.classList.toggle("hx-gr", hxOn());
+  const gm = $("#gr-mini", el); if (gm && GR.art) gm.height = Math.round(gm.width * GR.art.height / GR.art.width);
+  $("#gr-chat", el).hidden = hxCfg().chat_fixo === false;
+  if (grChatOn()) { if (!S.chat.loaded) loadChat().then(grChatRender); else grChatRender(); hxChatVisto(); }
   cancelAnimationFrame(GR.raf); GR.last = performance.now(); GR.raf = requestAnimationFrame(grLoop);
 }
 function grClose(battle = false) {
@@ -8697,7 +8819,7 @@ function grDraw(now) {
   cx = MW <= cv.width ? (MW - cv.width) / 2 : Math.max(0, Math.min(MW - cv.width, cx));
   cy = MH <= cv.height ? (MH - cv.height) / 2 : Math.max(0, Math.min(MH - cv.height, cy));
   g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
-  g.drawImage(GR.art, -cx, -cy, MW, MH);
+  g.drawImage(GR.art, -cx, -cy, MW, MH); grMiniDraw();
   // Pokémon de enfeite (meio escondidos na grama alta)
   for (const d of GR.deco || []) {
     if (!d.img.complete || !d.img.naturalWidth) continue;
@@ -8852,7 +8974,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -8868,6 +8990,8 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
+  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
     vel_max: "Velocidade máxima do tiro", carga_vel: "Velocidade da barra de força", turno_seg: "Segundos por turno", recarga: "Turnos de espera do especial",
     raio_jogador: "Tamanho do alvo (acerto direto)", folego: "Fôlego para andar por turno", zoom: "Zoom inicial da câmera" },
@@ -10141,6 +10265,416 @@ function pbOpen() {
 function pbClose() { PB.open = false; PB.keys.clear(); PB.charge = null; cancelAnimationFrame(PB.raf); const el = $("#pokebound"); if (el) el.hidden = true; document.body.classList.remove("pb-on"); }
 // só no computador (tela larga e mouse)
 const pbNoComputador = () => !matchMedia("(max-width: 760px)").matches && !matchMedia("(pointer:coarse)").matches;
+// =================================================================
+// VISUAL NOVO (pedido do dono em 10/11/2026): painéis por cima do mapa, no computador.
+// Barra do jogador (nível, XP, missão do dia) e mapinha no canto de cima, faixa de informações e
+// botões redondos à direita, chat fixo com abas embaixo e a Mochila em janela com quadradinhos.
+// Não muda regra nenhuma: só mostra de outro jeito o que o jogo já tem. Liga/desliga e padrões em
+// S.cfg.visual (Ajustes do jogo → Visual novo). No celular nada muda.
+// =================================================================
+const hxCfg = () => ({ on: true, tela_cheia_padrao: true, chat_fixo: true, ...(S.cfg?.visual || {}) });
+const hxOn = () => hxCfg().on !== false && window.innerWidth > 760;
+S.hx = { tab: "chat", min: false, inv: false, invTab: "itens", sel: null };
+try { S.hx.min = localStorage.getItem("pg-hx-chat") === "0"; } catch {}
+const HX_SHELL = `<div id="hx-left"><div class="hx-mini"><div class="hx-mini-h" id="hx-mini-h"></div><div id="hx-mini-slot"></div></div><div id="hx-player"></div></div>
+  <div id="hx-right"></div>
+  <div id="hx-chat"><div class="hx-tabs" id="hx-chat-tabs"></div><div class="hx-chat-body" id="hx-chat-body"></div>
+    <form id="hxchatform" class="hx-chat-form" autocomplete="off"><label for="hx-chat-in" class="sr">Mensagem</label><input id="hx-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form></div>
+  <div id="hx-inv" hidden></div>`;
+// o mapinha é um só: fica no painel lateral aberto, ou no canto do mapa com o painel recolhido
+function hxPlaceMini() {
+  const cv = $("#minimap"); if (!cv) return;
+  const alvo = hxOn() && S.dockMin ? $("#hx-mini-slot") : $("#sec-info");
+  if (!alvo || cv.parentNode === alvo) return;
+  if (alvo.id === "sec-info") alvo.insertBefore(cv, $("#hud-info-text")); else alvo.appendChild(cv);
+}
+// a "missão do dia" é o próximo passo de hoje
+function hxMissao() {
+  const T = S.today; if (!T) return { txt: "Carregando…", act: "go", v: "desafio" };
+  if (T.moved) { const m = T.move, tot = m.base_steps + m.roll + m.bonus_steps + (m.skill_steps || 0); return { txt: `Concluída: você andou ${tot} casas`, act: "bet-open", v: "", ok: true }; }
+  const ms = Object.values(T.modes).filter(m => m.available), feitos = ms.filter(m => m.solved || m.failed).length;
+  if (feitos < ms.length) return { txt: `Adivinhe os Pokémon de hoje (${feitos}/${ms.length})`, act: "go", v: "desafio" };
+  if (!T.spin) return { txt: "Gire a roleta", act: "spin", v: "" };
+  return { txt: "Ande no mapa", act: "move", v: "" };
+}
+function hxRender() {
+  const game = $("#game"); if (!game || !$("#hx-right")) return;
+  const on = hxOn(); game.classList.toggle("hx", on); hxPlaceMini();
+  if (!on) return;
+  const me = S.me, xp = xpInfo(me), no = S.nodeById[me.node], ms = hxMissao();
+  $("#hx-mini-h").textContent = no?.region || "Mapa";
+  $("#hx-player").innerHTML = `<button class="hx-av" data-act="go" data-v="loja" title="Seu herói">${avatarSVG(me, 2.2)}</button>
+    <div class="hx-lv"><b>Lv. ${me.level}</b><span class="hx-xp" title="${me.xp_total} de ${xp.next} XP"><i style="width:${xp.pct}%"></i><em>EXP ${xp.pct}%</em></span></div>
+    <button class="hx-missao ${ms.ok ? "ok" : ""}" data-act="${ms.act}" data-v="${ms.v}"><span class="hx-ex">${ms.ok ? "✓" : "!"}</span><span><b>Missão diária</b><small>${esc(ms.txt)}</small></span></button>`;
+  const se = S.today?.season, btn = (ic, t, act, v = "", sel = "") => `<button class="hx-rb ${sel}" data-act="${act}" data-v="${v}" title="${t}" aria-label="${t}">${ic}</button>`;
+  $("#hx-right").innerHTML = `<div class="hx-info"><span>Temporada <b>${se?.id ?? ""}</b></span><i></i><span>Casa <b>nº ${me.node}</b></span><i></i><span>${me.arrived_rank ? `<b>No Castelo</b>` : `Faltam <b>${no?.dist ?? 0}</b>`}</span><i></i><span>Região: <b>${esc(no?.region || "")}</b></span></div>
+    <div class="hx-rbs">${S.isAdmin || S.cfg.praca?.on !== false ? btn("⛲", "Praça Central", "go", "praca") : ""}${btn("🎒", "Mochila", "hx-inv", "", S.hx.inv ? "on" : "")}${btn(MENU.equipe[0], "Meus Pokémon", "go", "equipe")}${btn(MENU.pokedex[0], "Pokédex", "go", "pokedex")}${btn(MENU.ranking[0], "Ranking", "go", "ranking")}${btn(MENU.regras[0], "Biblioteca", "go", "regras")}${btn(S.sound ? "🔊" : "🔇", S.sound ? "Desligar o som" : "Ligar o som", "sound")}</div>`;
+  hxChatRender(); hxInvRender();
+}
+// ---------- chat fixo ----------
+const hxChatVisivel = () => hxOn() && hxCfg().chat_fixo !== false && !S.hx.min && S.hx.tab === "chat" && !document.hidden;
+function hxChatVisto() { S.chatUnread = 0; try { if (S.av?.chat) { avSave({ chat: new Date().toISOString() }); S.av.chat = 0; } } catch {} }
+const hxCor = uid => { let h = 0; for (const ch of String(uid)) h = (h * 31 + ch.charCodeAt(0)) % 360; return `hsl(${h} 75% 68%)`; };
+const hxLinha = m => `<li data-id="${m.id}"><time>[${hhmm(m.created_at)}]</time> <b style="color:${m.user_id === S.session.user.id ? "#FFE37A" : hxCor(m.user_id)}">${esc(m.name)}:</b> ${esc(m.body)}</li>`;
+function hxChatLista(n = 40) {
+  const C = S.chat;
+  return !C.loaded ? `<li class="muted">Carregando…</li>` : C.error ? `<li class="muted">${esc(C.error)}</li>` : C.msgs.length ? C.msgs.slice(-n).map(hxLinha).join("") : `<li class="muted">Nenhuma mensagem ainda. Diga oi!</li>`;
+}
+function hxMissoes() {
+  const T = S.today; if (!T) return "";
+  const li = (ok, txt, act, v = "") => `<li><button data-act="${act}" data-v="${v}" class="${ok ? "ok" : ""}"><i>${ok ? "✓" : "○"}</i>${txt}</button></li>`;
+  const modos = Object.keys(MODES).filter(k => T.modes[k]?.available).map(k => li(T.modes[k].solved || T.modes[k].failed, `${MODES[k].nome}${T.modes[k].solved ? " (acertou)" : T.modes[k].failed ? " (não acertou)" : ""}`, "go", "desafio"));
+  const st = S.treino?.st, gr = st && !S.treino.missing ? li(st.minutos >= st.minutos_dia + (st.bonus || 0), `Grama de Treino${st.minutos < st.minutos_dia + (st.bonus || 0) ? ` (${st.minutos_dia + (st.bonus || 0) - st.minutos} min livres)` : ""}`, "go", "treino") : "";
+  const H = HEROES[S.me.class] || HEROES.guerreiro, hab = !T.moved && !T.skill?.used ? li(false, `Usar ${H.skill}`, "skill") : "";
+  return `<ul class="hx-missoes">${modos.join("")}${hab}${li(!!T.spin, "Girar a roleta", T.spin ? "go" : "spin", T.spin ? "desafio" : "")}${li(!!T.moved, "Andar no mapa", T.moved ? "bet-open" : "move")}${gr}</ul>`;
+}
+function hxChatRender() {
+  const box = $("#hx-chat"); if (!box) return;
+  const liga = hxCfg().chat_fixo !== false; box.hidden = !liga;
+  $("#game").style.setProperty("--hxc", !liga ? "0px" : S.hx.min ? "42px" : "236px");
+  if (!liga) return;
+  box.classList.toggle("min", S.hx.min);
+  const nChat = hxChatVisivel() ? 0 : Math.max(S.chatUnread, S.av?.chat || 0), nJor = unreadPosts();
+  const tab = (k, t, n) => `<button role="tab" data-act="hx-tab" data-v="${k}" aria-selected="${!S.hx.min && S.hx.tab === k}">${t}${n ? ` <b class="mb red">${n > 99 ? "99+" : n}</b>` : ""}</button>`;
+  $("#hx-chat-tabs").innerHTML = tab("chat", "Chat", nChat) + tab("jornal", "Jornal", nJor) + tab("missoes", "Missões", 0) + `<button class="hx-min" data-act="hx-min" title="${S.hx.min ? "Abrir" : "Recolher"}" aria-label="${S.hx.min ? "Abrir o chat" : "Recolher o chat"}">${S.hx.min ? "▴" : "▾"}</button>`;
+  $("#hxchatform").hidden = S.hx.min || S.hx.tab !== "chat";
+  const body = $("#hx-chat-body"); body.hidden = S.hx.min; if (S.hx.min) return;
+  if (S.hx.tab === "chat") {
+    if (!S.chat.loaded && !S.hx.carregando) { S.hx.carregando = true; loadChat().then(() => { S.hx.carregando = false; hxChatRender(); }); }
+    const ult = S.chat.msgs.length ? S.chat.msgs[S.chat.msgs.length - 1].id : 0, chave = `${S.chat.loaded}:${S.chat.msgs.length}:${ult}`;
+    if (body.dataset.k !== "chat:" + chave) { body.innerHTML = `<ul class="hx-chat-list" id="hx-chat-list">${hxChatLista()}</ul>`; body.dataset.k = "chat:" + chave; const l = $("#hx-chat-list"); l.scrollTop = l.scrollHeight; }
+    if (hxChatVisivel()) hxChatVisto();
+  } else if (S.hx.tab === "jornal") {
+    const ps = (S.posts || []).filter(p => !p.archived).slice(0, 8);
+    body.innerHTML = ps.length ? `<ul class="hx-jornal">${ps.map(p => `<li><button data-act="com-tab" data-v="jornal"><time>${chatWhen(p.created_at)}</time> ${esc(p.title)}</button></li>`).join("")}</ul>` : `<p class="muted hx-vazio">Nenhum aviso no Jornal.</p>`;
+    body.dataset.k = "jornal";
+  } else { body.innerHTML = hxMissoes(); body.dataset.k = "missoes"; }
+}
+async function hxChatEnviar(inp) {
+  const txt = inp.value.trim(); if (!txt) return;
+  inp.disabled = true;
+  try { const m = await rpc("chat_send", { _body: txt }); inp.value = ""; onChatInsert(m); }
+  catch (e) { toast(isMissingFn(e) ? "O chat precisa do arquivo 15_trava_ranking_chat.sql rodado no Supabase." : errMsg(e), true); }
+  inp.disabled = false; inp.focus();
+}
+document.addEventListener("submit", e => {
+  if (!["hxchatform", "grchatform", "pzchatform"].includes(e.target.id)) return;
+  e.preventDefault(); hxChatEnviar(e.target.querySelector("input"));
+});
+// mensagem nova (chamado pelo onChatInsert): atualiza o chat fixo e o da Grama
+function hxChatNova(m) { hxChatRender(); grChatRender(); pzChatNova(m); }
+// ---------- Mochila ----------
+const HX_IC = { cura: "🧪", estado: "💊", reviver: "✨", x: "⚔️", tm: "📀", hm: "💿", evo: "🔗", pedra: "💎" };
+function hxInvItens() {
+  const me = S.me, bag = S.pk?.bag || {}, out = [];
+  out.push({ ic: "💡", n: me.hints ?? 0, nome: "Dica", d: "Revela uma pista no desafio do dia.", v: "loja" });
+  out.push({ ic: "🔁", n: me.retries ?? 0, nome: "Tente outra vez", d: "Apaga o último palpite errado no desafio.", v: "loja" });
+  for (const i of Object.values(S.pk?.items || {}).sort((a, b) => a.sort - b.sort)) { const n = bag[i.id] || 0; if (!n) continue;
+    const k = i.kind;
+    out.push({ ic: HX_IC[k] || "📦", n: i.kind === "hm" ? "∞" : n, nome: i.name, d: i.descr || "", v: "pkloja" }); }
+  for (const [k, nome] of Object.entries(PK_STONES)) if (bag[k]) out.push({ ic: "💎", n: bag[k], nome, d: "Pedra de evolução.", v: "pkloja" });
+  return out;
+}
+function hxInvBolas() {
+  const balls = S.pk?.rules?.capture?.balls || { poke: { name: "Poké Bola", price: 0 } }, bag = S.pk?.bag || {}, cor = { poke: "🔴", great: "🔵", ultra: "🟡" };
+  return Object.entries(balls).map(([k, b]) => ({ ic: cor[k] || "⚪", n: b.price > 0 ? (bag[k + "_ball"] || 0) : "∞", nome: b.name, d: b.price > 0 ? "Aumenta a chance de captura." : "Grátis, à vontade em todo encontro.", v: "pkloja" }));
+}
+function hxInvVisuais() {
+  return (S.me.owned_items || []).filter(id => S.shopById[id]).map(id => ({ html: itemThumb("item", id), n: Object.values(S.me.outfit || {}).includes(id) ? "✓" : "", nome: S.shopById[id].name, d: Object.values(S.me.outfit || {}).includes(id) ? "Em uso." : "Guardado. Vista na Loja & Visuais.", v: S.shopById[id].slot?.startsWith("pk_") ? "pkloja" : S.shopById[id].slot?.startsWith("vila") ? "vila" : "loja" }));
+}
+function hxInvRender() {
+  const el = $("#hx-inv"); if (!el) return;
+  el.hidden = !S.hx.inv || !hxOn(); if (el.hidden) return;
+  const me = S.me, lista = S.hx.invTab === "bolas" ? hxInvBolas() : S.hx.invTab === "visuais" ? hxInvVisuais() : hxInvItens();
+  const vagas = Math.max(15, Math.ceil(lista.length / 5) * 5), sel = lista[S.hx.sel] || null;
+  const grade = Array.from({ length: vagas }, (_, i) => { const it = lista[i];
+    return it ? `<button class="hx-slot ${S.hx.sel === i ? "on" : ""}" data-act="hx-sel" data-v="${i}" title="${esc(it.nome)}">${it.html || `<span class="hx-ic">${it.ic}</span>`}${it.n !== "" ? `<em>${it.n}</em>` : ""}</button>` : `<span class="hx-slot vazio"></span>`; }).join("");
+  const usados = Object.values(me.outfit || {}).filter(id => S.shopById[id]).slice(0, 6);
+  const eq = Array.from({ length: 6 }, (_, i) => usados[i] ? `<button class="hx-slot eq" data-act="go" data-v="loja" title="${esc(S.shopById[usados[i]].name)}">${itemThumb("item", usados[i])}</button>` : `<span class="hx-slot eq vazio"></span>`);
+  const time = pkTeam(), tab = (k, t) => `<button role="tab" data-act="hx-invtab" data-v="${k}" aria-selected="${S.hx.invTab === k}">${t}</button>`;
+  el.innerHTML = `<div class="hx-inv-h"><b>Mochila</b><button class="hx-x" data-act="hx-inv" aria-label="Fechar">×</button></div>
+    <div class="hx-inv-top"><div class="hx-boneco"><div class="hx-eqcol">${eq.slice(0, 3).join("")}</div><button class="hx-heroi" data-act="go" data-v="loja" title="Loja & Visuais">${avatarSVG(me, 5)}</button><div class="hx-eqcol">${eq.slice(3).join("")}</div></div>
+      <div class="hx-inv-dir"><div class="hx-invtabs" role="tablist">${tab("itens", "Itens")}${tab("bolas", "Bolas")}${tab("visuais", "Visuais")}</div><div class="hx-grade">${grade}</div></div></div>
+    <div class="hx-inv-info">${sel ? `<b>${esc(sel.nome)}</b> <span>${esc(sel.d)}</span><button class="btn small ghost" data-act="go" data-v="${sel.v}">Abrir</button>` : `<span class="muted">Toque num item para ver o que ele faz.</span>`}</div>
+    <div class="hx-inv-sub">Equipe</div>
+    <div class="hx-time">${time.map(m => `<button class="hx-mon" data-act="pk-open-mon" data-v="${m.id}" title="${esc(pkName(m.species_id))}"><img src="${SPRITE(m.species_id)}" alt=""><small>Lv. ${m.level}</small></button>`).join("")}${time.length < 6 ? `<button class="hx-mon mais" data-act="go" data-v="equipe" title="Montar a equipe">＋</button>` : ""}</div>
+    <div class="hx-inv-pe"><span title="Pokémon na coleção">🐾 <b>${(S.pk?.mons || []).length}</b></span><span title="Espécies na Pokédex">📕 <b>${Object.keys(S.pk?.dex || {}).length}</b></span><span class="hx-moedas" title="Moedas">${coinSVG()}<b>${(me.coins ?? 0).toLocaleString("pt-BR")}</b></span></div>`;
+}
+ACTIONS["hx-inv"] = () => { S.hx.inv = !S.hx.inv; S.hx.sel = null; sfx("tick"); renderHUD(); };
+ACTIONS["hx-invtab"] = v => { S.hx.invTab = v; S.hx.sel = null; hxInvRender(); };
+ACTIONS["hx-sel"] = v => { S.hx.sel = S.hx.sel === +v ? null : +v; hxInvRender(); };
+ACTIONS["hx-tab"] = v => { S.hx.tab = v; S.hx.min = false; try { localStorage.setItem("pg-hx-chat", "1"); } catch {} renderHUD(); if (v === "chat") $("#hx-chat-in")?.focus(); };
+ACTIONS["hx-min"] = () => { S.hx.min = !S.hx.min; try { localStorage.setItem("pg-hx-chat", S.hx.min ? "0" : "1"); } catch {} renderHUD(); };
+// ---------- Grama de Treino com o mesmo visual ----------
+function grChatRender() {
+  const l = $("#gr-chat-list"); if (!l || !GR.open) return;
+  l.innerHTML = hxChatLista(25); l.scrollTop = l.scrollHeight;
+}
+function grMiniDraw() {
+  const cv = $("#gr-mini"); if (!cv || !GR.art || cv.offsetParent === null) return;
+  const g = cv.getContext("2d"), kx = cv.width / GR.art.width, ky = cv.height / GR.art.height;
+  g.imageSmoothingEnabled = false; g.drawImage(GR.art, 0, 0, cv.width, cv.height);
+  g.fillStyle = "#FFE37A"; g.strokeStyle = "#0F1420"; g.lineWidth = 1.5; g.beginPath(); g.arc((GR.fx + .5) * 32 * kx, (GR.fy + .5) * 32 * ky, 4, 0, 6.28); g.fill(); g.stroke();
+}
+const grChatOn = () => (GR.open || PZ.open) && hxOn() && hxCfg().chat_fixo !== false;
+// =================================================================
+// PRAÇA CENTRAL (arquivo 90, pedido do dono em 10/11/2026): área pequena e fechada para andar, fora do
+// tabuleiro (como a Grama de Treino), onde os jogadores se veem, conversam e entram nas lojas andando até
+// a porta. Não tem regra nova: cada casa só abre uma janela que o jogo já tem. O tabuleiro não muda.
+// Cenário com os tiles da Pipoya (mesma folha do tabuleiro), com as casas em tamanho dobrado.
+// Cada um avisa a posição no máximo a cada `envio_seg` (padrão 1,5 s) para poupar a cota grátis do Realtime.
+// =================================================================
+const pzCfg = () => ({ on: true, envio_seg: 1.5, mascote: true, baloes: true, ...(S.cfg?.praca || {}) });
+const PZ_W = 34, PZ_H = 22;
+// casas: [janela, nome, símbolo, objeto da Pipoya, coluna, linha, porta em cima (1) ou embaixo (0)]
+const PZ_LOCAIS = [
+  ["pkloja", "Loja Pokémon", "🛒", "casa_bege", 4, 5, 0], ["loja", "Loja & Visuais", "👕", "casa_cinza", 8, 5, 0], ["centro", "Centro Pokémon", "➕", "mansao", 12, 5, 0],
+  ["creche", "Creche", "🏡", "fazenda", 20, 5, 0], ["leilao", "Leilão", "🔨", "templo", 24, 5, 0], ["mercado", "Mercado", "🤝", "tenda", 28, 5, 0],
+  ["regras", "Biblioteca", "📚", "casinha", 4, 12, 0], ["jornal", "Jornal", "📰", "casa_bege", 8, 12, 0], ["sac", "SAC", "🎧", "casa_cinza", 24, 12, 0], ["caixa", "Caixa da Obra", "💛", "mansao", 28, 12, 0],
+  ["arena", "Arena Pokémon", "🏟️", "piramide", 4, 16, 1], ["batalhas", "Batalhas", "⚔️", "ruinas", 8, 16, 1], ["cartas", "Cartas", "🃏", "casinha", 12, 16, 1],
+  ["pokebound", "PokeBound", "💥", "colmeia", 20, 16, 1], ["treino", "Grama de Treino", "🌿", "tenda", 24, 16, 1], ["ranking", "Ranking", "🏆", "templo", 28, 16, 1]
+].map(([win, nome, ic, obj, x, y, cima]) => ({ win, nome, ic, obj, x, y, px: x, py: cima ? y - 1 : y + 2 }));
+const PZ_ARV = [[3, 3], [30, 3], [3, 10], [30, 10], [11, 10], [22, 10], [3, 18], [30, 18], [14, 18], [19, 18]], PZ_ARB = [[6, 10], [26, 10], [10, 18], [22, 18], [16, 4], [17, 4]];
+const PZ_MAP = (() => {
+  const m = Array.from({ length: PZ_H }, (_, y) => Array.from({ length: PZ_W }, (_, x) => x < 2 || y < 2 || x >= PZ_W - 2 || y >= PZ_H - 2 ? "T" : "."));
+  for (let x = 3; x <= 30; x++) for (const y of [7, 8, 14, 15]) m[y][x] = "=";
+  for (let y = 7; y < PZ_H; y++) for (const x of [16, 17]) m[y][x] = "=";
+  for (let y = 9; y <= 12; y++) for (let x = 13; x <= 20; x++) m[y][x] = "=";
+  for (let y = 10; y <= 11; y++) for (let x = 16; x <= 17; x++) m[y][x] = "~";
+  for (const [x, y] of PZ_ARV) m[y][x] = "a";
+  for (const [x, y] of PZ_ARB) m[y][x] = "b";
+  for (const l of PZ_LOCAIS) for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) m[l.y + dy][l.x + dx] = "#";
+  return m;
+})();
+const PZ = { open: false, art: null, x: 16, y: 18, fx: 16, fy: 18, ax: 16, ay: 19, face: 1, moving: null, keys: new Set(), raf: 0, others: {}, baloes: {}, perto: null, volta: false };
+const pzAt = (x, y) => (PZ_MAP[y] || [])[x] || "T";
+const pzSolid = (x, y) => "T~ab#".includes(pzAt(x, y));
+const pzLocais = () => PZ_LOCAIS.filter(l => l.win !== "pokebound" || (pbNoComputador() && S.cfg.pokebound?.on !== false));
+async function pzBuildArt() {
+  if (PZ.art) return PZ.art;
+  const T = 32, cv = document.createElement("canvas"); cv.width = PZ_W * T; cv.height = PZ_H * T;
+  const g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
+  let imgs = null; try { imgs = await loadPipoImages(); } catch {}
+  if (!imgs) {   // sem as imagens: desenho simples
+    for (let y = 0; y < PZ_H; y++) for (let x = 0; x < PZ_W; x++) { g.fillStyle = { T: "#1F4D22", "~": "#2F6FB0", "=": "#B79A6A", "#": "#8A5A3A" }[pzAt(x, y)] || "#6DB24F"; g.fillRect(x * T, y * T, T, T); }
+    return (PZ.art = cv);
+  }
+  const { obj, at } = imgs, [gc, gr] = PIPO_OBJ.grama;
+  for (let y = 0; y < PZ_H; y++) for (let x = 0; x < PZ_W; x++) g.drawImage(obj, gc * T, gr * T, T, T, x * T, y * T, T, T);
+  const auto = (is, base) => {
+    const M = (x, y) => x < 0 || y < 0 || x >= PZ_W || y >= PZ_H || is(pzAt(x, y));
+    for (let y = 0; y < PZ_H; y++) for (let x = 0; x < PZ_W; x++) {
+      if (!is(pzAt(x, y))) continue;
+      const t = M(x, y - 1), r = M(x + 1, y), b = M(x, y + 1), l = M(x - 1, y);
+      const bits = (t ? 1 : 0) | (t && r && M(x + 1, y - 1) ? 2 : 0) | (r ? 4 : 0) | (r && b && M(x + 1, y + 1) ? 8 : 0)
+        | (b ? 16 : 0) | (b && l && M(x - 1, y + 1) ? 32 : 0) | (l ? 64 : 0) | (l && t && M(x - 1, y - 1) ? 128 : 0);
+      const id = base + (PIPO_WANG[bits] ?? 22);
+      g.drawImage(at, (id % 16) * T, Math.floor(id / 16) * T, T, T, x * T, y * T, T, T);
+    }
+  };
+  auto(c => c === "=" || c === "~", PIPO_BASE.pedras); auto(c => c === "~", PIPO_BASE.agua); auto(c => c === "T", PIPO_BASE.floresta);
+  // flores (arte nossa) na grama livre
+  const r = pbRand(77), cores = ["#F25C8A", "#FFD23F", "#FFFFFF", "#9B6CF0"];
+  for (let k = 0; k < 130; k++) { const x = 2 + Math.floor(r() * (PZ_W - 4)), y = 2 + Math.floor(r() * (PZ_H - 4)); if (pzAt(x, y) !== ".") continue;
+    const fx = x * T + 4 + r() * 22, fy = y * T + 6 + r() * 20; g.fillStyle = "#2F7A2A"; g.fillRect(fx, fy + 2, 2, 4); g.fillStyle = cores[k % 4]; g.fillRect(fx - 1, fy, 4, 3); }
+  const put = (key, x, y, k = 1) => { const [c, rr, w, h] = PIPO_OBJ[key]; g.drawImage(obj, c * T, rr * T, w * T, h * T, x * T, y * T, w * T * k, h * T * k); };
+  for (const [x, y] of PZ_ARV) put("arvore", x, y);
+  for (const [x, y] of PZ_ARB) put("arbusto", x, y);
+  for (const l of PZ_LOCAIS) { g.fillStyle = "rgba(0,0,0,.22)"; g.beginPath(); g.ellipse((l.x + 1) * T, (l.y + 2) * T - 4, T * 0.95, 7, 0, 0, 6.28); g.fill(); put(l.obj, l.x, l.y, 2); }
+  // chafariz no meio da praça (arte nossa)
+  const cx = 17 * T, cy = 11 * T; g.fillStyle = "#C9C2B0"; g.beginPath(); g.arc(cx, cy, 12, 0, 6.28); g.fill(); g.fillStyle = "#EAF6FF"; g.beginPath(); g.arc(cx, cy, 6, 0, 6.28); g.fill();
+  return (PZ.art = cv);
+}
+function pzRoot() {
+  let el = $("#praca"); if (el) return el;
+  el = document.createElement("div"); el.id = "praca"; el.hidden = true;
+  el.innerHTML = `<canvas id="pz-cv" aria-label="Praça Central: ande com WASD ou as setas"></canvas>
+    <div class="pz-hud"><span class="pz-tit">⛲ Praça Central</span><span class="pz-on" id="pz-on"></span><button class="btn small ghost" data-pz="sair">Voltar ao mapa</button></div>
+    <div id="pz-mini-box"><b>Praça Central</b><canvas id="pz-mini" width="184" height="119"></canvas></div>
+    <button id="pz-acao" hidden></button>
+    <p class="gr-hint" id="pz-hint">Ande até a porta de uma casa para entrar · WASD ou setas</p>
+    <div id="pz-chat"><h4>💬 Chat da galera</h4><div class="hx-chat-body"><ul class="hx-chat-list" id="pz-chat-list"></ul></div>
+      <form id="pzchatform" class="hx-chat-form" autocomplete="off"><label for="pz-chat-in" class="sr">Mensagem</label><input id="pz-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form></div>
+    <div class="gr-pad" aria-label="Controles"><button data-dir="up" aria-label="Cima">▲</button><button data-dir="left" aria-label="Esquerda">◀</button><button data-dir="right" aria-label="Direita">▶</button><button data-dir="down" aria-label="Baixo">▼</button></div>`;
+  document.body.appendChild(el);
+  el.addEventListener("click", e => {
+    if (e.target.closest("[data-pz='sair']")) return pzSair();
+    if (e.target.closest("#pz-acao")) return pzEntrar();
+  });
+  const pad = el.querySelector(".gr-pad");
+  const press = e => { const b = e.target.closest("[data-dir]"); if (!b) return; e.preventDefault(); PZ.keys.clear(); PZ.keys.add(b.dataset.dir); b.setPointerCapture?.(e.pointerId); };
+  const lift = e => { e.preventDefault?.(); PZ.keys.clear(); };
+  pad.addEventListener("pointerdown", press); pad.addEventListener("pointerup", lift); pad.addEventListener("pointercancel", lift); pad.addEventListener("pointerleave", lift);
+  pad.addEventListener("contextmenu", e => e.preventDefault());
+  return el;
+}
+document.addEventListener("keydown", e => {
+  if (!PZ.open || document.querySelector(".modal-bg") || e.target.matches?.("input,textarea,select")) return;
+  const k = e.key.toLowerCase();
+  if ((k === "e" || k === "enter") && PZ.perto) { e.preventDefault(); return pzEntrar(); }
+  if (k === "escape") { e.preventDefault(); return pzSair(); }
+  const d = GR_KEYS[k]; if (!d) return;
+  e.preventDefault(); PZ.keys.add(d);
+});
+document.addEventListener("keyup", e => { const d = GR_KEYS[e.key?.toLowerCase?.()]; if (d) PZ.keys.delete(d); });
+window.addEventListener("blur", () => PZ.keys.clear());
+async function pzOpen() {
+  if (pzCfg().on === false && !S.isAdmin) return toast("A Praça está fechada no momento.", true);
+  const el = pzRoot(); S.win = null; render();
+  PZ.open = true; PZ.volta = false; PZ.keys.clear(); el.hidden = false; document.body.classList.add("gr-on", "pz-on");
+  if (PZ.moving) { PZ.x = PZ.moving.tx; PZ.y = PZ.moving.ty; PZ.moving = null; }
+  if (pzSolid(PZ.x, PZ.y)) { PZ.x = 16; PZ.y = 18; }
+  PZ.fx = PZ.x; PZ.fy = PZ.y;
+  document.body.classList.toggle("hx-gr", hxOn());
+  $("#pz-chat", el).hidden = hxCfg().chat_fixo === false;
+  $("#pz-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande até a porta de uma casa para entrar" : "Ande até a porta de uma casa para entrar · WASD ou setas · E entra";
+  if (grChatOn()) { if (!S.chat.loaded) loadChat().then(pzChatRender); else pzChatRender(); hxChatVisto(); }
+  pzNetJoin(); pzPerto(); await pzBuildArt();
+  cancelAnimationFrame(PZ.raf); PZ.last = performance.now(); PZ.raf = requestAnimationFrame(pzLoop);
+}
+function pzClose(sai = true) {
+  PZ.open = false; PZ.keys.clear(); cancelAnimationFrame(PZ.raf);
+  if (sai) pzNetLeave();
+  const el = $("#praca"); if (el) el.hidden = true; document.body.classList.remove("gr-on", "pz-on");
+}
+function pzSair() { PZ.volta = false; pzClose(); if ($("#game")) renderHUD(); }
+// entra na casa: fecha a praça, abre a janela de sempre e, quando a janela fechar, volta para a porta
+function pzEntrar() {
+  const l = PZ.perto; if (!l) return;
+  sfx("tick"); pzClose(false); PZ.volta = true;
+  if (l.win === "jornal") return ACTIONS["com-tab"]("jornal");
+  if (l.win === "pokebound") { PZ.volta = false; pzNetLeave(); return pbOpen(); }
+  ACTIONS.go(l.win);
+}
+// chamado pelo render(): fechou a janela aberta por uma casa → volta para a praça
+function pzVoltaCheck() { if (PZ.volta && !PZ.open && !S.win && !GR.open && $("#game")) { PZ.volta = false; pzOpen(); } }
+function pzPerto() {
+  const l = pzLocais().find(l => PZ.y === l.py && (PZ.x === l.px || PZ.x === l.px + 1)) || null;
+  if (l === PZ.perto) return; PZ.perto = l;
+  const b = $("#pz-acao"); if (!b) return;
+  b.hidden = !l; if (l) b.innerHTML = `${l.ic} Entrar: <b>${esc(l.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`;
+}
+function pzLoop(now) {
+  if (!PZ.open) return;
+  PZ.raf = requestAnimationFrame(pzLoop);
+  const dt = Math.min(80, now - (PZ.last || now)); PZ.last = now;
+  if (PZ.moving) { PZ.moving.t += dt / 150; if (PZ.moving.t >= 1) { PZ.ax = PZ.x; PZ.ay = PZ.y; PZ.x = PZ.moving.tx; PZ.y = PZ.moving.ty; PZ.moving = null; pzNetSend(); pzPerto();
+    if (PZ.y >= PZ_H - 2) { PZ.y = 18; return pzSair(); } } }   // saiu pela estrada de baixo
+  if (!PZ.moving && PZ.keys.size) {
+    const d = [...PZ.keys].at(-1), [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[d];
+    if (dx) PZ.face = dx;
+    const tx = PZ.x + dx, ty = PZ.y + dy;
+    if (!pzSolid(tx, ty)) PZ.moving = { fx: PZ.x, fy: PZ.y, tx, ty, t: 0 };
+  }
+  const mv = PZ.moving; PZ.fx = mv ? mv.fx + (mv.tx - mv.fx) * mv.t : PZ.x; PZ.fy = mv ? mv.fy + (mv.ty - mv.fy) * mv.t : PZ.y;
+  for (const o of Object.values(PZ.others)) {
+    if (o.x == null) continue;
+    const sp = dt / 150, dx = o.x - o.fx, dy = o.y - o.fy, d = Math.hypot(dx, dy);
+    if (d > 6) { o.fx = o.x; o.fy = o.y; continue; }
+    if (d > 0.02) { if (Math.abs(dx) > 0.02) o.f = Math.sign(dx); o.tx = o.fx; o.ty = o.fy; }
+    if (d <= sp) { o.fx = o.x; o.fy = o.y; } else { o.fx += dx / d * sp; o.fy += dy / d * sp; }
+  }
+  pzDraw(now);
+}
+function pzDraw(now) {
+  const cv = $("#pz-cv"); if (!cv || !PZ.art) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1), W0 = cv.clientWidth, H0 = cv.clientHeight;
+  if (cv.width !== Math.round(W0 * dpr) || cv.height !== Math.round(H0 * dpr)) { cv.width = Math.round(W0 * dpr); cv.height = Math.round(H0 * dpr); }
+  const g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
+  const tile = Math.max(36, Math.min(64, Math.round(Math.min(W0 / 14, H0 / 9)))) * dpr, k = tile / 32;
+  const MW = PZ.art.width * k, MH = PZ.art.height * k;
+  let cx = (PZ.fx + .5) * tile - cv.width / 2, cy = (PZ.fy + .5) * tile - cv.height / 2;
+  cx = MW <= cv.width ? (MW - cv.width) / 2 : Math.max(0, Math.min(MW - cv.width, cx));
+  cy = MH <= cv.height ? (MH - cv.height) / 2 : Math.max(0, Math.min(MH - cv.height, cy));
+  g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
+  g.drawImage(PZ.art, -cx, -cy, MW, MH);
+  // água do chafariz brilhando
+  { const fx = 17 * tile - cx, fy = 11 * tile - cy; for (let i = 0; i < 6; i++) { const a = now / 600 + i * 1.05, rr = (0.35 + 0.25 * Math.sin(now / 300 + i)) * tile; g.fillStyle = "rgba(220,245,255,.8)"; g.beginPath(); g.arc(fx + Math.cos(a) * rr, fy + Math.sin(a) * rr * 0.6 - tile * 0.15, 2.2 * dpr, 0, 6.28); g.fill(); } }
+  const texto = (txt, x, y, px, cor = "#F4F8E8") => { g.font = `700 ${Math.round(px * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(10,14,24,.92)"; g.strokeText(txt, x, y); g.fillStyle = cor; g.fillText(txt, x, y); };
+  // placas das casas
+  for (const l of pzLocais()) {
+    const x = (l.x + 1) * tile - cx, y = l.py < l.y ? (l.y + 2) * tile - cy + 26 * dpr : l.y * tile - cy - 4 * dpr; if (x < -tile * 3 || x > cv.width + tile * 3) continue;   // porta em cima: a placa vai embaixo da casa
+    const perto = PZ.perto === l; g.font = `700 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`;
+    const w = g.measureText(l.nome).width + 34 * dpr, h = 22 * dpr;
+    g.fillStyle = perto ? "rgba(245,197,66,.95)" : "rgba(16,24,40,.88)"; g.strokeStyle = perto ? "#1E150C" : "rgba(201,160,90,.9)"; g.lineWidth = 1.5 * dpr;
+    g.beginPath(); g.roundRect(x - w / 2, y - h, w, h, 8 * dpr); g.fill(); g.stroke();
+    g.textAlign = "center"; g.fillStyle = perto ? "#1E150C" : "#FFE7A8"; g.fillText(`${l.ic} ${l.nome}`, x, y - 6 * dpr);
+    // tapete da porta
+    g.fillStyle = perto ? "rgba(245,197,66,.55)" : "rgba(255,255,255,.16)"; g.fillRect(l.px * tile - cx + 3 * dpr, l.py * tile - cy + 3 * dpr, tile * 2 - 6 * dpr, tile - 6 * dpr);
+  }
+  // quem está na praça, de trás para a frente
+  const eu = { uid: pkMe(), fx: PZ.fx, fy: PZ.fy, f: PZ.face, n: S.me?.name, ch: S.me, eu: true, m: pzCfg().mascote !== false ? pkTeam()[0]?.species_id : null, tx: PZ.ax, ty: PZ.ay, pulo: PZ.moving ? Math.abs(Math.sin(PZ.moving.t * Math.PI)) * 3 * dpr : 0 };
+  const todos = [...Object.values(PZ.others).map(o => ({ ...o, ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } })), eu].filter(o => o.ch?.class && o.fx != null).sort((a, b) => a.fy - b.fy);
+  for (const o of todos) {
+    const ox = (o.fx + .5) * tile - cx, oy = (o.fy + 1) * tile - cy; if (ox < -tile * 2 || oy < -tile * 2 || ox > cv.width + tile * 2 || oy > cv.height + tile * 3) continue;
+    // o Pokémon da frente da equipe acompanha (imagem pronta da PokeAPI)
+    if (o.m && pzCfg().mascote !== false) { const im = grImg(o.m);
+      if (im.complete && im.naturalWidth) { const mx = ((o.tx ?? o.fx - (o.f || 1)) + .5) * tile - cx, my = ((o.ty ?? o.fy) + 1) * tile - cy, sz = tile * 0.95;
+        g.fillStyle = "rgba(0,0,0,.25)"; g.beginPath(); g.ellipse(mx, my - 3 * dpr, tile * .22, tile * .08, 0, 0, 6.28); g.fill();
+        g.save(); g.translate(mx, my - Math.abs(Math.sin(now / 260 + ox)) * 2 * dpr); if ((o.f || 1) > 0) g.scale(-1, 1); g.drawImage(im, -sz / 2, -sz * .95, sz, sz); g.restore(); } }
+    const sp = avatarCanvas(o.ch), h = tile * 1.15, w = h * sp.cv.width / sp.cv.height;
+    g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(ox, oy - 3 * dpr, tile * .28, tile * .1, 0, 0, 6.28); g.fill();
+    g.save(); g.translate(ox, oy - (o.pulo || 0) - 2 * dpr); if ((o.f || 1) < 0) g.scale(-1, 1); g.drawImage(sp.cv, -w / 2, -h, w, h); g.restore();
+    texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : "#F4F8E8");
+    // balão com a última fala no chat
+    const bl = PZ.baloes[o.uid];
+    if (bl && bl.ate > now && pzCfg().baloes !== false) {
+      g.font = `600 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`; const t = bl.txt, bw = Math.min(g.measureText(t).width + 16 * dpr, 260 * dpr), bh = 24 * dpr, by = oy - h - 22 * dpr;
+      g.globalAlpha = Math.min(1, (bl.ate - now) / 600); g.fillStyle = "#FFFFFF"; g.strokeStyle = "#1E150C"; g.lineWidth = 1.5 * dpr; g.beginPath(); g.roundRect(ox - bw / 2, by - bh, bw, bh, 9 * dpr); g.fill(); g.stroke();
+      g.beginPath(); g.moveTo(ox - 5 * dpr, by - 1); g.lineTo(ox, by + 6 * dpr); g.lineTo(ox + 5 * dpr, by - 1); g.fill();
+      g.fillStyle = "#1E150C"; g.textAlign = "center"; g.fillText(t, ox, by - 7 * dpr, bw - 10 * dpr); g.globalAlpha = 1;
+    }
+  }
+  // mapinha
+  const mc = $("#pz-mini");
+  if (mc && mc.offsetParent !== null) { const mg = mc.getContext("2d"), kx = mc.width / PZ.art.width, ky = mc.height / PZ.art.height; mg.imageSmoothingEnabled = false; mg.drawImage(PZ.art, 0, 0, mc.width, mc.height);
+    for (const o of todos) { mg.fillStyle = o.eu ? "#FFE37A" : "#FFFFFF"; mg.strokeStyle = "#0F1420"; mg.lineWidth = 1; mg.beginPath(); mg.arc((o.fx + .5) * 32 * kx, (o.fy + .5) * 32 * ky, o.eu ? 4 : 3, 0, 6.28); mg.fill(); mg.stroke(); } }
+  const n = todos.length, on = $("#pz-on"); if (on && on.dataset.n !== String(n)) { on.dataset.n = n; on.textContent = n === 1 ? "👥 Só você por aqui" : `👥 ${n} na praça`; }
+}
+// ---------- quem está na praça (Realtime) ----------
+let pzChannel = null;
+const pzMeta = () => ({ n: S.me.name, c: S.me.class, o: S.me.outfit || {}, x: PZ.x, y: PZ.y, f: PZ.face, m: pzCfg().mascote !== false ? (pkTeam()[0]?.species_id || null) : null });
+function pzNetJoin() {
+  if (!sb || !S.me) return;
+  if (pzChannel) { try { pzChannel.track(pzMeta()); } catch {} return; }
+  PZ.others = {};
+  pzChannel = sb.channel("praca", { config: { presence: { key: pkMe() }, broadcast: { self: false } } })
+    .on("presence", { event: "sync" }, () => {
+      let st = {}; try { st = pzChannel.presenceState(); } catch {}
+      const seen = new Set();
+      for (const [uid, metas] of Object.entries(st)) {
+        if (uid === pkMe()) continue; const p = metas.at(-1) || {}; seen.add(uid);
+        const o = PZ.others[uid] || (PZ.others[uid] = { uid, fx: p.x, fy: p.y, x: p.x, y: p.y });
+        Object.assign(o, { n: p.n, c: p.c, o: p.o, m: p.m, f: p.f ?? o.f, x: o.x ?? p.x, y: o.y ?? p.y });
+      }
+      for (const uid of Object.keys(PZ.others)) if (!seen.has(uid)) delete PZ.others[uid];
+    })
+    .on("broadcast", { event: "pos" }, ({ payload: p }) => {
+      if (!p?.u || p.u === pkMe()) return;
+      const o = PZ.others[p.u] || (PZ.others[p.u] = { uid: p.u, fx: p.x, fy: p.y });
+      Object.assign(o, { x: p.x, y: p.y, f: p.f });
+    })
+    .subscribe(st => { if (st === "SUBSCRIBED") { try { pzChannel.track(pzMeta()); } catch {} } });
+}
+function pzNetSend() {
+  if (!pzChannel) return;
+  const now = Date.now(), esp = Math.max(500, (pzCfg().envio_seg || 1.5) * 1000); clearTimeout(PZ.sendT);
+  const go = () => { PZ.lastSend = Date.now(); try { pzChannel.send({ type: "broadcast", event: "pos", payload: { u: pkMe(), x: PZ.x, y: PZ.y, f: PZ.face } }); } catch {} };
+  if (now - (PZ.lastSend || 0) >= esp) go(); else PZ.sendT = setTimeout(go, esp - (now - PZ.lastSend));
+}
+function pzNetLeave() {
+  clearTimeout(PZ.sendT);
+  if (pzChannel) { try { pzChannel.untrack(); sb.removeChannel(pzChannel); } catch {} }
+  pzChannel = null; PZ.others = {};
+}
+// fechou a aba ou ficou muito tempo numa janela: sai da praça para não ocupar o Realtime à toa
+setInterval(() => { if (pzChannel && !PZ.open && (!PZ.volta || (PZ.foraDesde && Date.now() - PZ.foraDesde > 180000))) { PZ.volta = false; pzNetLeave(); } PZ.foraDesde = PZ.open ? 0 : (PZ.foraDesde || Date.now()); }, 5000);
+// ---------- chat na praça ----------
+function pzChatRender() { const l = $("#pz-chat-list"); if (!l || !PZ.open) return; l.innerHTML = hxChatLista(25); l.scrollTop = l.scrollHeight; }
+function pzChatNova(m) {
+  pzChatRender();
+  if (m && PZ.open && m.user_id) PZ.baloes[m.user_id] = { txt: String(m.body || "").slice(0, 60), ate: performance.now() + 6000 };
+}
 // =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
 // Usa a tabela gifts do arquivo 34 (cada um lê só os seus); confere a cada minuto e avisa quando chega um novo.
@@ -11543,6 +12077,19 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "praca-2026-11-10", sql: "90", title: "⛲ Abriu a Praça Central!", body: () => `Lugar novo para passear com a galera: a Praça Central (menu Comunidade, ou o botão ⛲ no alto do mapa).
+• Ande com o seu herói (WASD ou setas; no celular, os botões na tela) e veja quem mais está na praça.
+• O primeiro Pokémon da sua equipe anda atrás de você.
+• Converse pelo chat: o que você escreve aparece num balão em cima da sua cabeça.
+• Chegue na porta de uma casa e aperte E para entrar: lojas, Centro Pokémon, Creche, Leilão, Mercado, Arena, Cartas, Biblioteca, Ranking e mais.
+• É só um jeito novo de chegar nas mesmas janelas: o tabuleiro e as regras não mudam.` },
+  { id: "visual-2026-11-10", sql: "89", title: "🖥️ Tela nova no computador!", body: () => `O jogo ganhou cara nova para quem joga no computador (no celular nada muda):
+• O mapa agora ocupa a tela toda. O menu fica em ícones na lateral: o botão » abre o menu completo e « recolhe.
+• No alto: mapinha, sua barra com nível e EXP e a Missão diária (o próximo passo de hoje: é só clicar).
+• À direita: temporada, casa, região e botões rápidos (🎒 Mochila, Pokémon, Pokédex, Ranking, Biblioteca e som).
+• Embaixo: chat fixo com as abas Chat, Jornal e Missões. A setinha recolhe.
+• 🎒 Mochila nova: seus itens, bolas e visuais em quadradinhos, com a equipe e as moedas.
+• A Grama de Treino ganhou o mesmo visual, com mapinha e chat.` },
   { id: "pokebound-2026-11-10", sql: "88", title: "💥 Chegou o PokeBound!", body: () => `Mini game novo no menu Competir: o PokeBound, duelo de artilharia com Pokémon. Só no computador.
 • Escolha Blastoise, Electrode, Golem ou Dragonite: cada um tem força, alcance e um ataque especial diferente.
 • ↑ ↓ mudam o ângulo. Segure ESPAÇO (ou o botão Atirar) e solte na hora certa: a barra de força vai e volta.
