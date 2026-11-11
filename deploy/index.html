@@ -3711,8 +3711,42 @@ async function buildTileArt() {
   // pintura
   const cv = document.createElement("canvas"); cv.width = CW * T; cv.height = CH * T;
   const g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
-  const [gc, gr] = PIPO_OBJ.grama;
-  for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) g.drawImage(obj, gc * T, gr * T, T, T, x * T, y * T, T, T);
+  const [gc, gr] = PIPO_OBJ.grama, novo = mapaNovoOn();
+  if (novo) {
+    // CHÃO PINTADO (arquivo 92): em vez de quadradinhos repetidos, uma cor por célula (grama, grama escura, areia,
+    // terra) esticada com suavização, o que mistura as regiões sem degrau; por cima, manchas grandes e grão fino
+    // de luz e sombra, e detalhes soltos (tufos, flores, pedrinhas). Arte nossa, por código. A cor da grama é a
+    // média do tile de grama da Pipoya, para as bordas da água, das florestas e das montanhas casarem com o chão.
+    const t1 = document.createElement("canvas"); t1.width = t1.height = 1;
+    const tg = t1.getContext("2d"); tg.drawImage(obj, gc * T, gr * T, T, T, 0, 0, 1, 1);
+    const gm = tg.getImageData(0, 0, 1, 1).data, grama = [gm[0], gm[1], gm[2]];
+    const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+    const escuraC = mix(grama, [34, 92, 44], .5), areiaC = [228, 208, 152], terraC = [146, 132, 94], gasta = mix(grama, [196, 192, 112], .3);
+    const c1 = document.createElement("canvas"); c1.width = CW; c1.height = CH; const g1 = c1.getContext("2d");
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { const i = idx(x, y);
+      let c = sand[i] ? areiaC : dirt[i] ? terraC : dark[i] ? escuraC : grama;
+      if (!sand[i] && !dirt[i] && pd[i] <= 1) c = mix(c, gasta, .55);          // grama mais clara e pisada perto do caminho
+      g1.fillStyle = `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`; g1.fillRect(x, y, 1, 1); }
+    const K = 8, W2 = CW * K, H2 = CH * K, c2 = document.createElement("canvas"); c2.width = W2; c2.height = H2;
+    const g2 = c2.getContext("2d"); g2.imageSmoothingEnabled = true; g2.imageSmoothingQuality = "high"; g2.drawImage(c1, 0, 0, W2, H2);
+    const im = g2.getImageData(0, 0, W2, H2), px = im.data, grao = mulberry(9151);
+    for (let y = 0, p = 0; y < H2; y++) for (let x = 0; x < W2; x++, p += 4) {
+      const f = 1 + (nA(x / 46, y / 46, 3) - .5) * .2 + (nC(x / 9, y / 9, 2) - .5) * .1 + (grao() - .5) * .05;
+      px[p] = Math.min(255, px[p] * f); px[p + 1] = Math.min(255, px[p + 1] * f); px[p + 2] = Math.min(255, px[p + 2] * f);
+    }
+    g2.putImageData(im, 0, 0);
+    g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high"; g.drawImage(c2, 0, 0, CW * T, CH * T); g.imageSmoothingEnabled = false;
+    // detalhes soltos
+    const det = mulberry(5521), flores = ["#F4F1EA", "#FFD23F", "#F28AB0", "#B58CF0"];
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { const i = idx(x, y); if (water[i]) continue;
+      const n = sand[i] || dirt[i] ? 2 : 4;
+      for (let k = 0; k < n; k++) { const fx = x * T + det() * T, fy = y * T + det() * T, r = det();
+        if (sand[i]) { g.fillStyle = r < .5 ? "rgba(150,120,70,.35)" : "rgba(255,250,225,.5)"; g.fillRect(fx, fy, 2, 2); }
+        else if (dirt[i]) { g.fillStyle = r < .6 ? "rgba(60,50,30,.3)" : "rgba(200,190,150,.3)"; g.fillRect(fx, fy, 3, 2); }
+        else if (r < .06 && pd[i] > 0) { g.fillStyle = "rgba(30,70,30,.55)"; g.fillRect(fx, fy + 2, 1, 3); g.fillStyle = flores[(det() * 4) | 0]; g.fillRect(fx - 1, fy, 3, 3); }
+        else { g.fillStyle = r < .55 ? "rgba(20,70,30,.28)" : "rgba(210,240,150,.3)"; g.fillRect(fx, fy, 1, 4); g.fillRect(fx + 2, fy + 1, 1, 3); } }
+    }
+  } else for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) g.drawImage(obj, gc * T, gr * T, T, T, x * T, y * T, T, T);
   const auto = (mask, base, img = at, skip = null) => {
     const M = (x, y) => !inside(x, y) || mask[idx(x, y)] > 0;
     for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) {
@@ -3724,14 +3758,14 @@ async function buildTileArt() {
       g.drawImage(img, (id % 16) * T, Math.floor(id / 16) * T, T, T, x * T, y * T, T, T);
     }
   };
-  auto(dark, PIPO_BASE.grama_escura);
-  auto(sand, PIPO_BASE.areia);
-  auto(dirt, PIPO_BASE.terra);
+  if (!novo) { auto(dark, PIPO_BASE.grama_escura); auto(sand, PIPO_BASE.areia); auto(dirt, PIPO_BASE.terra); }
   auto(water, PIPO_BASE.agua);
-  // caminho: pedras; o arriscado é estrada de terra
-  const anyPath = path.map(v => v ? 1 : 0);
-  auto(path.map(v => v === 2 ? 1 : 0), PIPO_BASE.terra, at, i => bridge[i]);
-  auto(anyPath, PIPO_BASE.pedras, at, i => path[i] !== 1 || bridge[i]);
+  // caminho: pedras; o arriscado é estrada de terra (no mapa novo a trilha é desenhada depois, em mapaTrilha)
+  if (!novo) {
+    const anyPath = path.map(v => v ? 1 : 0);
+    auto(path.map(v => v === 2 ? 1 : 0), PIPO_BASE.terra, at, i => bridge[i]);
+    auto(anyPath, PIPO_BASE.pedras, at, i => path[i] !== 1 || bridge[i]);
+  }
   // pontes de madeira onde o caminho cruza a água
   const [bc, br] = PIPO_OBJ.ponte;
   for (let i = 0; i < N; i++) if (bridge[i]) { const x = i % CW, y = (i / CW) | 0; g.drawImage(obj, bc * T, br * T, T, T + 4, x * T, y * T, T, T + 4); }
@@ -3747,12 +3781,58 @@ async function buildTileArt() {
   return cv;
 }
 // amplia a arte para o tamanho do mundo e desenha placas e casas por cima
+// ---------- acabamento do mapa (pedido do dono em 10/11/2026): trilha bem marcada ligando as casas, luz mais
+// suave nas bordas e moldura; o mar em volta é desenhado no drawWorld. Só desenho: o tabuleiro é o mesmo.
+// Liga/desliga em S.cfg.visual.mapa_novo (Ajustes do jogo).
+const mapaNovoOn = () => S.cfg?.visual?.mapa_novo !== false;
+function mapaTrilha(g) {
+  const fora = k => k === "cacada" || k === "alvo";
+  const arestas = [];
+  for (const n of S.nodes) for (const t of [n.next_a, n.next_b]) { const m = t == null ? null : S.nodeById[t]; if (m && !fora(n.kind) && !fora(m.kind)) arestas.push([n, m, n.branch === "arriscado" || m.branch === "arriscado"]); }
+  g.save(); g.lineCap = "round"; g.lineJoin = "round";
+  const passa = (w, cor, corRisco, dash) => { for (const risco of [false, true]) { g.beginPath(); for (const [a, b, r] of arestas) if (r === risco) { g.moveTo(a.x, a.y + 2); g.lineTo(b.x, b.y + 2); } g.lineWidth = w; g.strokeStyle = risco ? corRisco : cor; g.setLineDash(dash || []); g.stroke(); } };
+  passa(19, "rgba(30,20,10,.35)", "rgba(30,14,10,.4)");      // sombra
+  passa(15, "#4A3418", "#3E2212");                             // contorno
+  passa(11, "#E6D09A", "#C98F62");                             // chão da trilha
+  passa(7, "#F3E3B8", "#D9A678");                              // miolo mais claro
+  passa(1.6, "rgba(110,80,40,.5)", "rgba(90,40,20,.55)", [2, 9]);   // pontilhado do meio
+  g.setLineDash([]); g.restore();
+}
+function mapaAcabamento(g) {
+  if (!mapaNovoOn()) return;
+  // luz: centro normal, bordas um pouco mais escuras (dá profundidade)
+  const v = g.createRadialGradient(MAP_W / 2, MAP_H / 2, Math.min(MAP_W, MAP_H) * 0.35, MAP_W / 2, MAP_H / 2, Math.max(MAP_W, MAP_H) * 0.72);
+  v.addColorStop(0, "rgba(10,24,12,0)"); v.addColorStop(1, "rgba(10,24,12,.34)");
+  g.fillStyle = v; g.fillRect(0, 0, MAP_W, MAP_H);
+  // um toque quente por cima de tudo, para as cores ficarem mais vivas
+  g.save(); g.globalCompositeOperation = "soft-light"; g.fillStyle = "rgba(255,214,140,.22)"; g.fillRect(0, 0, MAP_W, MAP_H); g.restore();
+  mapaTrilha(g);
+}
+// mar em volta do mapa (padrão de ondas, arte nossa) e moldura de areia
+function mapaMar(ctx) {
+  if (!W.marPat) { const c = document.createElement("canvas"); c.width = 96; c.height = 64; const g = c.getContext("2d");
+    const gr = g.createLinearGradient(0, 0, 0, 64); gr.addColorStop(0, "#2377B4"); gr.addColorStop(1, "#1C679F"); g.fillStyle = gr; g.fillRect(0, 0, 96, 64);
+    g.strokeStyle = "rgba(255,255,255,.16)"; g.lineWidth = 2; g.lineCap = "round";
+    for (const [x, y] of [[10, 16], [58, 34], [26, 52], [80, 8]]) { g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 7, y - 6, x + 14, y); g.quadraticCurveTo(x + 21, y + 6, x + 28, y); g.stroke(); }
+    W.marPat = ctx.createPattern(c, "repeat"); }
+  const z = W.cam.z;
+  ctx.fillStyle = W.marPat; ctx.fillRect(W.cam.x - 8, W.cam.y - 8, W.w / z + 16, W.h / z + 16);
+  // sombra do mapa na água, espuma e faixa de areia
+  ctx.fillStyle = "rgba(6,30,52,.35)"; ctx.fillRect(-10, -4, MAP_W + 30, MAP_H + 26);
+  ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 22; ctx.lineJoin = "round"; ctx.strokeRect(-2, -2, MAP_W + 4, MAP_H + 4);
+  ctx.strokeStyle = "#EAD9A6"; ctx.lineWidth = 12; ctx.strokeRect(-2, -2, MAP_W + 4, MAP_H + 4);
+}
+function mapaMoldura(ctx) {
+  ctx.strokeStyle = "#3A2410"; ctx.lineWidth = 3; ctx.lineJoin = "round"; ctx.strokeRect(-1.5, -1.5, MAP_W + 3, MAP_H + 3);
+  ctx.strokeStyle = "rgba(255,244,210,.6)"; ctx.lineWidth = 1.5; ctx.strokeRect(2, 2, MAP_W - 4, MAP_H - 4);
+}
 function composeWorld(art) {
   const cv = document.createElement("canvas"); cv.width = MAP_W; cv.height = MAP_H;
   const G = cv.getContext("2d"); G.imageSmoothingEnabled = false;
   G.fillStyle = "#16301B"; G.fillRect(0, 0, MAP_W, MAP_H);
   const sc = art.width >= MAP_W ? 1 : MP;
   G.drawImage(art, 0, 0, art.width * sc, art.height * sc);
+  mapaAcabamento(G);
   drawRegionLabels(G);
   drawBoardNodes(G);
   return cv;
@@ -4045,7 +4125,9 @@ function drawWorld() {
   if (!W.base) { ctx.fillStyle = "#A9B4C6"; ctx.font = "500 14px Inter, sans-serif"; ctx.fillText(W.mapError ? "Não foi possível desenhar o mapa. Recarregue a página." : "Desenhando o mapa… na primeira vez pode levar alguns segundos.", 24, 40); return; }
   ctx.imageSmoothingEnabled = false;
   ctx.setTransform(d * z, 0, 0, d * z, -W.cam.x * z * d, -W.cam.y * z * d);
+  if (mapaNovoOn()) mapaMar(ctx);
   ctx.drawImage(W.base, 0, 0);
+  if (mapaNovoOn()) mapaMoldura(ctx);
   // armadilha própria e casa selecionada
   drawBoss(ctx);
   for (const p of Object.values(S.props || {})) drawPousada(ctx, p);
@@ -9138,7 +9220,7 @@ const AJ_LABELS = {
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
-  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)" },
+  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
     vel_max: "Velocidade máxima do tiro", carga_vel: "Velocidade da barra de força", turno_seg: "Segundos por turno", recarga: "Turnos de espera do especial",
     raio_jogador: "Tamanho do alvo (acerto direto)", folego: "Fôlego para andar por turno", zoom: "Zoom inicial da câmera" },
@@ -12224,6 +12306,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "mapa-2026-11-10", sql: "92", title: "🗺️ O mapa ficou mais bonito!", body: () => `O tabuleiro ganhou acabamento novo (as casas e os caminhos são os mesmos):
+• Trilha bem marcada ligando as casas: clara no caminho seguro e avermelhada no arriscado.
+• Mar em volta do mapa, com faixa de areia e moldura.
+• Chão novo, pintado: a grama, a areia e a terra se misturam suaves, sem aquele xadrez, com flores e tufos espalhados.
+• Luz mais suave nas bordas e cores mais vivas.` },
   { id: "herois-2026-11-10", sql: "91", title: "🧙 Os heróis ganharam visual novo!", body: () => `Os 8 heróis foram redesenhados: cabeça grande, traço grosso e cores vivas, cada um com a sua marca.
 • Guerreiro com espada e escudo, Mago de chapéu e cajado, Arqueiro com arco, Ladino de capuz, Clérigo com o cajado dourado, Domador de chapéu e chicote, Pesquisador de óculos e lupa, Mercador com a bolsa de moedas.
 • Suas skins continuam valendo: roupas, capas, asas, os 12 chapéus, acessórios e auras aparecem no desenho novo.
