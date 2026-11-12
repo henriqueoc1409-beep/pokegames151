@@ -80,6 +80,7 @@ from (values
   ('100_aventura_suporte', exists (select 1 from public.posts where title = '🎒 Aventura: Pokémon de suporte e a vila ajudando no treino')),
   ('101_ginasios_predios', to_regclass('public.rpg_lideres') is not null),
   ('102_aventura_pvp', exists (select 1 from public.posts where title = '⚔️ Aventura: encontrou, pode desafiar!')),
+  ('103_equipamentos', to_regclass('public.equip_pecas') is not null),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
