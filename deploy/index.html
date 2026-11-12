@@ -2200,6 +2200,7 @@ body.pb-on{overflow:hidden}
 .modal-mapa{max-width:680px !important}
 .rpg-desafio{text-align:center}.rpg-desafio h2{margin:6px 0}.rpg-desafio .actions{justify-content:center}
 /* Equipamentos (arquivo 103) */
+.eq-forca{display:flex;gap:2px;margin:2px 0}.eq-forca i{width:12px;height:6px;border-radius:2px;background:rgba(255,255,255,.12)}.eq-forca i.on{background:linear-gradient(90deg,#5AA9E6,#F5C542)}
 .eq .tabs{margin:6px 0 10px}.eq-doces{font-size:15px}
 .eq-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
 .eq-slot{display:flex;flex-direction:column;gap:3px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
@@ -6013,7 +6014,7 @@ function LIB() {
       <p><b>Fugir custa moedas:</b> ${S.cfg.rpg?.fuga_base ?? 10} moedas para fugir, mais ${S.cfg.rpg?.fuga_por_ataque ?? 10} por ataque que você já fez naquela luta. Sem moedas suficientes, não dá para fugir.</p>
       <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro.</p>
       <p>⚔️ <b>Encontrou, pode desafiar:</b> chegou perto de outro jogador (até ${S.cfg.rpg?.pvp?.distancia ?? 2} casas), aparece o botão ⚔️ Desafiar. A batalha é obrigatória: começa na hora, por turnos, com os 3 primeiros da equipe de cada um, e quem foi desafiado joga agora ou quando entrar. Não vale moedas, só a experiência das batalhas, com o teto de nível. O mesmo par luta 1 vez por dia; cada um desafia até ${S.cfg.rpg?.pvp?.desafia_dia ?? 5} e é desafiado até ${S.cfg.rpg?.pvp?.recebe_dia ?? 3} vezes por dia.</p>
-      <p>🛡️ <b>Equipamentos (do +0 ao +9):</b> botão 🛡️ Equipamentos na Aventura. São 5 peças: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús do tabuleiro), 🧤 Luvas (+captura no tabuleiro), 👖 Calça (+experiência nas vitórias da Aventura), 🥋 Peitoral (−dano nas lutas da Aventura, não vale contra jogadores) e 👢 Botas (+Pokémon raro no mato da Aventura). O bônus vai de 1% no +0 a 18% no +9. Para subir, use o 🍬 Doce de Forja: a chance cai a cada nível; até o +4, falhar só gasta o doce, e do +5 para cima a peça volta 1 nível. O doce cai às vezes ao vencer selvagens (mais nos Ginásios e no Chefe); as peças são raríssimas nos bichos ou custam ${S.cfg.equip?.preco ?? 5000} moedas na loja. Peças e doces podem ser vendidos na Feira de Equipamentos. Quem refina muito ganha brilho no herói (todas as peças +9: dourado com estrelas).</p>
+      <p>🛡️ <b>Equipamentos (do +0 ao +9):</b> botão 🛡️ Equipamentos na Aventura. São 5 peças: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús do tabuleiro), 🧤 Luvas (captura mais fácil no tabuleiro), 👖 Calça (+experiência nas vitórias da Aventura), 🥋 Peitoral (−dano nas lutas da Aventura, não vale contra jogadores) e 👢 Botas (Pokémon raros aparecem mais no mato da Aventura). O bônus fica mais forte a cada +. Para subir, use o 🍬 Doce de Forja: quanto mais alto o +, mais difícil; até o +4, falhar só gasta o doce, e do +5 para cima a peça volta 1 nível. O doce cai às vezes ao vencer selvagens (mais nos Ginásios e no Chefe); as peças são raríssimas nos bichos ou custam ${S.cfg.equip?.preco ?? 5000} moedas na loja. Peças e doces podem ser vendidos na Feira de Equipamentos. Quem refina muito ganha brilho no herói (todas as peças +9: dourado com estrelas).</p>
       <p>🧍 <b>O seu boneco na Aventura</b> mostra o que você está vestindo, e todos veem: sem a peça, a roupa na cor do seu herói; com ela, a peça muda com o "+": couro (do +0 ao +2), malha (do +3 ao +5), aço (do +6 ao +8) e <b>ouro no +9</b>. O boneco anda nas 4 direções. No tabuleiro, o boneco continua o de sempre.</p>
       <p>🎒 <b>Pokémon de suporte:</b> no botão 🎒 Suporte, escolha um Pokémon seu para ir na bolsa. A cada vitória na Aventura (selvagens, Ginásios e Chefe) ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de quem lutou (com o herói Pesquisador, mais). Ele precisa estar com vida.</p>
       <p>🏰 <b>A vila ajuda:</b> a Arena da vila dá lutas a mais por dia na Aventura, e a Academia dá experiência a mais nas lutas.</p>
@@ -11615,10 +11616,13 @@ function lpcFolha(o) {
   LPC.cache.set(key, cv); return cv;
 }
 // ---------- Equipamentos do herói, do +0 ao +9 (arquivo 103) ----------
-const EQ_SLOTS = { capacete: ["🪖", "Capacete", x => `+${x}% de moedas no Dia de Pagamento e nos baús (tabuleiro)`], luvas: ["🧤", "Luvas", x => `+${x}% de chance de captura (tabuleiro)`],
-  calca: ["👖", "Calça", x => `+${x}% de experiência nas vitórias da Aventura`], peitoral: ["🥋", "Peitoral", x => `−${x}% de dano nas lutas da Aventura (não vale contra jogadores)`],
-  botas: ["👢", "Botas", x => `+${x}% de chance de Pokémon raro no mato da Aventura`] };
-const eqBonus = (E, sl, n) => E?.pecas_cfg?.[sl]?.bonus?.[n] ?? [1, 2, 3, 4, 5, 7, 9, 11, 14, 18][n];
+// (dono, 12/11/2026: chances e porcentagens ficam só no servidor; a tela mostra o efeito e a força, sem números)
+const EQ_SLOTS = { capacete: ["🪖", "Capacete", () => "mais moedas no Dia de Pagamento e nos baús (tabuleiro)"], luvas: ["🧤", "Luvas", () => "captura mais fácil (tabuleiro)"],
+  calca: ["👖", "Calça", () => "mais experiência nas vitórias da Aventura"], peitoral: ["🥋", "Peitoral", () => "menos dano nas lutas da Aventura (não vale contra jogadores)"],
+  botas: ["👢", "Botas", () => "Pokémon raros aparecem mais no mato da Aventura"] };
+const eqBonus = () => 0;
+const eqForca = n => `<span class="eq-forca" title="Força do bônus">${Array.from({ length: 10 }, (_, i) => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</span>`;
+const eqDificil = n => n < 2 ? "fácil" : n < 4 ? "médio" : n < 6 ? "difícil" : n < 8 ? "muito difícil" : "dificílimo";
 const eqSoma = E => (E?.minhas || []).filter(p => p.equipada).reduce((a, p) => a + p.nivel, 0);
 async function eqCarregar() { try { AV.eq = await rpc("equip_estado"); } catch (e) { AV.eq = AV.eq || null; if (isMissingFn(e)) AV.eq = false; } return AV.eq; }
 function eqHTML(aba) {
@@ -11631,16 +11635,16 @@ function eqHTML(aba) {
     const extras = E.minhas.filter(p => !p.equipada);
     corpo = `<p class="eq-doces">🍬 Doce de Forja: <b>${E.doces}</b> <small class="muted">· cai ao vencer selvagens (mais nos Ginásios e no Chefe) ou compre na Feira</small></p>
       <div class="eq-slots">${Object.keys(EQ_SLOTS).map(sl => { const p = E.minhas.find(x => x.slot === sl && x.equipada), [ic, nome, txt] = EQ_SLOTS[sl];
-        if (!p) return `<div class="eq-slot vazio"><span class="eq-ic">${ic}</span><b>${nome}</b><small>${txt(eqBonus(E, sl, 0))} no +0</small><small class="muted">Vazio: compre na Loja, ache nos bichos ou na Feira.</small></div>`;
-        const ch = E.chances?.[p.nivel], risco = p.nivel >= (E.volta_a_partir ?? 5);
-        return `<div class="eq-slot n${p.nivel}"><span class="eq-ic">${ic}</span><b>${nome} <span class="eq-mais">+${p.nivel}</span></b><small>${txt(eqBonus(E, sl, p.nivel))}</small>
-          ${p.nivel < 9 ? `<small class="muted">No +${p.nivel + 1}: ${txt(eqBonus(E, sl, p.nivel + 1))} · chance ${ch}%${risco ? " · se falhar, volta 1" : " · se falhar, só perde o doce"}</small>
-          <div class="eq-acts"><button class="btn small" data-eqref="${p.id}" ${E.doces ? "" : "disabled"}>🍬 Usar Doce (${ch}%)</button><button class="btn ghost small" data-eqtira="${p.id}">Tirar</button></div>` : `<small class="eq-max">✨ No máximo: +9!</small><div class="eq-acts"><button class="btn ghost small" data-eqtira="${p.id}">Tirar</button></div>`}</div>`; }).join("")}</div>
+        if (!p) return `<div class="eq-slot vazio"><span class="eq-ic">${ic}</span><b>${nome}</b><small>${txt()}</small><small class="muted">Vazio: compre na Loja, ache nos bichos ou na Feira.</small></div>`;
+        const risco = p.nivel >= (E.volta_a_partir ?? 5);
+        return `<div class="eq-slot n${p.nivel}"><span class="eq-ic">${ic}</span><b>${nome} <span class="eq-mais">+${p.nivel}</span></b><small>${txt()}</small>${eqForca(p.nivel)}
+          ${p.nivel < 9 ? `<small class="muted">Subir para o +${p.nivel + 1}: ${eqDificil(p.nivel)}${risco ? " · se falhar, volta 1" : " · se falhar, só perde o doce"}</small>
+          <div class="eq-acts"><button class="btn small" data-eqref="${p.id}" ${E.doces ? "" : "disabled"}>🍬 Usar Doce</button><button class="btn ghost small" data-eqtira="${p.id}">Tirar</button></div>` : `<small class="eq-max">✨ No máximo: +9!</small><div class="eq-acts"><button class="btn ghost small" data-eqtira="${p.id}">Tirar</button></div>`}</div>`; }).join("")}</div>
       ${extras.length ? `<h3 style="margin-top:12px">Peças guardadas</h3><div class="eq-lista">${extras.map(p => { const k = peca(p); return `<div class="eq-item">${k.ic} <b>${k.nome} +${p.nivel}</b>${p.a_venda ? ` <small class="muted">· à venda na Feira</small>` : `<span><button class="btn small" data-eqequip="${p.id}">Equipar</button><button class="btn ghost small" data-eqvende="${p.id}">Vender</button></span>`}</div>`; }).join("")}</div>` : ""}
-      <p class="muted" style="margin-top:10px">Chances de subir: ${(E.chances || []).map((c, i) => `+${i + 1}: ${c}%`).join(" · ")}. Até o +${(E.volta_a_partir ?? 5) - 1}, se falhar, só perde o doce; do +${E.volta_a_partir ?? 5} para cima, falhar faz a peça voltar 1 nível.</p>`;
+      <p class="muted" style="margin-top:10px">Quanto mais alto o +, mais difícil subir. Até o +${(E.volta_a_partir ?? 5) - 1}, se falhar, só perde o doce; do +${E.volta_a_partir ?? 5} para cima, falhar faz a peça voltar 1 nível.</p>`;
   } else if (aba === "loja") {
     corpo = `<p>Cada peça nova custa <b>${E.preco} moedas</b> e vem no +0. Você tem <b>${S.me?.coins ?? 0} moedas</b>.</p>
-      <div class="eq-lista">${Object.entries(EQ_SLOTS).map(([sl, [ic, nome, txt]]) => `<div class="eq-item">${ic} <b>${nome}</b><small class="muted">${txt(eqBonus(E, sl, 0))} no +0, até ${txt(eqBonus(E, sl, 9)).replace(/^[+−]\d+%/, m => m)} no +9</small><button class="btn small" data-eqcompra="${sl}" ${(S.me?.coins ?? 0) >= E.preco ? "" : "disabled"}>Comprar (${E.preco})</button></div>`).join("")}</div>`;
+      <div class="eq-lista">${Object.entries(EQ_SLOTS).map(([sl, [ic, nome, txt]]) => `<div class="eq-item">${ic} <b>${nome}</b><small class="muted">${txt()} · fica mais forte a cada +</small><button class="btn small" data-eqcompra="${sl}" ${(S.me?.coins ?? 0) >= E.preco ? "" : "disabled"}>Comprar (${E.preco})</button></div>`).join("")}</div>`;
   } else {
     const eu = S.session?.user?.id, of = E.ofertas || [];
     corpo = `<p>Venda e compre <b>peças</b> e <b>Doces de Forja</b> com os outros jogadores. Quem vende paga ${E.taxa_pct}% de taxa.</p>
@@ -13303,9 +13307,9 @@ const NOVIDADES = [
 • Os Líderes de Ginásio vestem armadura de aço (e o do Pico Gelado, de ouro).
 • No tabuleiro, o boneco continua o de sempre.` },
   { id: "equip-2026-11-12", sql: "103", title: "🛡️ Equipamentos da Aventura: do +0 ao +9", body: () => `Chegaram os Equipamentos do seu herói (botão 🛡️ Equipamentos, na Aventura):
-• 5 peças, cada uma com o seu bônus: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús), 🧤 Luvas (+chance de captura), 👖 Calça (+experiência por vitória na Aventura), 🥋 Peitoral (−dano recebido nas lutas da Aventura) e 👢 Botas (+chance de Pokémon raro no mato).
-• Cada peça vai do +0 ao +9: o bônus cresce de 1% até 18%.
-• 🍬 Doce de Forja: use para subir a peça. A chance cai a cada nível (100% no +1, 10% no +9). Até o +4, se falhar, só perde o doce; do +5 para cima, falhar faz a peça voltar 1 nível.
+• 5 peças, cada uma com o seu bônus: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús), 🧤 Luvas (captura mais fácil), 👖 Calça (+experiência por vitória na Aventura), 🥋 Peitoral (−dano recebido nas lutas da Aventura) e 👢 Botas (Pokémon raros aparecem mais no mato).
+• Cada peça vai do +0 ao +9: quanto maior o +, mais forte o bônus.
+• 🍬 Doce de Forja: use para subir a peça. Quanto mais alto o +, mais difícil subir. Até o +4, se falhar, só perde o doce; do +5 para cima, falhar faz a peça voltar 1 nível.
 • Onde conseguir: o Doce cai às vezes ao vencer selvagens na Aventura (mais nos Ginásios e no Chefe). As peças são raríssimas nos bichos, ou custam 5.000 moedas na loja.
 • Doces e peças podem ser vendidos e comprados entre jogadores, na feira dos Equipamentos.
 • O Peitoral não vale nas batalhas entre jogadores: lá todo mundo fica igual.` },

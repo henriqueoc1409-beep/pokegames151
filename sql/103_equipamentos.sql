@@ -83,7 +83,7 @@ language plpgsql security definer set search_path = public, extensions as $$
 declare uid uuid := auth.uid(); c jsonb := public.equip_cfg();
 begin
   if uid is null then raise exception 'Entre no jogo primeiro.'; end if;
-  return jsonb_build_object('on', coalesce((c->>'on')::boolean, true), 'pecas_cfg', c->'pecas', 'chances', c->'chances', 'volta_a_partir', (c->>'volta_a_partir')::int,
+  return jsonb_build_object('on', coalesce((c->>'on')::boolean, true), 'pecas_cfg', (select jsonb_object_agg(k, jsonb_build_object('nome', v->>'nome')) from jsonb_each(c->'pecas') x(k, v)), 'volta_a_partir', (c->>'volta_a_partir')::int,
     'preco', (c->>'preco')::int, 'taxa_pct', (c->>'taxa_pct')::numeric, 'doces', coalesce((select qty from equip_doces where user_id = uid), 0),
     'minhas', coalesce((select jsonb_agg(to_jsonb(p) order by p.equipada desc, p.slot, p.nivel desc) from equip_pecas p where p.user_id = uid), '[]'::jsonb),
     'ofertas', coalesce((select jsonb_agg(jsonb_build_object('id', o.id, 'vendedor', o.vendedor, 'nome', ch.name, 'tipo', o.tipo, 'qty', o.qty, 'preco', o.preco,
@@ -137,7 +137,7 @@ begin
     select name into nome from characters where user_id = uid;
     insert into event_log(user_id, kind, message) values (uid, 'equip', '🔥 ' || nome || ' levou ' || (c->'pecas'->p.slot->>'nome') || ' ao +9!');
   end if;
-  return jsonb_build_object('ok', ok, 'antes', p.nivel, 'nivel', novo, 'chance', ch, 'doces', d - 1);
+  return jsonb_build_object('ok', ok, 'antes', p.nivel, 'nivel', novo, 'doces', d - 1);   -- a chance fica só no servidor
 end $$;
 
 create or replace function public.equip_ofertar(_tipo text, _peca bigint, _qty int, _preco int) returns jsonb
@@ -912,9 +912,9 @@ update public.game_config set config = jsonb_set(config, '{equip}', public.equip
 insert into public.posts(kind, title, body, created_by)
 select 'novidade', x.title, x.body, coalesce((select user_id from public.user_roles where role = 'admin' order by user_id limit 1), '00000000-0000-0000-0000-000000000000'::uuid)
   from (values ('🛡️ Equipamentos da Aventura: do +0 ao +9', 'Chegaram os Equipamentos do seu herói (botão 🛡️ Equipamentos, na Aventura):
-• 5 peças, cada uma com o seu bônus: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús), 🧤 Luvas (+chance de captura), 👖 Calça (+experiência por vitória na Aventura), 🥋 Peitoral (−dano recebido nas lutas da Aventura) e 👢 Botas (+chance de Pokémon raro no mato).
-• Cada peça vai do +0 ao +9: o bônus cresce de 1% até 18%.
-• 🍬 Doce de Forja: use para subir a peça. A chance cai a cada nível (100% no +1, 10% no +9). Até o +4, se falhar, só perde o doce; do +5 para cima, falhar faz a peça voltar 1 nível.
+• 5 peças, cada uma com o seu bônus: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús), 🧤 Luvas (captura mais fácil), 👖 Calça (+experiência por vitória na Aventura), 🥋 Peitoral (−dano recebido nas lutas da Aventura) e 👢 Botas (Pokémon raros aparecem mais no mato).
+• Cada peça vai do +0 ao +9: quanto maior o +, mais forte o bônus.
+• 🍬 Doce de Forja: use para subir a peça. Quanto mais alto o +, mais difícil subir. Até o +4, se falhar, só perde o doce; do +5 para cima, falhar faz a peça voltar 1 nível.
 • Onde conseguir: o Doce cai às vezes ao vencer selvagens na Aventura (mais nos Ginásios e no Chefe). As peças são raríssimas nos bichos, ou custam 5.000 moedas na loja.
 • Doces e peças podem ser vendidos e comprados entre jogadores, na feira dos Equipamentos.
 • O Peitoral não vale nas batalhas entre jogadores: lá todo mundo fica igual.')) x(title, body)
