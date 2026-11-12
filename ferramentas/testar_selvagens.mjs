@@ -7,7 +7,7 @@ import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
 import fs from "fs"; import path from "path";
 const root = process.argv[2];
 const db = new PGlite({ extensions: { citext, pgcrypto } });
-const sqls = fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort();
+const sqls = fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort((a, b) => parseInt(a) - parseInt(b) || a.localeCompare(b));
 let ok = 0, fail = 0;
 const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
 const sys = async (q, p = []) => (await db.query(q, p)).rows;
@@ -16,7 +16,7 @@ const U = n => `${n}${n}${n}${n}${n}${n}${n}${n}-${n}${n}${n}${n}-${n}${n}${n}${
 const [A, T, ADM] = [U(1), U(2), U(9)];
 
 await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
-for (const f of sqls.filter(f => f < "53")) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+for (const f of sqls.filter(f => parseInt(f) < 53)) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
 for (const [u, n] of [[A, "Ana"], [T, "teste"], [ADM, "Chefe"]]) { await sys(`insert into auth.users(id, email, raw_user_meta_data) values ($1, $2, $3)`, [u, n + "@t.l", JSON.stringify({ username: n })]); await as(u, `select public.create_character($1, 'mago')`, [n]); }
 await sys(`insert into user_roles(user_id, role) values ($1, 'admin') on conflict do nothing`, [ADM]);
 // o "teste" tem coisas espalhadas pelo jogo
@@ -25,7 +25,7 @@ await as(T, `select public.move_today()`); await as(T, `select public.pk_sync()`
 await as(T, `select public.chat_send('oi')`);
 check("antes do 53: o \"teste\" tem herói, jogada e encontro", (await sys(`select (select count(*) from characters where user_id = $1) + (select count(*) from daily_moves where user_id = $1) + (select count(*) from encounters where user_id = $1) n`, [T]))[0].n >= 3);
 
-for (const f of sqls.filter(f => f >= "53")) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+for (const f of sqls.filter(f => parseInt(f) >= 53)) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
 
 console.log("\nPokémon selvagens do nível 1 ao 5");
 const e = (await sys(`select public.pk_cfg()->'encounter' e`))[0].e;

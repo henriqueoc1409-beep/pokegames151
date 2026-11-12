@@ -8,7 +8,7 @@ DB="${1:-pokegames_teste}"
 dropdb --if-exists "$DB"
 createdb "$DB"
 psql -q -v ON_ERROR_STOP=1 -d "$DB" -f ferramentas/supabase_simulado.sql
-for f in sql/*.sql; do
+for f in $(ls sql/*.sql | sort -t/ -k2 -n); do
   echo "== $f"
   psql -q -v ON_ERROR_STOP=1 -d "$DB" -f "$f" > /dev/null
 done
