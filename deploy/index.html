@@ -5999,7 +5999,7 @@ function LIB() {
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
-      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.</p>
+      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${trGradual() ? `O preço é só da vida que falta. Ou espere: <b>a vida volta sozinha, de graça, um pouco a cada hora</b> (de desmaiado a inteiro em ${S.treino?.st?.gratis_horas ?? 72} horas). Desmaiado que já recuperou um pouco pode lutar de novo.` : `O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.`}</p>
       <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
     { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
       <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
@@ -6040,7 +6040,7 @@ function LIB() {
       <p>Quem vai anda pelo caminho da Caçada. O <b>primeiro</b> a parar na casa do Pokémon tenta capturar com 3 bolas. <b>Pegando ou não, você volta para a casa onde estava antes</b>: não perde posição, mas não avança na corrida enquanto caça. Dá para desistir no meio e voltar; cada um vai atrás uma vez só.</p>
       <p>A Caçada tem prazo: se ninguém chegar, o Pokémon foge e todos voltam.</p>` },
     { id: "quiz", ic: "❓", t: "Quiz surpresa", h: `<p>🎲 <b>Quiz automático:</b> ${S.cfg.quiz_auto?.on === false ? "às vezes o admin abre um quiz." : `aparece sozinho ${(S.cfg.quiz_auto?.dias || [1, 3, 5]).length} vezes por semana, num horário surpresa entre ${S.cfg.quiz_auto?.hora_min ?? 18}h e ${S.cfg.quiz_auto?.hora_max ?? 22}h.`} As perguntas são absurdas, do mundo Pokémon (tipo "quantos kg de sushi o Snorlax come em uma hora?"), e a resposta oficial é segredo: quem chutar mais perto ganha um prêmio sorteado.</p><p>De vez em quando aparece um <b>quiz</b> valendo prêmio. Você vê o aviso e o prêmio, conta 3, 2, 1 e responde um número antes do tempo acabar.</p>
-      <p>Vale uma tentativa só. Vence quem chegar <b>mais perto</b> da resposta; no empate, quem respondeu primeiro. Dá para responder pelo aviso no mapa ou pelo Jornal.</p>
+      <p>Vale uma tentativa só. Vence quem chegar <b>mais perto</b> da resposta; no empate, quem respondeu <b>mais rápido</b> depois que a pergunta apareceu na tela. Dá para responder pelo aviso no mapa ou pelo Jornal.</p>
       <p>O prêmio cai sozinho na conta do vencedor assim que o quiz fecha, e aparece no 📬 Correio.</p>` },
     { id: "social", ic: "🤝", t: "Duelos, bolão, times e mercado", h: `<p><b>Duelos:</b> desafie um amigo valendo moedas, no quiz (adivinhar um Pokémon: menos tentativas vence; empate, quem foi mais rápido) ou na sorte.</p>
       <p><b>Bolão:</b> aposte em quem vai vencer a rodada do dia.</p>
@@ -8757,11 +8757,17 @@ async function treinoOpen(v = "treino") {
 function treinoMons() {
   return [...(S.pk.mons || [])].sort((a, b) => (a.team_slot || 99) - (b.team_slot || 99) || b.level - a.level);
 }
-const treinoNow = () => Date.now() + (S.treino.skew || 0);   // relógio do servidor
+const treinoNow = () => Date.now() + (S.treino?.skew || 0);   // relógio do servidor
 const treinoWait = () => { const p = S.treino.st?.proxima; return p ? Math.max(0, Math.ceil((new Date(p) - treinoNow()) / 1000)) : 0; };
 const mmss = t => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
 const trHpBar = hp => `<span class="tr-hp ${hp <= 25 ? "low" : hp <= 60 ? "mid" : ""}" title="Vida do treino: ${hp}%"><i style="width:${Math.max(0, hp)}%"></i></span>`;
-function treinoHpOf(m) { return m?.tr_hp ?? 100; }
+function trGradual() { return S.treino?.st?.cura_gradual ?? S.cfg.treino?.cura_gradual !== false; }
+function treinoHpOf(m) {
+  const hp = m?.tr_hp ?? 100; if (hp >= 100) return 100;
+  if (!trGradual() || !m.tr_hurt_at) return hp;
+  const H = (S.treino?.st?.gratis_horas ?? 72) * 3600000;   // de 0% a 100% (arquivo 95: a vida volta aos poucos)
+  return Math.min(100, hp + Math.max(0, Math.floor((treinoNow() - new Date(m.tr_hurt_at)) * 100 / H)));
+}
 function hoursLeft(ts) {
   const ms = new Date(ts) - treinoNow(); if (ms <= 0) return "agora";
   const h = Math.floor(ms / 3600000), mi = Math.ceil((ms % 3600000) / 60000);
@@ -8800,7 +8806,7 @@ function viewTreino() {
       </div>
     </div>
     <p class="muted">Hoje: ${st.lutas} ${st.lutas === 1 ? "luta" : "lutas"}, ${st.vitorias} ${st.vitorias === 1 ? "vitória" : "vitórias"}, ${st.xp} de experiência.
-      ⚠️ Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. A vida que o Pokémon perde fica para a próxima luta (só no treino): desmaiou, Centro Pokémon (pago) ou ${st.gratis_horas} horas de espera (grátis).</p>
+      ⚠️ Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. A vida que o Pokémon perde fica para a próxima luta (só no treino): desmaiou, Centro Pokémon (pago) ou ${trGradual() ? `espere: a vida volta sozinha aos poucos (de 0 a 100% em ${st.gratis_horas} horas)` : `${st.gratis_horas} horas de espera (grátis)`}.</p>
     ${mons.length > 1 ? `<div class="tr-comp"><label for="tr-comp">🎒 Acompanhante: fica na bolsa e ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de cada vitória (bom para o Magikarp e quem não dá dano)</label>
       <select id="tr-comp"><option value="">Nenhum</option>${mons.filter(x => x.id !== m.id).map(x => { const dead = treinoHpOf(x) <= 0; return `<option value="${x.id}" ${S.treino.comp === x.id && !dead ? "selected" : ""} ${dead ? "disabled" : ""}>${esc(pkName(x.species_id))} (Nv ${x.level})${dead ? " · 💤 desmaiado" : ""}</option>`; }).join("")}</select></div>` : ""}
     <h3>Quem vai treinar?</h3>
@@ -8820,15 +8826,16 @@ function viewCentro() {
   return `<div class="centro">
     <div class="ce-head"><p><b>🏥 Bem-vindo ao Centro Pokémon!</b></p>
       <p>Aqui você cura os Pokémon que se feriram na <b>Grama de Treino</b>. Pokémon ferido entra na próxima luta com a vida que sobrou, e o <b>desmaiado não pode treinar</b>.</p>
-      <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. <b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
-         • <b>De graça:</b> espere <b>${st.gratis_horas} horas</b> depois do último ferimento e ele volta inteiro sozinho.</p>
+      <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${st.cura_gradual ? `O preço é só da vida que falta: quanto mais ele já se recuperou, mais barato.<br>
+         • <b>De graça:</b> a vida volta sozinha, <b>um pouco a cada hora</b>. De desmaiado até a vida cheia são <b>${st.gratis_horas} horas</b>; quem está pouco ferido fica bom antes. Desmaiado que já recuperou um pouco pode lutar de novo.` : `<b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
+         • <b>De graça:</b> espere <b>${st.gratis_horas} horas</b> depois do último ferimento e ele volta inteiro sozinho.`}</p>
       <p style="font-size:13px">A vida do treino só vale na Grama de Treino. Nas outras batalhas, seus Pokémon começam sempre com a vida cheia.</p></div>
     ${list.length ? `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px"><span>Você tem <b>${coins} moedas</b>.</span>
         <button class="btn" data-act="ce-cure" data-v="" ${coins >= total ? "" : "disabled"}>❤️ Curar todos (${total} moedas)</button></div>
       <div class="ce-list">${list.map(f => `<div class="ce-row">${monCv(f.m.species_id, f.m.outfit, 64)}
         <div class="ce-info"><b>${esc(pkName(f.m.species_id))}</b> <span class="muted">Nv ${f.m.level}</span><br>
           ${f.tr_hp <= 0 ? `<span class="ko-tag">💤 Desmaiado</span>` : `${trHpBar(f.tr_hp)} <span>${f.tr_hp}% da vida</span>`}<br>
-          <span class="muted" style="font-size:13px">De graça em ${hoursLeft(f.gratis_em)}</span></div>
+          <span class="muted" style="font-size:13px">${st.cura_gradual ? "Vida cheia de graça em" : "De graça em"} ${hoursLeft(f.gratis_em)}</span></div>
         <button class="btn small" data-act="ce-cure" data-v="${f.id}" ${coins >= f.preco ? "" : "disabled"}>Curar agora (${f.preco} moedas)</button>${f.preco_cheio && f.preco < f.preco_cheio ? `<small class="muted">preço cheio: ${f.preco_cheio}</small>` : ""}</div>`).join("")}</div>`
       : `<div class="pk-empty"><p><strong>Todos os seus Pokémon estão com a vida cheia. 💚</strong></p><p class="muted">Quando algum se ferir na Grama de Treino, ele aparece aqui.</p>
           <button class="btn" data-act="go" data-v="treino">🌿 Ir para a Grama de Treino</button></div>`}
@@ -8837,7 +8844,7 @@ function viewCentro() {
 ACTIONS["ce-cure"] = async v => {
   const f = S.treino.st?.feridos || [], ids = v ? [v] : null, cost = (v ? f.filter(x => x.id === v) : f).reduce((a, x) => a + x.preco, 0);
   if (!await confirmModal("Curar no Centro Pokémon?", `${v ? "Este Pokémon volta" : "Todos os feridos voltam"} com a vida cheia agora por ${cost} moedas.
-Se preferir, espere: de graça, eles se recuperam ${S.treino.st?.gratis_horas ?? 72} horas depois do último ferimento.`, `Curar por ${cost}`)) return;
+${trGradual() ? "Se preferir, espere: a vida volta sozinha, de graça, um pouco a cada hora." : `Se preferir, espere: de graça, eles se recuperam ${S.treino.st?.gratis_horas ?? 72} horas depois do último ferimento.`}`, `Curar por ${cost}`)) return;
   guarded(async () => {
     const r = await rpc("centro_curar", { _ids: ids });
     sfx("acerto"); toast(`🏥 ${r.curados === 1 ? "Pokémon curado" : `${r.curados} Pokémon curados`}! Custou ${r.cost} moedas.`);
@@ -9199,7 +9206,7 @@ async function grLegend(L) {
       <img src="${ART(L.species)}" alt="${esc(L.name)}" width="220" height="220">
       <h2>O lendário acabou com você.</h2>
       <p>Um <b>${esc(L.name)}</b> de nível ${L.level} saiu da grama alta, e o seu <b>${esc(pkName(L.mon_species))}</b> desmaiou na hora.</p>
-      <p class="muted">Leve-o ao 🏥 Centro Pokémon ou espere ${L.gratis_horas} horas para ele se recuperar de graça. Escolha outro Pokémon para continuar treinando.</p>
+      <p class="muted">Leve-o ao 🏥 Centro Pokémon ou espere: ${trGradual() ? "a vida volta sozinha, aos poucos" : `${L.gratis_horas} horas para ele se recuperar de graça`}. Escolha outro Pokémon para continuar treinando.</p>
       <div class="actions"><button class="btn ghost" data-r="centro">🏥 Centro Pokémon</button><button class="btn" data-r="ok">Continuar na grama</button></div></div>`);
     m.querySelector(".modal").classList.add("modal-leg");
     m.addEventListener("click", ev => { const b = ev.target.closest("[data-r]"); if (!b) return; closeModal(); res();
@@ -9220,7 +9227,7 @@ function grEndHTML(b) {
     : "O selvagem venceu. Não ganhou experiência.";
   const comp = r.comp_xp ? ` 🎒 ${esc(pkName(r.comp_species))} (acompanhante) ganhou <b>${r.comp_xp}</b>.` : "";
   return `<div class="bt-end ${r.won ? "won" : "lost"}"><h3>${r.forte ? "⚡ " : ""}${r.won ? "Você venceu!" : r.fugiu ? "Fugiu!" : "Não foi dessa vez!"}</h3>
-    <p>${msg}${comp} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
+    <p>${msg}${comp} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> ${trGradual() ? "Leve ao Centro Pokémon ou espere a vida voltar aos poucos." : `Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.`}` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
     <div class="act-btns">${b.state?.treino?.rpg ? `<button class="btn" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
 
@@ -9275,7 +9282,7 @@ const AJ_LABELS = {
     nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
     forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", acompanhante_pct: "Acompanhante: % da experiência que ele ganha", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
     lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
-    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça" },
+    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça (de desmaiado a vida cheia)", cura_gradual: "A vida volta aos poucos (desligado: só no fim da espera)" },
   rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
     hp_factor: "Vida da barra (multiplicador)", max_turns: "Turnos máximos por luta", level_bonus: "Níveis a mais da equipe da Rocket" },
   pk: { "encounter.level_min": "Encontro: nível mínimo dos selvagens", "encounter.level_span": "Encontro: níveis a mais até o Castelo", "encounter.level_spread": "Encontro: sorteio de níveis a mais",
@@ -9669,7 +9676,7 @@ function pkDock() {
 }
 function pkQuickHTML() {
   const team = pkTeam(), all = S.pk.mons || [], fer = new Set((S.treino?.st?.feridos || []).map(f => f.id));
-  const hp = m => m.tr_hp ?? 100;
+  const hp = m => treinoHpOf(m);
   const card = m => { const ev = evoReady(m).length, mv = m.pending_moves?.length, x = pkXp(m);
     return `<button class="pkq-mon" data-act="pk-open-mon" data-v="${m.id}"><img src="${SPRITE(m.species_id)}" alt="" width="96" height="96" loading="lazy" style="margin:-12px 0 -10px">
       <b>${esc(pkName(m.species_id))}</b><small>Nível ${m.level}${m.team_slot ? ` · ${m.team_slot}º da equipe` : ""}</small>
@@ -11061,7 +11068,7 @@ function rpgFalaProx() { const f = AV.fala; if (!f) return; if (++f.i >= f.linha
 function rpgFalaFecha() { AV.fala = null; const el = $("#rpg-fala"); if (el) el.hidden = true; }
 // ---------- encontro com Pokémon selvagem ----------
 async function rpgEncontro(zona) {
-  const time = pkTeam(), m = time.find(x => (x.tr_hp ?? 100) > 0) || time[0] || (S.pk?.mons || [])[0];
+  const time = pkTeam(), m = time.find(x => treinoHpOf(x) > 0) || time[0] || (S.pk?.mons || [])[0];
   if (!m) { $("#rpg-hint").textContent = "Você ainda não tem Pokémon para lutar. Capture um no tabuleiro primeiro."; return; }
   AV.busy = true; AV.keys.clear(); AV.lastEnc = Date.now();
   let r;
@@ -12117,7 +12124,7 @@ async function quizResults(q) {
       <p class="qz-answer">Resposta certa: <b>${qzNum(q.answer)}</b></p>
       ${win ? `<div class="qz-prize">🥇 <b>${esc(win.name)}</b> chegou mais perto (${qzNum(win.guess)})${q.prize ? ` e leva: <b>${esc(q.prize)}</b>` : ""}</div>` : `<p class="qz-intro">Ninguém respondeu a tempo.</p>`}
       ${pos >= 0 ? `<p class="qz-intro">Você ficou em <b>${pos + 1}º</b> com ${qzNum(R2[pos].guess)}.</p>` : ""}
-      ${R2.length ? `<div class="qz-res">${R2.slice(0, 50).map((r, i) => `<div class="${i === 0 ? "qz-win" : ""} ${r.user_id === me ? "me" : ""}"><span>${i + 1}º</span><span>${esc(r.name)}</span><span>${qzNum(r.guess)}</span><small>${+r.diff ? `diferença ${qzNum(r.diff)}` : "na mosca!"}</small></div>`).join("")}</div>` : ""}
+      ${R2.length ? `<div class="qz-res">${R2.slice(0, 50).map((r, i) => `<div class="${i === 0 ? "qz-win" : ""} ${r.user_id === me ? "me" : ""}"><span>${i + 1}º</span><span>${esc(r.name)}</span><span>${qzNum(r.guess)}</span><small>${+r.diff ? `diferença ${qzNum(r.diff)}` : "na mosca!"}${r.tempo != null ? ` · ${String(r.tempo).replace(".", ",")} s` : ""}</small></div>`).join("")}</div>` : ""}
       <div class="qz-actions" style="margin-top:16px"><button class="btn" data-q="ok">Fechar</button></div>`);
     $("[data-q=ok]", m).onclick = () => { closeModal(); res(); };
   });
@@ -12228,8 +12235,8 @@ function adminQuizView() {
       <h3>${esc(q.title)} ${q.status === "aberto" ? `<span class="tag ok">aberto · fecha ${qzWhen(q.closes_at)}</span>` : `<span class="tag">encerrado</span>`}</h3>
       <p><b>Pergunta:</b> ${esc(q.question)}<br><b>Resposta certa:</b> ${qzNum(q.answer)} · <b>Tempo:</b> ${q.seconds} s${q.prize ? ` · <b>Prêmio:</b> ${esc(q.prize)}` : ""}</p>
       <p class="muted">${answered.length} responderam · ${E.length - answered.length} revelaram e não responderam a tempo · ${q.total} jogadores ativos</p>
-      ${answered.length ? `<div class="table-scroll"><table class="list"><thead><tr><th>#</th><th>Jogador</th><th>Palpite</th><th>Diferença</th></tr></thead><tbody>
-        ${answered.map((e, i) => `<tr><td>${i + 1}º</td><td>${esc(e.name)}${e.user_id === q.winner ? " 🥇" : ""}</td><td class="num">${qzNum(e.guess)}</td><td class="num">${qzNum(e.diff)}</td></tr>`).join("")}</tbody></table></div>` : ""}
+      ${answered.length ? `<div class="table-scroll"><table class="list"><thead><tr><th>#</th><th>Jogador</th><th>Palpite</th><th>Diferença</th><th>Tempo</th></tr></thead><tbody>
+        ${answered.map((e, i) => `<tr><td>${i + 1}º</td><td>${esc(e.name)}${e.user_id === q.winner ? " 🥇" : ""}</td><td class="num">${qzNum(e.guess)}</td><td class="num">${qzNum(e.diff)}</td><td class="num">${e.tempo != null ? String(e.tempo).replace(".", ",") + " s" : "–"}</td></tr>`).join("")}</tbody></table></div>` : ""}
       <div class="qz-actions" style="justify-content:flex-start;margin-top:10px">
         ${q.status === "aberto" ? `<button class="btn small" data-act="adq-close" data-v="${q.id}">Encerrar agora</button>` : ""}
         ${q.winner ? (q.prize_given_at ? `<span class="tag ok">✅ Prêmio entregue sozinho a ${esc(charName(q.winner))}</span>` : `<button class="btn small" data-act="adq-prize" data-v="${q.id}">🎁 Dar o prêmio a ${esc(charName(q.winner))}</button>`) : ""}
@@ -12239,7 +12246,7 @@ function adminQuizView() {
   return `<div class="qz-adm">${quizBancoHTML()}
     ${open ? `<div class="sac-link"><span>🔗 Link do quiz para mandar no WhatsApp: <code>${esc(quizLink())}</code></span><button class="btn small" data-act="quiz-copy">Copiar link</button></div>
       <p class="muted">Já existe um quiz aberto. Para criar outro, encerre o atual.</p>` : `<section class="panel lo"><h3>❓ Criar quiz surpresa <button type="button" class="btn small" data-act="qz-sortear" style="margin-left:8px">🎲 Sortear pergunta</button></h3>
-      <p class="muted" style="margin-top:0">Abre numa tela grande para todos ao entrar no jogo (e para quem já está online, em até 1 minuto). A pessoa clica em "Revelar pergunta" e tem o tempo escolhido para responder com um número. Vence quem chegar mais perto; no empate, quem respondeu antes.</p>
+      <p class="muted" style="margin-top:0">Abre numa tela grande para todos ao entrar no jogo (e para quem já está online, em até 1 minuto). A pessoa clica em "Revelar pergunta" e tem o tempo escolhido para responder com um número. Vence quem chegar mais perto; no empate, quem respondeu mais rápido depois de revelar a pergunta.</p>
       <form id="quizform" class="inv-form" style="display:block">
         <div class="qz-grid">
           <label>Título da tela<input id="qz-title" maxlength="80" required value="Quiz surpresa!"></label>
@@ -12592,6 +12599,14 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "cura-gradual-2026-11-12", sql: "95", title: "❤️ Centro Pokémon: a vida agora volta aos poucos", body: () => `Mudou a cura de graça dos Pokémon feridos na Grama de Treino (e na Aventura):
+• Antes, o Pokémon ficava ferido (ou desmaiado) até completar o tempo de espera e só então voltava inteiro.
+• Agora a vida volta um pouquinho a cada hora, sozinha e de graça. Um desmaiado que recuperou um pouco já pode lutar de novo, com a vida que tem.
+• De desmaiado até a vida cheia leva o mesmo tempo de antes; quem está pouco ferido fica bom bem mais rápido.
+• Curar no Centro Pokémon continua valendo para quem tem pressa, e o preço é só da vida que falta: quanto mais ele já se recuperou, mais barato.` },
+  { id: "quiz-tempo-2026-11-12", sql: "94", title: "⏱️ Quiz: empate agora vai pelo tempo de resposta", body: () => `Mudou o desempate do Quiz: quando dois ou mais chegam igualmente perto da resposta, vence quem respondeu mais rápido depois que a pergunta apareceu na tela (por exemplo, 3,2 s contra 7,5 s).
+Antes valia quem enviou primeiro no relógio, o que favorecia quem abriu o quiz mais cedo.
+No resultado do quiz agora aparece o tempo de cada um.` },
   { id: "rpg-2026-11-11", sql: "93", title: "🧭 Chegou a Aventura: o RPG do Pokegames!", body: () => `Jogo novo dentro do Pokegames, para quem quer jogar mais tempo: a Aventura (menu Competir, ou o botão 🧭 no alto do mapa).
 • Ande pela Vila Aurora com o seu herói: fazenda, feira, rio, pontes, penhascos e a cidade murada.
 • Seus Pokémon e moedas são os mesmos do tabuleiro. O primeiro da equipe anda atrás de você.
