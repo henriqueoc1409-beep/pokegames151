@@ -76,6 +76,7 @@ from (values
   ('96_quadro_corrida', exists (select 1 from public.posts where title = '🏁 Quadro da corrida no mapa')),
   ('97_aventura_rotas', exists (select 1 from public.posts where title = '🧭 Aventura maior: 6 rotas novas e todos os Pokémon')),
   ('98_desmaio_espera', exists (select 1 from public.posts where title = '💤 Centro Pokémon: desmaiado só começa a se recuperar depois de 24 h')),
+  ('99_aventura_ginasios', to_regclass('public.rpg_insignias') is not null),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),

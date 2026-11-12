@@ -2178,6 +2178,19 @@ body.pb-on{overflow:hidden}
 .rpg-rotas h3{margin:0 0 4px;font-size:15px}.rpg-rotas h3 small{font-weight:500;color:var(--muted,#9AA7B4)}
 .rpg-rotas ul{margin:0;padding:0;list-style:none}.rpg-rotas li{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:3px 0}
 .rpg-rotas li small{color:var(--muted,#9AA7B4);flex-basis:100%}.rpg-nv{font:700 12px 'IBM Plex Mono',ui-monospace,monospace;color:#7FD99A;background:rgba(127,217,154,.12);padding:1px 6px;border-radius:6px}
+/* Aventura: Ginásios, missões e chefe (arquivo 99) */
+.rpg-gym{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.rpg-gym-mon{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04)}
+.rpg-gym-mon img{image-rendering:pixelated}.rpg-gym-mon.feito{opacity:.45}.rpg-gym-mon.agora{border-color:#F5C542;background:rgba(245,197,66,.1)}.rpg-gym-mon small{color:var(--muted,#9AA7B4)}
+.rpg-gin-l{margin:2px 0 6px;font-size:13px;color:#C9D4E3}
+.rpg-chefe{display:flex;gap:14px;align-items:center}.rpg-chefe img{flex:none;filter:drop-shadow(0 0 12px rgba(255,80,80,.6))}.rpg-chefe h3{margin:0 0 4px}
+.rpg-chefe-bar{position:relative;height:18px;border-radius:9px;background:rgba(0,0,0,.5);overflow:hidden;border:1px solid rgba(255,255,255,.2)}.rpg-chefe-bar i{display:block;height:100%;background:linear-gradient(90deg,#E05A5A,#F2A65A)}
+.rpg-chefe-bar span{position:absolute;inset:0;text-align:center;font:800 12px/18px var(--sans);color:#fff;text-shadow:0 1px 2px #000}
+.rpg-rank{margin:6px 0;padding-left:22px}.rpg-rank li span{float:right;font-family:'IBM Plex Mono',monospace;color:#F2A65A}
+.rpg-fim{margin:6px 0;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06)}.rpg-fim.ok{background:rgba(76,195,138,.15);color:#BFF0D2}
+#aventura .gr-hint{top:auto;bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+.rpg-chefe-btn{background:linear-gradient(#E05A5A,#A83232) !important;color:#fff !important;border-color:#FFB4A8 !important;animation:news-pulse 1.6s infinite}
+@media (max-width:760px){#aventura #rpg-on{display:none}}
+@media (max-width:560px){.rpg-gym{grid-template-columns:repeat(2,1fr)}.rpg-chefe{flex-direction:column;text-align:center}}
 </style>
 </head>
 <body>
@@ -5979,7 +5992,11 @@ function LIB() {
       ${Object.values(RPG_REG).map(R => `<p>${R.ic} <b>${R.nome}</b>: ${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${z.nome} (Nv ${z.min}–${z.max}: ${rpgTipos(z)})` : ""; }).filter(Boolean).join("; ")}.</p>`).join("")}
       <p><b>A luta:</b> quem luta é o primeiro Pokémon da equipe que estiver com vida. Vencer dá experiência; a vida que ele perder continua perdida até se recuperar (ela volta aos poucos sozinha, ou na hora no Centro Pokémon). Não há captura na Aventura: a captura continua no tabuleiro.</p>
       <p><b>Fugir custa moedas:</b> ${S.cfg.rpg?.fuga_base ?? 10} moedas para fugir, mais ${S.cfg.rpg?.fuga_por_ataque ?? 10} por ataque que você já fez naquela luta. Sem moedas suficientes, não dá para fugir.</p>
-      <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro.</p>` },
+      <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro.</p>
+      <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota mora um Líder de Ginásio com 4 Pokémon fortes. Você luta com a sua equipe, um Pokémon de cada vez (entra o primeiro com vida; se cair, entra o próximo), e a vida perdida continua perdida, então cure antes. Vença os 4 para ganhar a <b>insígnia</b> da rota e um prêmio. Quem juntar as 6 insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio, e desistir encerra a tentativa.</p>
+      <p>📜 <b>Missões:</b> os moradores dão ${S.cfg.rpg?.missoes?.por_dia ?? 3} missões por dia (vencer Pokémon numa rota, de um tipo, ou um selvagem forte). Volte a falar com quem deu a missão para pegar o prêmio. O botão 📜 Missões mostra todas.</p>
+      <p>🌙 <b>Noite:</b> das ${S.cfg.rpg?.noite?.inicio ?? 19}h às ${S.cfg.rpg?.noite?.fim ?? 5}h a Aventura escurece, e Pokémon Fantasma e Sombrio aparecem em todas as áreas.</p>
+      <p>👹 <b>Chefe da rota:</b> uma vez por semana um Pokémon gigante (nível ${S.cfg.rpg?.chefe?.nivel ?? 75}) aparece numa rota por ${S.cfg.rpg?.chefe?.horas ?? 48} horas. Todos lutam contra ele, e cada golpe tira da mesma barra de vida. Se a turma derrubar o chefe, todos que lutaram ganham prêmio, e os 3 que mais bateram ganham mais. Cada um luta ${S.cfg.rpg?.chefe?.tentativas_dia ?? 3} vezes por dia.</p>` },
     { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
       <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
       <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
@@ -9261,13 +9278,17 @@ async function grAfterBattle(b) {
   try { const ev = (await rpc("pk_sync"))?.events; if (ev?.length) await monEventsFlow(ev); } catch {}
 }
 function grEndHTML(b) {
-  const r = b.state?.treino?.res || {}, V = S.treino.st?.visita;
+  const r = b.state?.treino?.res || {}, V = S.treino.st?.visita, tr = b.state?.treino || {}, pos = tr.pos || {}, aventura = tr.rpg || tr.gym || tr.chefe;
   const msg = r.fugiu ? "Você fugiu da luta." : r.won ? `🏆 Vitória! ${esc(pkName(r.species))} ganhou <b>${r.xp} de experiência</b>${r.level_to > r.level_from ? ` e <b>subiu para o nível ${r.level_to}</b>! 🎉` : "."}`
-    : "O selvagem venceu. Não ganhou experiência.";
+    : tr.gym ? "O Pokémon do Líder venceu esta." : tr.chefe ? "O chefe venceu desta vez." : "O selvagem venceu. Não ganhou experiência.";
+  const extra = tr.gym ? (pos.status === "venceu" ? `<p class="rpg-fim ok">🏅 Você venceu ${esc(pos.lider || "o Líder")} e ganhou a <b>insígnia</b>! O prêmio já está com você.</p>`
+      : pos.status === "perdeu" ? `<p class="rpg-fim">A tentativa no Ginásio acabou. Cure a equipe e tente de novo.</p>` : `<p class="rpg-fim">🏟️ Ginásio: <b>${pos.idx} de ${pos.total}</b> Pokémon do Líder derrotados. Continue!</p>`)
+    : tr.chefe ? `<p class="rpg-fim">👹 Você causou <b>${pos.dano ?? 0}</b> de dano no chefe. ${pos.status === "vencido" ? "🎉 <b>O chefe caiu!</b> Todos que lutaram ganharam o prêmio." : `A vida dele está em <b>${Math.max(0, Math.round(100 - (pos.total_dano || 0) * 100 / Math.max(1, pos.hp_total || 1)))}%</b>.`}</p>`
+    : pos.missoes ? `<p class="rpg-fim ok">📜 Você tem missão completa! Fale com quem deu a missão para pegar o prêmio.</p>` : "";
   const comp = r.comp_xp ? ` 🎒 ${esc(pkName(r.comp_species))} (acompanhante) ganhou <b>${r.comp_xp}</b>.` : "";
   return `<div class="bt-end ${r.won ? "won" : "lost"}"><h3>${r.forte ? "⚡ " : ""}${r.won ? "Você venceu!" : r.fugiu ? "Fugiu!" : "Não foi dessa vez!"}</h3>
     <p>${msg}${comp} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> ${trGradual() ? "Leve ao Centro Pokémon ou espere a vida voltar aos poucos." : `Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.`}` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
-    <div class="act-btns">${b.state?.treino?.rpg ? `<button class="btn" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
+    ${extra}<div class="act-btns">${tr.gym && pos.status === "andando" ? `<button class="btn" data-act="rpg-gym-next" data-v="${tr.gym}">▶ Continuar o Ginásio</button>` : ""}${aventura ? `<button class="btn ${tr.gym && pos.status === "andando" ? "ghost" : ""}" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
 
 // =================================================================
@@ -9295,7 +9316,7 @@ const AJ_LABELS = {
   rpg: { on: "Aventura aberta para os jogadores", batalhas_dia: "Lutas contra selvagens por dia (por jogador)", chance_pct: "% de chance de encontro a cada passo no mato", espera_seg: "Segundos de espera entre encontros",
     envio_seg: "Segundos entre avisos de posição", fuga_base: "Fugir de luta: preço básico (moedas)", fuga_por_ataque: "Fugir de luta: + moedas por ataque já feito",
     nivel_pedra: "Evoluídos por pedra aparecem a partir do nível", nivel_troca: "Evoluídos por troca aparecem a partir do nível", folga: "A forma anterior some quantos níveis depois de poder evoluir",
-    lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem" },
+    lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "noite": "🌙 Noite", "noite.on": "Noite ligada", "noite.inicio": "Noite começa (hora)", "noite.fim": "Noite termina (hora)", "noite.tipos": "Tipos que aparecem de noite em todas as áreas", "missoes": "📜 Missões dos moradores", "missoes.on": "Missões ligadas", "missoes.por_dia": "Missões por dia", "missoes.moedas_min": "Prêmio: moedas (mínimo)", "missoes.moedas_max": "Prêmio: moedas (máximo)", "missoes.itens": "Itens sorteados de prêmio", "ginasios": "🏟️ Ginásios", "ginasios.on": "Ginásios abertos", "ginasios.tentativas_dia": "Tentativas por dia em cada Ginásio", "ginasios.moedas": "Prêmio da insígnia: moedas", "ginasios.itens": "Prêmio da insígnia: itens", "ginasios.todas_moedas": "Prêmio de todas as insígnias: moedas", "ginasios.todas_itens": "Prêmio de todas as insígnias: itens", "ginasios.lideres": "Líderes (nome, herói, tipo e time [espécie, nível])", "chefe": "👹 Chefe da rota", "chefe.on": "Chefe automático ligado", "chefe.dia_semana": "Dia da semana (0 = domingo, 6 = sábado)", "chefe.hora": "Hora em que aparece", "chefe.horas": "Quantas horas fica", "chefe.nivel": "Nível do chefe", "chefe.vidas": "Tamanho da barra (vezes a vida dele)", "chefe.turnos": "Turnos por luta", "chefe.tentativas_dia": "Lutas por dia de cada jogador", "chefe.especies": "Espécies sorteadas (números da Pokédex)", "chefe.moedas": "Prêmio para quem lutou: moedas", "chefe.itens": "Prêmio para quem lutou: itens", "chefe.top_moedas": "Extra para o 1º, 2º e 3º que mais bateram", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
   visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
@@ -11047,13 +11068,18 @@ const AV_NPCS = [
 ];
 const AV = { r: "vila", open: false, img: null, g: null, x: 28, y: 30, fx: 28, fy: 30, ax: 28, ay: 31, face: 1, moving: null, keys: new Set(), raf: 0, others: {}, baloes: {}, perto: null, volta: false, busy: false, lastEnc: 0, st: null, fala: null };
 const rpgAt = (x, y) => (AV.g?.[y] || "")[x] || "#";
-const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || rpgNpcs().some(n => n.x === x && n.y === y);
+const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || rpgNpcs().some(n => n.x === x && n.y === y) || (rpgChefeAqui() && (p => p && p[0] === x && p[1] === y)(rpgChefePos()));
 function rpgPontos() {
   if (AV.r === "vila") return AV_PONTOS;
   const pl = AV.dados?.pontos?.placa, R = RPG_REG[AV.r]; if (!pl) return [];
   return [{ em: [pl], ic: "🪧", nome: "Placa", fala: [`${R.ic} ${R.nome}`, ...Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${k.endsWith("_fundo") ? "Mato fundo (chão diferente, longe da entrada)" : "Mato de perto"}: nível ${z.min} a ${z.max}. Tipos: ${rpgTipos(z)}.` : ""; }).filter(Boolean), `Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez.`] }];
 }
-function rpgNpcs() { if (AV.r === "vila") return AV_NPCS; const n = AV.dados?.npcs?.[0], i = RPG_NPC[AV.r]; return n && i ? [{ x: n[0], y: n[1], ...i }] : []; }
+function rpgNpcs() {
+  if (AV.r === "vila") return AV_NPCS;
+  const n = AV.dados?.npcs?.[0], i = RPG_NPC[AV.r], out = n && i ? [{ x: n[0], y: n[1], ...i }] : [];
+  const gp = rpgGymPos(), L = rpgLider(AV.r); if (gp && L) out.push({ x: gp[0], y: gp[1], nome: L.nome, ch: { class: L.classe, outfit: {} }, gym: AV.r, fala: [] });
+  return out;
+}
 const rpgSaidas = () => AV.r === "vila" ? RPG_VILA_SAIDAS : (AV.dados?.saidas || []);
 // carrega a arte de uma região (uma vez): o arquivo põe window.RPG_ARTE.<região> = { img: "data:image/webp;base64,…", g: [linhas], … }
 function rpgCarregar(r = AV.r) {
@@ -11091,7 +11117,8 @@ async function rpgViajar(para) {
 function rpgRotasHTML() {
   return `<div class="rpg-rotas"><div class="av-head"><h2>🗺️ Rotas da Aventura</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
     <p class="muted">Cada área tem uma faixa de nível. Perto da Vila Aurora os Pokémon são fracos; no fundo das rotas (chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Quanto mais forte o selvagem, mais experiência ele dá. Os evoluídos só aparecem nas áreas de nível alto.</p>
-    ${Object.entries(RPG_REG).map(([id, R]) => `<div class="rpg-rota ${id === AV.r ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>
+    <p>🏅 Suas insígnias: <b>${rpgInsig().length} de ${Object.keys(S.cfg.rpg?.ginasios?.lideres || RPG_LIDER_DEF).length}</b>${rpgInsig().length ? ` (${rpgInsig().map(r => RPG_REG[r]?.ic || "").join(" ")})` : ""}</p>
+    ${Object.entries(RPG_REG).map(([id, R]) => `<div class="rpg-rota ${id === AV.r ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>${rpgLider(id) ? `<p class="rpg-gin-l">🏟️ Ginásio: <b>${esc(rpgLider(id).nome)}</b> (${esc(rpgLider(id).tipo || "")}, até Nv ${Math.max(...rpgLider(id).time.map(t => t[1]))}) ${rpgInsig().includes(id) ? "· ✅ insígnia" : ""}</p>` : ""}
       <ul>${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `<li><b>${esc(z.nome)}</b> <span class="rpg-nv">Nv ${z.min}–${z.max}</span><small>${esc(rpgTipos(z))}</small></li>` : ""; }).join("")}</ul></div>`).join("")}
     <p class="muted" style="margin-top:10px">🏃 Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez nela. Lutas por dia: ${AV.st?.batalhas_dia ?? rpgCfg().batalhas_dia}.</p></div>`;
 }
@@ -11100,7 +11127,7 @@ function rpgRoot() {
   let el = $("#aventura"); if (el) return el;
   el = document.createElement("div"); el.id = "aventura"; el.hidden = true;
   el.innerHTML = `<canvas id="rpg-cv" aria-label="Aventura: ande com WASD ou as setas"></canvas>
-    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><button class="btn small ghost" data-rpg="rotas">🗺️ Rotas</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
+    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><span class="pz-on" id="rpg-noite" hidden></span><span class="pz-on" id="rpg-ins"></span><button class="btn small ghost" id="rpg-mis" data-rpg="missoes" hidden>📜 Missões</button><button class="btn small rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" hidden></button><button class="btn small ghost" data-rpg="rotas">🗺️ Rotas</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
     <div id="rpg-mini-box" class="rpg-mini"><b>Vila Aurora</b><canvas id="rpg-mini" width="184" height="184"></canvas></div>
     <button id="rpg-acao" class="rpg-acao" hidden></button>
     <div id="rpg-fala" class="rpg-fala" hidden></div>
@@ -11113,6 +11140,8 @@ function rpgRoot() {
   el.addEventListener("click", e => {
     if (e.target.closest("[data-rpg='sair']")) return rpgSair();
     if (e.target.closest("[data-rpg='rotas']")) return rpgRotas();
+    if (e.target.closest("[data-rpg='missoes']")) return rpgMissoesAbrir(null, null);
+    if (e.target.closest("[data-rpg='chefe']")) return rpgChefeAbrir();
     if (e.target.closest("#rpg-acao")) return rpgUsar();
     if (e.target.closest("#rpg-fala")) return rpgFalaProx();
   });
@@ -11154,6 +11183,7 @@ async function rpgOpen() {
 async function rpgEstado() {
   try { AV.st = await rpc("rpg_estado"); } catch (e) { AV.st = null; if (isMissingFn(e)) toast("A Aventura precisa do arquivo 93_rpg_aventura.sql rodado no Supabase.", true); }
   const l = $("#rpg-lutas"); if (l) l.textContent = AV.st ? `⚔️ Lutas hoje: ${AV.st.batalhas}/${AV.st.batalhas_dia}` : "";
+  rpgHud();
   if (AV.open && AV.st?.batalha && !AV.busy) { rpgClose(false); AV.volta = true; await guarded(loadBattles); await btOpen(AV.st.batalha); }   // ficou uma luta aberta: termine primeiro
 }
 function rpgClose(sai = true) {
@@ -11167,15 +11197,19 @@ function rpgVoltaCheck() { if (AV.volta && !AV.open && !S.win && !GR.open && !PZ
 // ---------- interação: casas, placas e moradores ----------
 function rpgPerto() {
   let p = rpgPontos().find(p => p.em.some(([x, y]) => x === AV.x && y === AV.y)) || null;
-  if (!p) { const n = rpgNpcs().find(n => Math.abs(n.x - AV.x) + Math.abs(n.y - AV.y) === 1); if (n) p = { npc: n, ic: "💬", nome: n.nome, fala: n.fala }; }
+  if (!p) { const n = rpgNpcs().find(n => Math.abs(n.x - AV.x) + Math.abs(n.y - AV.y) === 1); if (n) p = { npc: n, ic: n.gym ? "🏟️" : "💬", nome: n.nome, fala: n.fala }; }
+  if (!p && rpgChefeAqui()) { const cp = rpgChefePos(); if (cp && Math.abs(cp[0] - AV.x) + Math.abs(cp[1] - AV.y) <= 1) p = { chefe: true, ic: "👹", nome: `Chefe: ${pkName(AV.st.chefe.especie)}` }; }
   AV.perto = p;
-  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai ? "Entrar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
+  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai ? "Entrar" : p.chefe ? "Enfrentar" : p.npc?.gym ? "Desafiar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
   const z = rpgZonaKey(rpgAt(AV.x, AV.y)), ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = rpgZonaTxt(z); }
 }
 function rpgUsar() {
   const p = AV.perto; if (!p || AV.busy) return;
   sfx("tick");
   if (p.vai) return rpgViajar(p.vai);
+  if (p.npc?.gym) return rpgGinasioAbrir(p.npc.gym);
+  if (p.chefe) return rpgChefeAbrir();
+  if (p.npc && rpgMissoesDe(AV.r).length) return rpgMissoesAbrir(AV.r, p.nome, p.fala);
   if (p.fala) { AV.fala = { nome: p.nome, linhas: p.fala, i: 0 }; return rpgFalaMostra(); }
   rpgClose(false); AV.volta = true;
   if (p.win === "jornal") return ACTIONS["com-tab"]("jornal");
@@ -11237,6 +11271,25 @@ function rpgPinta(now) {
   cy = Math.round(MH <= cv.height ? (MH - cv.height) / 2 : Math.max(0, Math.min(MH - cv.height, cy)));
   g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
   g.drawImage(AV.img, cx / k, cy / k, cv.width / k, cv.height / k, 0, 0, cv.width, cv.height);
+  if (AV.st?.noite) {   // arquivo 99: noite, com a luz em volta de você
+    const lx = (AV.fx + .5) * tile - cx, ly = (AV.fy + .5) * tile - cy, gr = g.createRadialGradient(lx, ly, tile * 1.3, lx, ly, tile * 6.5);
+    gr.addColorStop(0, "rgba(10,14,48,.18)"); gr.addColorStop(1, "rgba(8,10,36,.66)"); g.fillStyle = gr; g.fillRect(0, 0, cv.width, cv.height);
+  }
+  const chq = rpgChefeAqui(), chp = chq && rpgChefePos();
+  if (chp) {   // o chefe: Pokémon gigante com a barra de vida de todos
+    const im = rpgArt(chq.especie), bx = (chp[0] + .5) * tile - cx, by = (chp[1] + 1) * tile - cy, sz = tile * 3.2, pul = 1 + Math.sin(now / 300) * .04;
+    if (bx > -sz && by > -sz && bx < cv.width + sz && by < cv.height + sz * 1.5) {
+      const au = g.createRadialGradient(bx, by - sz * .45, sz * .1, bx, by - sz * .45, sz * .75); au.addColorStop(0, "rgba(255,60,60,.35)"); au.addColorStop(1, "rgba(255,60,60,0)");
+      g.fillStyle = au; g.fillRect(bx - sz, by - sz * 1.3, sz * 2, sz * 1.6);
+      g.fillStyle = "rgba(0,0,0,.35)"; g.beginPath(); g.ellipse(bx, by - 4 * dpr, sz * .35, sz * .1, 0, 0, 6.28); g.fill();
+      if (im.complete && im.naturalWidth) g.drawImage(im, bx - sz * pul / 2, by - sz * pul, sz * pul, sz * pul);
+      const pct = Math.max(0, 1 - chq.dano / Math.max(1, chq.hp_total)), bw = tile * 2.6, bh = 10 * dpr, byy = by - sz - 14 * dpr;
+      g.fillStyle = "rgba(10,14,24,.9)"; g.fillRect(bx - bw / 2 - 2 * dpr, byy - 2 * dpr, bw + 4 * dpr, bh + 4 * dpr);
+      g.fillStyle = pct > .5 ? "#4CC38A" : pct > .2 ? "#E5B92E" : "#E05A5A"; g.fillRect(bx - bw / 2, byy, bw * pct, bh);
+      g.font = `800 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(10,14,24,.95)";
+      const tt = `👹 ${pkName(chq.especie)} Nv ${chq.nivel}`; g.strokeText(tt, bx, byy - 6 * dpr); g.fillStyle = "#FFB4A8"; g.fillText(tt, bx, byy - 6 * dpr);
+    }
+  }
   const texto = (txt, x, y, px, cor = "#F4F8E8") => { g.font = `700 ${Math.round(px * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(10,14,24,.92)"; g.strokeText(txt, x, y); g.fillStyle = cor; g.fillText(txt, x, y); };
   // plaquinhas dos lugares
   const placas = [...rpgPontos(), ...rpgSaidas().map(sd => { const [ex, ey] = sd.em[Math.floor((sd.em.length - 1) / 2)], R = RPG_REG[sd.para], dx = ex === 0 ? 1.5 : ex >= AV.g[0].length - 1 ? -1.5 : 0, dy = ey === 0 ? 2.2 : ey >= AV.g.length - 1 ? -0.6 : 0;
@@ -11252,7 +11305,7 @@ function rpgPinta(now) {
   }
   // moradores, outros jogadores e você, de trás para a frente
   const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: pkTeam()[0]?.species_id, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
-  const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.nome, ch: n.ch, npc: true })),
+  const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.gym ? `🏟️ ${n.nome}` : n.nome, ch: n.ch, npc: true, gym: n.gym })),
     ...Object.values(AV.others).map(o => ({ ...o, ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } })), eu].filter(o => o.ch?.class && o.fx != null).sort((a, b) => a.fy - b.fy);
   for (const o of todos) {
     const ox = (o.fx + .5) * tile - cx, oy = (o.fy + 1) * tile - cy; if (ox < -tile * 2 || oy < -tile * 2 || ox > cv.width + tile * 2 || oy > cv.height + tile * 3) continue;
@@ -11264,7 +11317,7 @@ function rpgPinta(now) {
     g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(ox, oy - 3 * dpr, tile * .28, tile * .1, 0, 0, 6.28); g.fill();
     g.save(); g.translate(ox, oy - (o.pulo || 0) - 2 * dpr); if ((o.f || 1) < 0) g.scale(-1, 1); avDraw(g, sp, -w / 2, -h, w, h); g.restore();
     texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : o.npc ? "#BFE8FF" : "#F4F8E8");
-    if (o.npc) texto("!", ox + w * 0.45, oy - h + 4 * dpr, 16, "#FFE37A");
+    if (o.npc) texto(o.gym ? (rpgInsig().includes(o.gym) ? "🏅" : "🏟️") : rpgMissoesDe(AV.r).some(m => !m.resgatada && m.prog >= m.meta) ? "🎁" : "!", ox + w * 0.45, oy - h + 4 * dpr, 16, "#FFE37A");
     const bl = AV.baloes[o.uid];
     if (bl && bl.ate > now && pzCfg().baloes !== false) {
       g.font = `600 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`; const t = bl.txt, bw = Math.min(g.measureText(t).width + 16 * dpr, 260 * dpr), bh = 24 * dpr, by = oy - h - 22 * dpr;
@@ -11320,6 +11373,118 @@ setInterval(() => { if (rpgChannel && !AV.open && (!AV.volta || (AV.foraDesde &&
 function rpgChatRender() { const l = $("#rpg-chat-list"); if (!l || !AV.open) return; l.innerHTML = hxChatLista(25); l.scrollTop = l.scrollHeight; }
 function rpgChatNova(m) { rpgChatRender(); if (m && AV.open && m.user_id) AV.baloes[m.user_id] = { txt: String(m.body || "").slice(0, 60), ate: performance.now() + 6000 }; }
 
+
+// ---------- Ginásios, missões, noite e Chefe da rota (arquivo 99) ----------
+const RPG_LIDER_DEF = {"bosque": {"nome": "Líder Flora", "classe": "domador", "tipo": "Inseto e Planta", "time": [[12, 30], [47, 31], [71, 33], [3, 35]]}, "praia": {"nome": "Líder Marina", "classe": "arqueiro", "tipo": "Água e Elétrico", "time": [[55, 34], [101, 35], [131, 36], [121, 38]]}, "deserto": {"nome": "Líder Brasa", "classe": "guerreiro", "tipo": "Fogo e Terra", "time": [[51, 38], [59, 40], [112, 41], [6, 42]]}, "pedreira": {"nome": "Líder Rocha", "classe": "mercador", "tipo": "Pedra", "time": [[76, 40], [139, 42], [141, 43], [142, 44]]}, "charco": {"nome": "Líder Sombra", "classe": "mago", "tipo": "Fantasma e Psíquico", "time": [[93, 44], [97, 45], [65, 46], [94, 47]]}, "pico": {"nome": "Líder Neve", "classe": "clerigo", "tipo": "Gelo e Dragão", "time": [[87, 56], [91, 57], [131, 58], [149, 60]]}};
+const rpgLider = r => S.cfg?.rpg?.ginasios?.lideres?.[r] || RPG_LIDER_DEF[r];
+const rpgInsig = () => AV.st?.insignias || [];
+const rpgArts = {};
+const rpgArt = sp => rpgArts[sp] || (rpgArts[sp] = Object.assign(new Image(), { src: ART(sp) }));
+const rpgItemNome = k => { const it = S.pk?.items && (S.pk.items[k] || Object.values(S.pk.items).find(i => i.id === k)); return it?.name || k; };
+// onde fica o Líder: a casa livre mais longe da entrada (igual para todos)
+function rpgGymPos(r = AV.r) {
+  const d = AV.dc?.[r]; if (!d || r === "vila" || !rpgLider(r)) return null; if (d.gymPos !== undefined) return d.gymPos;
+  const g = d.g, H = g.length, W = g[0].length, k = (x, y) => y * W + x, st = d.chegada || [2, 2], dist = new Map([[k(st[0], st[1]), 0]]), fila = [st];
+  const sai = new Set((d.saidas || []).flatMap(sd => sd.em.map(([x, y]) => k(x, y)))), livre = (x, y) => ".me".includes((g[y] || "")[x] || "#");
+  let best = null, bd = -1;
+  while (fila.length) {
+    const [x, y] = fila.shift(), dd = dist.get(k(x, y));
+    if (g[y][x] === "." && !sai.has(k(x, y)) && dd > bd && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => livre(x + a, y + b)).length >= 2) { bd = dd; best = [x, y]; }
+    for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + a, ny = y + b; if (nx < 0 || ny < 0 || nx >= W || ny >= H || dist.has(k(nx, ny)) || !livre(nx, ny)) continue; dist.set(k(nx, ny), dd + 1); fila.push([nx, ny]); }
+  }
+  return (d.gymPos = best);
+}
+// onde fica o chefe: no meio do mato fundo da rota
+const rpgChefeAqui = () => { const c = AV.st?.chefe; return c && c.status === "ativo" && c.regiao === AV.r ? c : null; };
+function rpgChefePos(r = AV.r) {
+  const d = AV.dc?.[r]; if (!d) return null; if (d.chefePos !== undefined) return d.chefePos;
+  const cel = []; d.g.forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "e") cel.push([x, y]); }));
+  if (!cel.length) return (d.chefePos = null);
+  const mx = cel.reduce((a, c) => a + c[0], 0) / cel.length, my = cel.reduce((a, c) => a + c[1], 0) / cel.length, gp = rpgGymPos(r);
+  cel.sort((a, b) => Math.hypot(a[0] - mx, a[1] - my) - Math.hypot(b[0] - mx, b[1] - my));
+  return (d.chefePos = cel.find(c => !gp || Math.abs(c[0] - gp[0]) + Math.abs(c[1] - gp[1]) > 3) || cel[0]);
+}
+// missões
+const rpgMissoesDe = r => (AV.st?.missoes || []).filter(m => m.regiao === r);
+const rpgMissaoTxt = m => m.tipo === "regiao" ? `Vença ${m.meta} Pokémon selvagens em ${RPG_REG[m.alvo]?.nome || m.alvo}` : m.tipo === "tipo" ? `Vença ${m.meta} Pokémon do tipo ${PK_TYPES[m.alvo]?.[0] || m.alvo} (em qualquer lugar da Aventura)` : `Vença um Pokémon selvagem de nível ${m.alvo} ou mais`;
+const rpgPremioTxt = p => [p?.coins ? `${p.coins} moedas` : "", ...Object.entries(p?.bag || {}).map(([k, q]) => `${q}× ${rpgItemNome(k)}`)].filter(Boolean).join(" + ");
+const rpgQuemDa = r => r === "vila" ? "qualquer morador da Vila Aurora" : `${RPG_NPC[r]?.nome || "o morador"} (${RPG_REG[r]?.nome || r})`;
+function rpgMissoesHTML(r, quem) {
+  const ms = r ? rpgMissoesDe(r) : (AV.st?.missoes || []);
+  return `<div class="rpg-rotas"><div class="av-head"><h2>📜 ${r ? `Missões de ${esc(quem)}` : "Missões de hoje"}</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    ${ms.length ? ms.map(m => `<div class="rpg-rota ${!m.resgatada && m.prog >= m.meta ? "aqui" : ""}"><h3>${m.resgatada ? "✅" : m.prog >= m.meta ? "🎁" : "📜"} ${esc(rpgMissaoTxt(m))}</h3>
+      <p class="muted" style="margin:2px 0">Progresso: <b>${m.prog}/${m.meta}</b> · Prêmio: ${esc(rpgPremioTxt(m.premio))}${r ? "" : `<br>Quem deu: ${esc(rpgQuemDa(m.regiao))}`}</p>
+      ${m.resgatada ? `<small class="muted">Prêmio já recebido.</small>` : m.prog >= m.meta ? (r ? `<button class="btn small" data-rpgm="${m.n}">🎁 Pegar o prêmio</button>` : `<small>Fale com ${esc(rpgQuemDa(m.regiao))} para pegar o prêmio.</small>`) : ""}</div>`).join("")
+      : `<p class="muted">${r ? "Hoje não tenho missão para você. Volte amanhã!" : "Sem missões hoje."}</p>`}
+    ${r && quem ? `<button class="btn ghost small" data-rpgfala="1">💬 Conversar</button>` : `<p class="muted">As missões mudam todo dia e contam as vitórias contra Pokémon selvagens na Aventura.</p>`}</div>`;
+}
+function rpgMissoesAbrir(r, quem, fala) {
+  const m = openModal(rpgMissoesHTML(r, quem)); m.querySelector(".modal").classList.add("modal-av");
+  m.addEventListener("click", async e => {
+    if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
+    if (e.target.closest("[data-rpgfala]")) { closeModal(); AV.fala = { nome: quem, linhas: fala || ["Olá!"], i: 0 }; return rpgFalaMostra(); }
+    const b = e.target.closest("[data-rpgm]"); if (!b) return;
+    b.disabled = true;
+    try { const p = await rpc("rpg_missao_resgatar", { _n: +b.dataset.rpgm }); sfx("acerto"); toast(`🎁 Você ganhou ${rpgPremioTxt(p)}!`); refreshMe().catch(() => {}); await rpgEstado(); const box = $("#modal-root .modal"); if (box) box.innerHTML = rpgMissoesHTML(r, quem); }
+    catch (er) { b.disabled = false; toast(errMsg(er), true); }
+  });
+}
+// abrir uma luta da Aventura (Ginásio ou Chefe)
+async function rpgLutaAbre(bid) {
+  sfx("tick"); const fl = $("#rpg-flash");
+  if (fl && !reduceMotion()) { fl.classList.add("on"); await sleep(700); fl.classList.remove("on"); }
+  closeModal(); rpgClose(false); AV.busy = false; AV.volta = true;
+  await guarded(loadBattles); await btOpen(bid);
+}
+async function rpgGinasioLutar(r) {
+  let res; try { res = await rpc("rpg_ginasio_lutar", { _regiao: r }); } catch (e) { return toast(errMsg(e), true); }
+  if (res.fim) { toast(res.msg || "A tentativa acabou.", true); closeModal(); if (!AV.open && AV.volta) { S.win = null; AV.volta = false; rpgOpen(); } return; }
+  await rpgLutaAbre(res.battle);
+}
+async function rpgGinasioAbrir(r) {
+  const m = openModal(`<p class="muted">Abrindo o Ginásio…</p>`); m.querySelector(".modal").classList.add("modal-av");
+  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-avx]")) return closeModal(); if (e.target.closest("[data-gym]")) rpgGinasioLutar(r); });
+  let G; try { G = await rpc("rpg_ginasio", { _regiao: r }); } catch (e) { closeModal(); return toast(errMsg(e), true); }
+  const L = G.lider, t = G.tentativa, box = $("#modal-root .modal"); if (!box) return;
+  const vivo = pkTeam().filter(x => treinoHpOf(x) > 0).length;
+  box.innerHTML = `<div class="rpg-rotas"><div class="av-head"><h2>🏟️ Ginásio da ${esc(RPG_REG[r].nome)}</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <p><b>${esc(L.nome)}</b> · especialista em ${esc(L.tipo || "")}. ${G.insignia ? "✅ <b>Você já tem esta insígnia!</b>" : `Vença os ${L.time.length} Pokémon do Líder para ganhar a <b>insígnia</b>, ${G.moedas} moedas e ${esc(Object.entries(G.itens || {}).map(([k, q]) => `${q}× ${rpgItemNome(k)}`).join(" e "))}.`}</p>
+    <div class="rpg-gym">${L.time.map(([sp, lv], i) => { const hp = t ? (t.hp?.[i] ?? 100) : 100, feito = t && i < t.idx;
+      return `<div class="rpg-gym-mon ${feito ? "feito" : ""} ${t && i === t.idx ? "agora" : ""}"><img src="${SPRITE(sp)}" alt="" width="72" height="72"><b>${esc(pkName(sp))}</b><small>Nv ${lv}</small>${t && !feito && hp < 100 ? `<span class="pkq-bar"><i style="width:${hp}%;background:#E5B92E"></i></span>` : feito ? "<small>✔ derrotado</small>" : ""}</div>`; }).join("")}</div>
+    <p class="muted">Você luta com a sua equipe, <b>um Pokémon de cada vez</b>: entra o primeiro com vida; se ele cair, entra o próximo. A vida que eles perdem continua perdida, então cure a equipe antes no Centro Pokémon. Desistir encerra a tentativa. Tentativas hoje: <b>${G.tentativas}/${G.tentativas_dia}</b>.</p>
+    ${G.insignia ? "" : vivo ? `<button class="btn" data-gym="1">${t ? `▶ Continuar a tentativa (${t.idx}/${L.time.length})` : "⚔️ Desafiar o Líder"}</button>` : `<p><b>Todos os Pokémon da sua equipe estão desmaiados.</b> Cure no Centro Pokémon primeiro.</p>`}</div>`;
+}
+// Chefe da rota
+function rpgChefeHTML() {
+  const c = AV.st?.chefe; if (!c) return `<p class="muted">Nenhum chefe agora.</p>`;
+  const pct = Math.max(0, Math.round(100 - c.dano * 100 / Math.max(1, c.hp_total))), aqui = c.regiao === AV.r, h = Math.max(0, Math.round((new Date(c.fim) - Date.now()) / 3600000));
+  return `<div class="rpg-rotas"><div class="av-head"><h2>👹 Chefe da rota</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <div class="rpg-chefe"><img src="${ART(c.especie)}" alt="" width="150" height="150"><div><h3>${esc(pkName(c.especie))} gigante · Nv ${c.nivel}</h3>
+      <p>Em: <b>${RPG_REG[c.regiao]?.ic} ${esc(RPG_REG[c.regiao]?.nome || c.regiao)}</b>${c.status === "ativo" ? ` · foge em ${h} h` : " · <b>derrotado! 🎉</b>"}</p>
+      <div class="rpg-chefe-bar"><i style="width:${pct}%"></i><span>${pct}% da vida</span></div></div></div>
+    <p class="muted">Todos lutam contra o mesmo chefe: cada golpe tira da barra de todo mundo. Cada luta dura até ${S.cfg.rpg?.chefe?.turnos ?? 12} turnos, e luta o primeiro da sua equipe com vida (a vida perdida continua perdida). Se a turma derrubar o chefe, <b>todos que lutaram ganham prêmio</b>, e os 3 que mais bateram ganham mais.</p>
+    <p>Seu dano: <b>${c.meu_dano}</b> · Suas lutas hoje: <b>${c.minhas_lutas}/${c.tentativas_dia}</b></p>
+    ${c.ranking?.length ? `<ol class="rpg-rank">${c.ranking.map(x => `<li><b>${esc(x.name)}</b> <span>${x.dano}</span></li>`).join("")}</ol>` : ""}
+    ${c.status !== "ativo" ? "" : !aqui ? `<p><b>Vá até ${esc(RPG_REG[c.regiao]?.nome)} para enfrentar o chefe.</b></p>` : c.minhas_lutas >= c.tentativas_dia ? `<p>Você já lutou todas as vezes de hoje. Volte amanhã!</p>` : `<button class="btn" data-chefe="1">⚔️ Enfrentar o chefe</button>`}
+    ${S.isAdmin ? `<p style="margin-top:10px"><button class="btn ghost small" data-chefeadm="1">🛠️ Admin: soltar um chefe novo agora</button></p>` : ""}</div>`;
+}
+function rpgChefeAbrir() {
+  const m = openModal(rpgChefeHTML()); m.querySelector(".modal").classList.add("modal-av");
+  m.addEventListener("click", async e => {
+    if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
+    if (e.target.closest("[data-chefe]")) { try { const r = await rpc("rpg_chefe_lutar"); await rpgLutaAbre(r.battle); } catch (er) { toast(errMsg(er), true); } return; }
+    if (e.target.closest("[data-chefeadm]")) { if (!await confirmModal("Soltar um chefe agora?", "Um chefe novo aparece numa rota sorteada (o atual, se houver, vai embora).", "Soltar")) return;
+      try { await rpc("admin_rpg_chefe", { _regiao: null, _especie: null }); toast("👹 Chefe solto!"); await rpgEstado(); } catch (er) { toast(errMsg(er), true); } }
+  });
+}
+function rpgHud() {
+  const st = AV.st, n = $("#rpg-noite"), ins = $("#rpg-ins"), mi = $("#rpg-mis"), ch = $("#rpg-chefe");
+  if (n) { n.hidden = !st?.noite; n.textContent = "🌙 Noite"; n.title = "De noite, Fantasmas e Sombrios aparecem em todas as áreas"; }
+  if (ins) ins.textContent = `🏅 ${rpgInsig().length}/${Object.keys(S.cfg.rpg?.ginasios?.lideres || RPG_LIDER_DEF).length}`;
+  if (mi) { const ms = st?.missoes || [], prontas = ms.filter(m => !m.resgatada && m.prog >= m.meta).length; mi.hidden = !ms.length; mi.innerHTML = `📜 ${innerWidth > 760 ? "Missões " : ""}${ms.filter(m => m.resgatada).length}/${ms.length}${prontas ? ` <b class="mb red">${prontas}</b>` : ""}`; }
+  if (ch) { const c = st?.chefe; ch.hidden = !c || c.status !== "ativo"; if (c) { const pc = Math.max(0, Math.round(100 - c.dano * 100 / Math.max(1, c.hp_total))); ch.textContent = innerWidth > 760 ? `👹 Chefe: ${pkName(c.especie)} em ${RPG_REG[c.regiao]?.nome || c.regiao} · ${pc}%` : `👹 Chefe ${pc}%`; } }
+}
+ACTIONS["rpg-gym-next"] = async v => { await guarded(async () => { await Promise.all([loadPk(), loadTreino()]); }); await rpgGinasioLutar(v); };
 // =================================================================
 // QUADRO DA CORRIDA (pedido do dono em 12/11/2026): quem está em 1º e quantas casas os outros estão atrás.
 // Usa só as posições do mapa, que todos já veem (não mostra nada do dia). Fechar/abrir fica no aparelho (pg-corrida-min).
@@ -12754,6 +12919,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "rpg-ginasios-2026-11-12", sql: "99", title: "🏟️ Aventura: Ginásios, missões, noite e o Chefe da rota", body: () => `Novidades na Aventura:
+• 🏟️ Ginásios: cada rota tem um Líder de Ginásio com 4 Pokémon fortes. Você luta com a sua equipe, um Pokémon de cada vez, e a vida que ele perde continua perdida. Vença os 4 e ganhe a insígnia da rota (e um prêmio). São 6 insígnias; quem juntar todas ganha um prêmio especial. São 3 tentativas por dia em cada Ginásio.
+• 📜 Missões: os moradores com "!" dão 3 missões por dia (vencer Pokémon de um tipo, numa rota, ou um selvagem forte). Volte a falar com quem deu a missão para pegar o prêmio.
+• 🌙 Dia e noite: das 19h às 5h a Aventura escurece, e Fantasmas e Sombrios aparecem em todas as áreas.
+• 👹 Chefe da rota: todo sábado um Pokémon gigante (nível 75) aparece numa rota por 48 horas. Todos lutam contra ele e cada golpe tira da mesma barra de vida. Se a turma vencer, todos que lutaram ganham prêmio, e os 3 que mais bateram ganham mais. É difícil: vá com a equipe forte e curada!` },
   { id: "desmaio-2026-11-12", sql: "98", title: "💤 Centro Pokémon: desmaiado só começa a se recuperar depois de 24 h", body: () => `Ajuste na cura de graça dos Pokémon:
 • Pokémon com vida volta a se recuperar aos poucos, como antes.
 • Pokémon DESMAIADO agora fica 24 horas parado antes de a vida começar a voltar. Depois disso ela sobe aos poucos, como nos outros.
