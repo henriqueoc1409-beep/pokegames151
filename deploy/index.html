@@ -2199,6 +2199,16 @@ body.pb-on{overflow:hidden}
 .rpg-mapa{display:block;width:100%;max-width:620px;height:auto;margin:6px auto 12px;border-radius:12px;background:#0F1726}
 .modal-mapa{max-width:680px !important}
 .rpg-desafio{text-align:center}.rpg-desafio h2{margin:6px 0}.rpg-desafio .actions{justify-content:center}
+/* Equipamentos (arquivo 103) */
+.eq .tabs{margin:6px 0 10px}.eq-doces{font-size:15px}
+.eq-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.eq-slot{display:flex;flex-direction:column;gap:3px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+.eq-slot.vazio{opacity:.7;border-style:dashed}.eq-slot small{font-size:12px}.eq-ic{font-size:26px}
+.eq-mais{display:inline-block;padding:0 6px;border-radius:6px;background:#2A3650;color:#BFE8FF;font:800 13px var(--sans)}
+.eq-slot.n5 .eq-mais,.eq-slot.n6 .eq-mais{background:#3A2A6A;color:#E3C8FF}.eq-slot.n7 .eq-mais,.eq-slot.n8 .eq-mais{background:#5A2A6A;color:#FFC8F0}.eq-slot.n9{border-color:#F5C542;box-shadow:0 0 14px rgba(245,197,66,.35)}.eq-slot.n9 .eq-mais{background:#F5C542;color:#1E150C}
+.eq-max{color:#F5C542;font-weight:800}.eq-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.eq-lista{display:flex;flex-direction:column;gap:6px}.eq-item{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+.eq-item small{flex:1;min-width:140px}.eq-item span{margin-left:auto;display:flex;gap:6px}.eq-venda{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}.eq-venda input{width:90px}
 </style>
 </head>
 <body>
@@ -6003,6 +6013,8 @@ function LIB() {
       <p><b>Fugir custa moedas:</b> ${S.cfg.rpg?.fuga_base ?? 10} moedas para fugir, mais ${S.cfg.rpg?.fuga_por_ataque ?? 10} por ataque que você já fez naquela luta. Sem moedas suficientes, não dá para fugir.</p>
       <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro.</p>
       <p>⚔️ <b>Encontrou, pode desafiar:</b> chegou perto de outro jogador (até ${S.cfg.rpg?.pvp?.distancia ?? 2} casas), aparece o botão ⚔️ Desafiar. A batalha é obrigatória: começa na hora, por turnos, com os 3 primeiros da equipe de cada um, e quem foi desafiado joga agora ou quando entrar. Não vale moedas, só a experiência das batalhas, com o teto de nível. O mesmo par luta 1 vez por dia; cada um desafia até ${S.cfg.rpg?.pvp?.desafia_dia ?? 5} e é desafiado até ${S.cfg.rpg?.pvp?.recebe_dia ?? 3} vezes por dia.</p>
+      <p>🛡️ <b>Equipamentos (do +0 ao +9):</b> botão 🛡️ Equipamentos na Aventura. São 5 peças: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús do tabuleiro), 🧤 Luvas (+captura no tabuleiro), 👖 Calça (+experiência nas vitórias da Aventura), 🥋 Peitoral (−dano nas lutas da Aventura, não vale contra jogadores) e 👢 Botas (+Pokémon raro no mato da Aventura). O bônus vai de 1% no +0 a 18% no +9. Para subir, use o 🍬 Doce de Forja: a chance cai a cada nível; até o +4, falhar só gasta o doce, e do +5 para cima a peça volta 1 nível. O doce cai às vezes ao vencer selvagens (mais nos Ginásios e no Chefe); as peças são raríssimas nos bichos ou custam ${S.cfg.equip?.preco ?? 5000} moedas na loja. Peças e doces podem ser vendidos na Feira de Equipamentos. Quem refina muito ganha brilho no herói (todas as peças +9: dourado com estrelas).</p>
+      <p>🧍 <b>O seu boneco na Aventura</b> mostra o que você está vestindo, e todos veem: sem a peça, a roupa na cor do seu herói; com ela, a peça muda com o "+": couro (do +0 ao +2), malha (do +3 ao +5), aço (do +6 ao +8) e <b>ouro no +9</b>. O boneco anda nas 4 direções. No tabuleiro, o boneco continua o de sempre.</p>
       <p>🎒 <b>Pokémon de suporte:</b> no botão 🎒 Suporte, escolha um Pokémon seu para ir na bolsa. A cada vitória na Aventura (selvagens, Ginásios e Chefe) ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de quem lutou (com o herói Pesquisador, mais). Ele precisa estar com vida.</p>
       <p>🏰 <b>A vila ajuda:</b> a Arena da vila dá lutas a mais por dia na Aventura, e a Academia dá experiência a mais nas lutas.</p>
       <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota fica o prédio do Ginásio; entre pela porta e fale com o Líder no fundo do salão. O time dele é segredo: você só sabe quantos Pokémon ele usa, e a ordem é sorteada a cada tentativa. Antes de lutar, escolha a mesma quantidade de Pokémon seus, na ordem em que vão entrar; quem cai sai e entra o próximo, e a vida perdida continua perdida. Se perder e tentar de novo, os Pokémon do Líder voltam com a vida cheia. Vença os 4 para ganhar a <b>insígnia</b> da rota e um prêmio. Quem juntar as 6 insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio, e desistir encerra a tentativa.</p>
@@ -6119,7 +6131,8 @@ function LIB() {
       <p><b>Comunidade:</b> o <b>Chat</b> para conversar (sem spoiler do dia!) e o <b>Jornal</b> com os avisos do admin e o resumo do dia.</p>
       <p><b>📬 Correio:</b> todo presente que o admin manda para você fica guardado ali (menu Comunidade), com a mensagem e o que você ganhou. Tudo já cai direto na sua conta.</p>
       <p><b>SAC:</b> dúvida, pedido ou problema? Fale com o Chupika e a equipe pelo menu Ajuda.</p>
-      <p class="muted" style="font-size:12px">Cenário do mapa: “RPG World Tileset” de <a href="https://pipoya.itch.io/" target="_blank" rel="noopener">Pipoya</a>. Imagens dos Pokémon: PokeAPI.</p>` }
+      <p class="muted" style="font-size:12px">Cenário do mapa: “RPG World Tileset” de <a href="https://pipoya.itch.io/" target="_blank" rel="noopener">Pipoya</a>. Imagens dos Pokémon: PokeAPI.
+        Bonecos da Aventura: <a href="https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator" target="_blank" rel="noopener">Liberated Pixel Cup (LPC)</a>, sob OGA-BY 3.0, CC-BY 3.0/4.0 e CC0, de ${esc((window.RPG_BONECOS_CREDITOS?.artistas || ["bluecarrot16", "JaidynReiman", "Johannes Sjölund (wulax)", "Eliza Wyatt (ElizaWy)", "Stephen Challener (Redshrike)", "Benjamin K. Smith (BenCreating)", "Matthew Krohn (makrohn)", "Michael Whitlock (bigbeargames)", "Napsio (Vitruvian Studio)", "Nila122", "Manuel Riecke (MrBeast)", "Joe White", "Evert", "TheraHedwig", "MuffinElZangano", "Durrani", "Tracy", "kcilds/Rocetti/Eredah", "thecilekli"]).join(", "))}. Cenário da Aventura: “FREE RPG Tileset 32x32” de Pipoya.</p>` }
   ];
 }
 function viewLibrary() {
@@ -9297,10 +9310,11 @@ function grEndHTML(b) {
       : pos.status === "perdeu" ? `<p class="rpg-fim">A tentativa no Ginásio acabou. Cure a equipe e tente de novo.</p>` : `<p class="rpg-fim">🏟️ Ginásio: <b>${pos.idx} de ${pos.total}</b> Pokémon do Líder derrotados. Continue!</p>`)
     : tr.chefe ? `<p class="rpg-fim">👹 Você causou <b>${pos.dano ?? 0}</b> de dano no chefe. ${pos.status === "vencido" ? "🎉 <b>O chefe caiu!</b> Todos que lutaram ganharam o prêmio." : `A vida dele está em <b>${Math.max(0, Math.round(100 - (pos.total_dano || 0) * 100 / Math.max(1, pos.hp_total || 1)))}%</b>.`}</p>`
     : pos.missoes ? `<p class="rpg-fim ok">📜 Você tem missão completa! Fale com quem deu a missão para pegar o prêmio.</p>` : "";
+  const achou = pos.drop ? `<p class="rpg-fim ok">${pos.drop.doces ? `🍬 +${pos.drop.doces} Doce${pos.drop.doces > 1 ? "s" : ""} de Forja! ` : ""}${pos.drop.peca ? `🛡️ <b>Você achou uma peça rara: ${EQ_SLOTS[pos.drop.peca]?.[1]} +0!</b>` : ""}</p>` : "";
   const comp = r.comp_xp ? ` 🎒 ${esc(pkName(r.comp_species))} (acompanhante) ganhou <b>${r.comp_xp}</b>.` : "";
   return `<div class="bt-end ${r.won ? "won" : "lost"}"><h3>${r.forte ? "⚡ " : ""}${r.won ? "Você venceu!" : r.fugiu ? "Fugiu!" : "Não foi dessa vez!"}</h3>
     <p>${msg}${comp} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> ${trGradual() ? "Leve ao Centro Pokémon ou espere a vida voltar aos poucos." : `Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.`}` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
-    ${extra}<div class="act-btns">${tr.gym && pos.status === "andando" ? `<button class="btn" data-act="rpg-gym-next" data-v="${tr.gym}">▶ Continuar o Ginásio</button>` : ""}${aventura ? `<button class="btn ${tr.gym && pos.status === "andando" ? "ghost" : ""}" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
+    ${extra}${achou}<div class="act-btns">${tr.gym && pos.status === "andando" ? `<button class="btn" data-act="rpg-gym-next" data-v="${tr.gym}">▶ Continuar o Ginásio</button>` : ""}${aventura ? `<button class="btn ${tr.gym && pos.status === "andando" ? "ghost" : ""}" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
 
 // =================================================================
@@ -9309,7 +9323,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["rpg", "🧭 Aventura (RPG)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["equip", "🛡️ Equipamentos"], ["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["rpg", "🧭 Aventura (RPG)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -9325,6 +9339,12 @@ const AJ_LABELS = {
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
+  equip: { on: "Equipamentos ligados", "pecas.capacete": "🪖 Capacete (moedas no tabuleiro)", "pecas.luvas": "🧤 Luvas (captura no tabuleiro)", "pecas.calca": "👖 Calça (XP na Aventura)", "pecas.peitoral": "🥋 Peitoral (menos dano na Aventura)", "pecas.botas": "👢 Botas (Pokémon raro na Aventura)",
+    "pecas.capacete.bonus": "Bônus em % do +0 ao +9", "pecas.luvas.bonus": "Bônus em % do +0 ao +9", "pecas.calca.bonus": "Bônus em % do +0 ao +9", "pecas.peitoral.bonus": "Bônus em % do +0 ao +9", "pecas.botas.bonus": "Bônus em % do +0 ao +9",
+    "pecas.capacete.nome": "Nome", "pecas.luvas.nome": "Nome", "pecas.calca.nome": "Nome", "pecas.peitoral.nome": "Nome", "pecas.botas.nome": "Nome",
+    chances: "Chance (%) de subir para o +1, +2 … +9", volta_a_partir: "A partir de que nível a falha faz voltar 1", preco: "Preço de cada peça na loja (moedas)",
+    doce_pct: "% de chance de Doce de Forja por vitória contra selvagem", peca_pct: "% de chance de peça por vitória contra selvagem", ginasio_doces: "Doces ao ganhar uma insígnia",
+    ginasio_peca_pct: "% de chance de peça ao ganhar uma insígnia", chefe_doces: "Doces para quem lutou no Chefe derrubado", chefe_peca_pct: "% de chance de peça no Chefe derrubado", taxa_pct: "Taxa da Feira de Equipamentos (%)" },
   rpg: { on: "Aventura aberta para os jogadores", batalhas_dia: "Lutas contra selvagens por dia (por jogador)", chance_pct: "% de chance de encontro a cada passo no mato", espera_seg: "Segundos de espera entre encontros",
     envio_seg: "Segundos entre avisos de posição", fuga_base: "Fugir de luta: preço básico (moedas)", fuga_por_ataque: "Fugir de luta: + moedas por ataque já feito",
     nivel_pedra: "Evoluídos por pedra aparecem a partir do nível", nivel_troca: "Evoluídos por troca aparecem a partir do nível", folga: "A forma anterior some quantos níveis depois de poder evoluir",
@@ -11260,7 +11280,7 @@ function rpgRoot() {
   let el = $("#aventura"); if (el) return el;
   el = document.createElement("div"); el.id = "aventura"; el.hidden = true;
   el.innerHTML = `<canvas id="rpg-cv" aria-label="Aventura: ande com WASD ou as setas"></canvas>
-    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><span class="pz-on" id="rpg-noite" hidden></span><span class="pz-on" id="rpg-ins"></span><button class="btn small ghost" id="rpg-sup" data-rpg="suporte">🎒 Suporte</button><button class="btn small ghost" id="rpg-mis" data-rpg="missoes" hidden>📜 Missões</button><button class="btn small rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" hidden></button><button class="btn small ghost" data-rpg="rotas">🗺️ Mapa</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
+    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><span class="pz-on" id="rpg-noite" hidden></span><span class="pz-on" id="rpg-ins"></span><button class="btn small ghost" data-rpg="equip">🛡️ Equipamentos</button><button class="btn small ghost" id="rpg-sup" data-rpg="suporte">🎒 Suporte</button><button class="btn small ghost" id="rpg-mis" data-rpg="missoes" hidden>📜 Missões</button><button class="btn small rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" hidden></button><button class="btn small ghost" data-rpg="rotas">🗺️ Mapa</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
     <div id="rpg-mini-box" class="rpg-mini"><b>Vila Aurora</b><canvas id="rpg-mini" width="184" height="184"></canvas></div>
     <button id="rpg-acao" class="rpg-acao" hidden></button>
     <div id="rpg-fala" class="rpg-fala" hidden></div>
@@ -11275,6 +11295,7 @@ function rpgRoot() {
     if (e.target.closest("[data-rpg='rotas']")) return rpgRotas();
     if (e.target.closest("[data-rpg='missoes']")) return rpgMissoesAbrir(null, null);
     if (e.target.closest("[data-rpg='suporte']")) return rpgSupAbrir();
+    if (e.target.closest("[data-rpg='equip']")) return eqAbrir();
     if (e.target.closest("[data-rpg='chefe']")) return rpgChefeAbrir();
     if (e.target.closest("#rpg-acao")) return rpgUsar();
     if (e.target.closest("#rpg-fala")) return rpgFalaProx();
@@ -11311,7 +11332,7 @@ async function rpgOpen() {
   if (rpgSolid(AV.x, AV.y)) [AV.x, AV.y] = AV.r === "vila" ? [28, 30] : (AV.dados.chegada || [2, 2]);
   AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();   // o Pokémon que segue começa num lugar livre
   $("#rpg-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande e explore. Pokémon selvagens aparecem no mato." : "WASD ou setas para andar · E para entrar, conversar e desafiar · 🗺️ Mapa mostra tudo";
-  rpgNetJoin(); rpgPerto(); rpgEstado();
+  rpgNetJoin(); rpgPerto(); rpgEstado(); eqCarregar().then(() => rpgNetJoin()); lpcCarregar();
   cancelAnimationFrame(AV.raf); AV.last = performance.now(); AV.raf = requestAnimationFrame(rpgLoop);
 }
 async function rpgEstado() {
@@ -11387,6 +11408,7 @@ function rpgLoop(now) {
     if (!sd && z && st && !AV.busy && st.batalhas < st.batalhas_dia && Date.now() - AV.lastEnc > (st.espera_seg ?? 8) * 1000 && Math.random() * 100 < (st.chance_pct ?? 12)) rpgEncontro(z); } }
   if (!AV.moving && !AV.busy && !AV.fala && AV.keys.size) {
     const d = [...AV.keys].at(-1), [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[d];
+    if (AV.dir !== d) { AV.dir = d; rpgNetSend(); }
     if (dx) AV.face = dx;
     const tx = AV.x + dx, ty = AV.y + dy;
     if (!rpgSolid(tx, ty)) AV.moving = { fx: AV.x, fy: AV.y, tx, ty, t: 0 };
@@ -11446,18 +11468,31 @@ function rpgPinta(now) {
     g.textAlign = "center"; g.fillStyle = perto ? "#1E150C" : "#FFE7A8"; g.fillText(`${p.ic} ${p.nome}`, x, y - 6 * dpr);
   }
   // moradores, outros jogadores e você, de trás para a frente
-  const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: pkTeam()[0]?.species_id, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
-  const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.gym ? `🏟️ ${n.nome}` : n.nome, ch: n.ch, npc: true, gym: n.gym })),
-    ...Object.values(AV.others).map(o => ({ ...o, ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } })), eu].filter(o => o.ch?.class && o.fx != null).sort((a, b) => a.fy - b.fy);
+  const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: pkTeam()[0]?.species_id, eq: eqSoma(AV.eq), eqs: eqSlotsDe(AV.eq), dir: AV.dir || "down", anda: !!AV.moving, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
+  const LID = n => n === "pico" ? 9 : 6;   // os Líderes de Ginásio vestem aço (o do Pico, ouro)
+  const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.gym ? `🏟️ ${n.nome}` : n.nome, ch: n.ch, npc: true, gym: n.gym, dir: "down",
+      eqs: n.gym ? { peitoral: LID(n.gym), calca: LID(n.gym), botas: LID(n.gym), luvas: LID(n.gym) } : {} })),
+    ...Object.values(AV.others).map(o => { const mv = o.x != null && (Math.abs(o.x - o.fx) > .03 || Math.abs(o.y - o.fy) > .03), dx = (o.x ?? o.fx) - o.fx, dy = (o.y ?? o.fy) - o.fy;
+      return { ...o, eqs: o.es || {}, anda: mv, dir: mv ? (Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up")) : (o.d || "down"),
+        ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } }; }), eu].filter(o => o.ch?.class && o.fx != null).sort((a, b) => a.fy - b.fy);
   for (const o of todos) {
     const ox = (o.fx + .5) * tile - cx, oy = (o.fy + 1) * tile - cy; if (ox < -tile * 2 || oy < -tile * 2 || ox > cv.width + tile * 2 || oy > cv.height + tile * 3) continue;
     if (o.m) { const im = grImg(o.m);
       if (im.complete && im.naturalWidth) { const mx = ((o.tx ?? o.fx - (o.f || 1)) + .5) * tile - cx, my = ((o.ty ?? o.fy) + 1) * tile - cy, sz = tile * 0.95;
         g.fillStyle = "rgba(0,0,0,.25)"; g.beginPath(); g.ellipse(mx, my - 3 * dpr, tile * .22, tile * .08, 0, 0, 6.28); g.fill();
         g.save(); g.translate(mx, my - Math.abs(Math.sin(now / 260 + ox)) * 2 * dpr); if ((o.f || 1) > 0) g.scale(-1, 1); g.drawImage(im, -sz / 2, -sz * .95, sz, sz); g.restore(); } }
-    const sp = avatarCanvas(o.ch), h = tile * 1.15, w = h * sp.cv.width / sp.cv.height;
+    const lpc = LPC.ok, S2 = tile * 1.6, sp = lpc ? null : avatarCanvas(o.ch), h = lpc ? S2 * .74 : tile * 1.15, w = lpc ? S2 * .45 : h * sp.cv.width / sp.cv.height;
+    if ((o.eq || 0) >= 10) {   // arquivo 103: brilho dos equipamentos refinados (todas as peças +9 = dourado com estrelas)
+      const forte = Math.min(1, o.eq / 45), cor = o.eq >= 45 ? "255,215,90" : o.eq >= 30 ? "190,120,255" : "110,190,255", al = .25 + forte * .35 + Math.sin(now / 350) * .08;
+      const ag = g.createRadialGradient(ox, oy - h * .45, 0, ox, oy - h * .45, h * .75); ag.addColorStop(0, `rgba(${cor},${al})`); ag.addColorStop(1, `rgba(${cor},0)`);
+      g.fillStyle = ag; g.fillRect(ox - h, oy - h * 1.3, h * 2, h * 1.6);
+      if (o.eq >= 45) for (let k = 0; k < 4; k++) { const a = now / 600 + k * 1.57; g.fillStyle = "rgba(255,240,170,.9)"; g.fillRect(ox + Math.cos(a) * w * .6 - dpr, oy - h * .5 + Math.sin(a) * h * .45 - dpr, 3 * dpr, 3 * dpr); }
+    }
     g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(ox, oy - 3 * dpr, tile * .28, tile * .1, 0, 0, 6.28); g.fill();
-    g.save(); g.translate(ox, oy - (o.pulo || 0) - 2 * dpr); if ((o.f || 1) < 0) g.scale(-1, 1); avDraw(g, sp, -w / 2, -h, w, h); g.restore();
+    if (lpc) {   // arquivo 104: boneco em camadas, andando na direção certa
+      const fo = lpcFolha({ ...o, c: o.c || o.ch?.class }), lin = LPC_LIN[o.dir] ?? 2, col = o.anda ? 1 + Math.floor(now / 85) % 8 : 0;
+      g.imageSmoothingEnabled = false; g.drawImage(fo, col * 64, lin * 64, 64, 64, Math.round(ox - S2 / 2), Math.round(oy - S2 * .97), Math.round(S2), Math.round(S2));
+    } else { g.save(); g.translate(ox, oy - (o.pulo || 0) - 2 * dpr); if ((o.f || 1) < 0) g.scale(-1, 1); avDraw(g, sp, -w / 2, -h, w, h); g.restore(); }
     texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : o.npc ? "#BFE8FF" : "#F4F8E8");
     if (o.npc) texto(o.gym ? (rpgInsig().includes(o.gym) ? "🏅" : "🏟️") : rpgMissoesDe(AV.r).some(m => !m.resgatada && m.prog >= m.meta) ? "🎁" : "!", ox + w * 0.45, oy - h + 4 * dpr, 16, "#FFE37A");
     const bl = AV.baloes[o.uid];
@@ -11476,7 +11511,7 @@ function rpgPinta(now) {
 }
 // ---------- quem está na vila (Realtime) ----------
 let rpgChannel = null;
-const rpgMeta = () => ({ n: S.me.name, c: S.me.class, o: S.me.outfit || {}, x: AV.x, y: AV.y, f: AV.face, m: pkTeam()[0]?.species_id || null });
+const rpgMeta = () => ({ n: S.me.name, c: S.me.class, o: S.me.outfit || {}, x: AV.x, y: AV.y, f: AV.face, m: pkTeam()[0]?.species_id || null, eq: eqSoma(AV.eq), es: eqSlotsDe(AV.eq), d: AV.dir || "down" });
 function rpgNetJoin() {
   if (!sb || !S.me) return;
   if (rpgChannel) { try { rpgChannel.track(rpgMeta()); } catch {} return; }
@@ -11488,14 +11523,14 @@ function rpgNetJoin() {
       for (const [uid, metas] of Object.entries(st)) {
         if (uid === pkMe()) continue; const p = metas.at(-1) || {}; seen.add(uid);
         const o = AV.others[uid] || (AV.others[uid] = { uid, fx: p.x, fy: p.y, x: p.x, y: p.y });
-        Object.assign(o, { n: p.n, c: p.c, o: p.o, m: p.m, f: p.f ?? o.f, x: o.x ?? p.x, y: o.y ?? p.y });
+        Object.assign(o, { n: p.n, c: p.c, o: p.o, m: p.m, eq: p.eq || 0, es: p.es || {}, d: o.d || p.d, f: p.f ?? o.f, x: o.x ?? p.x, y: o.y ?? p.y });
       }
       for (const uid of Object.keys(AV.others)) if (!seen.has(uid)) delete AV.others[uid];
     })
     .on("broadcast", { event: "pos" }, ({ payload: p }) => {
       if (!p?.u || p.u === pkMe()) return;
       const o = AV.others[p.u] || (AV.others[p.u] = { uid: p.u, fx: p.x, fy: p.y });
-      Object.assign(o, { x: p.x, y: p.y, f: p.f });
+      Object.assign(o, { x: p.x, y: p.y, f: p.f, d: p.d || o.d });
       if (AV.open && !AV.moving) rpgPerto();
     })
     .on("broadcast", { event: "desafio" }, ({ payload: p }) => { if (p?.to === pkMe()) rpgDesafiado(p); })   // arquivo 102
@@ -11504,7 +11539,7 @@ function rpgNetJoin() {
 function rpgNetSend() {
   if (!rpgChannel) return;
   const now = Date.now(), esp = Math.max(500, (rpgCfg().envio_seg || 1.2) * 1000); clearTimeout(AV.sendT);
-  const go = () => { AV.lastSend = Date.now(); try { rpgChannel.send({ type: "broadcast", event: "pos", payload: { u: pkMe(), x: AV.x, y: AV.y, f: AV.face } }); } catch {} };
+  const go = () => { AV.lastSend = Date.now(); try { rpgChannel.send({ type: "broadcast", event: "pos", payload: { u: pkMe(), x: AV.x, y: AV.y, f: AV.face, d: AV.dir || "down" } }); } catch {} };
   if (now - (AV.lastSend || 0) >= esp) go(); else AV.sendT = setTimeout(go, esp - (now - AV.lastSend));
 }
 function rpgNetLeave() {
@@ -11519,6 +11554,126 @@ function rpgChatNova(m) { rpgChatRender(); if (m && AV.open && m.user_id) AV.bal
 
 
 
+
+
+// ---------- Bonecos da Aventura (arquivo 104): camadas LPC, 4 direções, com as peças do herói ----------
+// rpg-bonecos.js (só carrega na Aventura) traz cada camada (andar: 4 linhas cima/esquerda/baixo/direita × 9 quadros de 64 px).
+// O boneco é montado por camadas e pintado: a roupa na cor do herói; as peças mudam com o "+": couro (+0 a +2),
+// malha (+3 a +5), aço (+6 a +8) e ouro (+9). O tabuleiro continua com o boneco de sempre.
+const LPC = { img: {}, cache: new Map(), tintas: new Map(), carga: null, ok: false };
+function lpcCarregar() {
+  if (LPC.carga) return LPC.carga;
+  return (LPC.carga = new Promise(ok => {
+    const pronto = async () => { const B = window.RPG_BONECOS; if (!B) return ok();
+      await Promise.all(Object.entries(B).map(([k, src]) => new Promise(r => { const im = new Image(); im.onload = () => { LPC.img[k] = im; r(); }; im.onerror = r; im.src = src; })));
+      LPC.ok = !!(LPC.img.corpo && LPC.img.cabeca); ok(); };
+    if (window.RPG_BONECOS) return pronto();
+    const sc = document.createElement("script"); sc.src = "rpg-bonecos.js?v=1"; sc.onload = pronto; sc.onerror = () => { LPC.carga = null; ok(); }; document.head.appendChild(sc);
+  }));
+}
+const LPC_CLASSE = { guerreiro: ["#B03A3A", "#4A2A22"], mago: ["#5B3FA0", "#2E2448"], arqueiro: ["#3E8E4A", "#4A3A22"], ladino: ["#3E3E4E", "#22222A"],
+  clerigo: ["#ECE6D4", "#8A7F66"], domador: ["#8A5A33", "#3E2C1E"], pesquisador: ["#3B6FB6", "#2A3448"], mercador: ["#C9A13B", "#5A4422"] };
+const LPC_CABELOS = ["cab_plain", "cab_spiked", "cab_bob", "cab_buzz", "cab_curly", "cab_long", "cab_pony", "cab_afro", "cab_bun"];
+const LPC_CORES_CAB = ["#2B1D14", "#5A3A22", "#8B5A2B", "#C9A04A", "#E8D27A", "#B8452A", "#1E1E1E", "#D8D8D8"];
+const LPC_LIN = { up: 0, left: 1, down: 2, right: 3 };
+const lpcHash = t => { let h = 7; for (const c of String(t)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
+const lpcTier = n => n == null || n < 0 ? -1 : n >= 9 ? 3 : n >= 6 ? 2 : n >= 3 ? 1 : 0;   // couro, malha, aço, ouro
+const eqSlotsDe = E => Object.fromEntries((E?.minhas || []).filter(p => p.equipada).map(p => [p.slot, p.nivel]));
+function lpcCamadas(o) {
+  const cls = o.c || o.ch?.class || "guerreiro", [c1, c2] = LPC_CLASSE[cls] || LPC_CLASSE.guerreiro, h = lpcHash(o.uid || o.n || "x"), eq = o.eqs || {}, T = sl => lpcTier(eq[sl]);
+  const OURO = "#F4C84A", COURO = "#8A5530", COURO2 = "#5E3A1E", FERRO = "#5A5F6A", L = [], add = (k, cor = null) => L.push([k, cor]);
+  const capa = cls === "mago" || cls === "clerigo", tc = T("capacete"), cab = LPC_CABELOS[h % LPC_CABELOS.length], cc = LPC_CORES_CAB[(h >> 5) % LPC_CORES_CAB.length];
+  if (capa) add("capa_bg", c1);
+  if (cab === "cab_pony" && tc < 1) add("cab_pony_bg", cc);
+  add("corpo"); add("cabeca");
+  const tp = T("calca"); add(tp >= 2 ? "perna_placa" : tp >= 0 ? "calca2" : "calca", tp === 3 ? OURO : tp === 2 ? null : tp === 1 ? FERRO : tp === 0 ? COURO : c2);
+  const tb = T("botas"); add(tb >= 2 ? "bota_placa" : tb >= 0 ? "bota" : "sapato", tb === 3 ? OURO : tb === 2 ? null : tb === 1 ? "#2A2A30" : tb === 0 ? COURO2 : "#4A3420");
+  add("camisa", c1);
+  const tt = T("peitoral"); if (tt >= 0) add(tt >= 2 ? "peito_placa" : tt === 1 ? "peito_malha" : "peito_couro", tt === 3 ? OURO : null);
+  const tl = T("luvas"); if (tl >= 2) add("braco_placa", tl === 3 ? OURO : null); if (tl >= 0) add("luva", tl === 3 ? OURO : tl === 2 ? null : tl === 1 ? "#2A2A30" : COURO);
+  if (capa) add("capa", c1);
+  if (tc < 1) add(cab, cc);
+  if (tc >= 0) add(tc === 3 ? "elmo_ouro" : tc === 2 ? "elmo_aco" : tc === 1 ? "elmo_malha" : "elmo_couro", tc === 3 ? OURO : null);
+  else if (cls === "mago") add("chapeu_mago"); else if (cls === "clerigo") add("capuz");
+  return L;
+}
+function lpcTinta(k, cor) {
+  const key = k + cor; let c = LPC.tintas.get(key); if (c) return c;
+  const im = LPC.img[k]; c = document.createElement("canvas"); c.width = im.width; c.height = im.height; const g = c.getContext("2d");
+  const ouro = cor === "#F4C84A";
+  g.filter = `grayscale(1) brightness(${ouro ? 1.6 : 1.18}) contrast(${ouro ? 1.15 : 1})`; g.drawImage(im, 0, 0); g.filter = "none";
+  g.globalCompositeOperation = "multiply"; g.fillStyle = cor; g.fillRect(0, 0, c.width, c.height);
+  if (ouro) { g.globalCompositeOperation = "screen"; g.fillStyle = "rgba(255,226,140,.22)"; g.fillRect(0, 0, c.width, c.height); }
+  g.globalCompositeOperation = "destination-in"; g.drawImage(im, 0, 0); g.globalCompositeOperation = "source-over";
+  LPC.tintas.set(key, c); return c;
+}
+function lpcFolha(o) {
+  const cam = lpcCamadas(o), key = JSON.stringify(cam); let cv = LPC.cache.get(key); if (cv) return cv;
+  cv = document.createElement("canvas"); cv.width = 576; cv.height = 256; const g = cv.getContext("2d");
+  for (const [k, cor] of cam) { const im = LPC.img[k]; if (im) g.drawImage(cor ? lpcTinta(k, cor) : im, 0, 0); }
+  if (LPC.cache.size > 80) LPC.cache.delete(LPC.cache.keys().next().value);
+  LPC.cache.set(key, cv); return cv;
+}
+// ---------- Equipamentos do herói, do +0 ao +9 (arquivo 103) ----------
+const EQ_SLOTS = { capacete: ["🪖", "Capacete", x => `+${x}% de moedas no Dia de Pagamento e nos baús (tabuleiro)`], luvas: ["🧤", "Luvas", x => `+${x}% de chance de captura (tabuleiro)`],
+  calca: ["👖", "Calça", x => `+${x}% de experiência nas vitórias da Aventura`], peitoral: ["🥋", "Peitoral", x => `−${x}% de dano nas lutas da Aventura (não vale contra jogadores)`],
+  botas: ["👢", "Botas", x => `+${x}% de chance de Pokémon raro no mato da Aventura`] };
+const eqBonus = (E, sl, n) => E?.pecas_cfg?.[sl]?.bonus?.[n] ?? [1, 2, 3, 4, 5, 7, 9, 11, 14, 18][n];
+const eqSoma = E => (E?.minhas || []).filter(p => p.equipada).reduce((a, p) => a + p.nivel, 0);
+async function eqCarregar() { try { AV.eq = await rpc("equip_estado"); } catch (e) { AV.eq = AV.eq || null; if (isMissingFn(e)) AV.eq = false; } return AV.eq; }
+function eqHTML(aba) {
+  const E = AV.eq; if (E === false) return `<p class="muted">Os equipamentos precisam do arquivo 103_equipamentos.sql rodado no Supabase.</p>`;
+  if (!E) return `<p class="muted">Carregando…</p>`;
+  const tabs = [["heroi", "🛡️ Meu herói"], ["loja", "🛒 Loja"], ["feira", "🤝 Feira"]];
+  const peca = p => { const [ic, nome, txt] = EQ_SLOTS[p.slot]; return { ic, nome, txt }; };
+  let corpo = "";
+  if (aba === "heroi") {
+    const extras = E.minhas.filter(p => !p.equipada);
+    corpo = `<p class="eq-doces">🍬 Doce de Forja: <b>${E.doces}</b> <small class="muted">· cai ao vencer selvagens (mais nos Ginásios e no Chefe) ou compre na Feira</small></p>
+      <div class="eq-slots">${Object.keys(EQ_SLOTS).map(sl => { const p = E.minhas.find(x => x.slot === sl && x.equipada), [ic, nome, txt] = EQ_SLOTS[sl];
+        if (!p) return `<div class="eq-slot vazio"><span class="eq-ic">${ic}</span><b>${nome}</b><small>${txt(eqBonus(E, sl, 0))} no +0</small><small class="muted">Vazio: compre na Loja, ache nos bichos ou na Feira.</small></div>`;
+        const ch = E.chances?.[p.nivel], risco = p.nivel >= (E.volta_a_partir ?? 5);
+        return `<div class="eq-slot n${p.nivel}"><span class="eq-ic">${ic}</span><b>${nome} <span class="eq-mais">+${p.nivel}</span></b><small>${txt(eqBonus(E, sl, p.nivel))}</small>
+          ${p.nivel < 9 ? `<small class="muted">No +${p.nivel + 1}: ${txt(eqBonus(E, sl, p.nivel + 1))} · chance ${ch}%${risco ? " · se falhar, volta 1" : " · se falhar, só perde o doce"}</small>
+          <div class="eq-acts"><button class="btn small" data-eqref="${p.id}" ${E.doces ? "" : "disabled"}>🍬 Usar Doce (${ch}%)</button><button class="btn ghost small" data-eqtira="${p.id}">Tirar</button></div>` : `<small class="eq-max">✨ No máximo: +9!</small><div class="eq-acts"><button class="btn ghost small" data-eqtira="${p.id}">Tirar</button></div>`}</div>`; }).join("")}</div>
+      ${extras.length ? `<h3 style="margin-top:12px">Peças guardadas</h3><div class="eq-lista">${extras.map(p => { const k = peca(p); return `<div class="eq-item">${k.ic} <b>${k.nome} +${p.nivel}</b>${p.a_venda ? ` <small class="muted">· à venda na Feira</small>` : `<span><button class="btn small" data-eqequip="${p.id}">Equipar</button><button class="btn ghost small" data-eqvende="${p.id}">Vender</button></span>`}</div>`; }).join("")}</div>` : ""}
+      <p class="muted" style="margin-top:10px">Chances de subir: ${(E.chances || []).map((c, i) => `+${i + 1}: ${c}%`).join(" · ")}. Até o +${(E.volta_a_partir ?? 5) - 1}, se falhar, só perde o doce; do +${E.volta_a_partir ?? 5} para cima, falhar faz a peça voltar 1 nível.</p>`;
+  } else if (aba === "loja") {
+    corpo = `<p>Cada peça nova custa <b>${E.preco} moedas</b> e vem no +0. Você tem <b>${S.me?.coins ?? 0} moedas</b>.</p>
+      <div class="eq-lista">${Object.entries(EQ_SLOTS).map(([sl, [ic, nome, txt]]) => `<div class="eq-item">${ic} <b>${nome}</b><small class="muted">${txt(eqBonus(E, sl, 0))} no +0, até ${txt(eqBonus(E, sl, 9)).replace(/^[+−]\d+%/, m => m)} no +9</small><button class="btn small" data-eqcompra="${sl}" ${(S.me?.coins ?? 0) >= E.preco ? "" : "disabled"}>Comprar (${E.preco})</button></div>`).join("")}</div>`;
+  } else {
+    const eu = S.session?.user?.id, of = E.ofertas || [];
+    corpo = `<p>Venda e compre <b>peças</b> e <b>Doces de Forja</b> com os outros jogadores. Quem vende paga ${E.taxa_pct}% de taxa.</p>
+      <form class="eq-venda" data-eqdoceform="1"><b>Vender doces:</b> <input name="qty" type="number" min="1" max="${E.doces}" value="1" ${E.doces ? "" : "disabled"}> por <input name="preco" type="number" min="1" value="100"> moedas <button class="btn small" ${E.doces ? "" : "disabled"}>Pôr à venda</button></form>
+      <div class="eq-lista">${of.length ? of.map(o => `<div class="eq-item">${o.tipo === "doce" ? `🍬 <b>${o.qty} Doce${o.qty > 1 ? "s" : ""} de Forja</b>` : `${EQ_SLOTS[o.slot]?.[0]} <b>${EQ_SLOTS[o.slot]?.[1]} +${o.nivel}</b>`}<small class="muted">de ${esc(o.nome)}</small>
+        ${o.vendedor === eu ? `<button class="btn ghost small" data-eqcancela="${o.id}">Cancelar</button>` : `<button class="btn small" data-eqbuy="${o.id}" ${(S.me?.coins ?? 0) >= o.preco ? "" : "disabled"}>Comprar por ${o.preco}</button>`}</div>`).join("") : `<p class="muted">Nada à venda agora.</p>`}</div>`;
+  }
+  return `<div class="rpg-rotas eq"><div class="av-head"><h2>🛡️ Equipamentos</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <div class="tabs">${tabs.map(([k, t]) => `<button data-eqaba="${k}" aria-current="${aba === k}">${t}</button>`).join("")}</div>${corpo}</div>`;
+}
+async function eqAbrir(aba = "heroi") {
+  const m = openModal(eqHTML(aba)); m.querySelector(".modal").classList.add("modal-av");
+  const pinta = () => { const box = $("#modal-root .modal"); if (box) box.innerHTML = eqHTML(aba); };
+  const faz = async (fn, args, msg) => { try { const r = await rpc(fn, args); if (msg) toast(typeof msg === "function" ? msg(r) : msg); await eqCarregar(); refreshMe().catch(() => {}); rpgNetJoin(); pinta(); return r; } catch (er) { toast(errMsg(er), true); } };
+  m.addEventListener("click", async e => {
+    if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
+    const t = e.target.closest("[data-eqaba],[data-eqref],[data-eqtira],[data-eqequip],[data-eqvende],[data-eqcompra],[data-eqcancela],[data-eqbuy]"); if (!t) return;
+    const d = t.dataset;
+    if (d.eqaba) { aba = d.eqaba; return pinta(); }
+    if (d.eqref) { t.disabled = true; const r = await faz("equip_refinar", { _id: +d.eqref }); if (r) { sfx(r.ok ? "acerto" : "erro"); toast(r.ok ? `✨ Sucesso! Agora está no +${r.nivel}.` : r.nivel < r.antes ? `💥 Falhou… a peça voltou para o +${r.nivel}.` : `Falhou. A peça continua no +${r.nivel}.`, !r.ok); } return; }
+    if (d.eqtira) return faz("equip_equipar", { _id: +d.eqtira, _on: false });
+    if (d.eqequip) return faz("equip_equipar", { _id: +d.eqequip, _on: true }, "Equipado!");
+    if (d.eqcompra) { if (await confirmModal("Comprar a peça?", `${EQ_SLOTS[d.eqcompra][1]} +0 por ${AV.eq.preco} moedas.`, "Comprar")) faz("equip_comprar", { _slot: d.eqcompra }, "🛡️ Peça comprada! Ela está em Meu herói."); return; }
+    if (d.eqvende) { const f = await formModal("Vender a peça na Feira", [{ k: "preco", label: "Preço em moedas", type: "number", value: "1000", required: true }], "Pôr à venda"); const preco = parseInt(f?.preco, 10);
+      if (preco > 0) { try { await rpc("equip_ofertar", { _tipo: "peca", _peca: +d.eqvende, _qty: 1, _preco: preco }); toast("Peça posta à venda na Feira."); await eqCarregar(); } catch (er) { toast(errMsg(er), true); } }
+      return eqAbrir("feira"); }
+    if (d.eqcancela) return faz("equip_oferta_cancelar", { _id: +d.eqcancela }, "Oferta cancelada.");
+    if (d.eqbuy) return faz("equip_oferta_comprar", { _id: +d.eqbuy }, "Comprado! 🎉");
+  });
+  m.addEventListener("submit", e => { if (!e.target.matches("[data-eqdoceform]")) return; e.preventDefault(); const f = new FormData(e.target);
+    faz("equip_ofertar", { _tipo: "doce", _peca: null, _qty: +f.get("qty"), _preco: +f.get("preco") }, "Doces postos à venda."); });
+  if (!AV.eq) { await eqCarregar(); pinta(); }
+}
 // ---------- batalha entre jogadores na Aventura (arquivo 102): encontrou, pode desafiar, e o outro tem que lutar ----------
 async function rpgDesafiar(uid, nome) {
   if (!await confirmModal(`Desafiar ${nome}?`, `A batalha é obrigatória: ela começa agora, por turnos, com os 3 primeiros da equipe de cada um. ${nome} joga na hora ou quando entrar no jogo (não tem prazo por turno).
@@ -13141,6 +13296,19 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "bonecos-2026-11-12", sql: "104", title: "🧍 Aventura: boneco novo, vestindo os seus equipamentos", body: () => `O seu herói na Aventura ganhou um boneco novo, maior e mais detalhado, que anda nas 4 direções:
+• Ele veste as peças que você equipou, e todo mundo vê o que você está usando.
+• A peça muda com o "+": couro (do +0 ao +2), malha (do +3 ao +5), aço (do +6 ao +8) e ouro brilhante no +9.
+• Sem a peça, a roupa fica na cor do seu herói (vermelho do Guerreiro, roxo do Mago com chapéu de estrelas, verde do Arqueiro, capuz branco do Clérigo…). Cada jogador tem o seu cabelo.
+• Os Líderes de Ginásio vestem armadura de aço (e o do Pico Gelado, de ouro).
+• No tabuleiro, o boneco continua o de sempre.` },
+  { id: "equip-2026-11-12", sql: "103", title: "🛡️ Equipamentos da Aventura: do +0 ao +9", body: () => `Chegaram os Equipamentos do seu herói (botão 🛡️ Equipamentos, na Aventura):
+• 5 peças, cada uma com o seu bônus: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús), 🧤 Luvas (+chance de captura), 👖 Calça (+experiência por vitória na Aventura), 🥋 Peitoral (−dano recebido nas lutas da Aventura) e 👢 Botas (+chance de Pokémon raro no mato).
+• Cada peça vai do +0 ao +9: o bônus cresce de 1% até 18%.
+• 🍬 Doce de Forja: use para subir a peça. A chance cai a cada nível (100% no +1, 10% no +9). Até o +4, se falhar, só perde o doce; do +5 para cima, falhar faz a peça voltar 1 nível.
+• Onde conseguir: o Doce cai às vezes ao vencer selvagens na Aventura (mais nos Ginásios e no Chefe). As peças são raríssimas nos bichos, ou custam 5.000 moedas na loja.
+• Doces e peças podem ser vendidos e comprados entre jogadores, na feira dos Equipamentos.
+• O Peitoral não vale nas batalhas entre jogadores: lá todo mundo fica igual.` },
   { id: "rpg-pvp-2026-11-12", sql: "102", title: "⚔️ Aventura: encontrou, pode desafiar!", body: () => `Agora a Aventura tem batalha entre jogadores:
 • Chegou perto de outro jogador (até 2 casas)? Aparece o botão ⚔️ Desafiar.
 • O desafio é obrigatório: a batalha já começa, por turnos, com os 3 primeiros da equipe de cada um. Quem foi desafiado joga na hora ou quando entrar no jogo (não tem prazo por turno).
