@@ -2191,6 +2191,13 @@ body.pb-on{overflow:hidden}
 .rpg-chefe-btn{background:linear-gradient(#E05A5A,#A83232) !important;color:#fff !important;border-color:#FFB4A8 !important;animation:news-pulse 1.6s infinite}
 @media (max-width:760px){#aventura #rpg-on{display:none}}
 @media (max-width:560px){.rpg-gym{grid-template-columns:repeat(2,1fr)}.rpg-chefe{flex-direction:column;text-align:center}}
+/* Ginásios por dentro e mapa completo (arquivo 101) */
+.gym-ord{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:#F5C542;color:#1E150C;font:900 12px/22px var(--sans);font-style:normal;text-align:center;z-index:1}
+.rpg-rotas .mon-card{position:relative}
+.gym-lider{display:flex;gap:12px;align-items:center;margin:6px 0 10px}.gym-lider svg{flex:none;width:72px;height:auto}.gym-lider p{margin:2px 0}
+.gym-adm{display:grid;gap:6px;margin-top:12px;padding:10px;border:1px dashed rgba(255,255,255,.25);border-radius:10px}.gym-adm label{display:grid;gap:2px;font-size:13px}.gym-adm h3{margin:0}
+.rpg-mapa{display:block;width:100%;max-width:620px;height:auto;margin:6px auto 12px;border-radius:12px;background:#0F1726}
+.modal-mapa{max-width:680px !important}
 </style>
 </head>
 <body>
@@ -5987,15 +5994,16 @@ function LIB() {
     { id: "aventura", ic: "🧭", t: "Aventura (RPG)", h: `<p>A <b>Aventura</b> (menu Competir, ou o botão 🧭 no alto do mapa) é um jogo a mais dentro do Pokegames, para andar e explorar. O tabuleiro continua igual. Os <b>Pokémon e as moedas são os mesmos</b> dos dois jogos.</p>
       <p><b>Vila Aurora:</b> ande com WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas. Os outros jogadores aparecem andando ao vivo.</p>
       <p><b>É aqui que se treina:</b> a Grama de Treino fechou, e a Aventura é o lugar de ganhar experiência e evoluir os Pokémon. Todos os Pokémon aparecem por aqui (menos os lendários), cada um nas áreas do seu tipo.</p>
+      <p>📍 <b>Onde estou?</b> No alto da tela aparece sempre o nome do lugar e as coordenadas (coluna, linha). O botão <b>🗺️ Mapa</b> abre o mapa completo com todas as regiões, os nomes, os níveis, os Ginásios e você marcado.</p>
       <p><b>Rotas:</b> da Vila Aurora saem o Bosque Sussurrante (oeste), a Praia Coral (sul), o Deserto Rubro (leste) e a Gruta da Pedreira (pela caverna do penhasco). Mais longe ficam o Charco Sombrio (depois do Bosque) e o Pico Gelado (depois da Pedreira). Ande até a borda, na saída com a placa ➡️, para trocar de região.</p>
       <p><b>Níveis:</b> cada área tem a sua faixa de nível, que aparece no alto da tela quando você pisa no mato e no botão <b>🗺️ Rotas</b>. Perto da vila os Pokémon são fracos; no fundo de cada rota (o mato com o chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Os evoluídos só aparecem nas áreas de nível alto. Quanto mais forte o selvagem, mais experiência ele dá.</p>
-      ${Object.values(RPG_REG).map(R => `<p>${R.ic} <b>${R.nome}</b>: ${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${z.nome} (Nv ${z.min}–${z.max}: ${rpgTipos(z)})` : ""; }).filter(Boolean).join("; ")}.</p>`).join("")}
+      ${Object.values(RPG_REG).filter(R => !R.gym).map(R => `<p>${R.ic} <b>${R.nome}</b>: ${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${z.nome} (Nv ${z.min}–${z.max}: ${rpgTipos(z)})` : ""; }).filter(Boolean).join("; ")}.</p>`).join("")}
       <p><b>A luta:</b> quem luta é o primeiro Pokémon da equipe que estiver com vida. Vencer dá experiência; a vida que ele perder continua perdida até se recuperar (ela volta aos poucos sozinha, ou na hora no Centro Pokémon). Não há captura na Aventura: a captura continua no tabuleiro.</p>
       <p><b>Fugir custa moedas:</b> ${S.cfg.rpg?.fuga_base ?? 10} moedas para fugir, mais ${S.cfg.rpg?.fuga_por_ataque ?? 10} por ataque que você já fez naquela luta. Sem moedas suficientes, não dá para fugir.</p>
       <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro.</p>
       <p>🎒 <b>Pokémon de suporte:</b> no botão 🎒 Suporte, escolha um Pokémon seu para ir na bolsa. A cada vitória na Aventura (selvagens, Ginásios e Chefe) ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de quem lutou (com o herói Pesquisador, mais). Ele precisa estar com vida.</p>
       <p>🏰 <b>A vila ajuda:</b> a Arena da vila dá lutas a mais por dia na Aventura, e a Academia dá experiência a mais nas lutas.</p>
-      <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota mora um Líder de Ginásio com 4 Pokémon fortes. Você luta com a sua equipe, um Pokémon de cada vez (entra o primeiro com vida; se cair, entra o próximo), e a vida perdida continua perdida, então cure antes. Vença os 4 para ganhar a <b>insígnia</b> da rota e um prêmio. Quem juntar as 6 insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio, e desistir encerra a tentativa.</p>
+      <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota fica o prédio do Ginásio; entre pela porta e fale com o Líder no fundo do salão. O time dele é segredo: você só sabe quantos Pokémon ele usa, e a ordem é sorteada a cada tentativa. Antes de lutar, escolha a mesma quantidade de Pokémon seus, na ordem em que vão entrar; quem cai sai e entra o próximo, e a vida perdida continua perdida. Se perder e tentar de novo, os Pokémon do Líder voltam com a vida cheia. Vença os 4 para ganhar a <b>insígnia</b> da rota e um prêmio. Quem juntar as 6 insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio, e desistir encerra a tentativa.</p>
       <p>📜 <b>Missões:</b> os moradores dão ${S.cfg.rpg?.missoes?.por_dia ?? 3} missões por dia (vencer Pokémon numa rota, de um tipo, ou um selvagem forte). Volte a falar com quem deu a missão para pegar o prêmio. O botão 📜 Missões mostra todas.</p>
       <p>🌙 <b>Noite:</b> das ${S.cfg.rpg?.noite?.inicio ?? 19}h às ${S.cfg.rpg?.noite?.fim ?? 5}h a Aventura escurece, e Pokémon Fantasma e Sombrio aparecem em todas as áreas.</p>
       <p>👹 <b>Chefe da rota:</b> uma vez por semana um Pokémon gigante (nível ${S.cfg.rpg?.chefe?.nivel ?? 75}) aparece numa rota por ${S.cfg.rpg?.chefe?.horas ?? 48} horas. Todos lutam contra ele, e cada golpe tira da mesma barra de vida. Se a turma derrubar o chefe, todos que lutaram ganham prêmio, e os 3 que mais bateram ganham mais. Cada um luta ${S.cfg.rpg?.chefe?.tentativas_dia ?? 3} vezes por dia.</p>` },
@@ -11033,6 +11041,86 @@ const RPG_REG = {
   charco: { nome: "Charco Sombrio", ic: "🌫️", arq: "rpg-charco.js", z: { m: "charco", e: "charco_fundo" }, como: "saída oeste do Bosque Sussurrante" },
   pico: { nome: "Pico Gelado", ic: "🏔️", arq: "rpg-pico.js", z: { m: "pico", e: "pico_fundo" }, como: "saída norte da Gruta da Pedreira" }
 };
+// arquivo 101: o salão de cada Ginásio é uma região a mais ("gym_<rota>"), desenhada por código (arte nossa)
+const RPG_GYM_TEMA = {
+  bosque: { c1: "#1F3A26", c2: "#4E9A55", f1: "#D8E6C8", f2: "#C4D8B0", campo: "#6FAE5E", luz: "255,240,170", ic: "🌿" },
+  praia: { c1: "#163650", c2: "#3D8FC9", f1: "#D6ECF6", f2: "#BFDDEE", campo: "#4F9DCE", luz: "200,240,255", ic: "🌊" },
+  deserto: { c1: "#4A1D14", c2: "#D0652E", f1: "#F2DDBF", f2: "#E6C9A2", campo: "#D3874A", luz: "255,210,140", ic: "🔥" },
+  pedreira: { c1: "#2E2924", c2: "#8C7A62", f1: "#D9D2C6", f2: "#C6BDAE", campo: "#9C8B74", luz: "255,232,180", ic: "⛰️" },
+  charco: { c1: "#21142E", c2: "#7B4FB5", f1: "#D8CDE6", f2: "#C4B6D8", campo: "#7D62A6", luz: "230,200,255", ic: "👻" },
+  pico: { c1: "#1C3346", c2: "#8EC3E6", f1: "#EEF6FB", f2: "#DCEBF5", campo: "#9CCAE6", luz: "255,255,255", ic: "❄️" }
+};
+for (const r of Object.keys(RPG_GYM_TEMA)) RPG_REG["gym_" + r] = { nome: `Ginásio ${RPG_REG[r].nome}`, ic: "🏟️", arq: null, z: {}, gym: r, como: `dentro da ${RPG_REG[r].nome}` };
+const rpgRegBase = r => RPG_REG[r]?.gym || r;   // a rota onde fica (o Ginásio conta como a rota dele)
+const rpgCor = (hex, d) => { const n = parseInt(hex.slice(1), 16), f = v => Math.max(0, Math.min(255, v + d)); return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`; };
+function rpgGymInterior(r) {
+  const T = RPG_GYM_TEMA[r], W = 17, H = 21, Q = 32, cv = document.createElement("canvas"); cv.width = W * Q; cv.height = H * Q;
+  const g = cv.getContext("2d"), grid = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => y <= 2 || x === 0 || x === W - 1 || (y === H - 1 && x !== 8) ? "#" : "."));
+  const box = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(x * Q, y * Q, w * Q, h * Q); };
+  const brilho = (x, y, r0, a) => { const gr = g.createRadialGradient(x * Q, y * Q, 0, x * Q, y * Q, r0 * Q); gr.addColorStop(0, `rgba(${T.luz},${a})`); gr.addColorStop(1, `rgba(${T.luz},0)`); g.fillStyle = gr; g.fillRect((x - r0) * Q, (y - r0) * Q, 2 * r0 * Q, 2 * r0 * Q); };
+  box(0, 0, W, H, T.c1);
+  const wg = g.createLinearGradient(0, 0, 0, 3 * Q); wg.addColorStop(0, rpgCor(T.c1, -25)); wg.addColorStop(1, rpgCor(T.c1, 30)); g.fillStyle = wg; g.fillRect(Q, 0, (W - 2) * Q, 3 * Q);
+  for (let x = 1; x < W - 1; x += 2) { g.fillStyle = "rgba(255,255,255,.07)"; g.fillRect(x * Q + 5, 8, 2 * Q - 10, 3 * Q - 18); }
+  for (let y = 3; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { box(x, y, 1, 1, (x + y) % 2 ? T.f1 : T.f2); g.fillStyle = "rgba(255,255,255,.18)"; g.fillRect(x * Q, y * Q, Q, 2); }
+  g.fillStyle = "rgba(0,0,0,.28)"; g.fillRect(Q, 3 * Q, (W - 2) * Q, 8);   // sombra da parede
+  // campo de batalha
+  box(3, 6, 11, 10, T.campo); g.strokeStyle = "rgba(255,255,255,.85)"; g.lineWidth = 4; g.strokeRect(3 * Q + 6, 6 * Q + 6, 11 * Q - 12, 10 * Q - 12);
+  g.beginPath(); g.moveTo(3 * Q + 6, 11 * Q); g.lineTo(14 * Q - 6, 11 * Q); g.stroke(); g.beginPath(); g.arc(8.5 * Q, 11 * Q, 1.6 * Q, 0, 6.28); g.stroke();
+  g.beginPath(); g.arc(8.5 * Q, 11 * Q, .35 * Q, 0, 6.28); g.fillStyle = "rgba(255,255,255,.85)"; g.fill();
+  // tapete da porta até o campo
+  box(7, 16, 3, 4, "#9E2A2B"); g.fillStyle = "#E4B44C"; g.fillRect(7 * Q, 16 * Q, 4, 4 * Q); g.fillRect(10 * Q - 4, 16 * Q, 4, 4 * Q);
+  // palco do Líder
+  box(5, 3, 7, 2, rpgCor(T.c2, -20)); box(6, 3, 5, 1, rpgCor(T.c2, 10)); g.fillStyle = "rgba(0,0,0,.25)"; g.fillRect(5 * Q, 5 * Q - 6, 7 * Q, 6);
+  // faixa com o emblema na parede do fundo
+  box(6, .25, 5, 2.4, T.c2); g.strokeStyle = "#E4B44C"; g.lineWidth = 3; g.strokeRect(6 * Q + 3, .25 * Q + 3, 5 * Q - 6, 2.4 * Q - 6);
+  g.font = `${Math.round(Q * 1.1)}px "Segoe UI Emoji","Apple Color Emoji",sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(T.ic, 8.5 * Q, 1.15 * Q);
+  g.font = `900 ${Math.round(Q * .38)}px Inter, system-ui, sans-serif`; g.fillStyle = "#FFF4D6"; g.fillText("GINÁSIO", 8.5 * Q, 2.15 * Q);
+  // colunas com lâmpadas
+  for (const x of [2, 14]) for (const y of [5, 9, 13, 17]) {
+    grid[y][x] = "#"; g.fillStyle = "rgba(0,0,0,.25)"; g.beginPath(); g.ellipse((x + .5) * Q, (y + 1) * Q - 2, Q * .45, Q * .15, 0, 0, 6.28); g.fill();
+    box(x + .18, y - .55, .64, 1.5, "#E9E3D6"); box(x + .18, y - .55, .12, 1.5, "#FFFFFF"); box(x + .1, y + .8, .8, .2, "#BDB5A6"); box(x + .1, y - .65, .8, .18, "#BDB5A6");
+    box(x + .32, y - .9, .36, .3, `rgb(${T.luz})`); brilho(x + .5, y - .75, 1.6, .55);
+  }
+  // estátuas da entrada
+  for (const x of [6, 10]) { grid[18][x] = "#"; box(x + .1, 18.3, .8, .7, "#A9A094"); box(x + .2, 17.6, .6, .8, rpgCor(T.c2, 25)); g.font = `${Math.round(Q * .5)}px "Segoe UI Emoji",sans-serif`; g.fillText(T.ic, (x + .5) * Q, 17.95 * Q); }
+  // porta
+  box(7.6, 20, 1.8, 1, "#0B0E14"); const pg = g.createLinearGradient(0, 20 * Q, 0, 21 * Q); pg.addColorStop(0, `rgba(${T.luz},.0)`); pg.addColorStop(1, `rgba(${T.luz},.35)`); g.fillStyle = pg; g.fillRect(7.6 * Q, 20 * Q, 1.8 * Q, Q);
+  // holofotes no campo e no palco
+  g.globalCompositeOperation = "lighter"; brilho(8.5, 11, 6, .16); brilho(8.5, 4, 3, .22); brilho(4, 8, 3, .08); brilho(13, 8, 3, .08); g.globalCompositeOperation = "source-over";
+  for (const [x0, x1] of [[4, 6], [11, 13]]) { const bg = g.createLinearGradient(0, 0, 0, 12 * Q); bg.addColorStop(0, `rgba(${T.luz},.18)`); bg.addColorStop(1, `rgba(${T.luz},0)`); g.fillStyle = bg; g.beginPath(); g.moveTo(x0 * Q, 0); g.lineTo(x1 * Q, 0); g.lineTo((x1 + 1.5) * Q, 12 * Q); g.lineTo((x0 - 1.5) * Q, 12 * Q); g.fill(); }
+  grid[4][8] = ".";
+  return { g: grid.map(l => l.join("")), im: cv, saidas: [{ para: r, em: [[8, 20]], dentro: [8, 18] }], chegada: [8, 18], lider: [8, 4], pontos: {}, npcs: [] };
+}
+// o prédio do Ginásio na rota (arte nossa): 5 casas de largura por 4 de altura, porta na casa do Líder
+const rpgGymFoot = (x, y) => { if (RPG_REG[AV.r]?.gym || AV.r === "vila") return false; const gp = rpgGymPos(); return !!gp && x >= gp[0] - 2 && x <= gp[0] + 2 && y >= gp[1] - 4 && y <= gp[1] - 1; };
+function rpgDesenhaGinasio(g, gp, tile, cx, cy, now, dpr) {
+  const T = RPG_GYM_TEMA[AV.r]; if (!T) return;
+  const X = (gp[0] - 2) * tile - cx, Y = (gp[1] - 4) * tile - cy, Wd = 5 * tile, Hd = 4 * tile, u = tile;
+  if (X > g.canvas.width || Y > g.canvas.height || X + Wd < 0 || Y + Hd < 0) return;
+  g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(X + Wd / 2, Y + Hd, Wd * .55, u * .35, 0, 0, 6.28); g.fill();
+  const corpo = g.createLinearGradient(0, Y + u * 1.4, 0, Y + Hd); corpo.addColorStop(0, rpgCor(T.c2, 25)); corpo.addColorStop(1, rpgCor(T.c2, -25));
+  g.fillStyle = corpo; g.fillRect(X + u * .15, Y + u * 1.4, Wd - u * .3, Hd - u * 1.4);
+  g.strokeStyle = "rgba(0,0,0,.18)"; g.lineWidth = 1 * dpr; for (let k = 1; k < 5; k++) { g.beginPath(); g.moveTo(X + u * .15, Y + u * 1.4 + k * u * .52); g.lineTo(X + Wd - u * .15, Y + u * 1.4 + k * u * .52); g.stroke(); }
+  g.fillStyle = T.c1; g.beginPath(); g.moveTo(X - u * .25, Y + u * 1.55); g.lineTo(X + u * .55, Y + u * .2); g.lineTo(X + Wd - u * .55, Y + u * .2); g.lineTo(X + Wd + u * .25, Y + u * 1.55); g.closePath(); g.fill();
+  g.fillStyle = "rgba(255,255,255,.12)"; for (let k = 0; k < 6; k++) g.fillRect(X + u * (.7 + k * .65), Y + u * .25, u * .12, u * 1.25);
+  g.fillStyle = "#E4B44C"; g.fillRect(X - u * .25, Y + u * 1.48, Wd + u * .5, u * .12);
+  // placa GINÁSIO acesa
+  const pulso = .75 + Math.sin(now / 500) * .25;
+  g.fillStyle = "rgba(12,16,26,.92)"; g.beginPath(); g.roundRect(X + u * 1.05, Y + u * .38, u * 2.9, u * .78, 8 * dpr); g.fill();
+  g.shadowColor = `rgba(${T.luz},${pulso})`; g.shadowBlur = 14 * dpr; g.fillStyle = `rgb(${T.luz})`; g.font = `900 ${Math.round(u * .42)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.textBaseline = "middle";
+  g.fillText("GINÁSIO", X + Wd / 2, Y + u * .79); g.shadowBlur = 0;
+  // janelas acesas
+  for (const wx of [.55, 3.55]) { g.fillStyle = `rgba(${T.luz},.9)`; g.fillRect(X + u * wx, Y + u * 2.05, u * .9, u * .7); g.strokeStyle = rpgCor(T.c1, 10); g.lineWidth = 3 * dpr; g.strokeRect(X + u * wx, Y + u * 2.05, u * .9, u * .7);
+    g.beginPath(); g.moveTo(X + u * (wx + .45), Y + u * 2.05); g.lineTo(X + u * (wx + .45), Y + u * 2.75); g.stroke(); }
+  // emblema e porta
+  g.font = `${Math.round(u * .6)}px "Segoe UI Emoji","Apple Color Emoji",sans-serif`; g.fillText(T.ic, X + Wd / 2, Y + u * 1.95);
+  const dx = X + Wd / 2 - u * .48, dy = Y + Hd - u * 1.12, dw = u * .96, dh = u * 1.12, dg = g.createLinearGradient(0, dy, 0, dy + dh);
+  dg.addColorStop(0, "#0B0E14"); dg.addColorStop(1, `rgba(${T.luz},.55)`); g.fillStyle = dg; g.fillRect(dx, dy, dw, dh); g.strokeStyle = "#E4B44C"; g.lineWidth = 3 * dpr; g.strokeRect(dx, dy, dw, dh);
+  // lâmpadas da porta
+  for (const lx of [-0.85, 0.85]) { const px = X + Wd / 2 + lx * u, py = Y + Hd - u * .95, gr = g.createRadialGradient(px, py, 0, px, py, u * 1.1);
+    gr.addColorStop(0, `rgba(${T.luz},${.75 * pulso})`); gr.addColorStop(1, `rgba(${T.luz},0)`); g.fillStyle = gr; g.fillRect(px - u * 1.1, py - u * 1.1, u * 2.2, u * 2.2);
+    g.fillStyle = `rgb(${T.luz})`; g.beginPath(); g.arc(px, py, u * .11, 0, 6.28); g.fill(); }
+}
 const RPG_ZONAS_DEF = {"mato": {"nome": "Capim alto", "regiao": "vila", "tipos": ["INSETO", "PLANTA", "NORMAL"], "min": 2, "max": 6}, "escura": {"nome": "Grama escura", "regiao": "vila", "tipos": ["NORMAL", "VOADOR", "ELETRICO"], "min": 3, "max": 7}, "pantano": {"nome": "Pântano", "regiao": "vila", "tipos": ["AGUA", "VENENO"], "min": 3, "max": 7}, "pedra": {"nome": "Alto do penhasco", "regiao": "vila", "tipos": ["PEDRA", "TERRA", "LUTA"], "min": 4, "max": 8}, "bosque": {"nome": "Bosque: mato", "regiao": "bosque", "tipos": ["INSETO", "PLANTA", "VENENO", "NORMAL"], "min": 8, "max": 16}, "bosque_fundo": {"nome": "Bosque: mata funda", "regiao": "bosque", "tipos": ["INSETO", "PLANTA", "VENENO", "NORMAL", "VOADOR"], "min": 18, "max": 34}, "praia": {"nome": "Praia: dunas", "regiao": "praia", "tipos": ["AGUA", "ELETRICO", "NORMAL"], "min": 8, "max": 16}, "praia_fundo": {"nome": "Praia: costão", "regiao": "praia", "tipos": ["AGUA", "ELETRICO", "GELO", "VOADOR"], "min": 18, "max": 38}, "deserto": {"nome": "Deserto: capim seco", "regiao": "deserto", "tipos": ["FOGO", "TERRA", "NORMAL"], "min": 12, "max": 22}, "deserto_fundo": {"nome": "Deserto: oásis distante", "regiao": "deserto", "tipos": ["FOGO", "TERRA", "PEDRA", "LUTA"], "min": 24, "max": 42}, "pedreira": {"nome": "Pedreira: entrada", "regiao": "pedreira", "tipos": ["PEDRA", "TERRA", "LUTA", "METALICO"], "min": 12, "max": 22}, "pedreira_fundo": {"nome": "Pedreira: fundo da gruta", "regiao": "pedreira", "tipos": ["PEDRA", "TERRA", "LUTA", "METALICO", "DRAGAO"], "min": 24, "max": 44}, "charco": {"nome": "Charco: margem", "regiao": "charco", "tipos": ["VENENO", "FANTASMA", "PSIQUICO", "SOMBRIO"], "min": 20, "max": 32}, "charco_fundo": {"nome": "Charco: brejo escuro", "regiao": "charco", "tipos": ["FANTASMA", "PSIQUICO", "SOMBRIO", "VENENO", "NORMAL"], "min": 32, "max": 46}, "pico": {"nome": "Pico: encosta", "regiao": "pico", "tipos": ["GELO", "AGUA", "PSIQUICO", "VOADOR", "ELETRICO"], "min": 34, "max": 48}, "pico_fundo": {"nome": "Pico: cume", "regiao": "pico", "tipos": ["DRAGAO", "GELO", "VOADOR", "PSIQUICO", "FOGO", "LUTA", "NORMAL", "PEDRA"], "min": 45, "max": 60}};
 const RPG_ZIC = { mato: "🌿", escura: "🍃", pantano: "💧", pedra: "⛰️" };
 const rpgZonaInfo = k => { const z = S.cfg?.rpg?.zonas?.[k]; return z && typeof z === "object" && !Array.isArray(z) ? z : RPG_ZONAS_DEF[k]; };
@@ -11070,16 +11158,19 @@ const AV_NPCS = [
 ];
 const AV = { r: "vila", open: false, img: null, g: null, x: 28, y: 30, fx: 28, fy: 30, ax: 28, ay: 31, face: 1, moving: null, keys: new Set(), raf: 0, others: {}, baloes: {}, perto: null, volta: false, busy: false, lastEnc: 0, st: null, fala: null };
 const rpgAt = (x, y) => (AV.g?.[y] || "")[x] || "#";
-const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || rpgNpcs().some(n => n.x === x && n.y === y) || (rpgChefeAqui() && (p => p && p[0] === x && p[1] === y)(rpgChefePos()));
+const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || rpgGymFoot(x, y) || rpgNpcs().some(n => n.x === x && n.y === y) || (rpgChefeAqui() && (p => p && p[0] === x && p[1] === y)(rpgChefePos()));
 function rpgPontos() {
   if (AV.r === "vila") return AV_PONTOS;
-  const pl = AV.dados?.pontos?.placa, R = RPG_REG[AV.r]; if (!pl) return [];
-  return [{ em: [pl], ic: "🪧", nome: "Placa", fala: [`${R.ic} ${R.nome}`, ...Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${k.endsWith("_fundo") ? "Mato fundo (chão diferente, longe da entrada)" : "Mato de perto"}: nível ${z.min} a ${z.max}. Tipos: ${rpgTipos(z)}.` : ""; }).filter(Boolean), `Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez.`] }];
+  if (RPG_REG[AV.r]?.gym) return [];
+  const pl = AV.dados?.pontos?.placa, R = RPG_REG[AV.r], gp = rpgGymPos(), L = rpgLider(AV.r);
+  const porta = gp && L ? [{ em: [gp], ic: "🏟️", nome: `Ginásio · ${L.nome}`, vai: "gym_" + AV.r, alto: 5.1 }] : [];
+  if (!pl) return porta;
+  return [...porta, { em: [pl], ic: "🪧", nome: "Placa", fala: [`${R.ic} ${R.nome}`, ...Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${k.endsWith("_fundo") ? "Mato fundo (chão diferente, longe da entrada)" : "Mato de perto"}: nível ${z.min} a ${z.max}. Tipos: ${rpgTipos(z)}.` : ""; }).filter(Boolean), `Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez.`] }];
 }
 function rpgNpcs() {
   if (AV.r === "vila") return AV_NPCS;
+  if (RPG_REG[AV.r]?.gym) { const r = RPG_REG[AV.r].gym, L = rpgLider(r), p = AV.dados?.lider; return L && p ? [{ x: p[0], y: p[1], nome: L.nome, ch: { class: L.classe, outfit: {} }, gym: r, fala: [] }] : []; }
   const n = AV.dados?.npcs?.[0], i = RPG_NPC[AV.r], out = n && i ? [{ x: n[0], y: n[1], ...i }] : [];
-  const gp = rpgGymPos(), L = rpgLider(AV.r); if (gp && L) out.push({ x: gp[0], y: gp[1], nome: L.nome, ch: { class: L.classe, outfit: {} }, gym: AV.r, fala: [] });
   return out;
 }
 const rpgSaidas = () => AV.r === "vila" ? RPG_VILA_SAIDAS : (AV.dados?.saidas || []);
@@ -11087,6 +11178,7 @@ const rpgSaidas = () => AV.r === "vila" ? RPG_VILA_SAIDAS : (AV.dados?.saidas ||
 function rpgCarregar(r = AV.r) {
   AV.cargas = AV.cargas || {}; AV.dc = AV.dc || {};
   if (AV.cargas[r]) return AV.cargas[r];
+  if (RPG_REG[r]?.gym) { AV.dc[r] = rpgGymInterior(RPG_REG[r].gym); return (AV.cargas[r] = Promise.resolve(AV.dc[r])); }
   return (AV.cargas[r] = new Promise((ok, erro) => {
     const pronto = () => { const d = window.RPG_ARTE?.[r]; if (!d) return erro(new Error("sem arte")); const im = new Image(); im.onload = () => { AV.dc[r] = { ...d, im }; ok(AV.dc[r]); }; im.onerror = () => erro(new Error("imagem")); im.src = d.img; };
     if (window.RPG_ARTE?.[r]) return pronto();
@@ -11107,29 +11199,66 @@ async function rpgViajar(para) {
   const fl = $("#rpg-flash"); if (fl && !reduceMotion()) { fl.classList.add("on", "viagem"); await sleep(350); }
   try { await rpgEntra(para); }
   catch { AV.busy = false; if (fl) fl.classList.remove("on", "viagem"); return toast("Não consegui carregar essa região. Tente de novo.", true); }
-  const ch = para === "vila" ? RPG_VILA_CHEGA[de] : (AV.dados.saidas?.find(s => s.para === de)?.dentro || AV.dados.chegada);
+  const gpv = RPG_REG[de]?.gym === para ? rpgGymPos(para) : null;
+  const ch = gpv ? (!rpgSolid(gpv[0], gpv[1] + 1) ? [gpv[0], gpv[1] + 1] : gpv) : para === "vila" ? RPG_VILA_CHEGA[de] : (AV.dados.saidas?.find(s => s.para === de)?.dentro || AV.dados.chegada);
   [AV.x, AV.y] = ch && !rpgSolid(ch[0], ch[1]) ? ch : (AV.dados.chegada || [28, 30]); AV.moving = null; AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();
   try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
   rpgNetLeave(); rpgNetJoin(); rpgPerto();
-  const h = $("#rpg-hint"); if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" ? "" : ` · ${rpgFaixa(para)}`}`;
+  const h = $("#rpg-hint"); if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" || RPG_REG[para].gym ? "" : ` · ${rpgFaixa(para)}`}`;
   if (fl) { await sleep(150); fl.classList.remove("on", "viagem"); }
   sfx("tick"); AV.busy = false;
 }
 // quadro com todas as rotas, os níveis e os tipos
+const RPG_MAPA_POS = { pico: [1, 0], pedreira: [1, 1], charco: [0, 1], bosque: [0, 2], vila: [1, 2], deserto: [2, 2], praia: [1, 3] };
+async function rpgMapaDesenha() {
+  const cv = $("#rpg-mapa"); if (!cv) return;
+  const C = 190, G0 = 18, g = cv.getContext("2d"); cv.width = 3 * C + 2 * G0; cv.height = 4 * C + 3 * G0;
+  g.fillStyle = "#0F1726"; g.fillRect(0, 0, cv.width, cv.height);
+  g.fillStyle = "#AFC0D8"; g.font = "700 15px Inter, system-ui, sans-serif"; g.textAlign = "center"; g.fillText("Carregando o mapa…", cv.width / 2, cv.height / 2);
+  const ids = Object.keys(RPG_MAPA_POS); await Promise.all(ids.map(r => rpgCarregar(r).catch(() => null)));
+  if (!$("#rpg-mapa")) return;
+  g.fillStyle = "#0F1726"; g.fillRect(0, 0, cv.width, cv.height);
+  const L = ([c, r]) => [c * (C + G0), r * (C + G0)];
+  g.strokeStyle = "#FFE37A"; g.lineWidth = 6; g.setLineDash([3, 10]); g.lineCap = "round";
+  for (const [a, b] of [["vila", "bosque"], ["bosque", "charco"], ["vila", "deserto"], ["vila", "praia"], ["vila", "pedreira"], ["pedreira", "pico"]]) {
+    const [ax, ay] = L(RPG_MAPA_POS[a]), [bx, by] = L(RPG_MAPA_POS[b]); g.beginPath(); g.moveTo(ax + C / 2, ay + C / 2); g.lineTo(bx + C / 2, by + C / 2); g.stroke(); }
+  g.setLineDash([]);
+  const aqui = rpgRegBase(AV.r);
+  for (const r of ids) {
+    const d = AV.dc?.[r], [x, y] = L(RPG_MAPA_POS[r]), R = RPG_REG[r];
+    g.save(); g.beginPath(); g.roundRect(x, y, C, C, 14); g.clip();
+    if (d?.im) g.drawImage(d.im, x, y, C, C); else { g.fillStyle = "#24324A"; g.fillRect(x, y, C, C); }
+    g.fillStyle = "rgba(8,12,22,.78)"; g.fillRect(x, y + C - 48, C, 48);
+    g.fillStyle = "#FFE7A8"; g.font = "800 15px Inter, system-ui, sans-serif"; g.textAlign = "left"; g.fillText(`${R.ic} ${R.nome}`, x + 8, y + C - 28, C - 16);
+    g.fillStyle = "#9FE0B4"; g.font = "700 13px Inter, system-ui, sans-serif"; g.fillText(`${rpgFaixa(r)}${rpgLider(r) ? ` · 🏟️ ${rpgInsig().includes(r) ? "✅" : rpgLider(r).nome}` : ""}`, x + 8, y + C - 10, C - 16);
+    // o prédio do Ginásio no mapa
+    const gp = d && rpgLider(r) ? rpgGymPos(r) : null; if (gp) { const kx = C / d.g[0].length, ky = C / d.g.length; g.font = "18px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.fillText("🏟️", x + (gp[0] + .5) * kx, y + (gp[1] - 1) * ky); }
+    g.restore();
+    g.strokeStyle = r === aqui ? "#FFE37A" : "rgba(201,160,90,.75)"; g.lineWidth = r === aqui ? 4 : 2; g.beginPath(); g.roundRect(x, y, C, C, 14); g.stroke();
+    if (r === aqui && d) {   // você está aqui
+      const dentro = RPG_REG[AV.r]?.gym ? rpgGymPos(r) || [AV.x, AV.y] : [AV.x, AV.y], px = x + (dentro[0] + .5) * C / d.g[0].length, py = y + (dentro[1] + .5) * C / d.g.length;
+      g.fillStyle = "#E05A5A"; g.strokeStyle = "#fff"; g.lineWidth = 2; g.beginPath(); g.arc(px, py, 7, 0, 6.28); g.fill(); g.stroke();
+      const txt = `Você · ${AV.x}, ${AV.y}`; g.font = "800 12px Inter, system-ui, sans-serif"; const w = g.measureText(txt).width + 12;
+      g.fillStyle = "rgba(10,14,24,.9)"; g.beginPath(); g.roundRect(px - w / 2, py - 30, w, 20, 6); g.fill(); g.fillStyle = "#FFE37A"; g.textAlign = "center"; g.fillText(txt, px, py - 15);
+    }
+  }
+}
 function rpgRotasHTML() {
-  return `<div class="rpg-rotas"><div class="av-head"><h2>🗺️ Rotas da Aventura</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+  return `<div class="rpg-rotas"><div class="av-head"><h2>🗺️ Mapa da Aventura</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <p>Você está em <b>${RPG_REG[AV.r]?.ic} ${esc(RPG_REG[AV.r]?.nome || "")}</b>, na casa <b>📍 ${AV.x}, ${AV.y}</b>.</p>
+    <canvas id="rpg-mapa" class="rpg-mapa" aria-label="Mapa completo da Aventura"></canvas>
     <p class="muted">Cada área tem uma faixa de nível. Perto da Vila Aurora os Pokémon são fracos; no fundo das rotas (chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Quanto mais forte o selvagem, mais experiência ele dá. Os evoluídos só aparecem nas áreas de nível alto.</p>
-    <p>🏅 Suas insígnias: <b>${rpgInsig().length} de ${Object.keys(S.cfg.rpg?.ginasios?.lideres || RPG_LIDER_DEF).length}</b>${rpgInsig().length ? ` (${rpgInsig().map(r => RPG_REG[r]?.ic || "").join(" ")})` : ""}</p>
-    ${Object.entries(RPG_REG).map(([id, R]) => `<div class="rpg-rota ${id === AV.r ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>${rpgLider(id) ? `<p class="rpg-gin-l">🏟️ Ginásio: <b>${esc(rpgLider(id).nome)}</b> (${esc(rpgLider(id).tipo || "")}, até Nv ${Math.max(...rpgLider(id).time.map(t => t[1]))}) ${rpgInsig().includes(id) ? "· ✅ insígnia" : ""}</p>` : ""}
+    <p>🏅 Suas insígnias: <b>${rpgInsig().length} de ${Object.keys(rpgLideres()).length}</b>${rpgInsig().length ? ` (${rpgInsig().map(r => RPG_REG[r]?.ic || "").join(" ")})` : ""}</p>
+    ${Object.entries(RPG_REG).filter(([, R]) => !R.gym).map(([id, R]) => `<div class="rpg-rota ${id === rpgRegBase(AV.r) ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>${rpgLider(id) ? `<p class="rpg-gin-l">🏟️ Ginásio: <b>${esc(rpgLider(id).nome)}</b> (${esc(rpgLider(id).tipo || "")}, ${rpgLider(id).n} Pokémon) ${rpgInsig().includes(id) ? "· ✅ insígnia" : ""}</p>` : ""}
       <ul>${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `<li><b>${esc(z.nome)}</b> <span class="rpg-nv">Nv ${z.min}–${z.max}</span><small>${esc(rpgTipos(z))}</small></li>` : ""; }).join("")}</ul></div>`).join("")}
     <p class="muted" style="margin-top:10px">🏃 Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez nela. Lutas por dia: ${AV.st?.batalhas_dia ?? rpgCfg().batalhas_dia}.</p></div>`;
 }
-function rpgRotas() { const m = openModal(rpgRotasHTML()); m.querySelector(".modal").classList.add("modal-av"); m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-avx]")) closeModal(); }); }
+function rpgRotas() { const m = openModal(rpgRotasHTML()); m.querySelector(".modal").classList.add("modal-av", "modal-mapa"); m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-avx]")) closeModal(); }); rpgMapaDesenha(); }
 function rpgRoot() {
   let el = $("#aventura"); if (el) return el;
   el = document.createElement("div"); el.id = "aventura"; el.hidden = true;
   el.innerHTML = `<canvas id="rpg-cv" aria-label="Aventura: ande com WASD ou as setas"></canvas>
-    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><span class="pz-on" id="rpg-noite" hidden></span><span class="pz-on" id="rpg-ins"></span><button class="btn small ghost" id="rpg-sup" data-rpg="suporte">🎒 Suporte</button><button class="btn small ghost" id="rpg-mis" data-rpg="missoes" hidden>📜 Missões</button><button class="btn small rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" hidden></button><button class="btn small ghost" data-rpg="rotas">🗺️ Rotas</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
+    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><span class="pz-on" id="rpg-noite" hidden></span><span class="pz-on" id="rpg-ins"></span><button class="btn small ghost" id="rpg-sup" data-rpg="suporte">🎒 Suporte</button><button class="btn small ghost" id="rpg-mis" data-rpg="missoes" hidden>📜 Missões</button><button class="btn small rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" hidden></button><button class="btn small ghost" data-rpg="rotas">🗺️ Mapa</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
     <div id="rpg-mini-box" class="rpg-mini"><b>Vila Aurora</b><canvas id="rpg-mini" width="184" height="184"></canvas></div>
     <button id="rpg-acao" class="rpg-acao" hidden></button>
     <div id="rpg-fala" class="rpg-fala" hidden></div>
@@ -11205,6 +11334,7 @@ function rpgPerto() {
   AV.perto = p;
   const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai ? "Entrar" : p.chefe ? "Enfrentar" : p.npc?.gym ? "Desafiar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
   const z = rpgZonaKey(rpgAt(AV.x, AV.y)), ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = rpgZonaTxt(z); }
+  const tt = $("#rpg-tit"), R0 = RPG_REG[AV.r]; if (tt && R0) tt.textContent = `${R0.ic} ${R0.nome} · 📍 ${AV.x}, ${AV.y}`;   // arquivo 101: sempre onde você está
 }
 function rpgUsar() {
   const p = AV.perto; if (!p || AV.busy) return;
@@ -11274,7 +11404,8 @@ function rpgPinta(now) {
   cy = Math.round(MH <= cv.height ? (MH - cv.height) / 2 : Math.max(0, Math.min(MH - cv.height, cy)));
   g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
   g.drawImage(AV.img, cx / k, cy / k, cv.width / k, cv.height / k, 0, 0, cv.width, cv.height);
-  if (AV.st?.noite) {   // arquivo 99: noite, com a luz em volta de você
+  { const gpd = !RPG_REG[AV.r]?.gym && AV.r !== "vila" && rpgGymPos(); if (gpd) rpgDesenhaGinasio(g, gpd, tile, cx, cy, now, dpr); }   // arquivo 101
+  if (AV.st?.noite && !RPG_REG[AV.r]?.gym) {   // arquivo 99: noite, com a luz em volta de você
     const lx = (AV.fx + .5) * tile - cx, ly = (AV.fy + .5) * tile - cy, gr = g.createRadialGradient(lx, ly, tile * 1.3, lx, ly, tile * 6.5);
     gr.addColorStop(0, "rgba(10,14,48,.18)"); gr.addColorStop(1, "rgba(8,10,36,.66)"); g.fillStyle = gr; g.fillRect(0, 0, cv.width, cv.height);
   }
@@ -11298,7 +11429,7 @@ function rpgPinta(now) {
   const placas = [...rpgPontos(), ...rpgSaidas().map(sd => { const [ex, ey] = sd.em[Math.floor((sd.em.length - 1) / 2)], R = RPG_REG[sd.para], dx = ex === 0 ? 1.5 : ex >= AV.g[0].length - 1 ? -1.5 : 0, dy = ey === 0 ? 2.2 : ey >= AV.g.length - 1 ? -0.6 : 0;
     return { em: [[ex + dx, ey + dy]], ic: "➡️", nome: `${R.nome}${sd.para === "vila" ? "" : ` · ${rpgFaixa(sd.para)}`}`, saida: true }; })];
   for (const p of placas) {
-    const [px0, py0] = p.em[0], x = (px0 + (p.em.length > 1 ? 1 : .5)) * tile - cx, y = (py0 - (p.win && !["mercado", "jornal", "caixa", "ranking"].includes(p.win) ? 2.2 : 1.3)) * tile - cy;
+    const [px0, py0] = p.em[0], x = (px0 + (p.em.length > 1 ? 1 : .5)) * tile - cx, y = (py0 - (p.alto ?? (p.win && !["mercado", "jornal", "caixa", "ranking"].includes(p.win) ? 2.2 : 1.3))) * tile - cy;
     if (x < -200 || y < -60 || x > cv.width + 200 || y > cv.height + 60) continue;
     const perto = AV.perto === p; g.font = `700 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`;
     const w = g.measureText(p.nome).width + 34 * dpr, h = 22 * dpr;
@@ -11406,8 +11537,9 @@ function rpgSupAbrir() {
   });
 }
 // ---------- Ginásios, missões, noite e Chefe da rota (arquivo 99) ----------
-const RPG_LIDER_DEF = {"bosque": {"nome": "Líder Flora", "classe": "domador", "tipo": "Inseto e Planta", "time": [[12, 30], [47, 31], [71, 33], [3, 35]]}, "praia": {"nome": "Líder Marina", "classe": "arqueiro", "tipo": "Água e Elétrico", "time": [[55, 34], [101, 35], [131, 36], [121, 38]]}, "deserto": {"nome": "Líder Brasa", "classe": "guerreiro", "tipo": "Fogo e Terra", "time": [[51, 38], [59, 40], [112, 41], [6, 42]]}, "pedreira": {"nome": "Líder Rocha", "classe": "mercador", "tipo": "Pedra", "time": [[76, 40], [139, 42], [141, 43], [142, 44]]}, "charco": {"nome": "Líder Sombra", "classe": "mago", "tipo": "Fantasma e Psíquico", "time": [[93, 44], [97, 45], [65, 46], [94, 47]]}, "pico": {"nome": "Líder Neve", "classe": "clerigo", "tipo": "Gelo e Dragão", "time": [[87, 56], [91, 57], [131, 58], [149, 60]]}};
-const rpgLider = r => S.cfg?.rpg?.ginasios?.lideres?.[r] || RPG_LIDER_DEF[r];
+const RPG_LIDER_DEF = {"bosque": {"nome": "Líder Flora", "classe": "domador", "tipo": "Inseto e Planta", "n": 4}, "praia": {"nome": "Líder Marina", "classe": "arqueiro", "tipo": "Água e Elétrico", "n": 4}, "deserto": {"nome": "Líder Brasa", "classe": "guerreiro", "tipo": "Fogo e Terra", "n": 4}, "pedreira": {"nome": "Líder Rocha", "classe": "mercador", "tipo": "Pedra", "n": 4}, "charco": {"nome": "Líder Sombra", "classe": "mago", "tipo": "Fantasma e Psíquico", "n": 4}, "pico": {"nome": "Líder Neve", "classe": "clerigo", "tipo": "Gelo e Dragão", "n": 4}};
+const rpgLideres = () => AV.st?.lideres || RPG_LIDER_DEF;   // arquivo 101: só nome, herói, tipo e quantos (o time é segredo do servidor)
+const rpgLider = r => rpgLideres()[r];
 const rpgInsig = () => AV.st?.insignias || [];
 const rpgArts = {};
 const rpgArt = sp => rpgArts[sp] || (rpgArts[sp] = Object.assign(new Image(), { src: ART(sp) }));
@@ -11467,23 +11599,54 @@ async function rpgLutaAbre(bid) {
   closeModal(); rpgClose(false); AV.busy = false; AV.volta = true;
   await guarded(loadBattles); await btOpen(bid);
 }
-async function rpgGinasioLutar(r) {
-  let res; try { res = await rpc("rpg_ginasio_lutar", { _regiao: r, _comp: rpgSupId() }); } catch (e) { return toast(errMsg(e), true); }
+async function rpgGinasioLutar(r, meus) {
+  let res; try { res = await rpc("rpg_ginasio_lutar", { _regiao: r, _comp: rpgSupId(), _meus: meus || null }); } catch (e) { return toast(errMsg(e), true); }
   if (res.fim) { toast(res.msg || "A tentativa acabou.", true); closeModal(); if (!AV.open && AV.volta) { S.win = null; AV.volta = false; rpgOpen(); } return; }
   await rpgLutaAbre(res.battle);
 }
+function rpgGymHTML(r, G, sel, adm) {
+  const L = G.lider, t = G.tentativa, n = L.n, vivos = (S.pk?.mons || []).filter(x => treinoHpOf(x) > 0).sort((a, b) => b.level - a.level);
+  const card = (x, extra = "") => `${monCv(x.species_id ?? x.species, x.outfit, 64)}<span class="mc-name">${esc(pkName(x.species_id ?? x.species))}</span><span class="mc-lv">Nv ${x.level}</span>${extra}`;
+  let corpo;
+  if (G.insignia) corpo = `<p class="rpg-fim ok">✅ <b>Você já tem a insígnia deste Ginásio!</b></p>`;
+  else if (t) corpo = `<p>Tentativa em andamento: <b>${t.idx} de ${t.total}</b> Pokémon do Líder derrotados. Os seus, na ordem em que entram:</p>
+      <div class="tr-pick">${t.meus.map((x, k) => `<div class="mon-card ${x.tr_hp <= 0 ? "ko" : ""}"><i class="gym-ord">${k + 1}</i>${card(x, x.tr_hp <= 0 ? `<span class="ko-tag">💤 caiu</span>` : x.tr_hp < 100 ? trHpBar(x.tr_hp) : "")}</div>`).join("")}</div>
+      <button class="btn" data-gym="1" style="margin-top:10px">▶ Continuar a luta</button>`;
+  else corpo = `<p><b>Escolha ${n} Pokémon seus</b>, na ordem em que vão entrar (${sel.length}/${n}). Quem cai sai e entra o próximo; a vida perdida continua perdida.</p>
+      <div class="tr-pick">${vivos.map(x => { const k = sel.indexOf(x.id); return `<button class="mon-card ${k >= 0 ? "sel" : ""}" data-gsel="${x.id}">${k >= 0 ? `<i class="gym-ord">${k + 1}</i>` : ""}${card(x, treinoHpOf(x) < 100 ? trHpBar(treinoHpOf(x)) : "")}</button>`; }).join("") || `<p class="muted">Nenhum Pokémon com vida. Cure no Centro Pokémon.</p>`}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-gym="1" ${sel.length === n ? "" : "disabled"}>⚔️ Desafiar com estes ${n}</button>${sel.length ? `<button class="btn ghost small" data-glimpa="1">Limpar</button>` : ""}</div>`;
+  return `<div class="rpg-rotas"><div class="av-head"><h2>🏟️ ${esc(RPG_REG[r].nome.replace(/^/, "Ginásio · "))}</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <div class="gym-lider">${(() => { try { return avatarSVG({ class: L.classe, outfit: {} }, 1.6); } catch { return ""; } })()}<div><p><b>${esc(L.nome)}</b> · especialista em ${esc(L.tipo || "")}</p>
+      <p>Usa <b>${n} Pokémon</b>, sempre os mesmos, mas numa <b>ordem secreta sorteada</b> a cada tentativa. Quais são? Só lutando para descobrir!</p></div></div>
+    ${G.insignia ? "" : `<p class="muted">Prêmio: a <b>insígnia</b>, ${G.moedas} moedas e ${esc(Object.entries(G.itens || {}).map(([k, q]) => `${q}× ${rpgItemNome(k)}`).join(" e "))}. Tentativas hoje: <b>${G.tentativas}/${G.tentativas_dia}</b>. Se perder e tentar de novo, os Pokémon do Líder voltam com a vida cheia.</p>`}
+    ${corpo}
+    ${S.isAdmin ? (adm ? `<form class="gym-adm" data-gform="1"><h3>🛠️ Editar o Líder (só admin)</h3><label>Nome <input name="nome" value="${esc(adm.nome)}"></label><label>Tipo (texto) <input name="tipo" value="${esc(adm.tipo)}"></label>
+        <label>Herói (guerreiro, mago, arqueiro, ladino, clerigo, domador, pesquisador, mercador) <input name="classe" value="${esc(adm.classe)}"></label>
+        <label>Time: número da Pokédex : nível, separados por vírgula <input name="time" value="${esc(adm.time.map(t => `${t[0]}:${t[1]}`).join(", "))}"></label>
+        <small class="muted">${esc(adm.time.map(t => `${pkName(t[0])} ${t[1]}`).join(" · "))}</small><button class="btn small">Salvar o Líder</button></form>`
+      : `<p style="margin-top:10px"><button class="btn ghost small" data-gadm="1">🛠️ Admin: ver e editar o Líder</button></p>`) : ""}</div>`;
+}
 async function rpgGinasioAbrir(r) {
   const m = openModal(`<p class="muted">Abrindo o Ginásio…</p>`); m.querySelector(".modal").classList.add("modal-av");
-  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-avx]")) return closeModal(); if (e.target.closest("[data-gym]")) rpgGinasioLutar(r); });
-  let G; try { G = await rpc("rpg_ginasio", { _regiao: r }); } catch (e) { closeModal(); return toast(errMsg(e), true); }
-  const L = G.lider, t = G.tentativa, box = $("#modal-root .modal"); if (!box) return;
-  const vivo = pkTeam().filter(x => treinoHpOf(x) > 0).length;
-  box.innerHTML = `<div class="rpg-rotas"><div class="av-head"><h2>🏟️ Ginásio da ${esc(RPG_REG[r].nome)}</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
-    <p><b>${esc(L.nome)}</b> · especialista em ${esc(L.tipo || "")}. ${G.insignia ? "✅ <b>Você já tem esta insígnia!</b>" : `Vença os ${L.time.length} Pokémon do Líder para ganhar a <b>insígnia</b>, ${G.moedas} moedas e ${esc(Object.entries(G.itens || {}).map(([k, q]) => `${q}× ${rpgItemNome(k)}`).join(" e "))}.`}</p>
-    <div class="rpg-gym">${L.time.map(([sp, lv], i) => { const hp = t ? (t.hp?.[i] ?? 100) : 100, feito = t && i < t.idx;
-      return `<div class="rpg-gym-mon ${feito ? "feito" : ""} ${t && i === t.idx ? "agora" : ""}"><img src="${SPRITE(sp)}" alt="" width="72" height="72"><b>${esc(pkName(sp))}</b><small>Nv ${lv}</small>${t && !feito && hp < 100 ? `<span class="pkq-bar"><i style="width:${hp}%;background:#E5B92E"></i></span>` : feito ? "<small>✔ derrotado</small>" : ""}</div>`; }).join("")}</div>
-    <p class="muted">Você luta com a sua equipe, <b>um Pokémon de cada vez</b>: entra o primeiro com vida; se ele cair, entra o próximo. A vida que eles perdem continua perdida, então cure a equipe antes no Centro Pokémon. Desistir encerra a tentativa. Tentativas hoje: <b>${G.tentativas}/${G.tentativas_dia}</b>.</p>
-    ${G.insignia ? "" : vivo ? `<button class="btn" data-gym="1">${t ? `▶ Continuar a tentativa (${t.idx}/${L.time.length})` : "⚔️ Desafiar o Líder"}</button>` : `<p><b>Todos os Pokémon da sua equipe estão desmaiados.</b> Cure no Centro Pokémon primeiro.</p>`}</div>`;
+  let G, adm = null; const sel = [];
+  const pinta = () => { const box = $("#modal-root .modal"); if (box && G) box.innerHTML = rpgGymHTML(r, G, sel, adm); };
+  m.addEventListener("click", async e => {
+    if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
+    const gs = e.target.closest("[data-gsel]");
+    if (gs) { const id = gs.dataset.gsel, k = sel.indexOf(id); if (k >= 0) sel.splice(k, 1); else if (sel.length < G.lider.n) sel.push(id); sfx("tick"); return pinta(); }
+    if (e.target.closest("[data-glimpa]")) { sel.length = 0; return pinta(); }
+    if (e.target.closest("[data-gym]")) return rpgGinasioLutar(r, G.tentativa ? null : sel.slice());
+    if (e.target.closest("[data-gadm]")) { try { adm = (await rpc("admin_rpg_lideres"))[r]; pinta(); } catch (er) { toast(errMsg(er), true); } }
+  });
+  m.addEventListener("submit", async e => {
+    if (!e.target.matches("[data-gform]")) return; e.preventDefault(); const f = new FormData(e.target);
+    const time = String(f.get("time") || "").split(",").map(p => p.trim()).filter(Boolean).map(p => p.split(":").map(v => parseInt(v, 10)));
+    if (!time.length || time.some(t => t.length !== 2 || t.some(v => !(v > 0)))) return toast("Escreva o time assim: 3:35, 6:40 (número da Pokédex : nível).", true);
+    try { const all = await rpc("admin_rpg_lider_salvar", { _regiao: r, _nome: f.get("nome"), _classe: f.get("classe"), _tipo: f.get("tipo"), _time: time }); adm = all[r]; toast("Líder salvo!"); await rpgEstado(); G = await rpc("rpg_ginasio", { _regiao: r }); pinta(); }
+    catch (er) { toast(errMsg(er), true); }
+  });
+  try { G = await rpc("rpg_ginasio", { _regiao: r }); } catch (e) { closeModal(); return toast(errMsg(e), true); }
+  pinta();
 }
 // Chefe da rota
 function rpgChefeHTML() {
@@ -11512,7 +11675,7 @@ function rpgHud() {
   const st = AV.st, n = $("#rpg-noite"), ins = $("#rpg-ins"), mi = $("#rpg-mis"), ch = $("#rpg-chefe"), su = $("#rpg-sup");
   if (su) { const sp = rpgSup(); su.textContent = sp ? `🎒 ${innerWidth > 760 ? "Suporte: " : ""}${pkName(sp.species_id)}` : `🎒 ${innerWidth > 760 ? "Escolher suporte" : "Suporte"}`; }
   if (n) { n.hidden = !st?.noite; n.textContent = "🌙 Noite"; n.title = "De noite, Fantasmas e Sombrios aparecem em todas as áreas"; }
-  if (ins) ins.textContent = `🏅 ${rpgInsig().length}/${Object.keys(S.cfg.rpg?.ginasios?.lideres || RPG_LIDER_DEF).length}`;
+  if (ins) ins.textContent = `🏅 ${rpgInsig().length}/${Object.keys(rpgLideres()).length}`;
   if (mi) { const ms = st?.missoes || [], prontas = ms.filter(m => !m.resgatada && m.prog >= m.meta).length; mi.hidden = !ms.length; mi.innerHTML = `📜 ${innerWidth > 760 ? "Missões " : ""}${ms.filter(m => m.resgatada).length}/${ms.length}${prontas ? ` <b class="mb red">${prontas}</b>` : ""}`; }
   if (ch) { const c = st?.chefe; ch.hidden = !c || c.status !== "ativo"; if (c) { const pc = Math.max(0, Math.round(100 - c.dano * 100 / Math.max(1, c.hp_total))); ch.textContent = innerWidth > 760 ? `👹 Chefe: ${pkName(c.especie)} em ${RPG_REG[c.regiao]?.nome || c.regiao} · ${pc}%` : `👹 Chefe ${pc}%`; } }
 }
@@ -12951,6 +13114,11 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "gym-predios-2026-11-12", sql: "101", title: "🏟️ Ginásios de verdade e o mapa com os nomes", body: () => `Os Ginásios da Aventura ficaram de verdade:
+• Cada rota tem agora o prédio do Ginásio. Entre pela porta: lá dentro tem o salão iluminado, o campo de batalha e o Líder esperando no fundo.
+• O time do Líder é segredo: você só sabe quantos Pokémon ele usa. Antes de lutar, escolha a mesma quantidade de Pokémon seus, na ordem em que vão entrar.
+• O Líder usa sempre os mesmos Pokémon, mas numa ordem sorteada a cada tentativa. Se perder e tentar de novo, todos os Pokémon dele voltam com a vida cheia.
+• 📍 No alto da tela da Aventura aparece sempre onde você está (o nome do lugar e as coordenadas). O botão 🗺️ Mapa abre o mapa completo com todas as regiões, os nomes, os níveis e você marcado nele.` },
   { id: "rpg-suporte-2026-11-12", sql: "100", title: "🎒 Aventura: Pokémon de suporte e a vila ajudando no treino", body: () => `Mais ajuda para evoluir na Aventura:
 • 🎒 Pokémon de suporte: escolha um Pokémon seu para ir na bolsa (botão 🎒 Suporte, no alto da Aventura). A cada vitória ele ganha metade da experiência de quem lutou (o Pesquisador dá 75%). Vale contra selvagens, nos Ginásios e no Chefe. Ótimo para quem não tem ataque de dano, como o Magikarp.
 • 🏟️ A Arena da vila agora dá lutas a mais por dia na Aventura (no lugar dos minutos na Grama).
