@@ -1898,11 +1898,28 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
 .av-go{flex:none;font:800 12px/1 var(--sans);color:#F5C542}
 .av-empty{padding:10px 2px}.av-clear{margin-top:12px}
 #pk-dock{position:fixed;right:12px;bottom:calc(122px + env(safe-area-inset-bottom,0px));z-index:59}
-.pkd{position:relative;display:flex;align-items:center;gap:8px;padding:4px 12px 4px 6px;border-radius:14px;border:2px solid #8A6A35;background:linear-gradient(#1F2E38,#16222A);color:#F3DFA8;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.5);font:700 12px/1.2 var(--sans);text-align:left}
+.pkd{position:relative;display:flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:12px;border:2px solid rgba(201,160,90,.75);background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));color:#F3DFA8;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.45);font:700 12px/1.2 var(--sans);text-align:left}
 .pkd:hover,.pkd.on{border-color:#F5C542}
-.pkd-mons{display:flex}.pkd-mons img{width:48px;height:48px;margin:-4px -16px -4px 0;image-rendering:pixelated}.pkd-mons img:last-child{margin-right:0}
-.pkd-empty{font-size:26px;padding:4px}
-.pkd-t{display:flex;flex-direction:column}.pkd-t small{color:#BFAF8A;font-weight:600}
+.pkd-lead{display:grid;place-items:center;width:44px;height:44px;border-radius:9px;background:rgba(255,255,255,.06);overflow:hidden}
+.pkd-lead img{width:56px;height:56px;image-rendering:pixelated}
+.pkd-empty{font-size:24px}
+.pkd-t{display:flex;flex-direction:column;gap:5px}
+.pkd-hp{display:flex;gap:3px}.pkd-hp i{width:7px;height:7px;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.5)}
+/* quadro da corrida */
+#race-dock{position:fixed;right:12px;bottom:calc(178px + env(safe-area-inset-bottom,0px));z-index:59;width:236px}
+#race-dock:empty{display:none}
+.rc{border-radius:12px;border:2px solid rgba(201,160,90,.75);background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));box-shadow:0 6px 18px rgba(0,0,0,.45);color:#E8ECF3;overflow:hidden;font:600 13px/1.25 var(--sans)}
+.rc-h{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;background:rgba(0,0,0,.22)}
+.rc-h span{font:800 13px var(--sans);color:#FFE7A8}.rc-h small{color:#8FA0B8;font-size:11px;margin-left:auto}.rc-h i{font-style:normal;color:#C9A05A}
+.rc.min .rc-h{background:none}.rc-sum{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 12px var(--sans) !important;color:#E8ECF3 !important}.rc-sum b{color:#FFE37A}
+.rc-list{display:flex;flex-direction:column;padding:4px}
+.rc-row{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:7px;cursor:pointer}
+.rc-row:hover{background:rgba(255,255,255,.07)}.rc-row.me{background:rgba(245,197,66,.14)}.rc-row.me .rc-nm{color:#FFE37A}
+.rc-pos{width:24px;text-align:center;flex:none;font-weight:800;color:#C9D4E3}
+.rc-nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#FFF}
+.rc-d{flex:none;font:700 12px 'IBM Plex Mono',ui-monospace,monospace;color:#F08A7E}.rc-row:first-child .rc-d{color:#7FD99A}
+.rc-gap{text-align:center;color:#6F7E95;line-height:.8}
+.rc-all{all:unset;box-sizing:border-box;display:block;width:100%;padding:6px;text-align:center;cursor:pointer;color:#C9A05A;font:700 12px var(--sans);border-top:1px solid rgba(255,255,255,.08)}.rc-all:hover{color:#FFE37A}
 .pkd .mb{position:absolute;top:-8px;right:-6px}
 .pkq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pkq-mon{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 6px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:inherit;cursor:pointer;font:inherit}
@@ -1918,7 +1935,9 @@ svg.sac-av{padding:3px;image-rendering:pixelated}
   .av-chip b{position:absolute;top:-5px;right:-5px;min-width:18px;padding:2px 4px;border-radius:999px;background:#E05A5A;color:#fff;font:800 10px/1.2 var(--sans)}
   .av-chip.on{border-color:#F5C542;animation:news-pulse 1.6s infinite}
   #pk-dock{right:auto;left:8px;bottom:calc(188px + env(safe-area-inset-bottom,0px))}
-  .pkd{padding:3px 8px 3px 4px}.pkd-t{display:none}.pkd-mons img{width:34px;height:34px;margin-right:-14px}
+  .pkd{padding:3px}.pkd-t{display:none}.pkd-lead{width:38px;height:38px}.pkd-lead img{width:48px;height:48px}
+  #race-dock{right:auto;left:8px;width:auto;max-width:calc(100vw - 90px);bottom:calc(240px + env(safe-area-inset-bottom,0px))}
+  #race-dock .rc:not(.min){width:220px}
   .pkq-grid{grid-template-columns:repeat(2,1fr)}.pkq-fast{grid-template-columns:repeat(2,1fr)}
 }
 /* ---------- Cartas Pokegames (arquivo 87) ---------- */
@@ -4361,6 +4380,7 @@ function ensureGameShell() {
     <div id="win-root"></div>
     <div id="bt-dock" aria-label="Suas batalhas"></div>
     <div id="sac-dock" aria-label="SAC"></div>
+    <div id="race-dock" aria-label="Quadro da corrida"></div>
     <div id="pk-dock" aria-label="Meus Pokémon"></div>
   </div>`;
   worldInit();
@@ -4394,7 +4414,7 @@ function renderHUD() {
   $("#sec-boss").innerHTML = bossBox(false);
   $("#hud-menu").innerHTML = menuHTML();
   $("#hud-caixa").innerHTML = caixaCard();
-  sacDock(); pkDock(); $("#hud-news").innerHTML = avBell(false) + mailAlert() + huntAlert() + rocketAlert() + quizAlert() + sacAlert() + newsAlert() + leagueAlert() + arenaAlert(); $("#sec-caixa").classList.toggle("hidden", !$("#hud-caixa").innerHTML.trim());
+  sacDock(); pkDock(); raceDock(); $("#hud-news").innerHTML = avBell(false) + mailAlert() + huntAlert() + rocketAlert() + quizAlert() + sacAlert() + newsAlert() + leagueAlert() + arenaAlert(); $("#sec-caixa").classList.toggle("hidden", !$("#hud-caixa").innerHTML.trim());
   $("#hud-presence").innerHTML = presenceHUD();
   $("#sec-presence").classList.toggle("hidden", !S.presence);
   $("#hud-player").insertAdjacentHTML("beforeend", presenceChip() + avBell(true) + `<button class="help-chip" data-act="go" data-v="caixa" aria-label="Ajude o jogo">💛</button>`);
@@ -5957,7 +5977,7 @@ function LIB() {
     { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b> (${S.cfg.cartas?.brilhante_pct ?? 1}% das cartas): dourada e um pouco mais forte.</p>
       <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
       <p><b>Duelo:</b> monte um deck de ${S.cfg.cartas?.deck ?? 10} cartas (no máximo ${S.cfg.cartas?.max_iguais ?? 2} iguais). Você começa com 1 em campo e 3 na mão. Cada turno dá +1 ⚡ (até ${S.cfg.cartas?.energia_max ?? 5}); o ataque fraco custa ${S.cfg.cartas?.custo_fraco ?? 1} ⚡, o forte ${S.cfg.cartas?.custo_forte ?? 3} ⚡, e trocar o Pokémon em campo custa ${S.cfg.cartas?.custo_trocar ?? 1} ⚡. Fraqueza dá dano ×2 e resistência ×½, pela tabela de tipos das batalhas. Quando um Pokémon cai, entra o de mais vida da mão. Vence quem derrubar ${S.cfg.cartas?.nocautes ?? 3}. Contra outro jogador vale moedas (de ${S.cfg.cartas?.aposta_min ?? 10} a ${S.cfg.cartas?.aposta_max ?? 100}); contra o computador é só treino, sem prêmio.</p>` },
-    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p><b>Tela nova no computador:</b> o mapa ocupa a tela toda, com o menu em ícones na lateral (o botão » abre o menu completo e « recolhe). No alto ficam o mapinha, a sua barra (nível, EXP e a <b>Missão diária</b>, que é o próximo passo de hoje: clique nela) e, à direita, a temporada, a casa onde você está, a região e os botões 🎒 Mochila, Meus Pokémon, Pokédex, Ranking, Biblioteca e som. Embaixo fica o <b>chat fixo</b> com as abas Chat, Jornal e Missões (a setinha recolhe). A <b>🎒 Mochila</b> mostra em quadradinhos os seus itens, bolas e visuais, a equipe e as moedas. A Grama de Treino ganhou o mesmo visual, com mapinha e chat.</p><p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
+    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p><b>🏁 Quadro da corrida:</b> no canto do mapa aparece quem está em 1º e quantas casas cada um está atrás dele (a sua linha fica destacada). Toque num nome para ver o jogador no mapa, e em "Ver todos" para o ranking da temporada. Toque no título para fechar e deixar só uma linha.</p><p><b>Botão da equipe:</b> mostra o primeiro Pokémon da equipe e uma bolinha de vida para cada um (verde, amarela ou vermelha). Toque para ver todos.</p><p><b>Tela nova no computador:</b> o mapa ocupa a tela toda, com o menu em ícones na lateral (o botão » abre o menu completo e « recolhe). No alto ficam o mapinha, a sua barra (nível, EXP e a <b>Missão diária</b>, que é o próximo passo de hoje: clique nela) e, à direita, a temporada, a casa onde você está, a região e os botões 🎒 Mochila, Meus Pokémon, Pokédex, Ranking, Biblioteca e som. Embaixo fica o <b>chat fixo</b> com as abas Chat, Jornal e Missões (a setinha recolhe). A <b>🎒 Mochila</b> mostra em quadradinhos os seus itens, bolas e visuais, a equipe e as moedas. A Grama de Treino ganhou o mesmo visual, com mapinha e chat.</p><p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
       <p>Quando chega algo novo com o jogo aberto, aparece um aviso na tela com som. Abrir o Mercado, o Leilão ou o Chat marca como visto (ou toque em "Marcar como vistos").</p>
       <p>O botão <b>Meus Pokémon 🐾</b> (canto do mapa) mostra a sua equipe com vida e XP, avisa quem pode evoluir ou está ferido e tem atalhos para montar a equipe, a Pokédex, a Grama, o Centro, a Creche, as batalhas, o Leilão e a Loja Pokémon.</p>` },
     { id: "comecar", ic: "🚀", t: "Começando", h: `<p>Todo dia você faz três coisas:</p><ol>
@@ -9257,7 +9277,7 @@ const AJ_LABELS = {
     nivel_menos: "Selvagem: até quantos níveis abaixo do seu Pokémon", nivel_mais: "Selvagem: até quantos níveis acima", envio_seg: "Segundos entre avisos de posição",
     "zonas.mato": "Tipos no capim alto", "zonas.escura": "Tipos na grama escura", "zonas.pantano": "Tipos no pântano", "zonas.pedra": "Tipos no alto do penhasco" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
-  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)" },
+  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
     vel_max: "Velocidade máxima do tiro", carga_vel: "Velocidade da barra de força", turno_seg: "Segundos por turno", recarga: "Turnos de espera do especial",
     raio_jogador: "Tamanho do alvo (acerto direto)", folego: "Fôlego para andar por turno", zoom: "Zoom inicial da câmera" },
@@ -9670,9 +9690,10 @@ function pkDock() {
   if (S.win || !S.me || S.pk?.on === false || !S.pk?.mons) { el.innerHTML = ""; return; }
   const team = pkTeam(), show = (team.length ? team : S.pk.mons.slice(0, 3)).slice(0, 6);
   const alert = S.pk.mons.some(m => evoReady(m).length || m.pending_moves?.length);
-  el.innerHTML = `<button class="pkd ${alert ? "on" : ""}" data-act="pk-quick" title="Seus Pokémon e sua equipe" aria-label="Abrir seus Pokémon e sua equipe">
-    <span class="pkd-mons">${show.length ? show.map(m => `<img src="${SPRITE(m.species_id)}" alt="" loading="lazy" width="40" height="40">`).join("") : `<span class="pkd-empty">🐾</span>`}</span>
-    <span class="pkd-t"><b>Meus Pokémon</b><small>${team.length ? `Equipe: ${team.length}` : `${S.pk.mons.length} na coleção`}</small></span>${alert ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : ""}</button>`;
+  const cor = h => h > 50 ? "#4CC38A" : h > 0 ? "#E5B92E" : "#E05A5A", lead = show[0];
+  el.innerHTML = `<button class="pkd ${alert ? "on" : ""}" data-act="pk-quick" title="Meus Pokémon: ${team.length ? `equipe com ${team.length}` : `${S.pk.mons.length} na coleção`}" aria-label="Abrir seus Pokémon e sua equipe">
+    <span class="pkd-lead">${lead ? `<img src="${SPRITE(lead.species_id)}" alt="" loading="lazy" width="56" height="56">` : `<span class="pkd-empty">🐾</span>`}</span>
+    <span class="pkd-t"><b>Equipe</b><span class="pkd-hp">${show.map(m => `<i style="background:${cor(treinoHpOf(m))}" title="${esc(pkName(m.species_id))}: ${treinoHpOf(m)}% da vida"></i>`).join("")}</span></span>${alert ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : ""}</button>`;
 }
 function pkQuickHTML() {
   const team = pkTeam(), all = S.pk.mons || [], fer = new Set((S.treino?.st?.feridos || []).map(f => f.id));
@@ -11197,6 +11218,39 @@ setInterval(() => { if (rpgChannel && !AV.open && (!AV.volta || (AV.foraDesde &&
 // ---------- chat na Aventura ----------
 function rpgChatRender() { const l = $("#rpg-chat-list"); if (!l || !AV.open) return; l.innerHTML = hxChatLista(25); l.scrollTop = l.scrollHeight; }
 function rpgChatNova(m) { rpgChatRender(); if (m && AV.open && m.user_id) AV.baloes[m.user_id] = { txt: String(m.body || "").slice(0, 60), ate: performance.now() + 6000 }; }
+
+// =================================================================
+// QUADRO DA CORRIDA (pedido do dono em 12/11/2026): quem está em 1º e quantas casas os outros estão atrás.
+// Usa só as posições do mapa, que todos já veem (não mostra nada do dia). Fechar/abrir fica no aparelho (pg-corrida-min).
+// =================================================================
+function raceRows() {
+  return (S.chars || []).filter(c => c.arrived_rank || S.nodeById[c.node]).map(c => ({ c, d: c.arrived_rank ? 0 : S.nodeById[c.node].dist }))
+    .sort((a, b) => (a.c.arrived_rank ?? 999) - (b.c.arrived_rank ?? 999) || a.d - b.d || String(a.c.last_move_date || "9999").localeCompare(String(b.c.last_move_date || "9999")));
+}
+function raceMin() {
+  if (S.raceMin == null) { let v = null; try { v = localStorage.getItem("pg-corrida-min"); } catch {} S.raceMin = v == null ? window.innerWidth <= 760 : v === "1"; }
+  return S.raceMin;
+}
+function raceDock() {
+  const el = $("#race-dock"); if (!el) return;
+  if (S.win || !S.me || S.cfg.visual?.corrida === false || S.huntDraw) { el.innerHTML = ""; return; }
+  const rows = raceRows(); if (rows.length < 2) { el.innerHTML = ""; return; }
+  const me = S.session.user.id, iMe = rows.findIndex(r => r.c.user_id === me), lead = rows[0], N = 5;
+  const atras = r => r.d - lead.d, pos = i => i < 3 ? ["🥇", "🥈", "🥉"][i] : `${i + 1}º`;
+  const dif = (r, i) => i === 0 ? (r.c.arrived_rank ? "🏰 Castelo" : `faltam ${r.d}`) : r.c.arrived_rank ? "🏰" : atras(r) ? `−${atras(r)} casas` : "empatado";
+  const linha = (r, i) => `<button class="rc-row ${r.c.user_id === me ? "me" : ""}" data-act="rc-ver" data-v="${r.c.user_id}" title="Ver ${esc(r.c.name)} no mapa (casa nº ${r.c.node})">
+      <span class="rc-pos">${pos(i)}</span><span class="rc-nm">${esc(r.c.name)}</span><span class="rc-d">${dif(r, i)}</span></button>`;
+  if (raceMin()) {
+    el.innerHTML = `<div class="rc min"><button class="rc-h" data-act="rc-min" aria-expanded="false" title="Abrir o quadro da corrida"><span>🏁</span><span class="rc-sum">🥇 <b>${esc(lead.c.name)}</b>${iMe > 0 ? ` · você ${pos(iMe)}, ${atras(rows[iMe]) ? `−${atras(rows[iMe])}` : "empatado"}` : iMe === 0 ? " · é você!" : ""}</span><i>▸</i></button></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="rc"><button class="rc-h" data-act="rc-min" aria-expanded="true" title="Fechar o quadro"><span>🏁 Corrida</span><small>casas atrás do 1º</small><i>▾</i></button>
+    <div class="rc-list">${rows.slice(0, N).map(linha).join("")}${iMe >= N ? `<div class="rc-gap">⋯</div>${linha(rows[iMe], iMe)}` : ""}</div>
+    <button class="rc-all" data-act="rc-all">Ver todos (${rows.length})</button></div>`;
+}
+ACTIONS["rc-min"] = () => { S.raceMin = !raceMin(); try { localStorage.setItem("pg-corrida-min", S.raceMin ? "1" : "0"); } catch {} raceDock(); };
+ACTIONS["rc-ver"] = v => { const c = S.chars.find(x => x.user_id === v), n = c && S.nodeById[c.node]; if (!n) return; centerOn(n.x, n.y - 20, true); S.tip = { type: "char", id: v }; S.selectedNode = null; renderHUD(); };
+ACTIONS["rc-all"] = async () => { S.rk.period = "temporada"; S.rk.detail = null; ACTIONS.go("ranking"); await ACTIONS["rk-period"]("temporada"); };
 // =================================================================
 // CORREIO (pedido do dono em 23/10/2026): caixa com tudo o que o admin mandou de presente para o jogador.
 // Usa a tabela gifts do arquivo 34 (cada um lê só os seus); confere a cada minuto e avisa quando chega um novo.
@@ -12599,6 +12653,9 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "corrida-2026-11-12", sql: "96", title: "🏁 Quadro da corrida no mapa", body: () => `Novidade na tela do mapa:
+• Quadro da corrida: no canto da tela aparece quem está em 1º e quantas casas cada um está atrás dele, com a sua posição destacada. Toque num nome para ver o jogador no mapa; "Ver todos" abre o ranking da temporada. Dá para fechar e deixar só uma linha (no celular ele já começa assim).
+• O botão dos seus Pokémon ficou menor e mais limpo: mostra o primeiro da equipe e uma bolinha de vida para cada um (verde, amarela ou vermelha).` },
   { id: "cura-gradual-2026-11-12", sql: "95", title: "❤️ Centro Pokémon: a vida agora volta aos poucos", body: () => `Mudou a cura de graça dos Pokémon feridos na Grama de Treino (e na Aventura):
 • Antes, o Pokémon ficava ferido (ou desmaiado) até completar o tempo de espera e só então voltava inteiro.
 • Agora a vida volta um pouquinho a cada hora, sozinha e de graça. Um desmaiado que recuperou um pouco já pode lutar de novo, com a vida que tem.
