@@ -8,7 +8,7 @@ import fs from "fs"; import path from "path";
 const root = process.argv[2];
 const db = new PGlite({ extensions: { citext, pgcrypto } });
 await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
-for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql")).sort()) if (f !== "14_recomecar_do_zero.sql" && f < "41") await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql")).sort((a, b) => parseInt(a) - parseInt(b) || a.localeCompare(b))) if (f !== "14_recomecar_do_zero.sql" && parseInt(f) < 41) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
 let ok = 0, fail = 0;
 const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
 const sys = async (q, p = []) => (await db.query(q, p)).rows;

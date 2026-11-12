@@ -2249,7 +2249,7 @@ function heroPerk(k) {
     arqueiro: `🏹 Pokémon ${h.arqueiro_vel_pct}% mais rápidos nas batalhas e +${h.arqueiro_captura_pct}% de chance de captura.`,
     ladino: `🗡️ Taxa de só ${h.ladino_taxa_pct}% no Leilão e no Mercado.`,
     clerigo: `✨ Centro Pokémon ${h.clerigo_centro_desc_pct}% mais barato e cura grátis em ${h.clerigo_cura_horas} horas.`,
-    domador: `🐎 +${h.domador_grama_xp_pct}% de experiência na Grama e Creche ${h.domador_creche_desc_pct}% mais barata.`,
+    domador: `🐎 +${h.domador_grama_xp_pct}% de experiência na Aventura e Creche ${h.domador_creche_desc_pct}% mais barata.`,
     pesquisador: `🔬 Acompanhante da Grama ganha ${h.pesq_comp_pct}% da experiência.`,
     mercador: `💰 Vende no Leilão ${h.merc_leilao_taxa_pct ? `com só ${h.merc_leilao_taxa_pct}% de taxa` : "sem taxa"}.`
   }[k] || "";
@@ -5630,7 +5630,7 @@ const WCOL = { centro: "center", cofre: "vault", quartel: "barracks", defesa: "d
 S.vilaCat = "economia";
 // ---------- a vila ajuda em tudo no jogo (arquivo 82): bônus de cada construção, números em S.cfg.vila_bonus ----------
 const VBON_DEF = { on: true, centro: { casas: [0, 0, 1, 1, 1, 2] }, pomar: { captura_pct: [10] }, taverna: { bolas: [1] }, vigia: { raro_pct: [15, 25, 35] },
-  academia: { grama_xp_pct: [10, 20, 30] }, arena: { grama_min: [10] }, centropk: { centro_desc_pct: [10, 20, 30, 40], cura_rapida_pct: [10, 20, 30, 40] },
+  academia: { grama_xp_pct: [10, 20, 30] }, arena: { grama_min: [10], rpg_lutas: [5] }, centropk: { centro_desc_pct: [10, 20, 30, 40], cura_rapida_pct: [10, 20, 30, 40] },
   poco: { creche_desc_pct: [10] }, defesa: { rocket_dano_pct: [10, 20, 30] }, muralha: { lama_desc_pct: [30, 60, 100] }, mina: { salario_pct: [5, 10, 15] }, cofre: { taxa_menos: [1, 2, 3, 4] } };
 const VBON = () => ({ ...VBON_DEF, ...(S.cfg.vila_bonus || {}) });
 const VBON_COL = () => ({ mina: "mine", torre: "tower", catapulta: "catapult", pomar: "orchard", ferreiro: "forge", estabulo: "stable", taverna: "tavern", muralha: "wall", poco: "well", arena: "arena", ...WCOL });
@@ -5648,8 +5648,8 @@ const VBON_TXT = [
   ["pomar", "captura_pct", "🍎", "Pomar", x => `+${x}% de chance de captura`],
   ["taverna", "bolas", "🍺", "Taverna", x => `+${x} Poké Bola em cada encontro`],
   ["vigia", "raro_pct", "🔭", "Torre de Vigia", x => `${x}% de chance de um Pokémon comum virar incomum ou mais raro`],
-  ["academia", "grama_xp_pct", "🎓", "Academia", x => `+${x}% de XP na Grama de Treino`],
-  ["arena", "grama_min", "🏟️", "Arena", x => `+${x} minutos por dia na Grama de Treino`],
+  ["academia", "grama_xp_pct", "🎓", "Academia", x => `+${x}% de XP nas lutas da Aventura`],
+  ["arena", "rpg_lutas", "🏟️", "Arena", x => `+${x} lutas por dia na Aventura`],
   ["centropk", "centro_desc_pct", "🏥", "Centro Pokémon de Guerra", (x, l) => `Centro Pokémon ${x}% mais barato e cura grátis ${vbVal(null, "centropk", "cura_rapida_pct", l)}% mais rápida`],
   ["poco", "creche_desc_pct", "⛲", "Poço dos Desejos", x => `Creche ${x}% mais barata`],
   ["defesa", "rocket_dano_pct", "🛡️", "Torre de Defesa", x => `+${x}% de dano contra a Equipe Rocket`],
@@ -5993,6 +5993,8 @@ function LIB() {
       <p><b>A luta:</b> quem luta é o primeiro Pokémon da equipe que estiver com vida. Vencer dá experiência; a vida que ele perder continua perdida até se recuperar (ela volta aos poucos sozinha, ou na hora no Centro Pokémon). Não há captura na Aventura: a captura continua no tabuleiro.</p>
       <p><b>Fugir custa moedas:</b> ${S.cfg.rpg?.fuga_base ?? 10} moedas para fugir, mais ${S.cfg.rpg?.fuga_por_ataque ?? 10} por ataque que você já fez naquela luta. Sem moedas suficientes, não dá para fugir.</p>
       <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro.</p>
+      <p>🎒 <b>Pokémon de suporte:</b> no botão 🎒 Suporte, escolha um Pokémon seu para ir na bolsa. A cada vitória na Aventura (selvagens, Ginásios e Chefe) ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de quem lutou (com o herói Pesquisador, mais). Ele precisa estar com vida.</p>
+      <p>🏰 <b>A vila ajuda:</b> a Arena da vila dá lutas a mais por dia na Aventura, e a Academia dá experiência a mais nas lutas.</p>
       <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota mora um Líder de Ginásio com 4 Pokémon fortes. Você luta com a sua equipe, um Pokémon de cada vez (entra o primeiro com vida; se cair, entra o próximo), e a vida perdida continua perdida, então cure antes. Vença os 4 para ganhar a <b>insígnia</b> da rota e um prêmio. Quem juntar as 6 insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio, e desistir encerra a tentativa.</p>
       <p>📜 <b>Missões:</b> os moradores dão ${S.cfg.rpg?.missoes?.por_dia ?? 3} missões por dia (vencer Pokémon numa rota, de um tipo, ou um selvagem forte). Volte a falar com quem deu a missão para pegar o prêmio. O botão 📜 Missões mostra todas.</p>
       <p>🌙 <b>Noite:</b> das ${S.cfg.rpg?.noite?.inicio ?? 19}h às ${S.cfg.rpg?.noite?.fim ?? 5}h a Aventura escurece, e Pokémon Fantasma e Sombrio aparecem em todas as áreas.</p>
@@ -9307,7 +9309,7 @@ const AJ_LABELS = {
   casas: { passar_luta: "Quem passa pela casa do Treinador também batalha", red_premio: "Prêmio de quem vencer o Red (moedas)" },
   herois: { guerreiro_dano_pct: "Guerreiro: % a mais de dano", mago_status_acc_pct: "Mago: % a mais de acerto em ataques de status", mago_forte_pct: "Mago: pontos a mais de chance de Pokémon forte na Grama",
     arqueiro_vel_pct: "Arqueiro: % a mais de velocidade", arqueiro_captura_pct: "Arqueiro: % a mais de chance de captura", ladino_taxa_pct: "Ladino: taxa no Leilão e no Mercado (%)",
-    clerigo_centro_desc_pct: "Clérigo: desconto no Centro Pokémon (%)", clerigo_cura_horas: "Clérigo: horas para a cura grátis", domador_grama_xp_pct: "Domador: % a mais de experiência na Grama",
+    clerigo_centro_desc_pct: "Clérigo: desconto no Centro Pokémon (%)", clerigo_cura_horas: "Clérigo: horas para a cura grátis", domador_grama_xp_pct: "Domador: % a mais de experiência na Aventura",
     domador_creche_desc_pct: "Domador: desconto na Creche (%)", pesq_bolas: "Pesquisador: bolas a mais por encontro", pesq_xp_pct: "Pesquisador: % a mais de XP da equipe nas andadas",
     pesq_comp_pct: "Pesquisador: % de experiência do acompanhante", merc_loja_desc_pct: "Mercador: desconto nas lojas (%)", merc_salario_pct: "Mercador: % a mais no salário", merc_leilao_taxa_pct: "Mercador: taxa no Leilão (%)" },
   leilao: { on: "Leilão aberto", intervalo_dias: "Dias entre um leilão e outro do mesmo jogador", horas: "Duração do leilão (horas)", taxa_pct: "Taxa sobre a venda (%)",
@@ -9331,8 +9333,8 @@ const AJ_LABELS = {
     segundos: "Segundos para responder", prazo_horas: "O quiz fica aberto por (horas)", premios: "Prêmios sorteados (lista técnica: coins = moedas, hints = dicas, retries = tente outra vez, bag = bolas e itens)" },
   tm_nivel: { on: "TMs com nível mínimo", fraca_poder: "Ataque fraco: poder até", fraca_nivel: "Ataque fraco: a partir do nível", media_poder: "Ataque médio: poder até", media_nivel: "Ataque médio: a partir do nível", forte_nivel: "Ataque forte: a partir do nível" },
   vila_bonus: { on: "Bônus da vila ligados", "centro.casas": "Centro da Vila: casas a mais por andada (por nível)", "pomar.captura_pct": "Pomar: % a mais de captura",
-    "taverna.bolas": "Taverna: bolas a mais por encontro", "vigia.raro_pct": "Torre de Vigia: % de chance de Pokémon mais raro (por nível)", "academia.grama_xp_pct": "Academia: % a mais de XP na Grama (por nível)",
-    "arena.grama_min": "Arena: minutos a mais na Grama", "centropk.centro_desc_pct": "Centro Pokémon de Guerra: % de desconto no Centro (por nível)", "centropk.cura_rapida_pct": "Centro Pokémon de Guerra: % mais rápida a cura grátis (por nível)",
+    "taverna.bolas": "Taverna: bolas a mais por encontro", "vigia.raro_pct": "Torre de Vigia: % de chance de Pokémon mais raro (por nível)", "academia.grama_xp_pct": "Academia: % a mais de XP na Aventura (por nível)",
+    "arena.grama_min": "Arena: minutos a mais na Grama (fechada)", "arena.rpg_lutas": "Arena: lutas a mais por dia na Aventura", "centropk.centro_desc_pct": "Centro Pokémon de Guerra: % de desconto no Centro (por nível)", "centropk.cura_rapida_pct": "Centro Pokémon de Guerra: % mais rápida a cura grátis (por nível)",
     "poco.creche_desc_pct": "Poço: % de desconto na Creche", "defesa.rocket_dano_pct": "Torre de Defesa: % a mais de dano na Rocket (por nível)", "muralha.lama_desc_pct": "Muralha: % de desconto para limpar a lama (por nível)",
     "mina.salario_pct": "Mina: % a mais de salário (por nível)", "cofre.taxa_menos": "Cofre: pontos a menos na taxa do Mercado e do Leilão (por nível)" },
   boas_vindas: { on: "Dar Pokémon a quem cria o herói", iniciais: "Iniciais possíveis (números da Pokédex)", inicial_nivel: "Nível do inicial", pacote_qtd: "Quantos Pokémon no pacote do jogador novo", pacote_abaixo_teto: "Pacote: quantos níveis abaixo do teto" },
@@ -11127,7 +11129,7 @@ function rpgRoot() {
   let el = $("#aventura"); if (el) return el;
   el = document.createElement("div"); el.id = "aventura"; el.hidden = true;
   el.innerHTML = `<canvas id="rpg-cv" aria-label="Aventura: ande com WASD ou as setas"></canvas>
-    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><span class="pz-on" id="rpg-noite" hidden></span><span class="pz-on" id="rpg-ins"></span><button class="btn small ghost" id="rpg-mis" data-rpg="missoes" hidden>📜 Missões</button><button class="btn small rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" hidden></button><button class="btn small ghost" data-rpg="rotas">🗺️ Rotas</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
+    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><span class="pz-on" id="rpg-noite" hidden></span><span class="pz-on" id="rpg-ins"></span><button class="btn small ghost" id="rpg-sup" data-rpg="suporte">🎒 Suporte</button><button class="btn small ghost" id="rpg-mis" data-rpg="missoes" hidden>📜 Missões</button><button class="btn small rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" hidden></button><button class="btn small ghost" data-rpg="rotas">🗺️ Rotas</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
     <div id="rpg-mini-box" class="rpg-mini"><b>Vila Aurora</b><canvas id="rpg-mini" width="184" height="184"></canvas></div>
     <button id="rpg-acao" class="rpg-acao" hidden></button>
     <div id="rpg-fala" class="rpg-fala" hidden></div>
@@ -11141,6 +11143,7 @@ function rpgRoot() {
     if (e.target.closest("[data-rpg='sair']")) return rpgSair();
     if (e.target.closest("[data-rpg='rotas']")) return rpgRotas();
     if (e.target.closest("[data-rpg='missoes']")) return rpgMissoesAbrir(null, null);
+    if (e.target.closest("[data-rpg='suporte']")) return rpgSupAbrir();
     if (e.target.closest("[data-rpg='chefe']")) return rpgChefeAbrir();
     if (e.target.closest("#rpg-acao")) return rpgUsar();
     if (e.target.closest("#rpg-fala")) return rpgFalaProx();
@@ -11224,7 +11227,7 @@ async function rpgEncontro(zona) {
   if (!m) { $("#rpg-hint").textContent = "Você ainda não tem Pokémon para lutar. Capture um no tabuleiro primeiro."; return; }
   AV.busy = true; AV.keys.clear(); AV.lastEnc = Date.now();
   let r;
-  try { r = await rpc("rpg_encontro", { _mon: m.id, _zona: zona }); }
+  try { r = await rpc("rpg_encontro", { _mon: m.id, _zona: zona, _comp: rpgSupId() }); }
   catch (e) { AV.busy = false; const t = errMsg(e); if (!/continue andando/.test(t)) { $("#rpg-hint").textContent = t; if (/lutas de hoje/.test(t) && AV.st) AV.st.batalhas = AV.st.batalhas_dia; } return; }
   sfx("tick");
   const fl = $("#rpg-flash");
@@ -11374,6 +11377,34 @@ function rpgChatRender() { const l = $("#rpg-chat-list"); if (!l || !AV.open) re
 function rpgChatNova(m) { rpgChatRender(); if (m && AV.open && m.user_id) AV.baloes[m.user_id] = { txt: String(m.body || "").slice(0, 60), ate: performance.now() + 6000 }; }
 
 
+// ---------- Pokémon de suporte (arquivo 100): vai na bolsa e ganha parte da experiência de cada vitória ----------
+const rpgSupKey = () => `pg-rpg-sup-${S.session?.user?.id}`;
+const rpgLutador = () => { const t = pkTeam(); return t.find(x => treinoHpOf(x) > 0) || t[0] || (S.pk?.mons || [])[0]; };
+function rpgSup() {   // o suporte escolhido, se ainda vale (seu, com vida e diferente de quem luta)
+  let id = null; try { id = localStorage.getItem(rpgSupKey()); } catch {}
+  const m = id && (S.pk?.mons || []).find(x => x.id === id), f = rpgLutador();
+  return m && treinoHpOf(m) > 0 && m.id !== f?.id ? m : null;
+}
+const rpgSupId = () => rpgSup()?.id || null;
+function rpgSupHTML() {
+  const f = rpgLutador(), cur = rpgSupId(), pct = AV.st?.acompanhante_pct ?? S.cfg.treino?.acompanhante_pct ?? 50;
+  const mons = (S.pk?.mons || []).filter(x => x.id !== f?.id).sort((a, b) => (a.team_slot ?? 9) - (b.team_slot ?? 9) || a.level - b.level);
+  return `<div class="rpg-rotas"><div class="av-head"><h2>🎒 Pokémon de suporte</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <p>O suporte vai na bolsa e ganha <b>${pct}% da experiência</b> de cada vitória na Aventura (selvagens, Ginásios e Chefe). Ótimo para treinar quem ainda é fraco ou não tem ataque de dano, como o Magikarp.</p>
+    <p class="muted">Quem luta é ${f ? `<b>${esc(pkName(f.species_id))}</b> (o primeiro da equipe com vida)` : "o primeiro da equipe com vida"}. O suporte precisa estar com vida.</p>
+    <div class="tr-pick">${mons.map(x => { const h = treinoHpOf(x); return `<button class="mon-card ${x.id === cur ? "sel" : ""} ${h <= 0 ? "ko" : ""}" data-sup="${x.id}" ${h <= 0 ? "disabled" : ""}>
+      ${monCv(x.species_id, x.outfit, 64)}<span class="mc-name">${esc(pkName(x.species_id))}</span><span class="mc-lv">Nv ${x.level}</span>${h < 100 ? (h <= 0 ? `<span class="ko-tag">💤 desmaiado</span>` : trHpBar(h)) : ""}</button>`; }).join("") || `<p class="muted">Você precisa de mais de um Pokémon.</p>`}</div>
+    ${cur ? `<button class="btn ghost small" data-sup="" style="margin-top:10px">Sem suporte</button>` : ""}</div>`;
+}
+function rpgSupAbrir() {
+  const m = openModal(rpgSupHTML()); m.querySelector(".modal").classList.add("modal-av");
+  m.addEventListener("click", e => {
+    if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
+    const b = e.target.closest("[data-sup]"); if (!b) return;
+    try { if (b.dataset.sup) localStorage.setItem(rpgSupKey(), b.dataset.sup); else localStorage.removeItem(rpgSupKey()); } catch {}
+    sfx("tick"); rpgHud(); const box = $("#modal-root .modal"); if (box) box.innerHTML = rpgSupHTML();
+  });
+}
 // ---------- Ginásios, missões, noite e Chefe da rota (arquivo 99) ----------
 const RPG_LIDER_DEF = {"bosque": {"nome": "Líder Flora", "classe": "domador", "tipo": "Inseto e Planta", "time": [[12, 30], [47, 31], [71, 33], [3, 35]]}, "praia": {"nome": "Líder Marina", "classe": "arqueiro", "tipo": "Água e Elétrico", "time": [[55, 34], [101, 35], [131, 36], [121, 38]]}, "deserto": {"nome": "Líder Brasa", "classe": "guerreiro", "tipo": "Fogo e Terra", "time": [[51, 38], [59, 40], [112, 41], [6, 42]]}, "pedreira": {"nome": "Líder Rocha", "classe": "mercador", "tipo": "Pedra", "time": [[76, 40], [139, 42], [141, 43], [142, 44]]}, "charco": {"nome": "Líder Sombra", "classe": "mago", "tipo": "Fantasma e Psíquico", "time": [[93, 44], [97, 45], [65, 46], [94, 47]]}, "pico": {"nome": "Líder Neve", "classe": "clerigo", "tipo": "Gelo e Dragão", "time": [[87, 56], [91, 57], [131, 58], [149, 60]]}};
 const rpgLider = r => S.cfg?.rpg?.ginasios?.lideres?.[r] || RPG_LIDER_DEF[r];
@@ -11437,7 +11468,7 @@ async function rpgLutaAbre(bid) {
   await guarded(loadBattles); await btOpen(bid);
 }
 async function rpgGinasioLutar(r) {
-  let res; try { res = await rpc("rpg_ginasio_lutar", { _regiao: r }); } catch (e) { return toast(errMsg(e), true); }
+  let res; try { res = await rpc("rpg_ginasio_lutar", { _regiao: r, _comp: rpgSupId() }); } catch (e) { return toast(errMsg(e), true); }
   if (res.fim) { toast(res.msg || "A tentativa acabou.", true); closeModal(); if (!AV.open && AV.volta) { S.win = null; AV.volta = false; rpgOpen(); } return; }
   await rpgLutaAbre(res.battle);
 }
@@ -11472,13 +11503,14 @@ function rpgChefeAbrir() {
   const m = openModal(rpgChefeHTML()); m.querySelector(".modal").classList.add("modal-av");
   m.addEventListener("click", async e => {
     if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
-    if (e.target.closest("[data-chefe]")) { try { const r = await rpc("rpg_chefe_lutar"); await rpgLutaAbre(r.battle); } catch (er) { toast(errMsg(er), true); } return; }
+    if (e.target.closest("[data-chefe]")) { try { const r = await rpc("rpg_chefe_lutar", { _comp: rpgSupId() }); await rpgLutaAbre(r.battle); } catch (er) { toast(errMsg(er), true); } return; }
     if (e.target.closest("[data-chefeadm]")) { if (!await confirmModal("Soltar um chefe agora?", "Um chefe novo aparece numa rota sorteada (o atual, se houver, vai embora).", "Soltar")) return;
       try { await rpc("admin_rpg_chefe", { _regiao: null, _especie: null }); toast("👹 Chefe solto!"); await rpgEstado(); } catch (er) { toast(errMsg(er), true); } }
   });
 }
 function rpgHud() {
-  const st = AV.st, n = $("#rpg-noite"), ins = $("#rpg-ins"), mi = $("#rpg-mis"), ch = $("#rpg-chefe");
+  const st = AV.st, n = $("#rpg-noite"), ins = $("#rpg-ins"), mi = $("#rpg-mis"), ch = $("#rpg-chefe"), su = $("#rpg-sup");
+  if (su) { const sp = rpgSup(); su.textContent = sp ? `🎒 ${innerWidth > 760 ? "Suporte: " : ""}${pkName(sp.species_id)}` : `🎒 ${innerWidth > 760 ? "Escolher suporte" : "Suporte"}`; }
   if (n) { n.hidden = !st?.noite; n.textContent = "🌙 Noite"; n.title = "De noite, Fantasmas e Sombrios aparecem em todas as áreas"; }
   if (ins) ins.textContent = `🏅 ${rpgInsig().length}/${Object.keys(S.cfg.rpg?.ginasios?.lideres || RPG_LIDER_DEF).length}`;
   if (mi) { const ms = st?.missoes || [], prontas = ms.filter(m => !m.resgatada && m.prog >= m.meta).length; mi.hidden = !ms.length; mi.innerHTML = `📜 ${innerWidth > 760 ? "Missões " : ""}${ms.filter(m => m.resgatada).length}/${ms.length}${prontas ? ` <b class="mb red">${prontas}</b>` : ""}`; }
@@ -12919,6 +12951,10 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "rpg-suporte-2026-11-12", sql: "100", title: "🎒 Aventura: Pokémon de suporte e a vila ajudando no treino", body: () => `Mais ajuda para evoluir na Aventura:
+• 🎒 Pokémon de suporte: escolha um Pokémon seu para ir na bolsa (botão 🎒 Suporte, no alto da Aventura). A cada vitória ele ganha metade da experiência de quem lutou (o Pesquisador dá 75%). Vale contra selvagens, nos Ginásios e no Chefe. Ótimo para quem não tem ataque de dano, como o Magikarp.
+• 🏟️ A Arena da vila agora dá lutas a mais por dia na Aventura (no lugar dos minutos na Grama).
+• 🎓 A Academia da vila e o herói Domador continuam dando experiência a mais, agora nas lutas da Aventura.` },
   { id: "rpg-ginasios-2026-11-12", sql: "99", title: "🏟️ Aventura: Ginásios, missões, noite e o Chefe da rota", body: () => `Novidades na Aventura:
 • 🏟️ Ginásios: cada rota tem um Líder de Ginásio com 4 Pokémon fortes. Você luta com a sua equipe, um Pokémon de cada vez, e a vida que ele perde continua perdida. Vença os 4 e ganhe a insígnia da rota (e um prêmio). São 6 insígnias; quem juntar todas ganha um prêmio especial. São 3 tentativas por dia em cada Ginásio.
 • 📜 Missões: os moradores com "!" dão 3 missões por dia (vencer Pokémon de um tipo, numa rota, ou um selvagem forte). Volte a falar com quem deu a missão para pegar o prêmio.

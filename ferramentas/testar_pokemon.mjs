@@ -9,7 +9,7 @@ const root = process.argv[2];
 const db = new PGlite({ extensions: { citext, pgcrypto } });
 const exec = async f => { try { await db.exec(fs.readFileSync(f, "utf8")); } catch (e) { console.error("ERRO em", f, e.message); process.exit(1); } };
 await exec(path.join(root, "ferramentas/supabase_simulado.sql"));
-for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql")).sort()) if (f !== "14_recomecar_do_zero.sql") await exec(path.join(root, "sql", f));
+for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql")).sort((a, b) => parseInt(a) - parseInt(b) || a.localeCompare(b))) if (f !== "14_recomecar_do_zero.sql") await exec(path.join(root, "sql", f));
 let ok = 0, fail = 0;
 const check = (name, cond, extra = "") => { if (cond) { ok++; console.log("  OK  ", name); } else { fail++; console.log("  FALHOU", name, extra); } };
 const as = async (uid, sql, params = []) => {

@@ -8,7 +8,7 @@ import fs from "fs"; import path from "path";
 const root = process.argv[2], N = +(process.argv[3] || 40);
 const db = new PGlite({ extensions: { citext, pgcrypto } });
 await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
-for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql")).sort()) if (f !== "14_recomecar_do_zero.sql") await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql")).sort((a, b) => parseInt(a) - parseInt(b) || a.localeCompare(b))) if (f !== "14_recomecar_do_zero.sql") await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
 const sys = async (q, p = []) => (await db.query(q, p)).rows;
 const as = async (uid, q, p = []) => {
   await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${uid}', false);`);

@@ -8,12 +8,12 @@ import fs from "fs"; import path from "path";
 const root = process.argv[2];
 const db = new PGlite({ extensions: { citext, pgcrypto } });
 await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
-const files = fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort();
+const files = fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort((a, b) => parseInt(a) - parseInt(b) || a.localeCompare(b));
 let ok = 0, fail = 0;
 const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
 const sys = async (q, p = []) => (await db.query(q, p)).rows;
 const as = async (uid, q, p = []) => { await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${uid}', false);`); try { return { rows: (await db.query(q, p)).rows }; } catch (e) { return { error: e.message }; } finally { await db.exec("reset role;"); } };
-for (const f of files.filter(f => f < "27")) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+for (const f of files.filter(f => parseInt(f) < 27)) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
 const snap = async () => JSON.stringify(await sys(`select (select count(*) from pokemon) p, (select count(*) from pk_moves) m, (select count(*) from pk_evolutions) e,
   (select count(*) from pk_learnset) l, (select count(*) from pk_type_chart) t, (select md5(string_agg(id || name || coalesce(base_form, 0), ',' order by id)) from pokemon) h`));
 const before = await snap();
