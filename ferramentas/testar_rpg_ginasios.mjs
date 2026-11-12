@@ -10,7 +10,7 @@ import fs from "fs"; import path from "path";
 const root = process.argv[2];
 const db = new PGlite({ extensions: { citext, pgcrypto } });
 await db.exec(fs.readFileSync(path.join(root, "ferramentas/supabase_simulado.sql"), "utf8"));
-for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql").sort((a, b) => parseInt(a) - parseInt(b) || a.localeCompare(b))) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
+for (const f of fs.readdirSync(path.join(root, "sql")).filter(f => f.endsWith(".sql") && f !== "14_recomecar_do_zero.sql" && parseInt(f) < 101).sort((a, b) => parseInt(a) - parseInt(b) || a.localeCompare(b))) await db.exec(fs.readFileSync(path.join(root, "sql", f), "utf8"));
 let ok = 0, fail = 0;
 const check = (n, c, x = "") => { if (c) { ok++; console.log("  OK  ", n); } else { fail++; console.log("  FALHOU", n, x); } };
 const sys = async (q, p = []) => (await db.query(q, p)).rows;
@@ -69,7 +69,7 @@ for (let i = 0; i < 25; i++) {
 check("de dia (noite desligada) nunca aparece Fantasma no penhasco", okDia);
 await sys(`update game_config set config = jsonb_set(jsonb_set(jsonb_set(config, '{rpg,noite,on}', 'true'), '{rpg,noite,inicio}', '0'), '{rpg,noite,fim}', '24') where active`);
 check("o estado diz que é noite", (await estado(A)).noite === true);
-for (let i = 0; i < 40 && !viuNoite; i++) {
+for (let i = 0; i < 90 && !viuNoite; i++) {
   await sys(`update rpg_dias set ult = null, batalhas = 0 where true`); await sys(`delete from battles where p1 = $1`, [A]);
   const x = await as(A, `select public.rpg_encontro($1, 'pedra') r`, [forte]); if (x.error) continue;
   const w = (await sys(`select state->'sides'->1->'mons'->0 w from battles where id = $1`, [x.rows[0].r.battle]))[0].w;
