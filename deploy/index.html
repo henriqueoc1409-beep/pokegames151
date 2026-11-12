@@ -2090,6 +2090,7 @@ body.pb-on{overflow:hidden}
 .hx-chat-list{height:100%;overflow:auto}.hx-chat-list time{color:#8FA0B8;font-family:"IBM Plex Mono",monospace;font-size:12px}.hx-chat-list li{overflow-wrap:anywhere}
 .hx-jornal button,.hx-missoes button{all:unset;cursor:pointer;display:block;width:100%;padding:3px 0;color:#E8ECF3}.hx-jornal button:hover,.hx-missoes button:hover{color:#FFE7A8}
 .hx-jornal time{color:#8FA0B8;font-size:12px;margin-right:6px}
+.hx-hoje-top{margin-bottom:6px}.hx-feed li{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06);color:#E8ECF3;font-size:13px;line-height:1.35}.hx-feed li.novo{color:#FFE7A8}
 .hx-missoes{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.hx-missoes i{font-style:normal;display:inline-block;width:20px;color:#8FA0B8}.hx-missoes .ok{color:#8FE0A8}.hx-missoes .ok i{color:#4CC38A}
 .hx-vazio{margin:0}
 .hx-chat-form{display:flex;gap:6px;padding:6px 8px 8px;border-top:1px solid rgba(255,255,255,.1)}.hx-chat-form[hidden]{display:none}
@@ -6031,7 +6032,7 @@ function LIB() {
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
-      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${trGradual() ? `O preço é só da vida que falta. Ou espere: <b>a vida volta sozinha, de graça, um pouco a cada hora</b> (de desmaiado a inteiro em ${S.treino?.st?.gratis_horas ?? 72} horas). Desmaiado que já recuperou um pouco pode lutar de novo.` : `O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.`}</p>
+      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${trGradual() ? `O preço é só da vida que falta. Ou espere: <b>a vida volta sozinha, de graça, um pouco a cada hora</b> (de desmaiado a inteiro em ${S.treino?.st?.gratis_horas ?? 72} horas). Desmaiado fica <b>${S.cfg.treino?.desmaio_espera_horas ?? 24} horas</b> parado antes de a vida começar a voltar.` : `O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.`}</p>
       <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
     { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
       <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
@@ -8803,7 +8804,8 @@ function treinoHpOf(m) {
   const hp = m?.tr_hp ?? 100; if (hp >= 100) return 100;
   if (!trGradual() || !m.tr_hurt_at) return hp;
   const H = (S.treino?.st?.gratis_horas ?? 72) * 3600000;   // de 0% a 100% (arquivo 95: a vida volta aos poucos)
-  return Math.min(100, hp + Math.max(0, Math.floor((treinoNow() - new Date(m.tr_hurt_at)) * 100 / H)));
+  const esp = hp <= 0 ? (S.cfg.treino?.desmaio_espera_horas ?? 24) * 3600000 : 0;   // arquivo 98: desmaiado espera antes de começar
+  return Math.min(100, hp + Math.max(0, Math.floor((treinoNow() - new Date(m.tr_hurt_at) - esp) * 100 / H)));
 }
 function hoursLeft(ts) {
   const ms = new Date(ts) - treinoNow(); if (ms <= 0) return "agora";
@@ -8864,7 +8866,7 @@ function viewCentro() {
     <div class="ce-head"><p><b>🏥 Bem-vindo ao Centro Pokémon!</b></p>
       <p>Aqui você cura os Pokémon que se feriram na <b>Grama de Treino</b>. Pokémon ferido entra na próxima luta com a vida que sobrou, e o <b>desmaiado não pode treinar</b>.</p>
       <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${st.cura_gradual ? `O preço é só da vida que falta: quanto mais ele já se recuperou, mais barato.<br>
-         • <b>De graça:</b> a vida volta sozinha, <b>um pouco a cada hora</b>. De desmaiado até a vida cheia são <b>${st.gratis_horas} horas</b>; quem está pouco ferido fica bom antes. Desmaiado que já recuperou um pouco pode lutar de novo.` : `<b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
+         • <b>De graça:</b> a vida volta sozinha, <b>um pouco a cada hora</b>. De desmaiado até a vida cheia são <b>${st.gratis_horas} horas</b>; quem está pouco ferido fica bom antes. <b>Desmaiado fica ${S.cfg.treino?.desmaio_espera_horas ?? 24} horas parado</b> antes de a vida começar a voltar.` : `<b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
          • <b>De graça:</b> espere <b>${st.gratis_horas} horas</b> depois do último ferimento e ele volta inteiro sozinho.`}</p>
       <p style="font-size:13px">A vida do treino só vale na Grama de Treino. Nas outras batalhas, seus Pokémon começam sempre com a vida cheia.</p></div>
     ${list.length ? `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px"><span>Você tem <b>${coins} moedas</b>.</span>
@@ -9320,7 +9322,7 @@ const AJ_LABELS = {
     nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
     forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", acompanhante_pct: "Acompanhante: % da experiência que ele ganha", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
     lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
-    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça (de desmaiado a vida cheia)", cura_gradual: "A vida volta aos poucos (desligado: só no fim da espera)" },
+    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça (de desmaiado a vida cheia)", cura_gradual: "A vida volta aos poucos (desligado: só no fim da espera)", desmaio_espera_horas: "Desmaiado: horas parado antes de a vida começar a voltar" },
   rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
     hp_factor: "Vida da barra (multiplicador)", max_turns: "Turnos máximos por luta", level_bonus: "Níveis a mais da equipe da Rocket" },
   pk: { "encounter.level_min": "Encontro: nível mínimo dos selvagens", "encounter.level_span": "Encontro: níveis a mais até o Castelo", "encounter.level_spread": "Encontro: sorteio de níveis a mais",
@@ -10641,7 +10643,9 @@ function hxChatRender() {
   box.classList.toggle("min", S.hx.min);
   const nChat = hxChatVisivel() ? 0 : Math.max(S.chatUnread, S.av?.chat || 0), nJor = unreadPosts();
   const tab = (k, t, n) => `<button role="tab" data-act="hx-tab" data-v="${k}" aria-selected="${!S.hx.min && S.hx.tab === k}">${t}${n ? ` <b class="mb red">${n > 99 ? "99+" : n}</b>` : ""}</button>`;
-  $("#hx-chat-tabs").innerHTML = tab("chat", "Chat", nChat) + tab("jornal", "Jornal", nJor) + tab("missoes", "Missões", 0) + `<button class="hx-min" data-act="hx-min" title="${S.hx.min ? "Abrir" : "Recolher"}" aria-label="${S.hx.min ? "Abrir o chat" : "Recolher o chat"}">${S.hx.min ? "▴" : "▾"}</button>`;
+  const fKey = `pg-feed-${S.session?.user?.id}`; if (S.hx.feedVisto == null) { try { S.hx.feedVisto = +(localStorage.getItem(fKey) || 0); } catch { S.hx.feedVisto = 0; } }
+  const nFeed = (S.feed || []).filter(e => e.id > S.hx.feedVisto).length;
+  $("#hx-chat-tabs").innerHTML = tab("chat", "Chat", nChat) + tab("jornal", "Jornal", nJor) + tab("hoje", "Acontecimentos", S.hx.tab === "hoje" ? 0 : Math.min(nFeed, 30)) + tab("missoes", "Missões", 0) + `<button class="hx-min" data-act="hx-min" title="${S.hx.min ? "Abrir" : "Recolher"}" aria-label="${S.hx.min ? "Abrir o chat" : "Recolher o chat"}">${S.hx.min ? "▴" : "▾"}</button>`;
   $("#hxchatform").hidden = S.hx.min || S.hx.tab !== "chat";
   const body = $("#hx-chat-body"); body.hidden = S.hx.min; if (S.hx.min) return;
   if (S.hx.tab === "chat") {
@@ -10653,6 +10657,11 @@ function hxChatRender() {
     const ps = (S.posts || []).filter(p => !p.archived).slice(0, 8);
     body.innerHTML = ps.length ? `<ul class="hx-jornal">${ps.map(p => `<li><button data-act="com-tab" data-v="jornal"><time>${chatWhen(p.created_at)}</time> ${esc(p.title)}</button></li>`).join("")}</ul>` : `<p class="muted hx-vazio">Nenhum aviso no Jornal.</p>`;
     body.dataset.k = "jornal";
+  } else if (S.hx.tab === "hoje") {   // acontecimentos do dia (pedido do dono em 12/11/2026): o mesmo da Comunidade, sem precisar abrir a janela
+    const fs = S.feed || [], hoje = tzNowParts().date;
+    body.innerHTML = `<div class="hx-hoje-top"><button class="btn ghost small" data-act="jornal">📰 Ler o Jornal do dia</button></div>${fs.length ? `<ul class="hx-jornal hx-feed">${fs.map(e => `<li class="${e.id > S.hx.feedVisto ? "novo" : ""}"><time>${String(e.created_at).slice(0, 10) === hoje || new Date(e.created_at).toDateString() === new Date().toDateString() ? hhmm(e.created_at) : chatWhen(e.created_at)}</time> ${esc(e.message)}</li>`).join("")}</ul>` : `<p class="muted hx-vazio">Nada aconteceu ainda hoje.</p>`}`;
+    body.dataset.k = "hoje";
+    const top = fs[0]?.id || 0; if (top > S.hx.feedVisto) { S.hx.feedVisto = top; try { localStorage.setItem(fKey, String(top)); } catch {} }
   } else { body.innerHTML = hxMissoes(); body.dataset.k = "missoes"; }
 }
 async function hxChatEnviar(inp) {
@@ -12745,6 +12754,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "desmaio-2026-11-12", sql: "98", title: "💤 Centro Pokémon: desmaiado só começa a se recuperar depois de 24 h", body: () => `Ajuste na cura de graça dos Pokémon:
+• Pokémon com vida volta a se recuperar aos poucos, como antes.
+• Pokémon DESMAIADO agora fica 24 horas parado antes de a vida começar a voltar. Depois disso ela sobe aos poucos, como nos outros.
+• Assim desmaiar volta a ter peso: não dá mais para esperar um pouquinho e voltar à luta.
+• Com pressa? O Centro Pokémon cura na hora, pagando moedas.` },
+  { id: "acontecimentos-chat-2026-11-12", sql: "98", title: "📜 Acontecimentos no chat", body: () => `Na janelinha do chat (computador) tem uma aba nova: Acontecimentos. Ela mostra o que aconteceu no jogo (batalhas, capturas, prêmios, chegadas…), com o botão para ler o Jornal do dia, sem precisar abrir a Comunidade. O número vermelho mostra quantos acontecimentos novos você ainda não viu.` },
   { id: "rpg-rotas-2026-11-12", sql: "97", title: "🧭 Aventura maior: 6 rotas novas e todos os Pokémon", body: () => `A Aventura cresceu e agora é o lugar de treinar e evoluir os Pokémon:
 • Seis rotas novas saindo da Vila Aurora: Bosque Sussurrante (oeste), Praia Coral (sul), Deserto Rubro (leste), Gruta da Pedreira (pela caverna do penhasco), e mais adiante o Charco Sombrio (depois do Bosque) e o Pico Gelado (depois da Pedreira).
 • Todos os Pokémon aparecem por lá (menos os lendários), cada um no terreno do seu tipo. Os evoluídos só aparecem nas áreas de nível mais alto.
