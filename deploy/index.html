@@ -2210,6 +2210,34 @@ body.pb-on{overflow:hidden}
 .eq-max{color:#F5C542;font-weight:800}.eq-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
 .eq-lista{display:flex;flex-direction:column;gap:6px}.eq-item{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
 .eq-item small{flex:1;min-width:140px}.eq-item span{margin-left:auto;display:flex;gap:6px}.eq-venda{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}.eq-venda input{width:90px}
+/* Minha equipe e topo da Aventura (pedido do dono em 12/11/2026) */
+.tm-wrap{display:flex;flex-direction:column;gap:10px}.tm-ajuda{margin:0;font-size:14px}.tm-ajuda .muted{display:block;font-size:12.5px;margin-top:2px}
+.tm-time{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.tm-col{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;max-height:46vh;overflow:auto;padding:4px;border-radius:12px;background:rgba(0,0,0,.18)}
+.tm-card{all:unset;box-sizing:border-box;position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 6px;border-radius:12px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);cursor:pointer;text-align:center;min-height:132px;touch-action:manipulation}
+.tm-card:hover{border-color:rgba(245,197,66,.6)}.tm-card.sel{border-color:#F5C542;background:rgba(245,197,66,.16);box-shadow:0 0 0 3px rgba(245,197,66,.25)}
+.tm-card.ko{opacity:.7}.tm-card.sobre{border-color:#7FD99A;background:rgba(127,217,154,.15)}.tm-card.arrastando{opacity:.4}
+.tm-card img{image-rendering:pixelated;margin:-4px 0 -6px}.tm-card b{font-size:13.5px;line-height:1.1}.tm-card small{color:var(--muted,#9AA7B4);font-size:12px}
+.tm-card .pkq-bar{width:86%}.tm-st{font:700 11px var(--sans);font-style:normal;color:#E5B92E}.tm-st.ko{color:#E07A7A}
+.tm-num{position:absolute;top:5px;left:6px;width:22px;height:22px;border-radius:50%;background:#2F5AA8;color:#fff;font:900 12px/22px var(--sans);font-style:normal}
+.tm-tag{position:absolute;top:4px;right:6px;font-style:normal;font-size:15px}.tm-tag.masc{right:26px}
+.tm-card.vazio{border-style:dashed;justify-content:center;color:#9AA7B4}.tm-card.vazio span{font-size:22px;opacity:.6}.tm-card.vazio.alvo{border-color:#7FD99A;color:#BFF0D2}
+.tm-det{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:12px;background:rgba(245,197,66,.1);border:1px solid rgba(245,197,66,.45)}
+.tm-acoes{display:flex;gap:6px;flex-wrap:wrap}
+.tm-colh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.tm-colh select{width:auto;flex:0 0 auto}.tm-colh h3{margin:0;flex:1}.tm-colh input{flex:1;min-width:150px;max-width:260px}
+.tm-segue{font-size:14px;padding:4px 2px}
+.modal-tm{max-width:880px !important;width:min(880px,calc(100vw - 20px)) !important}
+@media (max-width:760px){.tm-time{grid-template-columns:repeat(3,1fr)}.tm-card{min-height:122px}}
+#aventura .rpg-hud{justify-content:space-between;align-items:flex-start;flex-wrap:nowrap;gap:10px}
+.rpg-hud-l{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:0}
+.rpg-hud-r{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.rpg-ib{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:58px;height:52px;border-radius:12px;background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);font-size:20px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+.rpg-ib em{font:700 10.5px var(--sans);font-style:normal;color:#E8ECF3;margin-top:4px;white-space:nowrap}.rpg-ib:hover{border-color:#FFE37A}.rpg-ib .mb{position:absolute;top:-7px;right:-7px}
+.rpg-ib.sair{border-color:rgba(255,255,255,.35)}.rpg-ib[hidden]{display:none}
+#aventura .rpg-zona{font-size:12.5px;padding:5px 10px}
+.rpg-chatmin{all:unset;cursor:pointer;float:right;padding:0 6px;color:#FFE7A8}
+.rpg-chat.min .hx-chat-body,.rpg-chat.min form{display:none}.rpg-chat.min .rpg-chatmin{transform:rotate(180deg)}
+@media (max-width:760px){.rpg-ib{width:44px;height:42px;font-size:17px}.rpg-ib em{display:none}#aventura .pz-tit{font-size:12.5px;padding:6px 9px}}
 </style>
 </head>
 <body>
@@ -6016,6 +6044,7 @@ function LIB() {
       <p>⚔️ <b>Encontrou, pode desafiar:</b> chegou perto de outro jogador (até ${S.cfg.rpg?.pvp?.distancia ?? 2} casas), aparece o botão ⚔️ Desafiar. A batalha é obrigatória: começa na hora, por turnos, com os 3 primeiros da equipe de cada um, e quem foi desafiado joga agora ou quando entrar. Não vale moedas, só a experiência das batalhas, com o teto de nível. O mesmo par luta 1 vez por dia; cada um desafia até ${S.cfg.rpg?.pvp?.desafia_dia ?? 5} e é desafiado até ${S.cfg.rpg?.pvp?.recebe_dia ?? 3} vezes por dia.</p>
       <p>🛡️ <b>Equipamentos (do +0 ao +9):</b> botão 🛡️ Equipamentos na Aventura. São 5 peças: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús do tabuleiro), 🧤 Luvas (captura mais fácil no tabuleiro), 👖 Calça (+experiência nas vitórias da Aventura), 🥋 Peitoral (−dano nas lutas da Aventura, não vale contra jogadores) e 👢 Botas (Pokémon raros aparecem mais no mato da Aventura). O bônus fica mais forte a cada +. Para subir, use o 🍬 Doce de Forja: quanto mais alto o +, mais difícil; até o +4, falhar só gasta o doce, e do +5 para cima a peça volta 1 nível. O doce cai às vezes ao vencer selvagens (mais nos Ginásios e no Chefe); as peças são raríssimas nos bichos ou custam ${S.cfg.equip?.preco ?? 5000} moedas na loja. Peças e doces podem ser vendidos na Feira de Equipamentos. Quem refina muito ganha brilho no herói (todas as peças +9: dourado com estrelas).</p>
       <p>🧍 <b>O seu boneco na Aventura</b> mostra o que você está vestindo, e todos veem: sem a peça, a roupa na cor do seu herói; com ela, a peça muda com o "+": couro (do +0 ao +2), malha (do +3 ao +5), aço (do +6 ao +8) e <b>ouro no +9</b>. O boneco anda nas 4 direções. No tabuleiro, o boneco continua o de sempre.</p>
+      <p>🐾 <b>Minha equipe:</b> no botão 🐾 Equipe (na Aventura) ou no menu Pokémon. Toque num Pokémon e depois em outro para trocar de lugar (no computador, arraste). Tudo salva na hora. Ali você também escolhe o suporte, o mascote do tabuleiro e se o 1º da equipe anda atrás de você na Aventura.</p>
       <p>🎒 <b>Pokémon de suporte:</b> no botão 🎒 Suporte, escolha um Pokémon seu para ir na bolsa. A cada vitória na Aventura (selvagens, Ginásios e Chefe) ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de quem lutou (com o herói Pesquisador, mais). Ele precisa estar com vida.</p>
       <p>🏰 <b>A vila ajuda:</b> a Arena da vila dá lutas a mais por dia na Aventura, e a Academia dá experiência a mais nas lutas.</p>
       <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota fica o prédio do Ginásio; entre pela porta e fale com o Líder no fundo do salão. O time dele é segredo: você só sabe quantos Pokémon ele usa, e a ordem é sorteada a cada tentativa. Antes de lutar, escolha a mesma quantidade de Pokémon seus, na ordem em que vão entrar; quem cai sai e entra o próximo, e a vida perdida continua perdida. Se perder e tentar de novo, os Pokémon do Líder voltam com a vida cheia. Vença os 4 para ganhar a <b>insígnia</b> da rota e um prêmio. Quem juntar as 6 insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio, e desistir encerra a tentativa.</p>
@@ -6818,7 +6847,7 @@ function menuHTML() {
 }
 // símbolo e nome de cada janela (menu, atalhos e abas das janelas usam os mesmos)
 const MENU = {
-  desafio: ["🎯", "Desafio do dia"], pokedex: ["📕", "Pokédex & Coleção"], equipe: ["👥", "Equipe & Mascote"], treino: ["🌿", "Grama de Treino"],
+  desafio: ["🎯", "Desafio do dia"], pokedex: ["📕", "Pokédex & Coleção"], equipe: ["🐾", "Minha equipe"], treino: ["🌿", "Grama de Treino"],
   centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
   pkloja: ["🛒", "Loja Pokémon"], cartas: ["🃏", "Cartas Pokegames"], pokebound: ["💥", "PokeBound"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
   mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
@@ -7392,38 +7421,104 @@ function dexView(caught, seen) {
 }
 function pkNeedSql() { return `<div class="rk-state"><p>Os Pokémon precisam dos arquivos <code>16_pokemon_gen1.sql</code>, <code>17_colecao_pokemon.sql</code> e <code>18_batalhas_pokemon.sql</code> rodados no Supabase.</p></div>`; }
 
-// ---------- equipe e mascote ----------
-function viewTeam() {
-  if (S.pk.on === false) return pkNeedSql();
-  if (!S.pk.moves) return `<p class="muted rk-state">Carregando…</p>`;
-  const team = S.pk.team || S.pk.mons.filter(m => m.team_slot).sort((a, b) => a.team_slot - b.team_slot).map(m => m.id);
-  S.pk.team = team;
-  const changed = JSON.stringify(team) !== JSON.stringify(S.pk.mons.filter(m => m.team_slot).sort((a, b) => a.team_slot - b.team_slot).map(m => m.id));
-  const slots = Array.from({ length: 6 }, (_, i) => {
-    const m = S.pk.mons.find(x => x.id === team[i]);
-    if (!m) return `<div class="tslot empty"><span class="tnum">${i + 1}</span><p class="muted">Vazio</p></div>`;
-    const st = pkStats(m);
-    return `<div class="tslot"><span class="tnum">${i + 1}</span>${monCv(m.species_id, m.outfit, 72)}<div class="tinfo"><b>${esc(pkName(m.species_id))}</b><small>Nv ${m.level} · ${st.hp} de vida</small>
-      <small class="tmoves">${m.moves.map(id => esc(moveOf(id)?.name || "")).join(" · ")}</small></div>
-      <div class="tbtns"><button class="btn ghost small" data-act="pk-tmove" data-v="${i}" data-d="-1" ${i === 0 ? "disabled" : ""} aria-label="Subir">▲</button>
-      <button class="btn ghost small" data-act="pk-tmove" data-v="${i}" data-d="1" ${i === team.length - 1 ? "disabled" : ""} aria-label="Descer">▼</button>
-      <button class="btn ghost small" data-act="pk-tdel" data-v="${i}" aria-label="Tirar">✕</button></div></div>`;
-  }).join("");
-  const outside = S.pk.mons.filter(m => !team.includes(m.id));
-  const need = S.pk.rules?.battle?.min_captured ?? 3, size = S.pk.rules?.battle?.size ?? 3;
-  const masc = S.pk.mons.find(m => m.id === S.me.mascot?.id);
-  return `<div class="team-wrap"><section>
-      <h3>Equipe ativa <small class="muted">(até 6, na ordem de entrada nas batalhas)</small></h3>
-      <p class="muted">Nas batalhas entram os ${size} primeiros. ${S.pk.mons.length < need ? `<strong>Você precisa de ${need} Pokémon capturados para batalhar (tem ${S.pk.mons.length}).</strong>` : ""}</p>
-      <div class="tslots">${slots}</div>
-      <div class="act-btns" style="margin-top:12px"><button class="btn" data-act="pk-tsave" ${changed ? "" : "disabled"}>Salvar equipe</button>${changed ? `<button class="btn ghost" data-act="pk-treset">Desfazer</button>` : ""}</div>
-    </section>
-    <section><h3>Mascote no tabuleiro</h3>
-      <div class="masc-box">${masc ? `${monCv(masc.species_id, masc.outfit, 96)}<div><b>${esc(pkName(masc.species_id))}</b><p class="muted">Anda com você no mapa e todo mundo vê. Não muda a equipe de batalha.</p><button class="btn ghost small" data-act="pk-mascot" data-v="">Tirar mascote</button></div>`
-        : `<p class="muted">Nenhum mascote. Escolha um Pokémon na coleção e toque em "Usar de mascote".</p>`}</div>
-      <h3 style="margin-top:18px">Coleção <small class="muted">(toque para pôr na equipe)</small></h3>
-      <div class="mon-grid small">${outside.map(m => `<button class="mon-card" data-act="pk-tadd" data-v="${m.id}" ${team.length >= 6 ? "disabled title=\"A equipe está cheia: tire alguém antes\"" : ""}>${monCv(m.species_id, m.outfit, 64)}<span class="mc-name">${esc(pkName(m.species_id))}</span><span class="mc-lv">Nv ${m.level}</span></button>`).join("") || `<p class="muted">Todos os seus Pokémon estão na equipe.</p>`}</div>
-    </section></div>`;
+// ---------- Minha equipe (pedido do dono em 12/11/2026): uma tela só, igual no tabuleiro e na Aventura, que salva sozinha ----------
+// Toque num Pokémon e depois em outro para trocar de lugar (ou arraste, no computador). Coleção com busca. Suporte, mascote e
+// a opção de mostrar o 1º da equipe andando atrás de você na Aventura ficam aqui também.
+S.tm = { sel: null, q: "", ord: "nivel" };
+const rpgSegueKey = () => `pg-rpg-segue-${S.session?.user?.id}`;
+const rpgSegue = () => { try { return localStorage.getItem(rpgSegueKey()) !== "0"; } catch { return true; } };
+const tmTime = () => (S.pk?.mons || []).filter(m => m.team_slot).sort((a, b) => a.team_slot - b.team_slot);
+function tmCard(m, i) {
+  const h = treinoHpOf(m), x = pkXp(m), sup = typeof rpgSupId === "function" && rpgSupId() === m.id, masc = S.me?.mascot?.id === m.id;
+  return `<button class="tm-card ${S.tm.sel === m.id ? "sel" : ""} ${h <= 0 ? "ko" : ""}" data-act="tm-pick" data-v="${m.id}" draggable="true" data-tmdrag="${m.id}" ${i >= 0 ? `data-tmslot="${i}"` : ""}>
+    ${i >= 0 ? `<i class="tm-num">${i + 1}</i>` : ""}${sup ? `<i class="tm-tag sup" title="Suporte na Aventura">🎒</i>` : ""}${masc ? `<i class="tm-tag masc" title="Mascote no tabuleiro">⭐</i>` : ""}
+    <img src="${SPRITE(m.species_id)}" alt="" width="64" height="64" loading="lazy" draggable="false">
+    <b>${esc(pkName(m.species_id))}</b><small>Nv ${m.level}</small>
+    <span class="pkq-bar" title="Vida"><i style="width:${Math.max(0, h)}%;background:${h > 50 ? "#4CC38A" : h > 0 ? "#E5B92E" : "#E05A5A"}"></i></span>
+    <span class="pkq-bar xp" title="Experiência até o próximo nível"><i style="width:${x.pct}%"></i></span>
+    ${h <= 0 ? `<em class="tm-st ko">💤 desmaiado</em>` : h < 100 ? `<em class="tm-st">🩹 ferido</em>` : ""}</button>`;
+}
+function tmColHTML() {
+  const ids = new Set(tmTime().map(m => m.id)), q = S.tm.q.trim().toLowerCase();
+  const col = (S.pk?.mons || []).filter(m => !ids.has(m.id) && (!q || pkName(m.species_id).toLowerCase().includes(q)));
+  col.sort(S.tm.ord === "nome" ? (a, b) => pkName(a.species_id).localeCompare(pkName(b.species_id), "pt-BR") : S.tm.ord === "vida" ? (a, b) => treinoHpOf(b) - treinoHpOf(a) || b.level - a.level : (a, b) => b.level - a.level);
+  return col.map(m => tmCard(m, -1)).join("") || `<p class="muted">${q ? "Nenhum com esse nome." : "Todos os seus Pokémon estão na equipe."}</p>`;
+}
+function tmHTML(modo) {
+  if (S.pk?.on === false) return pkNeedSql();
+  if (!S.pk?.mons) return `<p class="muted rk-state">Carregando…</p>`;
+  const time = tmTime(), size = S.pk.rules?.battle?.size ?? 3, sel = S.pk.mons.find(m => m.id === S.tm.sel), naEq = sel && time.some(m => m.id === sel.id);
+  const slots = Array.from({ length: 6 }, (_, i) => time[i] ? tmCard(time[i], i) : `<div class="tm-card vazio ${sel ? "alvo" : ""}" data-act="tm-vazio" data-v="${i}" data-tmslot="${i}"><i class="tm-num">${i + 1}</i><span>➕</span><small>${sel && !naEq ? "Pôr aqui" : "Vazio"}</small></div>`).join("");
+  return `<div class="tm-wrap" data-modo="${modo}">
+    ${modo === "modal" ? `<div class="av-head"><h2>🐾 Minha equipe</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>` : ""}
+    <p class="tm-ajuda">👆 <b>Toque</b> num Pokémon e depois em outro para <b>trocar de lugar</b> (no computador, dá para <b>arrastar</b>). Tudo é <b>salvo na hora</b>.
+      <span class="muted">Nas batalhas entram os ${size} primeiros. Na Aventura luta o primeiro com vida.</span></p>
+    <div class="tm-time" id="tm-time">${slots}</div>
+    ${sel ? `<div class="tm-det"><span><b>${esc(pkName(sel.species_id))}</b> <small class="muted">Nv ${sel.level}</small> · ${naEq ? "toque em outro da equipe para trocar de lugar, ou num da coleção para colocar no lugar dele" : time.length < 6 ? "toque num lugar vazio ou num da equipe para colocar ali" : "toque num da equipe para trocar por ele"}</span>
+      <div class="tm-acoes">${naEq ? `<button class="btn ghost small" data-act="tm-tirar" data-v="${sel.id}">↩ Tirar da equipe</button>` : time.length < 6 ? `<button class="btn small" data-act="tm-por" data-v="${sel.id}">➕ Pôr na equipe</button>` : ""}
+        <button class="btn ghost small" data-act="tm-sup" data-v="${sel.id}">${typeof rpgSupId === "function" && rpgSupId() === sel.id ? "🎒 Tirar do suporte" : "🎒 Suporte na Aventura"}</button>
+        <button class="btn ghost small" data-act="tm-masc" data-v="${sel.id}">${S.me?.mascot?.id === sel.id ? "⭐ Tirar de mascote" : "⭐ Mascote no tabuleiro"}</button>
+        <button class="btn ghost small" data-act="tm-dex" data-v="${sel.id}">📕 Detalhes</button><button class="btn ghost small" data-act="tm-x">Cancelar</button></div></div>` : ""}
+    <div class="tm-colh"><h3>Coleção</h3><input id="tm-q" placeholder="🔎 Buscar pelo nome" value="${esc(S.tm.q)}" autocomplete="off">
+      <select id="tm-ord" aria-label="Ordem"><option value="nivel" ${S.tm.ord === "nivel" ? "selected" : ""}>Maior nível</option><option value="nome" ${S.tm.ord === "nome" ? "selected" : ""}>Nome</option><option value="vida" ${S.tm.ord === "vida" ? "selected" : ""}>Mais vida</option></select></div>
+    <div class="tm-col" id="tm-col" data-tmcol="1">${tmColHTML()}</div>
+    <label class="check tm-segue"><input type="checkbox" id="tm-segue" ${rpgSegue() ? "checked" : ""}> 🐾 Mostrar o 1º da equipe andando atrás de mim na Aventura</label>
+  </div>`;
+}
+function viewTeam() { return tmHTML("win"); }
+function tmPinta() {
+  if (S.win === "equipe") render();
+  const w = $("#modal-root .tm-wrap"); if (w) { const box = w.closest(".modal"); if (box) box.innerHTML = tmHTML("modal"); }
+  try { pkDock(); } catch {}
+}
+async function tmSalvar(ids) {
+  const antes = (S.pk.mons || []).map(m => [m, m.team_slot]);
+  S.pk.mons.forEach(m => { const k = ids.indexOf(m.id); m.team_slot = k >= 0 ? k + 1 : null; }); S.tm.sel = null; tmPinta();
+  try { await rpc("mon_team_set", { _ids: ids }); toast("✅ Equipe salva"); sfx("tick"); await loadPk(); S.pk.team = null; tmPinta(); if (AV.open) { rpgNetJoin(); rpgHud(); } }
+  catch (e) { antes.forEach(([m, t]) => m.team_slot = t); tmPinta(); toast(errMsg(e), true); }
+}
+function tmMover(de, para) {   // de/para: id; para pode ser o número de um lugar vazio
+  const t = tmTime().map(m => m.id), a = t.indexOf(de);
+  if (typeof para === "number") { if (a >= 0) { t.splice(a, 1); t.splice(Math.min(para, t.length), 0, de); } else { if (t.length >= 6) return toast("A equipe está cheia: troque por alguém dela.", true); t.splice(Math.min(para, t.length), 0, de); } return tmSalvar(t); }
+  const b = t.indexOf(para);
+  if (a >= 0 && b >= 0) [t[a], t[b]] = [t[b], t[a]];
+  else if (a >= 0 && b < 0) t[a] = para;
+  else if (a < 0 && b >= 0) t[b] = de;
+  else return;
+  return tmSalvar(t);
+}
+Object.assign(ACTIONS, {
+  "tm-pick": v => { const s0 = S.tm.sel; if (!s0 || s0 === v) { S.tm.sel = s0 === v ? null : v; sfx("tick"); return tmPinta(); }
+    const t = tmTime().map(m => m.id); if (!t.includes(s0) && !t.includes(v)) { S.tm.sel = v; return tmPinta(); } tmMover(s0, v); },
+  "tm-vazio": v => { if (!S.tm.sel) return toast("Toque primeiro no Pokémon que vai para este lugar."); tmMover(S.tm.sel, +v); },
+  "tm-por": v => tmMover(v, tmTime().length),
+  "tm-tirar": v => { const t = tmTime().map(m => m.id).filter(x => x !== v); tmSalvar(t); },
+  "tm-x": () => { S.tm.sel = null; tmPinta(); },
+  "tm-sup": v => { try { if (rpgSupId() === v) localStorage.removeItem(rpgSupKey()); else localStorage.setItem(rpgSupKey(), v); } catch {} S.tm.sel = null; toast(rpgSupId() === v ? "🎒 Agora ele é o suporte na Aventura." : "🎒 Sem suporte."); tmPinta(); if (AV.open) rpgHud(); },
+  "tm-masc": v => guarded(async () => { const tira = S.me?.mascot?.id === v; await rpc("mon_set_mascot", { _id: tira ? null : v }); await Promise.all([refreshMe(), loadWorld()]); toast(tira ? "Mascote tirado." : "⭐ Mascote escolhido! Ele anda com você no tabuleiro."); S.tm.sel = null; tmPinta(); }),
+  "tm-dex": v => { closeModal(); if (AV.open) { rpgClose(false); AV.volta = true; } S.pk.sel = v; S.pk.tab = "colecao"; ACTIONS.go("pokedex"); },
+});
+document.addEventListener("input", e => { if (e.target.id === "tm-q") { S.tm.q = e.target.value; const c = $("#tm-col"); if (c) c.innerHTML = tmColHTML(); } });
+document.addEventListener("change", e => {
+  if (e.target.id === "tm-ord") { S.tm.ord = e.target.value; const c = $("#tm-col"); if (c) c.innerHTML = tmColHTML(); }
+  if (e.target.id === "tm-segue") { try { localStorage.setItem(rpgSegueKey(), e.target.checked ? "1" : "0"); } catch {} if (AV.open) rpgNetJoin(); toast(e.target.checked ? "🐾 Ele vai andar atrás de você." : "Ele não vai mais andar atrás de você."); }
+});
+// arrastar e soltar (computador)
+document.addEventListener("dragstart", e => { const c = e.target.closest?.("[data-tmdrag]"); if (c) { e.dataTransfer.setData("text/plain", "tm:" + c.dataset.tmdrag); e.dataTransfer.effectAllowed = "move"; c.classList.add("arrastando"); } });
+document.addEventListener("dragend", e => e.target.closest?.("[data-tmdrag]")?.classList.remove("arrastando"));
+document.addEventListener("dragover", e => { if (e.target.closest?.("[data-tmslot],[data-tmcol]")) { e.preventDefault(); e.target.closest("[data-tmslot],[data-tmcol]").classList.add("sobre"); } });
+document.addEventListener("dragleave", e => e.target.closest?.("[data-tmslot],[data-tmcol]")?.classList.remove("sobre"));
+document.addEventListener("drop", e => {
+  const alvo = e.target.closest?.("[data-tmslot],[data-tmcol]"); if (!alvo) return; e.preventDefault(); alvo.classList.remove("sobre");
+  const d = e.dataTransfer.getData("text/plain"); if (!d.startsWith("tm:")) return; const id = d.slice(3);
+  if (alvo.dataset.tmcol) { if (tmTime().some(m => m.id === id)) ACTIONS["tm-tirar"](id); return; }
+  const outro = alvo.dataset.tmdrag; if (outro && outro !== id) tmMover(id, outro); else if (!outro) tmMover(id, +alvo.dataset.tmslot);
+});
+async function tmAbrir() {
+  const m = openModal(`<div class="tm-wrap"><p class="muted">Abrindo a equipe…</p></div>`); m.querySelector(".modal").classList.add("modal-av", "modal-tm");
+  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-avx]")) { S.tm.sel = null; closeModal(); } });
+  await guarded(async () => { if (S.pk.on !== false) { await loadPkStatic(); if (!S.pk.mons) await loadPk(); } });
+  tmPinta();
 }
 
 // ---------- loja Pokémon: itens da Red/Blue (arquivo 47) ----------
@@ -7637,7 +7732,7 @@ function viewBattle() {
 // ---------- janelas, menu e ações ----------
 Object.assign(WINS, {
   pokedex: ["Pokédex & Coleção", () => viewPokedex()],
-  equipe: ["Equipe & Mascote", () => viewTeam()],
+  equipe: ["Minha equipe", () => viewTeam()],
   pkloja: ["Loja Pokémon", () => viewPkShop()],
   batalhas: ["Batalhas Pokémon", () => viewBattles()],
   batalha: ["Batalha Pokémon", () => viewBattle()]
@@ -11227,7 +11322,7 @@ async function rpgViajar(para) {
   [AV.x, AV.y] = ch && !rpgSolid(ch[0], ch[1]) ? ch : (AV.dados.chegada || [28, 30]); AV.moving = null; AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();
   try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
   rpgNetLeave(); rpgNetJoin(); rpgPerto();
-  const h = $("#rpg-hint"); if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" || RPG_REG[para].gym ? "" : ` · ${rpgFaixa(para)}`}`;
+  const h = $("#rpg-hint"); if (h) { h.hidden = false; clearTimeout(AV.dicaT); AV.dicaT = setTimeout(() => { h.hidden = true; }, 5000); } if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" || RPG_REG[para].gym ? "" : ` · ${rpgFaixa(para)}`}`;
   if (fl) { await sleep(150); fl.classList.remove("on", "viagem"); }
   sfx("tick"); AV.busy = false;
 }
@@ -11281,12 +11376,14 @@ function rpgRoot() {
   let el = $("#aventura"); if (el) return el;
   el = document.createElement("div"); el.id = "aventura"; el.hidden = true;
   el.innerHTML = `<canvas id="rpg-cv" aria-label="Aventura: ande com WASD ou as setas"></canvas>
-    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><span class="pz-on" id="rpg-noite" hidden></span><span class="pz-on" id="rpg-ins"></span><button class="btn small ghost" data-rpg="equip">🛡️ Equipamentos</button><button class="btn small ghost" id="rpg-sup" data-rpg="suporte">🎒 Suporte</button><button class="btn small ghost" id="rpg-mis" data-rpg="missoes" hidden>📜 Missões</button><button class="btn small rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" hidden></button><button class="btn small ghost" data-rpg="rotas">🗺️ Mapa</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
+    <div class="pz-hud rpg-hud"><div class="rpg-hud-l"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span>
+      <span id="rpg-on" hidden></span><span id="rpg-lutas" hidden></span><span id="rpg-noite" hidden></span><span id="rpg-ins" hidden></span></div>
+      <div class="rpg-hud-r"><button class="rpg-ib" data-rpg="equipe" title="Minha equipe">🐾<em>Equipe</em></button><button class="rpg-ib" data-rpg="equip" title="Equipamentos">🛡️<em>Equipar</em></button><button class="rpg-ib" id="rpg-mis" data-rpg="missoes" title="Missões" hidden>📜<em>Missões</em></button><button class="rpg-ib rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" title="Chefe da rota" hidden></button><button class="rpg-ib" data-rpg="rotas" title="Mapa completo">🗺️<em>Mapa</em></button><button class="rpg-ib sair" data-rpg="sair" title="Voltar ao tabuleiro">✕<em>Sair</em></button></div></div>
     <div id="rpg-mini-box" class="rpg-mini"><b>Vila Aurora</b><canvas id="rpg-mini" width="184" height="184"></canvas></div>
     <button id="rpg-acao" class="rpg-acao" hidden></button>
     <div id="rpg-fala" class="rpg-fala" hidden></div>
     <p class="gr-hint" id="rpg-hint">Carregando a Vila Aurora…</p>
-    <div id="rpg-chat" class="rpg-chat"><h4>💬 Chat da galera</h4><div class="hx-chat-body"><ul class="hx-chat-list" id="rpg-chat-list"></ul></div>
+    <div id="rpg-chat" class="rpg-chat"><h4>💬 Chat da galera <button class="rpg-chatmin" data-rpg="chatmin" title="Recolher ou abrir o chat" aria-label="Recolher ou abrir o chat">▾</button></h4><div class="hx-chat-body"><ul class="hx-chat-list" id="rpg-chat-list"></ul></div>
       <form id="rpgchatform" class="hx-chat-form" autocomplete="off"><label for="rpg-chat-in" class="sr">Mensagem</label><input id="rpg-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form></div>
     <div class="gr-pad" aria-label="Controles"><button data-dir="up" aria-label="Cima">▲</button><button data-dir="left" aria-label="Esquerda">◀</button><button data-dir="right" aria-label="Direita">▶</button><button data-dir="down" aria-label="Baixo">▼</button></div>
     <div class="gr-flash" id="rpg-flash"></div>`;
@@ -11297,6 +11394,8 @@ function rpgRoot() {
     if (e.target.closest("[data-rpg='missoes']")) return rpgMissoesAbrir(null, null);
     if (e.target.closest("[data-rpg='suporte']")) return rpgSupAbrir();
     if (e.target.closest("[data-rpg='equip']")) return eqAbrir();
+    if (e.target.closest("[data-rpg='equipe']")) return tmAbrir();
+    if (e.target.closest("[data-rpg='chatmin']")) { const c = $("#rpg-chat"); c?.classList.toggle("min"); try { localStorage.setItem("pg-rpg-chat-min", c?.classList.contains("min") ? "1" : "0"); } catch {} return; }
     if (e.target.closest("[data-rpg='chefe']")) return rpgChefeAbrir();
     if (e.target.closest("#rpg-acao")) return rpgUsar();
     if (e.target.closest("#rpg-fala")) return rpgFalaProx();
@@ -11325,6 +11424,7 @@ async function rpgOpen() {
   AV.open = true; AV.busy = false; AV.keys.clear(); el.hidden = false; document.body.classList.add("gr-on", "rpg-on");
   document.body.classList.toggle("hx-gr", hxOn());
   $("#rpg-chat", el).hidden = hxCfg().chat_fixo === false;
+  try { $("#rpg-chat", el).classList.toggle("min", localStorage.getItem("pg-rpg-chat-min") === "1"); } catch {}
   if (grChatOn()) { if (!S.chat.loaded) loadChat().then(rpgChatRender); else rpgChatRender(); hxChatVisto(); }
   let p = null; if (!AV.posLida) { AV.posLida = true; try { p = JSON.parse(localStorage.getItem(rpgPosKey()) || "null"); } catch {} }
   try { await rpgEntra(p?.r || AV.r); } catch { try { await rpgEntra("vila"); p = null; } catch { rpgClose(); return toast("Não consegui carregar o cenário da Aventura. Tente de novo.", true); } }
@@ -11332,6 +11432,7 @@ async function rpgOpen() {
   if (AV.moving) { AV.x = AV.moving.tx; AV.y = AV.moving.ty; AV.moving = null; }
   if (rpgSolid(AV.x, AV.y)) [AV.x, AV.y] = AV.r === "vila" ? [28, 30] : (AV.dados.chegada || [2, 2]);
   AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();   // o Pokémon que segue começa num lugar livre
+  clearTimeout(AV.dicaT); AV.dicaT = setTimeout(() => { const h = $("#rpg-hint"); if (h) h.hidden = true; }, 8000); $("#rpg-hint", el).hidden = false;
   $("#rpg-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande e explore. Pokémon selvagens aparecem no mato." : "WASD ou setas para andar · E para entrar, conversar e desafiar · 🗺️ Mapa mostra tudo";
   rpgNetJoin(); rpgPerto(); rpgEstado(); eqCarregar().then(() => rpgNetJoin()); lpcCarregar();
   cancelAnimationFrame(AV.raf); AV.last = performance.now(); AV.raf = requestAnimationFrame(rpgLoop);
@@ -11363,7 +11464,7 @@ function rpgPerto() {
   AV.perto = p;
   const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai ? "Entrar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym ? "Desafiar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
   const z = rpgZonaKey(rpgAt(AV.x, AV.y)), ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = rpgZonaTxt(z); }
-  const tt = $("#rpg-tit"), R0 = RPG_REG[AV.r]; if (tt && R0) tt.textContent = `${R0.ic} ${R0.nome} · 📍 ${AV.x}, ${AV.y}`;   // arquivo 101: sempre onde você está
+  rpgTit();   // arquivo 101: sempre onde você está
 }
 function rpgUsar() {
   const p = AV.perto; if (!p || AV.busy) return;
@@ -11469,7 +11570,7 @@ function rpgPinta(now) {
     g.textAlign = "center"; g.fillStyle = perto ? "#1E150C" : "#FFE7A8"; g.fillText(`${p.ic} ${p.nome}`, x, y - 6 * dpr);
   }
   // moradores, outros jogadores e você, de trás para a frente
-  const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: pkTeam()[0]?.species_id, eq: eqSoma(AV.eq), eqs: eqSlotsDe(AV.eq), dir: AV.dir || "down", anda: !!AV.moving, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
+  const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: rpgSegue() ? pkTeam()[0]?.species_id : null, eq: eqSoma(AV.eq), eqs: eqSlotsDe(AV.eq), dir: AV.dir || "down", anda: !!AV.moving, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
   const LID = n => n === "pico" ? 9 : 6;   // os Líderes de Ginásio vestem aço (o do Pico, ouro)
   const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.gym ? `🏟️ ${n.nome}` : n.nome, ch: n.ch, npc: true, gym: n.gym, dir: "down",
       eqs: n.gym ? { peitoral: LID(n.gym), calca: LID(n.gym), botas: LID(n.gym), luvas: LID(n.gym) } : {} })),
@@ -11508,11 +11609,11 @@ function rpgPinta(now) {
   const mc = $("#rpg-mini");
   if (mc && mc.offsetParent !== null) { const mg = mc.getContext("2d"), kx = mc.width / AV.g[0].length, ky = mc.height / AV.g.length; mg.imageSmoothingEnabled = true; mg.drawImage(AV.img, 0, 0, mc.width, mc.height);
     for (const o of todos) if (!o.npc) { mg.fillStyle = o.eu ? "#FFE37A" : "#FFFFFF"; mg.strokeStyle = "#0F1420"; mg.lineWidth = 1; mg.beginPath(); mg.arc((o.fx + .5) * kx, (o.fy + .5) * ky, o.eu ? 4 : 3, 0, 6.28); mg.fill(); mg.stroke(); } }
-  const n = todos.filter(o => !o.npc).length, on = $("#rpg-on"); if (on && on.dataset.n !== String(n)) { on.dataset.n = n; on.textContent = n === 1 ? "👥 Só você por aqui" : `👥 ${n} por aqui`; }
+  const n = todos.filter(o => !o.npc).length, mb = $("#rpg-mini-box b"), mt = `${RPG_REG[AV.r]?.nome || ""} · 👥 ${n}`; if (mb && mb.textContent !== mt) mb.textContent = mt;
 }
 // ---------- quem está na vila (Realtime) ----------
 let rpgChannel = null;
-const rpgMeta = () => ({ n: S.me.name, c: S.me.class, o: S.me.outfit || {}, x: AV.x, y: AV.y, f: AV.face, m: pkTeam()[0]?.species_id || null, eq: eqSoma(AV.eq), es: eqSlotsDe(AV.eq), d: AV.dir || "down" });
+const rpgMeta = () => ({ n: S.me.name, c: S.me.class, o: S.me.outfit || {}, x: AV.x, y: AV.y, f: AV.face, m: rpgSegue() ? pkTeam()[0]?.species_id || null : null, eq: eqSoma(AV.eq), es: eqSlotsDe(AV.eq), d: AV.dir || "down" });
 function rpgNetJoin() {
   if (!sb || !S.me) return;
   if (rpgChannel) { try { rpgChannel.track(rpgMeta()); } catch {} return; }
@@ -11857,13 +11958,18 @@ function rpgChefeAbrir() {
       try { await rpc("admin_rpg_chefe", { _regiao: null, _especie: null }); toast("👹 Chefe solto!"); await rpgEstado(); } catch (er) { toast(errMsg(er), true); } }
   });
 }
+function rpgTit() {   // uma linha só: lugar, coordenadas, lutas do dia e a noite
+  const tt = $("#rpg-tit"), R0 = RPG_REG[AV.r]; if (!tt || !R0) return;
+  tt.textContent = `${R0.ic} ${R0.nome} · 📍 ${AV.x}, ${AV.y}${AV.st ? ` · ⚔️ ${AV.st.batalhas}/${AV.st.batalhas_dia}` : ""}${AV.st?.noite ? " · 🌙" : ""}`;
+}
 function rpgHud() {
   const st = AV.st, n = $("#rpg-noite"), ins = $("#rpg-ins"), mi = $("#rpg-mis"), ch = $("#rpg-chefe"), su = $("#rpg-sup");
   if (su) { const sp = rpgSup(); su.textContent = sp ? `🎒 ${innerWidth > 760 ? "Suporte: " : ""}${pkName(sp.species_id)}` : `🎒 ${innerWidth > 760 ? "Escolher suporte" : "Suporte"}`; }
   if (n) { n.hidden = !st?.noite; n.textContent = "🌙 Noite"; n.title = "De noite, Fantasmas e Sombrios aparecem em todas as áreas"; }
   if (ins) ins.textContent = `🏅 ${rpgInsig().length}/${Object.keys(rpgLideres()).length}`;
-  if (mi) { const ms = st?.missoes || [], prontas = ms.filter(m => !m.resgatada && m.prog >= m.meta).length; mi.hidden = !ms.length; mi.innerHTML = `📜 ${innerWidth > 760 ? "Missões " : ""}${ms.filter(m => m.resgatada).length}/${ms.length}${prontas ? ` <b class="mb red">${prontas}</b>` : ""}`; }
-  if (ch) { const c = st?.chefe; ch.hidden = !c || c.status !== "ativo"; if (c) { const pc = Math.max(0, Math.round(100 - c.dano * 100 / Math.max(1, c.hp_total))); ch.textContent = innerWidth > 760 ? `👹 Chefe: ${pkName(c.especie)} em ${RPG_REG[c.regiao]?.nome || c.regiao} · ${pc}%` : `👹 Chefe ${pc}%`; } }
+  if (mi) { const ms = st?.missoes || [], prontas = ms.filter(m => !m.resgatada && m.prog >= m.meta).length; mi.hidden = !ms.length; mi.title = `Missões: ${ms.filter(m => m.resgatada).length} de ${ms.length} feitas`; mi.innerHTML = `📜<em>Missões</em>${prontas ? `<b class="mb red">${prontas}</b>` : ""}`; }
+  if (ch) { const c = st?.chefe; ch.hidden = !c || c.status !== "ativo"; if (c) { const pc = Math.max(0, Math.round(100 - c.dano * 100 / Math.max(1, c.hp_total))); ch.innerHTML = `👹<em>Chefe ${pc}%</em>`; ch.title = `Chefe: ${pkName(c.especie)} em ${RPG_REG[c.regiao]?.nome || c.regiao}`; } }
+  rpgTit();
 }
 ACTIONS["rpg-gym-next"] = async v => { await guarded(async () => { await Promise.all([loadPk(), loadTreino()]); }); await rpgGinasioLutar(v); };
 // =================================================================
@@ -13300,6 +13406,13 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "equipe-facil-2026-11-12", sql: "105", title: "🐾 Minha equipe: arrumar ficou fácil", body: () => `Ficou muito mais fácil arrumar a equipe:
+• Nova tela 🐾 Minha equipe (menu Pokémon, e o botão 🐾 Equipe dentro da Aventura).
+• Toque num Pokémon e depois em outro para trocar de lugar. No computador, dá para arrastar.
+• Salva sozinho, na hora: não tem mais botão de salvar.
+• Na mesma tela: buscar na coleção, escolher o Pokémon de suporte da Aventura e o mascote do tabuleiro.
+• Você escolhe se quer o 1º da equipe andando atrás de você na Aventura.
+• A Aventura ficou mais limpa: no alto, uma linha com onde você está e as lutas do dia, e botões com ícone. O chat pode ser recolhido no ▾.` },
   { id: "bonecos-2026-11-12", sql: "104", title: "🧍 Aventura: boneco novo, vestindo os seus equipamentos", body: () => `O seu herói na Aventura ganhou um boneco novo, maior e mais detalhado, que anda nas 4 direções:
 • Ele veste as peças que você equipou, e todo mundo vê o que você está usando.
 • A peça muda com o "+": couro (do +0 ao +2), malha (do +3 ao +5), aço (do +6 ao +8) e ouro brilhante no +9.
