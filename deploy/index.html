@@ -2170,6 +2170,13 @@ body.pb-on{overflow:hidden}
   #aventura .gr-pad{display:none}
   .rpg-acao,.rpg-fala{bottom:calc(40px + env(safe-area-inset-bottom,0px))}
 }
+/* Aventura: rotas (arquivo 97) */
+.gr-flash.viagem{background:#000 !important;animation:none !important;opacity:1 !important;transition:opacity .25s}
+.rpg-rotas .rpg-rota{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 12px;margin:8px 0;background:rgba(255,255,255,.03)}
+.rpg-rotas .rpg-rota.aqui{border-color:#F5C542;background:rgba(245,197,66,.08)}
+.rpg-rotas h3{margin:0 0 4px;font-size:15px}.rpg-rotas h3 small{font-weight:500;color:var(--muted,#9AA7B4)}
+.rpg-rotas ul{margin:0;padding:0;list-style:none}.rpg-rotas li{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:3px 0}
+.rpg-rotas li small{color:var(--muted,#9AA7B4);flex-basis:100%}.rpg-nv{font:700 12px 'IBM Plex Mono',ui-monospace,monospace;color:#7FD99A;background:rgba(127,217,154,.12);padding:1px 6px;border-radius:6px}
 </style>
 </head>
 <body>
@@ -5965,8 +5972,13 @@ function LIB() {
       <p>As skins da <b>Loja & Visuais</b> mudam o desenho: a <b>roupa</b> troca as cores (algumas têm listras ou detalhes), a <b>capa</b> aparece nas costas (ou vira asas), o <b>chapéu</b> substitui o enfeite de cabeça do herói, o <b>acessório</b> vai no rosto ou no peito e a <b>aura</b> deixa um brilho em volta.</p>` },
     { id: "aventura", ic: "🧭", t: "Aventura (RPG)", h: `<p>A <b>Aventura</b> (menu Competir, ou o botão 🧭 no alto do mapa) é um jogo a mais dentro do Pokegames, para andar e explorar. O tabuleiro continua igual. Os <b>Pokémon e as moedas são os mesmos</b> dos dois jogos.</p>
       <p><b>Vila Aurora:</b> ande com WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas. Os outros jogadores aparecem andando ao vivo.</p>
-      <p><b>Pokémon selvagens:</b> aparecem enquanto você anda em quatro terrenos, cada um com os seus tipos: capim alto (Inseto, Planta e Normal), grama escura (Normal, Voador e Elétrico), pântano (Água e Veneno) e o alto do penhasco, subindo pela escada de corda (Pedra, Terra e Luta). Quem luta é o primeiro Pokémon da equipe que estiver com vida. A luta é igual à da Grama de Treino: vencer dá experiência, a vida que ele perder continua perdida até curar, e não há captura por enquanto.</p>
-      <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro. A caverna do penhasco ainda está fechada.</p>` },
+      <p><b>É aqui que se treina:</b> a Grama de Treino fechou, e a Aventura é o lugar de ganhar experiência e evoluir os Pokémon. Todos os Pokémon aparecem por aqui (menos os lendários), cada um nas áreas do seu tipo.</p>
+      <p><b>Rotas:</b> da Vila Aurora saem o Bosque Sussurrante (oeste), a Praia Coral (sul), o Deserto Rubro (leste) e a Gruta da Pedreira (pela caverna do penhasco). Mais longe ficam o Charco Sombrio (depois do Bosque) e o Pico Gelado (depois da Pedreira). Ande até a borda, na saída com a placa ➡️, para trocar de região.</p>
+      <p><b>Níveis:</b> cada área tem a sua faixa de nível, que aparece no alto da tela quando você pisa no mato e no botão <b>🗺️ Rotas</b>. Perto da vila os Pokémon são fracos; no fundo de cada rota (o mato com o chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Os evoluídos só aparecem nas áreas de nível alto. Quanto mais forte o selvagem, mais experiência ele dá.</p>
+      ${Object.values(RPG_REG).map(R => `<p>${R.ic} <b>${R.nome}</b>: ${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${z.nome} (Nv ${z.min}–${z.max}: ${rpgTipos(z)})` : ""; }).filter(Boolean).join("; ")}.</p>`).join("")}
+      <p><b>A luta:</b> quem luta é o primeiro Pokémon da equipe que estiver com vida. Vencer dá experiência; a vida que ele perder continua perdida até se recuperar (ela volta aos poucos sozinha, ou na hora no Centro Pokémon). Não há captura na Aventura: a captura continua no tabuleiro.</p>
+      <p><b>Fugir custa moedas:</b> ${S.cfg.rpg?.fuga_base ?? 10} moedas para fugir, mais ${S.cfg.rpg?.fuga_por_ataque ?? 10} por ataque que você já fez naquela luta. Sem moedas suficientes, não dá para fugir.</p>
+      <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro.</p>` },
     { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
       <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
       <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
@@ -6323,6 +6335,7 @@ const ACTIONS = {
     if (v === "mapa") { S.win = null; return render(); }
     if (["pokedex", "equipe", "pkloja", "batalhas"].includes(v)) return pkOpenWin(v);
     if (v === "correio") return mailOpen();
+    if (v === "treino" && S.cfg.treino?.on === false && !S.isAdmin) return rpgOpen();   // arquivo 97: a Grama fechou, o treino é na Aventura
     if (v === "treino" || v === "centro") return treinoOpen(v);
     if (v === "creche") return crecheOpen();
     if (v === "leilao") return leilaoOpen();
@@ -6727,7 +6740,7 @@ function menuHTML() {
     presence: pi ? `<b class="mb ${pi.missing.length ? "warn" : "ok"}">${pi.done.length}/${pi.act.length}</b>` : "",
     duelos: duels ? `<b class="mb red">${duels}</b>` : "",
     pokedex: S.pk?.mons?.some(m => evoReady(m).length || m.pending_moves?.length) ? `<b class="mb red" title="Evolução ou ataque novo esperando">!</b>` : S.pk?.mons?.length ? `<b class="mb">${S.pk.mons.length}</b>` : "",
-    treino: S.treino?.missing ? null : S.treino?.st?.visita ? `<b class="mb live">LÁ DENTRO</b>` : S.treino?.st && S.treino.st.minutos < S.treino.st.minutos_dia + (S.treino.st.bonus || 0) ? `<b class="mb">${S.treino.st.minutos_dia + (S.treino.st.bonus || 0) - S.treino.st.minutos} min</b>` : "",
+    treino: S.treino?.missing || (S.cfg.treino?.on === false && !S.isAdmin) ? null : S.treino?.st?.visita ? `<b class="mb live">LÁ DENTRO</b>` : S.treino?.st && S.treino.st.minutos < S.treino.st.minutos_dia + (S.treino.st.bonus || 0) ? `<b class="mb">${S.treino.st.minutos_dia + (S.treino.st.bonus || 0) - S.treino.st.minutos} min</b>` : "",
     centro: S.treino?.missing || !S.treino?.st?.feridos ? null : S.treino.st.feridos.length ? `<b class="mb red" title="Pokémon feridos">${S.treino.st.feridos.length}</b>` : "",
     batalhas: S.pk?.battles && btPending() ? `<b class="mb red">${btPending()}</b>` : "",
     rocket: S.rocket ? (S.rocket.status === "ativa" ? `<b class="mb red">🚀 INVASÃO</b>` : "") : null,
@@ -6775,7 +6788,7 @@ const MENU_GROUPS = [
   ["com", "💬 Comunidade", ["caixa", "chat", "correio", "praca"]],
   ["ajuda", "❓ Ajuda", ["admin", "regras", "sac"]]
 ];
-const MENU_FAST = ["desafio", "pokedex", "treino", "batalhas", "vila", "ranking"];
+const MENU_FAST = ["desafio", "pokedex", "aventura", "batalhas", "vila", "ranking"];
 const MENU_SHORT = { desafio: "Desafio", pokedex: "Pokédex", treino: "Grama", batalhas: "Batalhas", vila: "Vila", ranking: "Ranking" };
 function menuClosed() { try { return new Set(JSON.parse(localStorage.getItem("pg-menu-fechado") || "[]")); } catch { return new Set(); } }
 ACTIONS.mgrp = v => {
@@ -7692,7 +7705,11 @@ Object.assign(ACTIONS, {
     S.pk.teach = null; await pkReload(); sfx("acerto"); toast(`Aprendeu ${moveOf(it.move_id)?.name}!${it.kind === "tm" ? " A TM acabou." : ""}`);
   }),
   "bt-forfeit": async v => {
-    if (S.pk.bt?.data?.mode === "treino") { if (await confirmModal("Fugir da luta?", "Você volta para a grama sem ganhar experiência. A vida que o Pokémon perdeu continua perdida.", "Fugir")) btAct("forfeit", null); return; }
+    if (S.pk.bt?.data?.mode === "treino") {
+      const tr = S.pk.bt.data.state?.treino || {}, rc = rpgCfg(), custo = tr.rpg ? Math.max(0, (rc.fuga_base ?? 10) + (rc.fuga_por_ataque ?? 10) * (tr.ataques || 0)) : 0;
+      if (custo > (S.me?.coins ?? 0)) return toast(`Fugir agora custa ${custo} moedas e você tem ${S.me?.coins ?? 0}. Continue lutando!`, true);
+      if (await confirmModal("Fugir da luta?", `${custo ? `Fugir agora custa ${custo} moedas (${rc.fuga_base ?? 10} + ${rc.fuga_por_ataque ?? 10} por ataque que você já fez). ` : ""}Você volta sem ganhar experiência. A vida que o Pokémon perdeu continua perdida.`, custo ? `Fugir por ${custo}` : "Fugir")) { await btAct("forfeit", null); if (custo) refreshMe().catch(() => {}); }
+      return; }
     if (await confirmModal("Desistir da batalha?", "A vitória vai para o adversário.", "Desistir")) btAct("forfeit", null);
   },
   "bt-claim": v => guarded(async () => { await rpc("battle_claim", { _id: v }); await btRefresh(); })
@@ -9274,8 +9291,9 @@ const AJ_LABELS = {
     min_preco: "Menor lance mínimo permitido (moedas)", incremento: "Cada lance novo precisa ser maior pelo menos (moedas)", anti_sniper_min: "Lance nos últimos N minutos estica o leilão N minutos" },
   teto: { on: "Teto ligado nas batalhas valendo moedas", nivel: "Nível máximo nas batalhas valendo moedas (a Liga não tem teto)" },
   rpg: { on: "Aventura aberta para os jogadores", batalhas_dia: "Lutas contra selvagens por dia (por jogador)", chance_pct: "% de chance de encontro a cada passo no mato", espera_seg: "Segundos de espera entre encontros",
-    nivel_menos: "Selvagem: até quantos níveis abaixo do seu Pokémon", nivel_mais: "Selvagem: até quantos níveis acima", envio_seg: "Segundos entre avisos de posição",
-    "zonas.mato": "Tipos no capim alto", "zonas.escura": "Tipos na grama escura", "zonas.pantano": "Tipos no pântano", "zonas.pedra": "Tipos no alto do penhasco" },
+    envio_seg: "Segundos entre avisos de posição", fuga_base: "Fugir de luta: preço básico (moedas)", fuga_por_ataque: "Fugir de luta: + moedas por ataque já feito",
+    nivel_pedra: "Evoluídos por pedra aparecem a partir do nível", nivel_troca: "Evoluídos por troca aparecem a partir do nível", folga: "A forma anterior some quantos níveis depois de poder evoluir",
+    lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
   visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
@@ -10611,7 +10629,7 @@ function hxMissoes() {
   const T = S.today; if (!T) return "";
   const li = (ok, txt, act, v = "") => `<li><button data-act="${act}" data-v="${v}" class="${ok ? "ok" : ""}"><i>${ok ? "✓" : "○"}</i>${txt}</button></li>`;
   const modos = Object.keys(MODES).filter(k => T.modes[k]?.available).map(k => li(T.modes[k].solved || T.modes[k].failed, `${MODES[k].nome}${T.modes[k].solved ? " (acertou)" : T.modes[k].failed ? " (não acertou)" : ""}`, "go", "desafio"));
-  const st = S.treino?.st, gr = st && !S.treino.missing ? li(st.minutos >= st.minutos_dia + (st.bonus || 0), `Grama de Treino${st.minutos < st.minutos_dia + (st.bonus || 0) ? ` (${st.minutos_dia + (st.bonus || 0) - st.minutos} min livres)` : ""}`, "go", "treino") : "";
+  const st = S.treino?.st, gr = S.cfg.treino?.on === false ? li(false, "Treinar na Aventura", "go", "aventura") : st && !S.treino.missing ? li(st.minutos >= st.minutos_dia + (st.bonus || 0), `Grama de Treino${st.minutos < st.minutos_dia + (st.bonus || 0) ? ` (${st.minutos_dia + (st.bonus || 0) - st.minutos} min livres)` : ""}`, "go", "treino") : "";
   const H = HEROES[S.me.class] || HEROES.guerreiro, hab = !T.moved && !T.skill?.used ? li(false, `Usar ${H.skill}`, "skill") : "";
   return `<ul class="hx-missoes">${modos.join("")}${hab}${li(!!T.spin, "Girar a roleta", T.spin ? "go" : "spin", T.spin ? "desafio" : "")}${li(!!T.moved, "Andar no mapa", T.moved ? "bet-open" : "move")}${gr}</ul>`;
 }
@@ -10971,7 +10989,36 @@ function pzChatNova(m) {
 // carregado só quando a Aventura abre. O encontro e a luta são do servidor (rpg_encontro + a batalha de sempre).
 // =================================================================
 const rpgCfg = () => ({ on: true, envio_seg: 1.2, chance_pct: 12, espera_seg: 8, batalhas_dia: 20, ...(S.cfg?.rpg || {}) });
-const AV_ZONAS = { m: ["mato", "🌿 Capim alto", "Inseto, Planta e Normal"], e: ["escura", "🍃 Grama escura", "Normal, Voador e Elétrico"], p: ["pantano", "💧 Pântano", "Água e Veneno"], r: ["pedra", "⛰️ Alto do penhasco", "Pedra, Terra e Luta"] };
+// Regiões (arquivo 97): a Vila Aurora (rpg-arte.js) e seis rotas montadas por código com as peças da Pipoya
+// (rpg-<id>.js, rascunho gerar_rotas.js). Cada letra da grade vira uma área do banco (rpg.zonas: nome, tipos e níveis).
+const RPG_ARTE_V = 2;
+const RPG_REG = {
+  vila: { nome: "Vila Aurora", ic: "🏡", arq: "rpg-arte.js", z: { m: "mato", e: "escura", p: "pantano", r: "pedra" }, como: "o começo de tudo" },
+  bosque: { nome: "Bosque Sussurrante", ic: "🌳", arq: "rpg-bosque.js", z: { m: "bosque", e: "bosque_fundo" }, como: "saída oeste da Vila Aurora" },
+  praia: { nome: "Praia Coral", ic: "🏖️", arq: "rpg-praia.js", z: { m: "praia", e: "praia_fundo" }, como: "saída sul da Vila Aurora (estrada da cidade)" },
+  deserto: { nome: "Deserto Rubro", ic: "🏜️", arq: "rpg-deserto.js", z: { m: "deserto", e: "deserto_fundo" }, como: "saída leste da Vila Aurora (portão da cidade murada)" },
+  pedreira: { nome: "Gruta da Pedreira", ic: "⛏️", arq: "rpg-pedreira.js", z: { m: "pedreira", e: "pedreira_fundo" }, como: "a caverna no alto do penhasco da Vila Aurora" },
+  charco: { nome: "Charco Sombrio", ic: "🌫️", arq: "rpg-charco.js", z: { m: "charco", e: "charco_fundo" }, como: "saída oeste do Bosque Sussurrante" },
+  pico: { nome: "Pico Gelado", ic: "🏔️", arq: "rpg-pico.js", z: { m: "pico", e: "pico_fundo" }, como: "saída norte da Gruta da Pedreira" }
+};
+const RPG_ZONAS_DEF = {"mato": {"nome": "Capim alto", "regiao": "vila", "tipos": ["INSETO", "PLANTA", "NORMAL"], "min": 2, "max": 6}, "escura": {"nome": "Grama escura", "regiao": "vila", "tipos": ["NORMAL", "VOADOR", "ELETRICO"], "min": 3, "max": 7}, "pantano": {"nome": "Pântano", "regiao": "vila", "tipos": ["AGUA", "VENENO"], "min": 3, "max": 7}, "pedra": {"nome": "Alto do penhasco", "regiao": "vila", "tipos": ["PEDRA", "TERRA", "LUTA"], "min": 4, "max": 8}, "bosque": {"nome": "Bosque: mato", "regiao": "bosque", "tipos": ["INSETO", "PLANTA", "VENENO", "NORMAL"], "min": 8, "max": 16}, "bosque_fundo": {"nome": "Bosque: mata funda", "regiao": "bosque", "tipos": ["INSETO", "PLANTA", "VENENO", "NORMAL", "VOADOR"], "min": 18, "max": 34}, "praia": {"nome": "Praia: dunas", "regiao": "praia", "tipos": ["AGUA", "ELETRICO", "NORMAL"], "min": 8, "max": 16}, "praia_fundo": {"nome": "Praia: costão", "regiao": "praia", "tipos": ["AGUA", "ELETRICO", "GELO", "VOADOR"], "min": 18, "max": 38}, "deserto": {"nome": "Deserto: capim seco", "regiao": "deserto", "tipos": ["FOGO", "TERRA", "NORMAL"], "min": 12, "max": 22}, "deserto_fundo": {"nome": "Deserto: oásis distante", "regiao": "deserto", "tipos": ["FOGO", "TERRA", "PEDRA", "LUTA"], "min": 24, "max": 42}, "pedreira": {"nome": "Pedreira: entrada", "regiao": "pedreira", "tipos": ["PEDRA", "TERRA", "LUTA", "METALICO"], "min": 12, "max": 22}, "pedreira_fundo": {"nome": "Pedreira: fundo da gruta", "regiao": "pedreira", "tipos": ["PEDRA", "TERRA", "LUTA", "METALICO", "DRAGAO"], "min": 24, "max": 44}, "charco": {"nome": "Charco: margem", "regiao": "charco", "tipos": ["VENENO", "FANTASMA", "PSIQUICO", "SOMBRIO"], "min": 20, "max": 32}, "charco_fundo": {"nome": "Charco: brejo escuro", "regiao": "charco", "tipos": ["FANTASMA", "PSIQUICO", "SOMBRIO", "VENENO", "NORMAL"], "min": 32, "max": 46}, "pico": {"nome": "Pico: encosta", "regiao": "pico", "tipos": ["GELO", "AGUA", "PSIQUICO", "VOADOR", "ELETRICO"], "min": 34, "max": 48}, "pico_fundo": {"nome": "Pico: cume", "regiao": "pico", "tipos": ["DRAGAO", "GELO", "VOADOR", "PSIQUICO", "FOGO", "LUTA", "NORMAL", "PEDRA"], "min": 45, "max": 60}};
+const RPG_ZIC = { mato: "🌿", escura: "🍃", pantano: "💧", pedra: "⛰️" };
+const rpgZonaInfo = k => { const z = S.cfg?.rpg?.zonas?.[k]; return z && typeof z === "object" && !Array.isArray(z) ? z : RPG_ZONAS_DEF[k]; };
+const rpgZonaKey = ch => RPG_REG[AV.r]?.z[ch] || null;
+const rpgTipos = z => (z?.tipos || []).map(t => PK_TYPES[t]?.[0] || t).join(", ");
+const rpgZonaTxt = k => { const z = rpgZonaInfo(k); return z ? `${RPG_ZIC[k] || (k.endsWith("_fundo") ? "🌲" : "🌿")} ${z.nome} · Nv ${z.min}–${z.max} · ${rpgTipos(z)}` : ""; };
+const rpgFaixa = r => { const zs = Object.values(RPG_REG[r].z).map(rpgZonaInfo).filter(Boolean); return zs.length ? `Nv ${Math.min(...zs.map(z => z.min))}–${Math.max(...zs.map(z => z.max))}` : ""; };
+// saídas da vila (as das rotas vêm do arquivo de cada rota) e onde chega quem volta
+const RPG_VILA_SAIDAS = [{ em: [[0, 29]], para: "bosque" }, { em: [[40, 59], [41, 59]], para: "praia" }, { em: [[59, 48]], para: "deserto" }];
+const RPG_VILA_CHEGA = { bosque: [1, 29], praia: [40, 58], deserto: [58, 48], pedreira: [52, 7] };
+const RPG_NPC = {
+  bosque: { nome: "Lenhador Davi", ch: { class: "guerreiro", outfit: {} }, fala: ["Este é o Bosque Sussurrante.", "Perto da entrada o mato é tranquilo. Lá no fundo, onde o chão fica escuro, os bichos são bem mais fortes.", "Do outro lado do bosque, a oeste, fica o Charco Sombrio. Só vá com a equipe treinada."] },
+  praia: { nome: "Surfista Lu", ch: { class: "arqueiro", outfit: {} }, fala: ["Bem-vindo à Praia Coral!", "Nas dunas aparecem os de Água, Elétrico e Normal. Perto do mar, no costão, aparecem os mais fortes.", "Fugir de uma luta custa moedas, viu? Pense antes de entrar no mato."] },
+  deserto: { nome: "Andarilha Sol", ch: { class: "mago", outfit: {} }, fala: ["O Deserto Rubro castiga quem chega despreparado.", "Fogo e Terra no capim seco. No oásis distante, Pedra e Luta também, e bem fortes."] },
+  pedreira: { nome: "Mineiro Zé", ch: { class: "domador", outfit: {} }, fala: ["Cuidado onde pisa na Gruta da Pedreira.", "Pedra, Terra, Luta e Metálico por aqui. Lá no fundo da gruta já viram até dragão!", "A saída norte leva ao Pico Gelado. É o lugar mais difícil da Aventura."] },
+  charco: { nome: "Coveiro Ivo", ch: { class: "ladino", outfit: {} }, fala: ["Shhh… o Charco Sombrio não gosta de barulho.", "Fantasmas, Psíquicos e Venenosos moram neste brejo. No escuro do fundo, os mais fortes."] },
+  pico: { nome: "Monge Kai", ch: { class: "clerigo", outfit: {} }, fala: ["Você chegou ao Pico Gelado. Poucos chegam.", "Na encosta: Gelo, Água, Psíquico, Voador e Elétrico. No cume, os mais fortes de todos, até dragões.", "Se a sua equipe cair, o Centro Pokémon fica lá na Vila Aurora."] }
+};
 // lugares para interagir: células onde o jogador fica, símbolo, nome e o que acontece
 const AV_PONTOS = [
   { em: [[30, 26]], ic: "🛒", nome: "Loja Pokémon", win: "pkloja" }, { em: [[38, 26]], ic: "👕", nome: "Loja & Visuais", win: "loja" },
@@ -10979,8 +11026,8 @@ const AV_PONTOS = [
   { em: [[48, 46]], ic: "🔨", nome: "Casa de Leilões", win: "leilao" }, { em: [[6, 27]], ic: "🤝", nome: "Feira (Mercado)", win: "mercado" },
   { em: [[11, 27], [12, 27]], ic: "📰", nome: "Mural do Jornal", win: "jornal" }, { em: [[51, 57]], ic: "💛", nome: "Fonte (Caixa da Obra)", win: "caixa" },
   { em: [[15, 28]], ic: "🏆", nome: "Estátua dos Campeões", win: "ranking" },
-  { em: [[52, 6]], ic: "🕳️", nome: "Caverna", fala: ["A entrada está fechada por pedras.", "Dizem que a caverna abre em breve, e que lá dentro mora coisa grande…"] },
-  { em: [[26, 29]], ic: "🪧", nome: "Placa", fala: ["← Feira e fazenda   ·   Casas ↑   ·   Cidade murada →", "Pokémon selvagens: capim alto ao norte da feira, pântano na beira do rio, grama escura a leste e pedras no alto do penhasco."] }
+  { em: [[52, 6]], ic: "⛏️", nome: "Gruta da Pedreira", vai: "pedreira" },
+  { em: [[26, 29]], ic: "🪧", nome: "Placa", fala: ["← Feira e fazenda   ·   Casas ↑   ·   Cidade murada →", "Pokémon selvagens: capim alto ao norte da feira, pântano na beira do rio, grama escura a leste e pedras no alto do penhasco.", "Rotas: Bosque a oeste, Praia ao sul, Deserto a leste e a Gruta da Pedreira na caverna do penhasco. Toque em 🗺️ Rotas para ver os níveis."] }
 ];
 // moradores (arte nossa: os mesmos bonecos dos heróis), com dicas
 const AV_NPCS = [
@@ -10989,23 +11036,62 @@ const AV_NPCS = [
   { x: 43, y: 19, nome: "Alpinista Bia", ch: { class: "arqueiro", outfit: {} }, fala: ["Suba pela escada de corda: lá em cima moram os de Pedra, Terra e Luta.", "A caverna no alto está fechada… por enquanto."] },
   { x: 50, y: 41, nome: "Guarda Teo", ch: { class: "guerreiro", outfit: {} }, fala: ["Cidade murada de Aurora. Pode entrar.", "A pousada (INN) cura os seus Pokémon. A casa ao lado faz leilões.", "Você tem um limite de lutas por dia na Aventura. Amanhã tem mais."] }
 ];
-const AV = { open: false, img: null, g: null, x: 28, y: 30, fx: 28, fy: 30, ax: 28, ay: 31, face: 1, moving: null, keys: new Set(), raf: 0, others: {}, baloes: {}, perto: null, volta: false, busy: false, lastEnc: 0, st: null, fala: null };
+const AV = { r: "vila", open: false, img: null, g: null, x: 28, y: 30, fx: 28, fy: 30, ax: 28, ay: 31, face: 1, moving: null, keys: new Set(), raf: 0, others: {}, baloes: {}, perto: null, volta: false, busy: false, lastEnc: 0, st: null, fala: null };
 const rpgAt = (x, y) => (AV.g?.[y] || "")[x] || "#";
-const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || AV_NPCS.some(n => n.x === x && n.y === y);
-// carrega a arte (uma vez): rpg-arte.js põe window.RPG_ARTE = { vila: { img: "data:image/webp;base64,…", g: [60 linhas] } }
-function rpgCarregar() {
-  if (AV.carga) return AV.carga;
-  return (AV.carga = new Promise((ok, erro) => {
-    const pronto = () => { const d = window.RPG_ARTE?.vila; if (!d) return erro(new Error("sem arte")); const im = new Image(); im.onload = () => { AV.img = im; AV.g = d.g; ok(); }; im.onerror = () => erro(new Error("imagem")); im.src = d.img; };
-    if (window.RPG_ARTE) return pronto();
-    const sc = document.createElement("script"); sc.src = "rpg-arte.js?v=1"; sc.onload = pronto; sc.onerror = () => erro(new Error("arquivo")); document.head.appendChild(sc);
-  }).catch(e => { AV.carga = null; throw e; }));
+const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || rpgNpcs().some(n => n.x === x && n.y === y);
+function rpgPontos() {
+  if (AV.r === "vila") return AV_PONTOS;
+  const pl = AV.dados?.pontos?.placa, R = RPG_REG[AV.r]; if (!pl) return [];
+  return [{ em: [pl], ic: "🪧", nome: "Placa", fala: [`${R.ic} ${R.nome}`, ...Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${k.endsWith("_fundo") ? "Mato fundo (chão diferente, longe da entrada)" : "Mato de perto"}: nível ${z.min} a ${z.max}. Tipos: ${rpgTipos(z)}.` : ""; }).filter(Boolean), `Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez.`] }];
 }
+function rpgNpcs() { if (AV.r === "vila") return AV_NPCS; const n = AV.dados?.npcs?.[0], i = RPG_NPC[AV.r]; return n && i ? [{ x: n[0], y: n[1], ...i }] : []; }
+const rpgSaidas = () => AV.r === "vila" ? RPG_VILA_SAIDAS : (AV.dados?.saidas || []);
+// carrega a arte de uma região (uma vez): o arquivo põe window.RPG_ARTE.<região> = { img: "data:image/webp;base64,…", g: [linhas], … }
+function rpgCarregar(r = AV.r) {
+  AV.cargas = AV.cargas || {}; AV.dc = AV.dc || {};
+  if (AV.cargas[r]) return AV.cargas[r];
+  return (AV.cargas[r] = new Promise((ok, erro) => {
+    const pronto = () => { const d = window.RPG_ARTE?.[r]; if (!d) return erro(new Error("sem arte")); const im = new Image(); im.onload = () => { AV.dc[r] = { ...d, im }; ok(AV.dc[r]); }; im.onerror = () => erro(new Error("imagem")); im.src = d.img; };
+    if (window.RPG_ARTE?.[r]) return pronto();
+    const sc = document.createElement("script"); sc.src = `${RPG_REG[r].arq}?v=${RPG_ARTE_V}`; sc.onload = pronto; sc.onerror = () => erro(new Error("arquivo")); document.head.appendChild(sc);
+  }).catch(e => { AV.cargas[r] = null; throw e; }));
+}
+async function rpgEntra(r) {
+  if (!RPG_REG[r]) r = "vila";
+  const d = await rpgCarregar(r);
+  AV.r = r; AV.dados = d; AV.img = d.im; AV.g = d.g;
+  const t = $("#rpg-tit"), mb = $("#rpg-mini-box b"); if (t) t.textContent = `${RPG_REG[r].ic} ${RPG_REG[r].nome}`; if (mb) mb.textContent = RPG_REG[r].nome;
+}
+function rpgSeguidor() { const lado = [[-AV.face, 0], [AV.face, 0], [0, 1], [0, -1]].find(([dx, dy]) => !rpgSolid(AV.x + dx, AV.y + dy)) || [0, 0]; AV.ax = AV.x + lado[0]; AV.ay = AV.y + lado[1]; }
+// trocar de região pela saída (ou pela porta da caverna)
+async function rpgViajar(para) {
+  if (AV.busy || !RPG_REG[para]) return;
+  AV.busy = true; AV.keys.clear(); const de = AV.r;
+  const fl = $("#rpg-flash"); if (fl && !reduceMotion()) { fl.classList.add("on", "viagem"); await sleep(350); }
+  try { await rpgEntra(para); }
+  catch { AV.busy = false; if (fl) fl.classList.remove("on", "viagem"); return toast("Não consegui carregar essa região. Tente de novo.", true); }
+  const ch = para === "vila" ? RPG_VILA_CHEGA[de] : (AV.dados.saidas?.find(s => s.para === de)?.dentro || AV.dados.chegada);
+  [AV.x, AV.y] = ch && !rpgSolid(ch[0], ch[1]) ? ch : (AV.dados.chegada || [28, 30]); AV.moving = null; AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();
+  try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
+  rpgNetLeave(); rpgNetJoin(); rpgPerto();
+  const h = $("#rpg-hint"); if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" ? "" : ` · ${rpgFaixa(para)}`}`;
+  if (fl) { await sleep(150); fl.classList.remove("on", "viagem"); }
+  sfx("tick"); AV.busy = false;
+}
+// quadro com todas as rotas, os níveis e os tipos
+function rpgRotasHTML() {
+  return `<div class="rpg-rotas"><div class="av-head"><h2>🗺️ Rotas da Aventura</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <p class="muted">Cada área tem uma faixa de nível. Perto da Vila Aurora os Pokémon são fracos; no fundo das rotas (chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Quanto mais forte o selvagem, mais experiência ele dá. Os evoluídos só aparecem nas áreas de nível alto.</p>
+    ${Object.entries(RPG_REG).map(([id, R]) => `<div class="rpg-rota ${id === AV.r ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>
+      <ul>${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `<li><b>${esc(z.nome)}</b> <span class="rpg-nv">Nv ${z.min}–${z.max}</span><small>${esc(rpgTipos(z))}</small></li>` : ""; }).join("")}</ul></div>`).join("")}
+    <p class="muted" style="margin-top:10px">🏃 Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez nela. Lutas por dia: ${AV.st?.batalhas_dia ?? rpgCfg().batalhas_dia}.</p></div>`;
+}
+function rpgRotas() { const m = openModal(rpgRotasHTML()); m.querySelector(".modal").classList.add("modal-av"); m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-avx]")) closeModal(); }); }
 function rpgRoot() {
   let el = $("#aventura"); if (el) return el;
   el = document.createElement("div"); el.id = "aventura"; el.hidden = true;
   el.innerHTML = `<canvas id="rpg-cv" aria-label="Aventura: ande com WASD ou as setas"></canvas>
-    <div class="pz-hud"><span class="pz-tit">🧭 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
+    <div class="pz-hud"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on" id="rpg-on"></span><span class="pz-on" id="rpg-lutas"></span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span><button class="btn small ghost" data-rpg="rotas">🗺️ Rotas</button><button class="btn small ghost" data-rpg="sair">Voltar ao mapa</button></div>
     <div id="rpg-mini-box" class="rpg-mini"><b>Vila Aurora</b><canvas id="rpg-mini" width="184" height="184"></canvas></div>
     <button id="rpg-acao" class="rpg-acao" hidden></button>
     <div id="rpg-fala" class="rpg-fala" hidden></div>
@@ -11017,6 +11103,7 @@ function rpgRoot() {
   document.body.appendChild(el);
   el.addEventListener("click", e => {
     if (e.target.closest("[data-rpg='sair']")) return rpgSair();
+    if (e.target.closest("[data-rpg='rotas']")) return rpgRotas();
     if (e.target.closest("#rpg-acao")) return rpgUsar();
     if (e.target.closest("#rpg-fala")) return rpgFalaProx();
   });
@@ -11045,13 +11132,13 @@ async function rpgOpen() {
   document.body.classList.toggle("hx-gr", hxOn());
   $("#rpg-chat", el).hidden = hxCfg().chat_fixo === false;
   if (grChatOn()) { if (!S.chat.loaded) loadChat().then(rpgChatRender); else rpgChatRender(); hxChatVisto(); }
-  try { await rpgCarregar(); } catch { rpgClose(); return toast("Não consegui carregar o cenário da Aventura. Tente de novo.", true); }
-  if (!AV.posLida) { AV.posLida = true; try { const p = JSON.parse(localStorage.getItem(rpgPosKey()) || "null"); if (p && !rpgSolid(p.x, p.y)) { AV.x = p.x; AV.y = p.y; } } catch {} }
+  let p = null; if (!AV.posLida) { AV.posLida = true; try { p = JSON.parse(localStorage.getItem(rpgPosKey()) || "null"); } catch {} }
+  try { await rpgEntra(p?.r || AV.r); } catch { try { await rpgEntra("vila"); p = null; } catch { rpgClose(); return toast("Não consegui carregar o cenário da Aventura. Tente de novo.", true); } }
+  if (p && !rpgSolid(p.x, p.y)) { AV.x = p.x; AV.y = p.y; }
   if (AV.moving) { AV.x = AV.moving.tx; AV.y = AV.moving.ty; AV.moving = null; }
-  if (rpgSolid(AV.x, AV.y)) { AV.x = 28; AV.y = 30; }
-  AV.fx = AV.x; AV.fy = AV.y;
-  { const lado = [[-AV.face, 0], [AV.face, 0], [0, 1], [0, -1]].find(([dx, dy]) => !rpgSolid(AV.x + dx, AV.y + dy)) || [0, 0]; AV.ax = AV.x + lado[0]; AV.ay = AV.y + lado[1]; }   // o Pokémon que segue começa num lugar livre
-  $("#rpg-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande pela vila. Pokémon selvagens aparecem no mato." : "WASD ou setas para andar · E para entrar e conversar";
+  if (rpgSolid(AV.x, AV.y)) [AV.x, AV.y] = AV.r === "vila" ? [28, 30] : (AV.dados.chegada || [2, 2]);
+  AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();   // o Pokémon que segue começa num lugar livre
+  $("#rpg-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande e explore. Pokémon selvagens aparecem no mato." : "WASD ou setas para andar · E para entrar e conversar · 🗺️ Rotas mostra os níveis";
   rpgNetJoin(); rpgPerto(); rpgEstado();
   cancelAnimationFrame(AV.raf); AV.last = performance.now(); AV.raf = requestAnimationFrame(rpgLoop);
 }
@@ -11062,7 +11149,7 @@ async function rpgEstado() {
 }
 function rpgClose(sai = true) {
   AV.open = false; AV.keys.clear(); cancelAnimationFrame(AV.raf); rpgFalaFecha();
-  try { localStorage.setItem(rpgPosKey(), JSON.stringify({ x: AV.x, y: AV.y })); } catch {}
+  try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
   if (sai) rpgNetLeave();
   const el = $("#aventura"); if (el) el.hidden = true; document.body.classList.remove("gr-on", "rpg-on");
 }
@@ -11070,15 +11157,16 @@ function rpgSair() { AV.volta = false; rpgClose(); if ($("#game")) renderHUD(); 
 function rpgVoltaCheck() { if (AV.volta && !AV.open && !S.win && !GR.open && !PZ.open && $("#game")) { AV.volta = false; rpgOpen(); } }
 // ---------- interação: casas, placas e moradores ----------
 function rpgPerto() {
-  let p = AV_PONTOS.find(p => p.em.some(([x, y]) => x === AV.x && y === AV.y)) || null;
-  if (!p) { const n = AV_NPCS.find(n => Math.abs(n.x - AV.x) + Math.abs(n.y - AV.y) === 1); if (n) p = { npc: n, ic: "💬", nome: n.nome, fala: n.fala }; }
+  let p = rpgPontos().find(p => p.em.some(([x, y]) => x === AV.x && y === AV.y)) || null;
+  if (!p) { const n = rpgNpcs().find(n => Math.abs(n.x - AV.x) + Math.abs(n.y - AV.y) === 1); if (n) p = { npc: n, ic: "💬", nome: n.nome, fala: n.fala }; }
   AV.perto = p;
-  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win ? "Entrar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
-  const z = AV_ZONAS[rpgAt(AV.x, AV.y)], ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = `${z[1]}: ${z[2]}`; }
+  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai ? "Entrar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
+  const z = rpgZonaKey(rpgAt(AV.x, AV.y)), ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = rpgZonaTxt(z); }
 }
 function rpgUsar() {
   const p = AV.perto; if (!p || AV.busy) return;
   sfx("tick");
+  if (p.vai) return rpgViajar(p.vai);
   if (p.fala) { AV.fala = { nome: p.nome, linhas: p.fala, i: 0 }; return rpgFalaMostra(); }
   rpgClose(false); AV.volta = true;
   if (p.win === "jornal") return ACTIONS["com-tab"]("jornal");
@@ -11109,8 +11197,10 @@ function rpgLoop(now) {
   AV.raf = requestAnimationFrame(rpgLoop);
   const dt = Math.min(80, now - (AV.last || now)); AV.last = now;
   if (AV.moving) { AV.moving.t += dt / 140; if (AV.moving.t >= 1) { AV.ax = AV.x; AV.ay = AV.y; AV.x = AV.moving.tx; AV.y = AV.moving.ty; AV.moving = null; rpgNetSend(); rpgPerto();
-    const z = AV_ZONAS[rpgAt(AV.x, AV.y)], st = AV.st;
-    if (z && st && !AV.busy && st.batalhas < st.batalhas_dia && Date.now() - AV.lastEnc > (st.espera_seg ?? 8) * 1000 && Math.random() * 100 < (st.chance_pct ?? 12)) rpgEncontro(z[0]); } }
+    const sd = rpgSaidas().find(s => s.em.some(([x, y]) => x === AV.x && y === AV.y));
+    if (sd) rpgViajar(sd.para);
+    const z = rpgZonaKey(rpgAt(AV.x, AV.y)), st = AV.st;
+    if (!sd && z && st && !AV.busy && st.batalhas < st.batalhas_dia && Date.now() - AV.lastEnc > (st.espera_seg ?? 8) * 1000 && Math.random() * 100 < (st.chance_pct ?? 12)) rpgEncontro(z); } }
   if (!AV.moving && !AV.busy && !AV.fala && AV.keys.size) {
     const d = [...AV.keys].at(-1), [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[d];
     if (dx) AV.face = dx;
@@ -11140,7 +11230,9 @@ function rpgPinta(now) {
   g.drawImage(AV.img, cx / k, cy / k, cv.width / k, cv.height / k, 0, 0, cv.width, cv.height);
   const texto = (txt, x, y, px, cor = "#F4F8E8") => { g.font = `700 ${Math.round(px * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(10,14,24,.92)"; g.strokeText(txt, x, y); g.fillStyle = cor; g.fillText(txt, x, y); };
   // plaquinhas dos lugares
-  for (const p of AV_PONTOS) {
+  const placas = [...rpgPontos(), ...rpgSaidas().map(sd => { const [ex, ey] = sd.em[Math.floor((sd.em.length - 1) / 2)], R = RPG_REG[sd.para], dx = ex === 0 ? 1.5 : ex >= AV.g[0].length - 1 ? -1.5 : 0, dy = ey === 0 ? 2.2 : ey >= AV.g.length - 1 ? -0.6 : 0;
+    return { em: [[ex + dx, ey + dy]], ic: "➡️", nome: `${R.nome}${sd.para === "vila" ? "" : ` · ${rpgFaixa(sd.para)}`}`, saida: true }; })];
+  for (const p of placas) {
     const [px0, py0] = p.em[0], x = (px0 + (p.em.length > 1 ? 1 : .5)) * tile - cx, y = (py0 - (p.win && !["mercado", "jornal", "caixa", "ranking"].includes(p.win) ? 2.2 : 1.3)) * tile - cy;
     if (x < -200 || y < -60 || x > cv.width + 200 || y > cv.height + 60) continue;
     const perto = AV.perto === p; g.font = `700 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`;
@@ -11151,7 +11243,7 @@ function rpgPinta(now) {
   }
   // moradores, outros jogadores e você, de trás para a frente
   const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: pkTeam()[0]?.species_id, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
-  const todos = [...AV_NPCS.map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.nome, ch: n.ch, npc: true })),
+  const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.nome, ch: n.ch, npc: true })),
     ...Object.values(AV.others).map(o => ({ ...o, ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } })), eu].filter(o => o.ch?.class && o.fx != null).sort((a, b) => a.fy - b.fy);
   for (const o of todos) {
     const ox = (o.fx + .5) * tile - cx, oy = (o.fy + 1) * tile - cy; if (ox < -tile * 2 || oy < -tile * 2 || ox > cv.width + tile * 2 || oy > cv.height + tile * 3) continue;
@@ -11174,9 +11266,9 @@ function rpgPinta(now) {
   }
   // mapinha
   const mc = $("#rpg-mini");
-  if (mc && mc.offsetParent !== null) { const mg = mc.getContext("2d"), kx = mc.width / 60, ky = mc.height / 60; mg.imageSmoothingEnabled = true; mg.drawImage(AV.img, 0, 0, mc.width, mc.height);
+  if (mc && mc.offsetParent !== null) { const mg = mc.getContext("2d"), kx = mc.width / AV.g[0].length, ky = mc.height / AV.g.length; mg.imageSmoothingEnabled = true; mg.drawImage(AV.img, 0, 0, mc.width, mc.height);
     for (const o of todos) if (!o.npc) { mg.fillStyle = o.eu ? "#FFE37A" : "#FFFFFF"; mg.strokeStyle = "#0F1420"; mg.lineWidth = 1; mg.beginPath(); mg.arc((o.fx + .5) * kx, (o.fy + .5) * ky, o.eu ? 4 : 3, 0, 6.28); mg.fill(); mg.stroke(); } }
-  const n = todos.filter(o => !o.npc).length, on = $("#rpg-on"); if (on && on.dataset.n !== String(n)) { on.dataset.n = n; on.textContent = n === 1 ? "👥 Só você por aqui" : `👥 ${n} na vila`; }
+  const n = todos.filter(o => !o.npc).length, on = $("#rpg-on"); if (on && on.dataset.n !== String(n)) { on.dataset.n = n; on.textContent = n === 1 ? "👥 Só você por aqui" : `👥 ${n} por aqui`; }
 }
 // ---------- quem está na vila (Realtime) ----------
 let rpgChannel = null;
@@ -11185,7 +11277,7 @@ function rpgNetJoin() {
   if (!sb || !S.me) return;
   if (rpgChannel) { try { rpgChannel.track(rpgMeta()); } catch {} return; }
   AV.others = {};
-  rpgChannel = sb.channel("rpg-vila", { config: { presence: { key: pkMe() }, broadcast: { self: false } } })
+  rpgChannel = sb.channel(`rpg-${AV.r}`, { config: { presence: { key: pkMe() }, broadcast: { self: false } } })
     .on("presence", { event: "sync" }, () => {
       let st = {}; try { st = rpgChannel.presenceState(); } catch {}
       const seen = new Set();
@@ -12653,6 +12745,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "rpg-rotas-2026-11-12", sql: "97", title: "🧭 Aventura maior: 6 rotas novas e todos os Pokémon", body: () => `A Aventura cresceu e agora é o lugar de treinar e evoluir os Pokémon:
+• Seis rotas novas saindo da Vila Aurora: Bosque Sussurrante (oeste), Praia Coral (sul), Deserto Rubro (leste), Gruta da Pedreira (pela caverna do penhasco), e mais adiante o Charco Sombrio (depois do Bosque) e o Pico Gelado (depois da Pedreira).
+• Todos os Pokémon aparecem por lá (menos os lendários), cada um no terreno do seu tipo. Os evoluídos só aparecem nas áreas de nível mais alto.
+• Cada área tem a sua faixa de nível, que aparece na tela: perto da vila são fracos; no fundo das rotas e nas rotas mais distantes, bem mais fortes. Quanto mais forte o selvagem, mais experiência ele dá.
+• Fugir de uma luta agora custa moedas: 10 para fugir logo, e mais 10 a cada ataque que você já fez naquela luta. Pense antes de entrar no mato fundo!
+• A Grama de Treino fechou: o treino agora é todo na Aventura. O Centro Pokémon continua curando a vida dos seus Pokémon.` },
   { id: "corrida-2026-11-12", sql: "96", title: "🏁 Quadro da corrida no mapa", body: () => `Novidade na tela do mapa:
 • Quadro da corrida: no canto da tela aparece quem está em 1º e quantas casas cada um está atrás dele, com a sua posição destacada. Toque num nome para ver o jogador no mapa; "Ver todos" abre o ranking da temporada. Dá para fechar e deixar só uma linha (no celular ele já começa assim).
 • O botão dos seus Pokémon ficou menor e mais limpo: mostra o primeiro da equipe e uma bolinha de vida para cada um (verde, amarela ou vermelha).` },
