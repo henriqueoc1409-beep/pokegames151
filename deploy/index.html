@@ -6120,7 +6120,7 @@ function LIB() {
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
-      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${trGradual() ? `O preço é só da vida que falta. Ou espere: <b>a vida volta sozinha, de graça, um pouco a cada hora</b> (de desmaiado a inteiro em ${S.treino?.st?.gratis_horas ?? 72} horas). Desmaiado fica <b>${S.cfg.treino?.desmaio_espera_horas ?? 24} horas</b> parado antes de a vida começar a voltar.` : `O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.`}</p>
+      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${trGradual() ? `O preço é só da vida que falta. Ou espere: <b>a vida volta sozinha, de graça, um pouco a cada hora</b> (de desmaiado a inteiro em ${S.treino?.st?.gratis_horas ?? 72} horas). Desmaiado fica <b>${S.cfg.treino?.desmaio_espera_horas ?? 24} horas</b> parado, e a vida volta aos poucos no resto do tempo (no total, ${S.treino?.st?.gratis_horas ?? 72} horas).` : `O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.`}</p>
       <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
     { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
       <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
@@ -8999,8 +8999,10 @@ function treinoHpOf(m) {
   const hp = m?.tr_hp ?? 100; if (hp >= 100) return 100;
   if (!trGradual() || !m.tr_hurt_at) return hp;
   const H = (S.treino?.st?.gratis_horas ?? 72) * 3600000;   // de 0% a 100% (arquivo 95: a vida volta aos poucos)
-  const esp = hp <= 0 ? (S.cfg.treino?.desmaio_espera_horas ?? 24) * 3600000 : 0;   // arquivo 98: desmaiado espera antes de começar
-  return Math.min(100, hp + Math.max(0, Math.floor((treinoNow() - new Date(m.tr_hurt_at) - esp) * 100 / H)));
+  const espH = S.treino?.st?.espera_desmaio ?? S.cfg.treino?.desmaio_espera_horas ?? 24, esp = hp <= 0 ? espH * 3600000 : 0;   // arquivo 98: desmaiado espera antes de começar
+  // arquivo 109: são 72 h no total; quem acordou do desmaio recupera no que sobra (48 h), e o ritmo fica em m.tr_ritmo
+  const R = hp <= 0 ? Math.max(3600000, H - espH * 3600000) : m.tr_ritmo ? m.tr_ritmo * 3600000 : H;
+  return Math.min(100, hp + Math.max(0, Math.floor((treinoNow() - new Date(m.tr_hurt_at) - esp) * 100 / R)));
 }
 function hoursLeft(ts) {
   const ms = new Date(ts) - treinoNow(); if (ms <= 0) return "agora";
@@ -9061,7 +9063,7 @@ function viewCentro() {
     <div class="ce-head"><p><b>🏥 Bem-vindo ao Centro Pokémon!</b></p>
       <p>Aqui você cura os Pokémon que se feriram na <b>Grama de Treino</b>. Pokémon ferido entra na próxima luta com a vida que sobrou, e o <b>desmaiado não pode treinar</b>.</p>
       <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${st.cura_gradual ? `O preço é só da vida que falta: quanto mais ele já se recuperou, mais barato.<br>
-         • <b>De graça:</b> a vida volta sozinha, <b>um pouco a cada hora</b>. De desmaiado até a vida cheia são <b>${st.gratis_horas} horas</b>; quem está pouco ferido fica bom antes. <b>Desmaiado fica ${S.cfg.treino?.desmaio_espera_horas ?? 24} horas parado</b> antes de a vida começar a voltar.` : `<b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
+         • <b>De graça:</b> a vida volta sozinha, <b>um pouco a cada hora</b>. De desmaiado até a vida cheia são <b>${st.gratis_horas} horas</b>; quem está pouco ferido fica bom antes. <b>Desmaiado fica ${S.cfg.treino?.desmaio_espera_horas ?? 24} horas parado</b>, e a vida volta aos poucos no resto do tempo (as ${st.gratis_horas} horas são o total).` : `<b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
          • <b>De graça:</b> espere <b>${st.gratis_horas} horas</b> depois do último ferimento e ele volta inteiro sozinho.`}</p>
       <p style="font-size:13px">A vida do treino só vale na Grama de Treino. Nas outras batalhas, seus Pokémon começam sempre com a vida cheia.</p></div>
     ${list.length ? `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px"><span>Você tem <b>${coins} moedas</b>.</span>
@@ -9532,7 +9534,7 @@ const AJ_LABELS = {
     nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
     forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", acompanhante_pct: "Acompanhante: % da experiência que ele ganha", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
     lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
-    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça (de desmaiado a vida cheia)", cura_gradual: "A vida volta aos poucos (desligado: só no fim da espera)", desmaio_espera_horas: "Desmaiado: horas parado antes de a vida começar a voltar" },
+    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça (de desmaiado a vida cheia, já contando a espera)", cura_gradual: "A vida volta aos poucos (desligado: só no fim da espera)", desmaio_espera_horas: "Desmaiado: horas parado antes de a vida começar a voltar" },
   rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
     hp_factor: "Vida da barra (multiplicador)", max_turns: "Turnos máximos por luta", level_bonus: "Níveis a mais da equipe da Rocket" },
   pk: { "encounter.level_min": "Encontro: nível mínimo dos selvagens", "encounter.level_span": "Encontro: níveis a mais até o Castelo", "encounter.level_spread": "Encontro: sorteio de níveis a mais",
@@ -13650,6 +13652,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "desmaio-72h-2026-11-13", sql: "109", title: "💤 Centro Pokémon: desmaiado fica bom em 72 horas", body: () => `Acertamos a cura de graça do Pokémon desmaiado:
+• Do desmaio até a vida cheia são 72 horas no total.
+• Nas primeiras 24 horas ele fica parado, sem recuperar.
+• Nas 48 horas seguintes a vida volta aos poucos, até ficar cheia.
+• Pokémon só ferido (sem desmaiar) continua igual: a vida volta um pouco a cada hora.
+• Com pressa? O Centro Pokémon cura na hora, pagando moedas.` },
   { id: "bolsa-nova-2026-11-13", sql: "108", title: "🎒 Bolsa nova nas batalhas", body: () => `A bolsa das batalhas ficou nova:
 • Abre com tudo o que você tem, separado em bolsos: Curas, Estados, Reviver, Itens X e Outros.
 • Cada item aparece com a quantidade. Escolha um e a descrição aparece embaixo.
