@@ -641,7 +641,7 @@ revoke execute on function public.rpg_after(uuid) from public, anon, authenticat
 insert into public.posts(kind, title, body, created_by)
 select 'novidade', x.title, x.body, coalesce((select user_id from public.user_roles where role = 'admin' order by user_id limit 1), '00000000-0000-0000-0000-000000000000'::uuid)
   from (values ('⛏️ Expedições: a Mina Esquecida', 'Chegou um minigame novo: as Expedições (menu Competir, ou pela entrada da mina na Gruta da Pedreira, na Aventura).
-• A primeira é a Mina Esquecida: 5 etapas, de 5 a 10 minutos. Escolha o caminho, explore, enfrente desafios e chegue à câmara do guardião.
+• A primeira é a Mina Esquecida: um mapa para andar, com 5 salas. Em cada sala tem um morador ou um objeto esperando por você (chegue perto e aperte E). Resolveu, a passagem para a próxima sala se abre, até a câmara do guardião.
 • Cada escolha muda o que vem depois. Não existe resposta sempre certa: tem risco, recompensa e o que você já fez antes.
 • Cuide da ⚡ energia e da 🔦 luz: se a energia acabar, você sai da mina antes do fim.
 • Pokémon da equipe com Força ou Flash abrem caminhos novos. Os encontros usam as batalhas da Aventura, e alguns Pokémon especiais podem ser capturados.

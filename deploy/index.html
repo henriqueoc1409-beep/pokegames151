@@ -2044,7 +2044,8 @@ body.pb-on{overflow:hidden}
 .pb-box{width:min(980px,94vw);background:linear-gradient(#22313B,#18242C);border:3px solid #E0B44C;border-radius:16px;padding:20px 24px;color:#E8ECF3;text-align:center}
 .pb-box h2{margin:0 0 6px;color:#FFE37A;font-size:30px}
 .pb-chars{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
-.exp{max-width:980px;margin:0 auto}.exp-abas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.exp-abas button{background:#1E1712;border:2px solid #5A4630;color:#EADBC4;border-radius:10px;padding:7px 14px;font:800 14px var(--sans);cursor:pointer}.exp-abas button.on{background:#C98B3A;border-color:#F2D29A;color:#1E150C}
+.exp{max-width:980px;margin:0 auto}.exp-mapa-cta{background:#2A1E10;border:2px solid #FFD98A;border-radius:12px;padding:10px 14px;margin:10px 0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.modal-mina{max-width:760px!important;background:linear-gradient(#241B14,#120D09)!important;border-color:#8C6A3E!important;color:#F2E6D2}.mina-ev h2{color:#FFD98A;margin:6px 0}.mina-ev-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}.mina-pe{display:flex;justify-content:space-between;align-items:center;margin-top:8px}.exp-abas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.exp-abas button{background:#1E1712;border:2px solid #5A4630;color:#EADBC4;border-radius:10px;padding:7px 14px;font:800 14px var(--sans);cursor:pointer}.exp-abas button.on{background:#C98B3A;border-color:#F2D29A;color:#1E150C}
 .exp-cena{width:100%;height:auto;display:block;border-radius:14px;border:3px solid #5A4630;background:#0E0B09;image-rendering:auto}
 .exp-card{background:linear-gradient(#2A2018,#18120D);border:3px solid #8C6A3E;border-radius:18px;overflow:hidden;margin-bottom:14px;color:#F2E6D2}.exp-card .exp-cena{border:0;border-radius:0}.exp-card-in{padding:14px 18px}.exp-card h2{margin:0 0 6px;color:#FFD98A}
 .exp-tags{display:flex;flex-wrap:wrap;gap:6px}.exp-tags span{background:rgba(255,217,138,.12);border:1px solid rgba(255,217,138,.35);border-radius:999px;padding:3px 10px;font-size:13px}
@@ -6093,7 +6094,8 @@ function LIB() {
     { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
       <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
       <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
-    { id: "expedicoes", ic: "⛏️", t: "Expedições (Mina Esquecida)", h: `<p>As <b>Expedições</b> (menu Competir, ou a entrada ⛏️ da mina na Gruta da Pedreira, na Aventura) são aventuras curtas, de 5 a 10 minutos, em <b>5 etapas</b>: escolher o caminho, explorar, enfrentar um desafio, viver a consequência do que fez antes e chegar à câmara final.</p>
+    { id: "expedicoes", ic: "⛏️", t: "Expedições (Mina Esquecida)", h: `<p>🗺️ <b>A Mina Esquecida é um mapa para andar</b>, dentro da Aventura: entre pela porta ⛏️ na Gruta da Pedreira (ou pelo menu). São 5 salas em fila; em cada uma, o acontecimento é um morador ou um objeto (o minerador, a mercadora, um baú, a porta dos símbolos, o guardião). Chegue perto e aperte <b>E</b>. Resolveu a sala, a passagem para a próxima se abre. Quanto menos 🔦 luz, menos você enxerga.</p>
+      <p>As <b>Expedições</b> (menu Competir, ou a entrada ⛏️ da mina na Gruta da Pedreira, na Aventura) são aventuras curtas, de 5 a 10 minutos, em <b>5 etapas</b>: escolher o caminho, explorar, enfrentar um desafio, viver a consequência do que fez antes e chegar à câmara final.</p>
       <p><b>Escolhas de verdade:</b> cada escolha muda o que aparece depois. Não existe opção sempre certa: umas são seguras e rendem pouco, outras arriscam mais. Pokémon na equipe que sabem <b>Força</b> ou <b>Flash</b> abrem opções novas.</p>
       <p><b>⚡ Energia e 🔦 luz:</b> muitas escolhas gastam. Se a energia acabar, você sai antes do fim (mas leva a mochila). No escuro, as coisas ficam mais perigosas.</p>
       <p><b>Lutas:</b> são as batalhas da Aventura, com quem estiver na frente da equipe; alguns Pokémon especiais podem ser capturados depois, com as suas bolas. Perder não apaga nada: só muda o rumo da expedição.</p>
@@ -11402,7 +11404,8 @@ const RPG_REG = {
   pico: { nome: "Pico Gelado", ic: "🏔️", arq: "rpg-pico.js", z: { m: "pico", e: "pico_fundo" }, como: "saída norte da Gruta da Pedreira" },
   vulcao: { nome: "Vulcão Cinzento", ic: "🌋", arq: "rpg-vulcao.js", z: { m: "vulcao", e: "vulcao_fundo" }, como: "saída leste do Deserto Rubro" },
   estrada: { nome: "Estrada da Vitória", ic: "🏆", arq: "rpg-estrada.js", z: { m: "estrada", e: "estrada_fundo" }, como: "saída norte do Pico Gelado" },
-  elite: { nome: "Planalto da Liga", ic: "🏛️", arq: null, z: {}, elite: true, como: "no fim da Estrada da Vitória (só com as 8 insígnias)" }
+  elite: { nome: "Planalto da Liga", ic: "🏛️", arq: null, z: {}, elite: true, como: "no fim da Estrada da Vitória (só com as 8 insígnias)" },
+  mina: { nome: "Mina Esquecida", ic: "⛏️", arq: null, z: {}, mina: true, como: "a Expedição dentro da Gruta da Pedreira" }
 };
 // arquivo 101: o salão de cada Ginásio é uma região a mais ("gym_<rota>"), desenhada por código (arte nossa)
 const RPG_GYM_TEMA = {
@@ -11538,6 +11541,7 @@ function expExploraHTML(R) {
       ${o.custo?.energia || o.custo?.luz ? `<em>${o.custo.energia ? `⚡ −${o.custo.energia}` : ""} ${o.custo.luz ? `🔦 −${o.custo.luz}` : ""}</em>` : ""}${o.ok ? "" : `<small>🔒 ${esc(o.motivo || "")}</small>`}</button>`).join("")}</div>`;
   else acao = `<p class="muted">…</p>`;
   return `<div class="exp-run"><div class="exp-topo"><h2>${R.ic || "⛏️"} ${esc(R.nome)}</h2>${expRecHTML(R.recursos, R.recursos_ini)}</div>${expTrilha(R)}
+    ${R.cenario === "mina" ? `<div class="exp-mapa-cta"><p>⛏️ A Mina Esquecida é um mapa para andar: cada sala tem um acontecimento (um morador ou um objeto). Chegue perto e aperte <b>E</b>.</p><button class="btn big" data-act="exp-mapa">🗺️ Entrar no mapa da mina</button><small class="muted">Ou continue por aqui mesmo, pela lista:</small></div>` : ""}
     <canvas class="exp-cena" data-cena="${esc(ev?.cena || (R.status === "batalha" ? "camara" : "tunel"))}" data-luz="${R.recursos.luz}" width="720" height="260" aria-hidden="true"></canvas>
     ${u?.txt ? `<div class="exp-ultimo"><p>${esc(u.txt)}</p>${u.resumo?.length ? `<p class="exp-res">${u.resumo.map(x => `<span>${esc(x)}</span>`).join("")}</p>` : ""}</div>` : ""}
     ${R.encontro ? `<div class="exp-cap"><p>🎯 O ${esc(pkName(R.encontro.species_id))} ficou cansado. Dá para tentar capturar com as suas bolas!</p><button class="btn" data-act="exp-capturar">🎯 Tentar capturar</button></div>` : ""}
@@ -11628,7 +11632,8 @@ Object.assign(ACTIONS, {
   "exp-tela": v => { S.exp.tela = v; render(); },
   "exp-prep": async v => { S.exp.sel = v; S.exp.tela = "preparo"; render(); try { if (typeof eqCarregar === "function" && !AV.eq) { await eqCarregar(); render(); } } catch {} },
   "exp-ver-ult": () => { S.exp.tela = "resultado"; render(); },
-  "exp-iniciar": async v => { await guarded(async () => { S.exp.est = await rpc("exp_iniciar", { _cenario: v }); S.exp.lista = null; sfx("tick"); }); render(); },
+  "exp-iniciar": async v => { let ok = false; await guarded(async () => { S.exp.est = await rpc("exp_iniciar", { _cenario: v }); S.exp.lista = null; sfx("tick"); ok = true; }); if (ok && v === "mina") return minaIrMapa(); render(); },
+  "exp-mapa": () => minaIrMapa(),
   "exp-op": async v => {
     const R = S.exp.est?.run; if (!R || S.exp.ocupado) return; S.exp.ocupado = true;
     try { const e = await rpc("exp_escolher", { _run: R.id, _opcao: v }); S.exp.est = e; sfx("tick");
@@ -11638,7 +11643,16 @@ Object.assign(ACTIONS, {
     S.exp.ocupado = false; render();
   },
   "exp-luta": async v => { sfx("tick"); await guarded(loadBattles); await btOpen(v); },
-  "exp-volta": async () => { await guarded(async () => { await Promise.all([loadPk(), loadTreino()]); S.exp.est = await rpc("exp_estado"); }); if (!S.exp.est?.run && S.exp.est?.ultimo_fim) { S.exp.tela = "resultado"; S.exp.lista = null; refreshMe().catch(() => {}); } S.exp.aba = "exp"; S.win = "expedicao"; render(); },
+  "exp-volta": async () => {
+    await guarded(async () => { await Promise.all([loadPk(), loadTreino()]); S.exp.est = await rpc("exp_estado"); });
+    if (S.exp.est?.run?.cenario === "mina") {   // de volta para a sala da mina; se der para capturar, já abre
+      await minaIrMapa(); const enc = S.exp.est.run.encontro;
+      if (enc) { await encounterModal(enc); await guarded(async () => { await loadPk(); S.exp.est = await rpc("exp_estado"); }); }
+      return rpgPerto();
+    }
+    if (!S.exp.est?.run && S.exp.est?.ultimo_fim) { S.exp.tela = "resultado"; S.exp.lista = null; refreshMe().catch(() => {}); }
+    S.exp.aba = "exp"; S.win = "expedicao"; AV.volta = false; render();
+  },
   "exp-capturar": async () => { const R = S.exp.est?.run; if (!R?.encontro) return; await encounterModal(R.encontro); await guarded(async () => { await loadPk(); S.exp.est = await rpc("exp_estado"); }); render(); },
   "exp-recuar": async () => {
     const R = S.exp.est?.run; if (!R) return;
@@ -11652,6 +11666,160 @@ document.addEventListener("submit", e => {
   guarded(async () => { S.exp.adm = await rpc("admin_exp_cenario_salvar", { _id: String(f.get("id") || "").trim(), _def: def, _ativo: !!f.get("ativo") }); S.exp.lista = null; toast("Roteiro salvo!"); render(); });
 });
 WINS.expedicao = ["Expedições", () => viewExp()];
+// =================================================================
+// MAPA DA MINA (arquivo 111, pedido do dono em 13/11/2026: "um mapa com npcs"): a Expedição é uma masmorra para andar.
+// 5 salas em fila; em cada uma, o acontecimento da etapa é um morador ou um objeto (chegue perto e aperte E). Resolveu,
+// a passagem para a sala seguinte abre. Quem decide tudo continua sendo o servidor (exp_escolher); aqui só desenhamos.
+// =================================================================
+const MINA_SALAS = [{ x: 2, y: 5, w: 9, h: 10 }, { x: 14, y: 4, w: 9, h: 12 }, { x: 26, y: 5, w: 9, h: 10 }, { x: 38, y: 3, w: 9, h: 14 }, { x: 50, y: 2, w: 12, h: 16 }];
+const MINA_PESSOA = { minerador: { class: "domador", outfit: {} }, misterio: { class: "mago", outfit: {} } };
+const minaSalaDe = x => { let k = 0; MINA_SALAS.forEach((r, i) => { if (x >= r.x - 1) k = i; }); return k; };
+const minaChegada = () => { const R = S.exp?.est?.run, i = Math.max(0, Math.min(4, (R?.etapa || 1) - 1)), r = MINA_SALAS[i]; return [r.x + 1, 10]; };
+const minaSpot = i => { const r = MINA_SALAS[i]; return i === 4 ? [r.x + 7, 9] : [r.x + 5, 8]; };
+const minaMochilaN = R => { const m = R.mochila || {}; return (m.moedas ? 1 : 0) + Object.keys(m.itens || {}).length + (m.doces ? 1 : 0) + (m.pecas || 0) + (m.reliquias || []).length; };
+// as passagens entre as salas: abrem quando a etapa da sala anterior foi resolvida
+function minaFechada(x, y) {
+  if (!RPG_REG[AV.r]?.mina) return false; const R = S.exp?.est?.run, et = R?.etapa || 1;
+  for (let i = 0; i < 4; i++) { const px = MINA_SALAS[i].x + MINA_SALAS[i].w + 1; if (x === px && (y === 9 || y === 10)) return !(R && R.status !== "batalha" && et >= i + 2); }
+  return false;
+}
+function minaNpcs() {
+  const R = S.exp?.est?.run; if (!R || R.status !== "andando" || !R.evento) return [];
+  const i = Math.max(0, Math.min(4, R.etapa - 1)), [x, y] = minaSpot(i), ev = R.evento, ch = MINA_PESSOA[ev.cena] || null;
+  return [{ x, y, nome: ev.titulo, ch, minaEv: true, cena: ev.cena, fala: [] }];
+}
+function minaInterior() {
+  const W = 64, H = 20, Q = 32, cv = document.createElement("canvas"); cv.width = W * Q; cv.height = H * Q;
+  const g = cv.getContext("2d"), grid = Array.from({ length: H }, () => Array(W).fill("#"));
+  let sd = 4242; const rnd = () => ((sd = (sd * 1103515245 + 12345) >>> 0) / 4294967296);
+  const abre = (x, y) => { if (y >= 0 && y < H && x >= 0 && x < W) grid[y][x] = "."; };
+  MINA_SALAS.forEach(r => { for (let y = r.y; y < r.y + r.h; y++) for (let x = r.x; x < r.x + r.w; x++) abre(x, y); });
+  for (let i = 0; i < 4; i++) { const a = MINA_SALAS[i], b = MINA_SALAS[i + 1]; for (let x = a.x + a.w; x < b.x; x++) { abre(x, 9); abre(x, 10); } }
+  abre(1, 9); abre(1, 10);   // a saída para a Gruta
+  // o abismo da sala 4 (com a ponte no meio) e o lago escuro da sala 2
+  const s4 = MINA_SALAS[3]; for (let y = s4.y + 1; y < s4.y + s4.h - 1; y++) for (let x = s4.x + 2; x < s4.x + 7; x++) if (y < 8 || y > 11) grid[y][x] = "~";
+  const s2 = MINA_SALAS[1]; for (const [x, y] of [[s2.x + 6, s2.y + 9], [s2.x + 7, s2.y + 9], [s2.x + 6, s2.y + 10], [s2.x + 7, s2.y + 10], [s2.x + 8, s2.y + 10]]) grid[y][x] = "~";
+  // pedra
+  g.fillStyle = "#17110D"; g.fillRect(0, 0, cv.width, cv.height);
+  for (let i = 0; i < 900; i++) { const x = rnd() * cv.width, y = rnd() * cv.height, r = 6 + rnd() * 26; g.fillStyle = `rgba(${70 + rnd() * 40},${55 + rnd() * 30},${42 + rnd() * 25},${.1 + rnd() * .18})`; g.beginPath(); g.ellipse(x, y, r, r * .6, rnd() * 3, 0, 6.28); g.fill(); }
+  // chão das salas e túneis
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const c = grid[y][x]; if (c === "#") continue;
+    if (c === "~") { const ag = g.createLinearGradient(0, y * Q, 0, (y + 1) * Q); ag.addColorStop(0, "#050404"); ag.addColorStop(1, "#000"); g.fillStyle = ag; g.fillRect(x * Q, y * Q, Q, Q); continue; }
+    g.fillStyle = (x + y) % 2 ? "#4A3A2C" : "#46372A"; g.fillRect(x * Q, y * Q, Q, Q);
+    for (let k = 0; k < 4; k++) { g.fillStyle = `rgba(${30 + rnd() * 30},${22 + rnd() * 20},${15 + rnd() * 15},.45)`; g.fillRect(x * Q + rnd() * Q, y * Q + rnd() * Q, 2 + rnd() * 4, 2 + rnd() * 3); }
+  }
+  // bordas de rocha (onde o chão encontra a parede)
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+    if (grid[y][x] !== "#") continue; const viz = [[0, 1], [0, -1], [1, 0], [-1, 0]].filter(([a, b]) => grid[y + b][x + a] === ".");
+    for (const [a, b] of viz) { g.fillStyle = "rgba(120,98,76,.55)"; if (b === 1) g.fillRect(x * Q, y * Q + Q - 7, Q, 7); if (b === -1) g.fillRect(x * Q, y * Q, Q, 5); if (a === 1) g.fillRect(x * Q + Q - 6, y * Q, 6, Q); if (a === -1) g.fillRect(x * Q, y * Q, 6, Q); }
+  }
+  // trilhos de ponta a ponta e a ponte de tábuas sobre o abismo
+  g.strokeStyle = "#6B6258"; g.lineWidth = 3; for (const yy of [9.35, 10.65]) { g.beginPath(); g.moveTo(1 * Q, yy * Q); g.lineTo((MINA_SALAS[4].x + 2) * Q, yy * Q); g.stroke(); }
+  for (let x = 1; x < MINA_SALAS[4].x + 2; x++) { g.fillStyle = "#4A3524"; g.fillRect(x * Q + 6, 9 * Q + 4, 6, Q * 2 - 8); g.fillRect(x * Q + 22, 9 * Q + 4, 6, Q * 2 - 8); }
+  for (let x = s4.x + 2; x < s4.x + 7; x++) for (const yy of [8, 11]) { g.fillStyle = "#6E4C2E"; g.fillRect(x * Q + 2, yy * Q + 4, Q - 4, Q - 8); }
+  for (let x = s4.x + 2; x < s4.x + 7; x++) for (const yy of [7.9, 12.1]) { g.strokeStyle = "#8C6A3E"; g.lineWidth = 2; g.beginPath(); g.moveTo(x * Q, yy * Q); g.lineTo((x + 1) * Q, yy * Q); g.stroke(); }
+  // vigas de madeira nas entradas das salas
+  MINA_SALAS.forEach((r, i) => { for (const vx of [r.x, r.x + r.w - 1]) { g.fillStyle = "#5A3E26"; g.fillRect(vx * Q + 4, (r.y) * Q, 8, r.h * Q); g.fillStyle = "#6E4C2E"; g.fillRect(vx * Q + 4, r.y * Q, 3, r.h * Q); }
+    g.fillStyle = "#5A3E26"; g.fillRect(r.x * Q, r.y * Q, r.w * Q, 9); });
+  // cristais nas paredes (azuis no começo, roxos lá no fundo)
+  const cristal = (x, y, cor, hh) => { const cg = g.createLinearGradient(0, y - hh, 0, y); cg.addColorStop(0, "#FFFFFF"); cg.addColorStop(.35, cor); cg.addColorStop(1, "rgba(20,24,60,.8)"); g.fillStyle = cg; g.beginPath(); g.moveTo(x - 5, y); g.lineTo(x, y - hh); g.lineTo(x + 5, y); g.fill();
+    const bl = g.createRadialGradient(x, y - hh / 2, 0, x, y - hh / 2, 26); bl.addColorStop(0, cor + "55"); bl.addColorStop(1, cor + "00"); g.fillStyle = bl; g.fillRect(x - 26, y - hh / 2 - 26, 52, 52); };
+  MINA_SALAS.forEach((r, i) => { const cor = i < 2 ? "#6FD3FF" : i < 4 ? "#8FA8FF" : "#B794FF"; for (let k = 0; k < 6 + i * 3; k++) { const top = rnd() < .5, x = (r.x + .5 + rnd() * (r.w - 1)) * Q, y = top ? (r.y + .9) * Q : (r.y + r.h - .1) * Q; if (!top && Math.abs(y / Q - 10) < 2) continue; cristal(x, y, cor, 14 + rnd() * 18); } });
+  // carrinhos parados, pedras soltas e barris
+  const carrinho = (x, y) => { g.fillStyle = "#5B4A3A"; g.beginPath(); g.moveTo(x - 20, y - 18); g.lineTo(x + 20, y - 18); g.lineTo(x + 15, y); g.lineTo(x - 15, y); g.fill(); g.fillStyle = "#8A8A92"; for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(x - 12 + k * 8, y - 20, 5, 0, 6.28); g.fill(); } g.fillStyle = "#222"; for (const dx of [-10, 10]) { g.beginPath(); g.arc(x + dx, y + 2, 4, 0, 6.28); g.fill(); } };
+  carrinho(MINA_SALAS[0].x * Q + 70, MINA_SALAS[0].y * Q + 70); carrinho(MINA_SALAS[2].x * Q + 240, MINA_SALAS[2].y * Q + 290);
+  for (let k = 0; k < 40; k++) { const r = MINA_SALAS[Math.floor(rnd() * 5)], x = (r.x + 1 + rnd() * (r.w - 2)) * Q, y = (r.y + 1 + rnd() * (r.h - 2)) * Q; if (Math.abs(y / Q - 10) < 1.5) continue; g.fillStyle = `rgb(${95 + rnd() * 30},${85 + rnd() * 25},${75 + rnd() * 20})`; g.beginPath(); g.ellipse(x, y, 5 + rnd() * 8, 4 + rnd() * 5, rnd(), 0, 6.28); g.fill(); }
+  // o tesouro do guardião, no fundo da última sala
+  const s5 = MINA_SALAS[4]; for (let k = 0; k < 60; k++) { const x = (s5.x + 6 + rnd() * 4) * Q, y = (s5.y + 4 + rnd() * 3) * Q; g.fillStyle = rnd() < .5 ? "#F2C94C" : "#E0A82E"; g.beginPath(); g.ellipse(x, y, 6, 3.5, 0, 0, 6.28); g.fill(); }
+  // tochas nas paredes (a luz delas é desenhada por cima, na hora)
+  const tochas = []; MINA_SALAS.forEach(r => { for (const tx of [r.x + 2, r.x + r.w - 3]) { tochas.push([tx, r.y]); g.fillStyle = "#5A3E26"; g.fillRect(tx * Q + 13, r.y * Q + 6, 6, 18); g.fillStyle = "#FFB84A"; g.beginPath(); g.ellipse(tx * Q + 16, r.y * Q + 6, 5, 8, 0, 0, 6.28); g.fill(); } });
+  // placa da saída
+  g.fillStyle = "#6E4C2E"; g.fillRect(2 * Q, 7.2 * Q, Q * 1.6, Q * .7); g.fillStyle = "#F2E6D2"; g.font = "bold 13px Inter, sans-serif"; g.textAlign = "center"; g.fillText("⬅ SAÍDA", 2.8 * Q, 7.7 * Q);
+  return { g: grid.map(l => l.join("")), im: cv, saidas: [{ para: "pedreira", em: [[1, 9], [1, 10]], dentro: [3, 10] }], chegada: [3, 10], tochas, pontos: {}, npcs: [] };
+}
+// o que muda a cada quadro: as passagens fechadas e o objeto do acontecimento
+function minaDesenha(g, tile, cx, cy, now, dpr) {
+  const R = S.exp?.est?.run, et = R?.etapa || 1;
+  for (let i = 0; i < 4; i++) {
+    const px = MINA_SALAS[i].x + MINA_SALAS[i].w + 1, x = px * tile - cx, y = 9 * tile - cy;
+    if (minaFechada(px, 9)) {   // tábuas pregadas e pedras: só abre quando a sala de antes é resolvida
+      g.fillStyle = "#3A2A1C"; g.fillRect(x, y - tile * .2, tile, tile * 2.4);
+      g.fillStyle = "#7A5534"; for (let k = 0; k < 4; k++) { g.save(); g.translate(x + tile / 2, y + k * tile * .55 + tile * .2); g.rotate(k % 2 ? .25 : -.25); g.fillRect(-tile * .6, -tile * .1, tile * 1.2, tile * .2); g.restore(); }
+      g.fillStyle = "rgba(255,240,200,.9)"; g.font = `${Math.round(tile * .35)}px 'Segoe UI Emoji',sans-serif`; g.textAlign = "center"; g.fillText("🔒", x + tile / 2, y + tile * 1.1);
+    } else if (et >= i + 2) { g.fillStyle = "rgba(122,85,52,.6)"; g.fillRect(x + tile * .1, y + tile * 1.75, tile * .8, tile * .15); }
+  }
+  const N = minaNpcs()[0]; if (!N || N.ch) return;
+  const bx = (N.x + .5) * tile - cx, by = (N.y + 1) * tile - cy, u = tile, pul = .5 + Math.sin(now / 300) * .5;
+  const brilho = (r, cor) => { const bg = g.createRadialGradient(bx, by - u * .5, 0, bx, by - u * .5, r); bg.addColorStop(0, cor); bg.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = bg; g.fillRect(bx - r, by - u * .5 - r, r * 2, r * 2); };
+  brilho(u * 1.4, `rgba(255,220,140,${.18 + pul * .12})`);
+  g.save(); g.translate(bx, by);
+  switch (N.cena) {
+    case "entrada": for (const [dx, cor, ic] of [[-1.1, "rgba(200,170,120,.35)", "🚃"], [0, "rgba(110,200,255,.45)", "💎"], [1.1, "rgba(60,40,30,.6)", "🕳️"]]) { g.fillStyle = "#050302"; g.beginPath(); g.ellipse(dx * u, -u * .55, u * .45, u * .6, 0, Math.PI, 0); g.lineTo(dx * u + u * .45, 0); g.lineTo(dx * u - u * .45, 0); g.fill(); g.fillStyle = cor; g.beginPath(); g.ellipse(dx * u, -u * .45, u * .25, u * .3, 0, 0, 6.28); g.fill(); g.font = `${Math.round(u * .32)}px 'Segoe UI Emoji',sans-serif`; g.textAlign = "center"; g.fillText(ic, dx * u, -u * .35); } break;
+    case "bau": case "sala": g.fillStyle = "#6B4426"; g.fillRect(-u * .45, -u * .5, u * .9, u * .5); g.fillStyle = "#7E5230"; g.beginPath(); g.ellipse(0, -u * .5, u * .45, u * .18, 0, Math.PI, 0); g.fill(); g.fillStyle = "#C9A14A"; g.fillRect(-u * .45, -u * .35, u * .9, u * .06); g.fillRect(-u * .07, -u * .42, u * .14, u * .18);
+      if (N.cena === "sala") for (let k = 0; k < 12; k++) { g.fillStyle = k % 2 ? "#F2C94C" : "#E0A82E"; g.beginPath(); g.ellipse(-u * .7 + (k % 6) * u * .28, -u * .05 + Math.floor(k / 6) * u * .12, u * .1, u * .05, 0, 0, 6.28); g.fill(); } break;
+    case "carrinho": case "trilhos": g.rotate(N.cena === "carrinho" ? -.45 : 0); g.fillStyle = "#5B4A3A"; g.beginPath(); g.moveTo(-u * .55, -u * .55); g.lineTo(u * .55, -u * .55); g.lineTo(u * .42, 0); g.lineTo(-u * .42, 0); g.fill(); g.fillStyle = "#8A8A92"; for (let k = 0; k < 5; k++) { g.beginPath(); g.arc(-u * .4 + k * u * .2, -u * .6, u * .1, 0, 6.28); g.fill(); } g.fillStyle = "#222"; for (const dx of [-.28, .28]) { g.beginPath(); g.arc(dx * u, u * .04, u * .1, 0, 6.28); g.fill(); } break;
+    case "cristais": for (let k = 0; k < 5; k++) { const dx = (k - 2) * u * .22, hh = u * (.6 + (k % 2) * .35); const cg = g.createLinearGradient(0, -hh, 0, 0); cg.addColorStop(0, "#FFFFFF"); cg.addColorStop(.35, "#6FD3FF"); cg.addColorStop(1, "#1E2A5A"); g.fillStyle = cg; g.beginPath(); g.moveTo(dx - u * .1, 0); g.lineTo(dx, -hh); g.lineTo(dx + u * .1, 0); g.fill(); } break;
+    case "poco": g.fillStyle = "#020101"; g.beginPath(); g.ellipse(0, -u * .1, u * .55, u * .22, 0, 0, 6.28); g.fill(); g.strokeStyle = "#8C6A3E"; g.lineWidth = 3 * dpr; g.beginPath(); g.moveTo(u * .05, -u * 1.4); g.quadraticCurveTo(-u * .1, -u * .7, 0, -u * .1); g.stroke(); break;
+    case "rochas": for (let k = 0; k < 6; k++) { g.fillStyle = `rgb(${110 + k * 6},${100 + k * 5},${90 + k * 4})`; g.beginPath(); g.ellipse(-u * .5 + (k % 3) * u * .5, -u * .2 - Math.floor(k / 3) * u * .35, u * .3, u * .22, k, 0, 6.28); g.fill(); } break;
+    case "porta": g.fillStyle = "#4A4440"; g.fillRect(-u * .7, -u * 1.6, u * 1.4, u * 1.6); g.fillStyle = "#5E5650"; g.fillRect(-u * .6, -u * 1.5, u * 1.2, u * 1.5); g.font = `${Math.round(u * .3)}px 'Segoe UI Emoji',sans-serif`; g.textAlign = "center"; ["🔥", "💧", "🌿"].forEach((e, k) => g.fillText(e, (k - 1) * u * .38, -u * .9)); break;
+    case "ponte": g.fillStyle = "#6E4C2E"; for (let k = 0; k < 5; k++) if (k !== 2) g.fillRect(-u * .7 + k * u * .3, -u * .12, u * .22, u * .2); g.strokeStyle = "#8C6A3E"; g.lineWidth = 2 * dpr; g.beginPath(); g.moveTo(-u * .8, -u * .25); g.lineTo(u * .8, -u * .25); g.stroke(); break;
+    case "galeria": g.fillStyle = "#5A3E26"; g.fillRect(-u * .35, -u * .08, u * .7, u * .12); g.fillStyle = `rgba(255,154,60,${.7 + pul * .3})`; g.beginPath(); g.moveTo(-u * .22, -u * .05); g.quadraticCurveTo(0, -u * .8, u * .22, -u * .05); g.fill(); break;
+    case "camara": { const im = rpgArt(95), sz = u * 3.4; if (im.complete && im.naturalWidth) { g.globalAlpha = .95; g.drawImage(im, -sz / 2, -sz, sz, sz); g.globalAlpha = 1; }
+      g.fillStyle = `rgba(255,70,70,${.6 + pul * .4})`; for (const dx of [-.18, .18]) { g.beginPath(); g.arc(dx * u, -sz * .78, u * .07, 0, 6.28); g.fill(); } break; }
+    default: for (let k = 0; k < 4; k++) { g.fillStyle = "rgba(20,15,10,.7)"; g.beginPath(); g.ellipse(-u * .45 + k * u * .3, -u * .05 - (k % 2) * u * .15, u * .1, u * .07, 0, 0, 6.28); g.fill(); }
+  }
+  g.restore();
+}
+function minaRotulo(g, tile, cx, cy, now, dpr) {
+  const N = minaNpcs()[0]; if (!N) return;
+  const bx = (N.x + .5) * tile - cx, by = (N.y + 1) * tile - cy, alto = N.ch ? tile * 2.1 : N.cena === "camara" ? tile * 3.5 : tile * 1.7, yy = by - alto - Math.abs(Math.sin(now / 280)) * 4 * dpr;
+  const lab = (N.cena === "camara" ? "👑 " : "❗ ") + N.nome;
+  g.font = `800 ${Math.round(13 * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.lineWidth = 3.5 * dpr; g.strokeStyle = "rgba(10,8,6,.95)"; g.strokeText(lab, bx, yy); g.fillStyle = "#FFE7A8"; g.fillText(lab, bx, yy);
+}
+// entrar pela porta da Gruta: com expedição em andamento vai direto para a sala; sem, abre a preparação
+async function minaEntrar() {
+  await expCarregar();
+  if (S.exp.est?.run) return rpgViajar("mina");
+  S.exp.aba = "exp"; S.exp.sel = "mina"; S.exp.tela = "preparo"; rpgClose(false); AV.volta = true; ACTIONS.go("expedicao");
+}
+// ir para o mapa da mina (de qualquer lugar): abre a Aventura e viaja
+async function minaIrMapa() {
+  S.win = null; AV.volta = false;
+  if (!AV.open) { AV.posLida = true; await rpgOpen(); }
+  if (AV.r !== "mina") await rpgViajar("mina");
+}
+// o acontecimento da sala: escolhas, o que aconteceu e, no fim, o resultado
+function minaEventoAbrir() {
+  const R = S.exp?.est?.run; if (!R?.evento) return;
+  const pinta = html => { const box = $("#modal-root .modal"); if (box) { box.innerHTML = html; setTimeout(expPinta, 0); } };
+  const telaEv = R0 => { const ev = R0.evento; return `<div class="mina-ev"><canvas class="exp-cena" data-cena="${esc(ev.cena)}" data-luz="${R0.recursos.luz}" width="720" height="220" aria-hidden="true"></canvas>
+    <div class="mina-ev-top"><h2>${esc(ev.titulo)}</h2>${expRecHTML(R0.recursos, R0.recursos_ini)}</div><p class="exp-texto">${esc(ev.texto)}</p>
+    <div class="exp-ops">${ev.opcoes.map(o => `<button class="exp-op" data-mop="${esc(o.id)}" ${o.ok ? "" : "disabled"}><span>${esc(o.txt)}</span>${o.custo?.energia || o.custo?.luz ? `<em>${o.custo.energia ? `⚡ −${o.custo.energia}` : ""} ${o.custo.luz ? `🔦 −${o.custo.luz}` : ""}</em>` : ""}${o.ok ? "" : `<small>🔒 ${esc(o.motivo || "")}</small>`}</button>`).join("")}</div>
+    <p class="mina-pe"><button class="btn ghost small" data-mfecha="1">Pensar mais um pouco</button><small>Sala ${R0.etapa} de ${R0.etapas}</small></p></div>`; };
+  const m = openModal(telaEv(R)); m.querySelector(".modal").classList.add("modal-av", "modal-mina"); setTimeout(expPinta, 0);
+  let fim = null, luta = null;
+  m.addEventListener("click", async e => {
+    if (e.target.closest("[data-mfecha]") || e.target === m) { closeModal(); if (fim) { minaSaiu(); } return; }
+    if (e.target.closest("[data-mluta]")) { closeModal(); return rpgLutaAbre(luta); }
+    if (e.target.closest("[data-mdiario]")) { closeModal(); minaSaiu(); rpgClose(false); AV.volta = true; S.exp.aba = "diario"; S.exp.diario = null; return ACTIONS.go("expedicao"); }
+    const b = e.target.closest("[data-mop]"); if (!b || S.exp.ocupado) return;
+    S.exp.ocupado = true; m.querySelectorAll("[data-mop]").forEach(x => x.disabled = true);
+    try {
+      const est = await rpc("exp_escolher", { _run: R.id, _opcao: b.dataset.mop }); S.exp.est = est; sfx("tick");
+      const u = est.run?.ultimo || est.ultimo_fim?.ultimo;
+      const res = u ? `<div class="exp-ultimo"><p>${esc(u.txt)}</p>${u.resumo?.length ? `<p class="exp-res">${u.resumo.map(x => `<span>${esc(x)}</span>`).join("")}</p>` : ""}</div>` : "";
+      if (est.battle) { luta = est.battle; pinta(`<div class="mina-ev"><h2>⚔️ Luta!</h2>${res}<p class="act-btns"><button class="btn big" data-mluta="1">⚔️ Lutar</button></p></div>`); }
+      else if (!est.run && est.ultimo_fim) { fim = est.ultimo_fim; S.exp.lista = null; refreshMe().catch(() => {}); sfx(fim.status === "concluida" ? "fanfarra" : "erro");
+        pinta(`${res}${expResultadoHTML(fim).replace(/<div class="act-btns">[\s\S]*<\/div><\/div>$/, "")}<div class="act-btns"><button class="btn" data-mfecha="1">🚪 Sair da mina</button><button class="btn ghost" data-mdiario="1">📖 Diário do Explorador</button></div></div>`); }
+      else { pinta(`<div class="mina-ev"><h2>${esc(u?.evento || "")}</h2>${res}<p class="muted">${est.run.etapa > R.etapa ? "🔓 A passagem para a próxima sala se abriu!" : ""}</p><p class="act-btns"><button class="btn" data-mfecha="1">Continuar ▶</button></p></div>`); if (est.run.etapa > R.etapa) sfx("acerto"); }
+      rpgPerto();
+    } catch (er) { toast(errMsg(er), true); m.querySelectorAll("[data-mop]").forEach(x => x.disabled = false); }
+    S.exp.ocupado = false;
+  });
+}
+// acabou a expedição: volta para a porta da mina, na Gruta da Pedreira
+function minaSaiu() { if (AV.open && RPG_REG[AV.r]?.mina) rpgViajar("pedreira"); }
 // arquivo 106: o salão da Liga (arte nossa, por código): tapete vermelho até o palco, 4 pedestais da Elite e o trono do Campeão
 const ELITE_IC = ["❄️", "🥊", "👻", "🐉", "👑"];
 function rpgEliteInterior() {
@@ -11760,19 +11928,20 @@ const AV_NPCS = [
 ];
 const AV = { r: "vila", open: false, img: null, g: null, x: 28, y: 30, fx: 28, fy: 30, ax: 28, ay: 31, face: 1, moving: null, keys: new Set(), raf: 0, others: {}, baloes: {}, perto: null, volta: false, busy: false, lastEnc: 0, st: null, fala: null };
 const rpgAt = (x, y) => (AV.g?.[y] || "")[x] || "#";
-const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || rpgGymFoot(x, y) || rpgNpcs().some(n => n.x === x && n.y === y) || (rpgChefeAqui() && (p => p && p[0] === x && p[1] === y)(rpgChefePos()));
+const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || minaFechada(x, y) || rpgGymFoot(x, y) || rpgNpcs().some(n => n.x === x && n.y === y) || (rpgChefeAqui() && (p => p && p[0] === x && p[1] === y)(rpgChefePos()));
 function rpgPontos() {
   if (AV.r === "vila") return AV_PONTOS;
-  if (RPG_REG[AV.r]?.gym || RPG_REG[AV.r]?.elite) return [];
+  if (RPG_REG[AV.r]?.gym || RPG_REG[AV.r]?.elite || RPG_REG[AV.r]?.mina) return [];
   const pl = AV.dados?.pontos?.placa, R = RPG_REG[AV.r], gp = rpgGymPos(), L = rpgLider(AV.r);
   const porta = gp && L ? [{ em: [gp], ic: "🏟️", nome: `Ginásio · ${L.nome}`, vai: "gym_" + AV.r, alto: 5.1 }] : [];
-  if (AV.r === "pedreira" && S.cfg.exp?.on !== false) { const mp = expMinaPos(); if (mp) porta.push({ em: [mp], ic: "⛏️", nome: "Mina Esquecida (Expedição)", win: "expedicao", alto: 1.3 }); }   // arquivo 111
+  if (AV.r === "pedreira" && S.cfg.exp?.on !== false) { const mp = expMinaPos(); if (mp) porta.push({ em: [mp], ic: "⛏️", nome: "Mina Esquecida (Expedição)", minaPorta: true, alto: 1.3 }); }   // arquivo 111
   if (!pl) return porta;
   return [...porta, { em: [pl], ic: "🪧", nome: "Placa", fala: [`${R.ic} ${R.nome}`, ...Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${k.endsWith("_fundo") ? "Mato fundo (chão diferente, longe da entrada)" : "Mato de perto"}: nível ${z.min} a ${z.max}. Tipos: ${rpgTipos(z)}.` : ""; }).filter(Boolean), `Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez.`] }];
 }
 function rpgNpcs() {
   if (AV.r === "vila") return AV_NPCS;
   if (RPG_REG[AV.r]?.gym) { const r = RPG_REG[AV.r].gym, L = rpgLider(r), p = AV.dados?.lider; return L && p ? [{ x: p[0], y: p[1], nome: L.nome, ch: { class: L.classe, outfit: {} }, gym: r, fala: [] }] : []; }
+  if (RPG_REG[AV.r]?.mina) return minaNpcs();   // arquivo 111: o acontecimento da sala de agora
   if (RPG_REG[AV.r]?.elite) { const L = rpgEliteMembro(), p = AV.dados?.lider; return L && p ? [{ x: p[0], y: p[1], nome: L.nome, ch: { class: L.classe, outfit: {} }, elite: true, fala: [] }] : []; }
   const n = AV.dados?.npcs?.[0], i = RPG_NPC[AV.r], out = n && i ? [{ x: n[0], y: n[1], ...i }] : [];
   return out;
@@ -11784,6 +11953,7 @@ function rpgCarregar(r = AV.r) {
   if (AV.cargas[r]) return AV.cargas[r];
   if (RPG_REG[r]?.gym) { AV.dc[r] = rpgGymInterior(RPG_REG[r].gym); return (AV.cargas[r] = Promise.resolve(AV.dc[r])); }
   if (RPG_REG[r]?.elite) { AV.dc[r] = rpgEliteInterior(); return (AV.cargas[r] = Promise.resolve(AV.dc[r])); }
+  if (RPG_REG[r]?.mina) { AV.dc[r] = minaInterior(); return (AV.cargas[r] = Promise.resolve(AV.dc[r])); }   // arquivo 111
   return (AV.cargas[r] = new Promise((ok, erro) => {
     const pronto = () => { const d = window.RPG_ARTE?.[r]; if (!d) return erro(new Error("sem arte")); const im = new Image(); im.onload = () => { AV.dc[r] = { ...d, im }; ok(AV.dc[r]); }; im.onerror = () => erro(new Error("imagem")); im.src = d.img; };
     if (window.RPG_ARTE?.[r]) return pronto();
@@ -11810,7 +11980,7 @@ async function rpgViajar(para) {
   try { await rpgEntra(para); }
   catch { AV.busy = false; if (fl) fl.classList.remove("on", "viagem"); return toast("Não consegui carregar essa região. Tente de novo.", true); }
   const gpv = RPG_REG[de]?.gym === para ? rpgGymPos(para) : null;
-  const ch = gpv ? (!rpgSolid(gpv[0], gpv[1] + 1) ? [gpv[0], gpv[1] + 1] : gpv) : para === "vila" ? RPG_VILA_CHEGA[de] : (AV.dados.saidas?.find(s => s.para === de)?.dentro || AV.dados.chegada);
+  const ch = RPG_REG[para]?.mina ? minaChegada() : de === "mina" ? expMinaPos() : gpv ? (!rpgSolid(gpv[0], gpv[1] + 1) ? [gpv[0], gpv[1] + 1] : gpv) : para === "vila" ? RPG_VILA_CHEGA[de] : (AV.dados.saidas?.find(s => s.para === de)?.dentro || AV.dados.chegada);
   [AV.x, AV.y] = ch && !rpgSolid(ch[0], ch[1]) ? ch : (AV.dados.chegada || [28, 30]); AV.moving = null; AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();
   try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
   rpgNetLeave(); rpgNetJoin(); rpgPerto();
@@ -11860,7 +12030,7 @@ function rpgRotasHTML() {
     <canvas id="rpg-mapa" class="rpg-mapa" aria-label="Mapa completo da Aventura"></canvas>
     <p class="muted">Cada área tem uma faixa de nível. Perto da Vila Aurora os Pokémon são fracos; no fundo das rotas (chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Quanto mais forte o selvagem, mais experiência ele dá. Os evoluídos só aparecem nas áreas de nível alto.</p>
     <p>🏅 Suas insígnias: <b>${rpgInsig().length} de ${Object.keys(rpgLideres()).length}</b>${rpgInsig().length ? ` (${rpgInsig().map(r => RPG_REG[r]?.ic || "").join(" ")})` : ""}</p>
-    ${Object.entries(RPG_REG).filter(([, R]) => !R.gym).map(([id, R]) => `<div class="rpg-rota ${id === rpgRegBase(AV.r) ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>${rpgLider(id) ? `<p class="rpg-gin-l">🏟️ Ginásio: <b>${esc(rpgLider(id).nome)}</b> (${esc(rpgLider(id).tipo || "")}, ${rpgLider(id).n} Pokémon) ${rpgInsig().includes(id) ? "· ✅ insígnia" : ""}</p>` : ""}
+    ${Object.entries(RPG_REG).filter(([, R]) => !R.gym && !R.mina).map(([id, R]) => `<div class="rpg-rota ${id === rpgRegBase(AV.r) ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>${rpgLider(id) ? `<p class="rpg-gin-l">🏟️ Ginásio: <b>${esc(rpgLider(id).nome)}</b> (${esc(rpgLider(id).tipo || "")}, ${rpgLider(id).n} Pokémon) ${rpgInsig().includes(id) ? "· ✅ insígnia" : ""}</p>` : ""}
       ${R.elite ? `<p class="rpg-gin-l">🏛️ A Elite 4 e o Campeão. Só entra quem tem as ${AV.st?.elite?.insignias_min ?? 8} insígnias.${AV.st?.elite?.campeao ? " · 👑 você já venceu!" : ""}</p>` : ""}
       <ul>${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `<li><b>${esc(z.nome)}</b> <span class="rpg-nv">Nv ${z.min}–${z.max}</span><small>${esc(rpgTipos(z))}</small></li>` : ""; }).join("")}</ul></div>`).join("")}
     <p class="muted" style="margin-top:10px">🏃 Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez nela. Lutas por dia: ${AV.st?.batalhas_dia ?? rpgCfg().batalhas_dia}.</p></div>`;
@@ -11924,6 +12094,11 @@ async function rpgOpen() {
   try { await rpgEntra(p?.r || AV.r); } catch { try { await rpgEntra("vila"); p = null; } catch { rpgClose(); return toast("Não consegui carregar o cenário da Aventura. Tente de novo.", true); } }
   if (p && !rpgSolid(p.x, p.y)) { AV.x = p.x; AV.y = p.y; }
   if (AV.moving) { AV.x = AV.moving.tx; AV.y = AV.moving.ty; AV.moving = null; }
+  if (RPG_REG[AV.r]?.mina) {   // arquivo 111: na mina só com expedição em andamento
+    await expCarregar();
+    if (!S.exp.est?.run) { try { await rpgEntra("pedreira"); const mp = expMinaPos(); [AV.x, AV.y] = mp || AV.dados.chegada || [2, 2]; } catch {} }
+    else if (rpgSolid(AV.x, AV.y) || minaSalaDe(AV.x) > S.exp.est.run.etapa - 1) [AV.x, AV.y] = minaChegada();
+  }
   if (rpgSolid(AV.x, AV.y)) [AV.x, AV.y] = AV.r === "vila" ? [28, 30] : (AV.dados.chegada || [2, 2]);
   AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();   // o Pokémon que segue começa num lugar livre
   clearInterval(AV.pvpT); AV.pvpT = setInterval(() => { if (AV.open) rpgPvpCheck(); else clearInterval(AV.pvpT); }, 45000); setTimeout(() => rpgPvpCheck(), 2500);   // arquivo 107
@@ -11949,7 +12124,7 @@ function rpgVoltaCheck() { if (AV.volta && !AV.open && !S.win && !GR.open && !PZ
 // ---------- interação: casas, placas e moradores ----------
 function rpgPerto() {
   let p = rpgPontos().find(p => p.em.some(([x, y]) => x === AV.x && y === AV.y)) || null;
-  if (!p) { const n = rpgNpcs().find(n => Math.abs(n.x - AV.x) + Math.abs(n.y - AV.y) === 1); if (n) p = { npc: n, ic: n.gym ? "🏟️" : n.elite ? "🏛️" : "💬", nome: n.nome, fala: n.fala }; }
+  if (!p) { const n = rpgNpcs().find(n => Math.abs(n.x - AV.x) + Math.abs(n.y - AV.y) === 1); if (n) p = { npc: n, ic: n.gym ? "🏟️" : n.elite ? "🏛️" : n.minaEv ? "❗" : "💬", nome: n.nome, fala: n.fala }; }
   if (!p && rpgCfg().pvp?.on !== false) {   // arquivo 102: outro jogador perto → desafiar
     const d = rpgCfg().pvp?.distancia ?? 2, o = Object.values(AV.others).filter(o => o.x != null && Math.max(Math.abs(o.x - AV.x), Math.abs(o.y - AV.y)) <= d)
       .sort((a, b) => Math.hypot(a.x - AV.x, a.y - AV.y) - Math.hypot(b.x - AV.x, b.y - AV.y))[0];
@@ -11957,8 +12132,9 @@ function rpgPerto() {
   }
   if (!p && rpgChefeAqui()) { const cp = rpgChefePos(); if (cp && Math.abs(cp[0] - AV.x) + Math.abs(cp[1] - AV.y) <= 1) p = { chefe: true, ic: "👹", nome: `Chefe: ${pkName(AV.st.chefe.especie)}` }; }
   AV.perto = p;
-  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai ? "Entrar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym || p.npc?.elite ? "Desafiar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
+  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai || p.minaPorta ? "Entrar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym || p.npc?.elite ? "Desafiar" : p.npc?.minaEv ? (p.npc.ch ? "Falar com" : "Investigar") : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
   const z = rpgZonaKey(rpgAt(AV.x, AV.y)), ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = rpgZonaTxt(z); }
+  const mr = RPG_REG[AV.r]?.mina && S.exp?.est?.run; if (ze && mr) { ze.hidden = false; ze.textContent = `⚡ ${mr.recursos.energia} · 🔦 ${mr.recursos.luz} · Sala ${mr.etapa} de ${mr.etapas} · 🎒 ${minaMochilaN(mr)}`; }
   rpgTit();   // arquivo 101: sempre onde você está
 }
 function rpgUsar() {
@@ -11968,6 +12144,8 @@ function rpgUsar() {
   if (p.pvp) return rpgDesafiar(p.pvp, p.nome);
   if (p.npc?.gym) return rpgGinasioAbrir(p.npc.gym);
   if (p.npc?.elite) return rpgEliteAbrir();
+  if (p.npc?.minaEv) return minaEventoAbrir();   // arquivo 111
+  if (p.minaPorta) return minaEntrar();
   if (p.chefe) return rpgChefeAbrir();
   if (p.npc && rpgMissoesDe(AV.r).length) return rpgMissoesAbrir(AV.r, p.nome, p.fala);
   if (p.fala) { AV.fala = { nome: p.nome, linhas: p.fala, i: 0 }; return rpgFalaMostra(); }
@@ -12033,7 +12211,8 @@ function rpgPinta(now) {
   g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
   g.drawImage(AV.img, cx / k, cy / k, cv.width / k, cv.height / k, 0, 0, cv.width, cv.height);
   { const gpd = !RPG_REG[AV.r]?.gym && AV.r !== "vila" && rpgGymPos(); if (gpd) rpgDesenhaGinasio(g, gpd, tile, cx, cy, now, dpr); }   // arquivo 101
-  if (AV.st?.noite && !RPG_REG[AV.r]?.gym) {   // arquivo 99: noite, com a luz em volta de você
+  if (RPG_REG[AV.r]?.mina) minaDesenha(g, tile, cx, cy, now, dpr);   // arquivo 111
+  if (AV.st?.noite && !RPG_REG[AV.r]?.gym && !RPG_REG[AV.r]?.mina) {   // arquivo 99: noite, com a luz em volta de você
     const lx = (AV.fx + .5) * tile - cx, ly = (AV.fy + .5) * tile - cy, gr = g.createRadialGradient(lx, ly, tile * 1.3, lx, ly, tile * 6.5);
     gr.addColorStop(0, "rgba(10,14,48,.18)"); gr.addColorStop(1, "rgba(8,10,36,.66)"); g.fillStyle = gr; g.fillRect(0, 0, cv.width, cv.height);
   }
@@ -12102,6 +12281,14 @@ function rpgPinta(now) {
       g.fillStyle = "#1E150C"; g.textAlign = "center"; g.fillText(t, ox, by - 7 * dpr, bw - 10 * dpr); g.globalAlpha = 1;
     }
   }
+  if (RPG_REG[AV.r]?.mina) {   // arquivo 111: na mina, a luz que você tem é o quanto enxerga
+    const lz = S.exp?.est?.run?.recursos?.luz ?? 3, lx = (AV.fx + .5) * tile - cx, ly = (AV.fy + .5) * tile - cy, rr = tile * (3 + lz * 1.3);
+    const gr = g.createRadialGradient(lx, ly, rr * .45, lx, ly, rr); gr.addColorStop(0, "rgba(4,3,2,0)"); gr.addColorStop(1, `rgba(4,3,2,${lz <= 0 ? .88 : .68})`);
+    g.fillStyle = gr; g.fillRect(0, 0, cv.width, cv.height);
+    for (const t of AV.dados?.tochas || []) { const tx = (t[0] + .5) * tile - cx, ty = (t[1] + .5) * tile - cy, tg = g.createRadialGradient(tx, ty, 0, tx, ty, tile * 2.2), f = .35 + Math.sin(now / 180 + t[0]) * .06;
+      tg.addColorStop(0, `rgba(255,190,90,${f})`); tg.addColorStop(1, "rgba(255,190,90,0)"); g.fillStyle = tg; g.fillRect(tx - tile * 2.2, ty - tile * 2.2, tile * 4.4, tile * 4.4); }
+    minaRotulo(g, tile, cx, cy, now, dpr);   // o nome do acontecimento fica visível mesmo no escuro
+  }
   // mapinha
   const mc = $("#rpg-mini");
   if (mc && mc.offsetParent !== null) { const mg = mc.getContext("2d"), kx = mc.width / AV.g[0].length, ky = mc.height / AV.g.length; mg.imageSmoothingEnabled = true; mg.drawImage(AV.img, 0, 0, mc.width, mc.height);
@@ -12113,6 +12300,7 @@ let rpgChannel = null;
 const rpgMeta = () => ({ n: S.me.name, c: S.me.class, o: S.me.outfit || {}, x: AV.x, y: AV.y, f: AV.face, m: rpgSegue() ? pkTeam()[0]?.species_id || null : null, eq: eqSoma(AV.eq), es: eqSlotsDe(AV.eq), d: AV.dir || "down" });
 function rpgNetJoin() {
   if (!sb || !S.me) return;
+  if (RPG_REG[AV.r]?.mina) { AV.others = {}; return; }   // arquivo 111: a expedição é individual
   if (rpgChannel) { try { rpgChannel.track(rpgMeta()); } catch {} return; }
   AV.others = {};
   rpgChannel = sb.channel(`rpg-${AV.r}`, { config: { presence: { key: pkMe() }, broadcast: { self: false } } })
@@ -12586,7 +12774,7 @@ function rpgTit() {   // uma linha só: lugar, coordenadas, lutas do dia e a noi
 function rpgHud() {
   const st = AV.st, n = $("#rpg-noite"), ins = $("#rpg-ins"), mi = $("#rpg-mis"), ch = $("#rpg-chefe"), su = $("#rpg-sup");
   if (su) { const sp = rpgSup(); su.textContent = sp ? `🎒 ${innerWidth > 760 ? "Suporte: " : ""}${pkName(sp.species_id)}` : `🎒 ${innerWidth > 760 ? "Escolher suporte" : "Suporte"}`; }
-  if (n) { n.hidden = !st?.noite; n.textContent = "🌙 Noite"; n.title = "De noite, Fantasmas e Sombrios aparecem em todas as áreas"; }
+  if (n) { n.hidden = !st?.noite || !!RPG_REG[AV.r]?.mina; n.textContent = "🌙 Noite"; n.title = "De noite, Fantasmas e Sombrios aparecem em todas as áreas"; }
   if (ins) ins.textContent = `🏅 ${rpgInsig().length}/${Object.keys(rpgLideres()).length}`;
   if (mi) { const ms = st?.missoes || [], prontas = ms.filter(m => !m.resgatada && m.prog >= m.meta).length; mi.hidden = !ms.length; mi.title = `Missões: ${ms.filter(m => m.resgatada).length} de ${ms.length} feitas`; mi.innerHTML = `📜<em>Missões</em>${prontas ? `<b class="mb red">${prontas}</b>` : ""}`; }
   if (ch) { const c = st?.chefe; ch.hidden = !c || c.status !== "ativo"; if (c) { const pc = Math.max(0, Math.round(100 - c.dano * 100 / Math.max(1, c.hp_total))); ch.innerHTML = `👹<em>Chefe ${pc}%</em>`; ch.title = `Chefe: ${pkName(c.especie)} em ${RPG_REG[c.regiao]?.nome || c.regiao}`; } }
@@ -14028,7 +14216,7 @@ function postCard(p, isNew) {
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
   { id: "expedicoes-2026-11-13", sql: "111", title: "⛏️ Expedições: a Mina Esquecida", body: () => `Chegou um minigame novo: as Expedições (menu Competir, ou pela entrada da mina na Gruta da Pedreira, na Aventura).
-• A primeira é a Mina Esquecida: 5 etapas, de 5 a 10 minutos. Escolha o caminho, explore, enfrente desafios e chegue à câmara do guardião.
+• A primeira é a Mina Esquecida: um mapa para andar, com 5 salas. Em cada sala tem um morador ou um objeto esperando por você (chegue perto e aperte E). Resolveu, a passagem para a próxima sala se abre, até a câmara do guardião.
 • Cada escolha muda o que vem depois. Não existe resposta sempre certa: tem risco, recompensa e o que você já fez antes.
 • Cuide da ⚡ energia e da 🔦 luz: se a energia acabar, você sai da mina antes do fim.
 • Pokémon da equipe com Força ou Flash abrem caminhos novos. Os encontros usam as batalhas da Aventura, e alguns Pokémon especiais podem ser capturados.
