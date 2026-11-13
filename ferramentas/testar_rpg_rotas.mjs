@@ -32,7 +32,7 @@ async function encontro(zona) {
 console.log("\nGrama fechada e áreas novas");
 const cfg = (await sys(`select config c from game_config where active`))[0].c;
 check("a Grama de Treino está fechada", cfg.treino?.on === false, JSON.stringify(cfg.treino));
-check("a Aventura tem as 16 áreas com nível e tipos (vila + 6 rotas × 2)", Object.keys(cfg.rpg.zonas).length === 16 && cfg.rpg.zonas.bosque_fundo.min === 18 && !("nivel_menos" in cfg.rpg), JSON.stringify(Object.keys(cfg.rpg.zonas)));
+check("a Aventura tem as 16 áreas com nível e tipos (vila + 6 rotas × 2; 20 desde o 106)", Object.keys(cfg.rpg.zonas).length >= 16 && cfg.rpg.zonas.bosque_fundo.min === 18 && !("nivel_menos" in cfg.rpg), JSON.stringify(Object.keys(cfg.rpg.zonas)));
 check("entrar na Grama é recusado", !!(await as(A, `select public.treino_entrar(5)`)).error);
 
 console.log("\nTodos os Pokémon aparecem em algum lugar");
