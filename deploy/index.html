@@ -2192,6 +2192,7 @@ body.pb-on{overflow:hidden}
 @media (max-width:760px){#aventura #rpg-on{display:none}}
 @media (max-width:560px){.rpg-gym{grid-template-columns:repeat(2,1fr)}.rpg-chefe{flex-direction:column;text-align:center}}
 /* Ginásios por dentro e mapa completo (arquivo 101) */
+.elite-fila{margin:10px 0;padding-left:22px}.elite-fila li{margin:4px 0}.elite-fila small{display:block;color:var(--muted,#9AA6B8)}.elite-fila li.ok b{color:#6FD18B;text-decoration:line-through}.elite-fila li.agora b{color:#FFE37A}
 .gym-ord{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:#F5C542;color:#1E150C;font:900 12px/22px var(--sans);font-style:normal;text-align:center;z-index:1}
 .rpg-rotas .mon-card{position:relative}
 .gym-lider{display:flex;gap:12px;align-items:center;margin:6px 0 10px}.gym-lider svg{flex:none;width:72px;height:auto}.gym-lider p{margin:2px 0}
@@ -6035,7 +6036,7 @@ function LIB() {
       <p><b>Vila Aurora:</b> ande com WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas. Os outros jogadores aparecem andando ao vivo.</p>
       <p><b>É aqui que se treina:</b> a Grama de Treino fechou, e a Aventura é o lugar de ganhar experiência e evoluir os Pokémon. Todos os Pokémon aparecem por aqui (menos os lendários), cada um nas áreas do seu tipo.</p>
       <p>📍 <b>Onde estou?</b> No alto da tela aparece sempre o nome do lugar e as coordenadas (coluna, linha). O botão <b>🗺️ Mapa</b> abre o mapa completo com todas as regiões, os nomes, os níveis, os Ginásios e você marcado.</p>
-      <p><b>Rotas:</b> da Vila Aurora saem o Bosque Sussurrante (oeste), a Praia Coral (sul), o Deserto Rubro (leste) e a Gruta da Pedreira (pela caverna do penhasco). Mais longe ficam o Charco Sombrio (depois do Bosque) e o Pico Gelado (depois da Pedreira). Ande até a borda, na saída com a placa ➡️, para trocar de região.</p>
+      <p><b>Rotas:</b> da Vila Aurora saem o Bosque Sussurrante (oeste), a Praia Coral (sul), o Deserto Rubro (leste) e a Gruta da Pedreira (pela caverna do penhasco). Mais longe ficam o Charco Sombrio (depois do Bosque), o Pico Gelado (depois da Pedreira), o 🌋 Vulcão Cinzento (depois do Deserto) e a 🏆 Estrada da Vitória (depois do Pico), as rotas mais fortes. Ande até a borda, na saída com a placa ➡️, para trocar de região.</p>
       <p><b>Níveis:</b> cada área tem a sua faixa de nível, que aparece no alto da tela quando você pisa no mato e no botão <b>🗺️ Rotas</b>. Perto da vila os Pokémon são fracos; no fundo de cada rota (o mato com o chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Os evoluídos só aparecem nas áreas de nível alto. Quanto mais forte o selvagem, mais experiência ele dá.</p>
       ${Object.values(RPG_REG).filter(R => !R.gym).map(R => `<p>${R.ic} <b>${R.nome}</b>: ${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${z.nome} (Nv ${z.min}–${z.max}: ${rpgTipos(z)})` : ""; }).filter(Boolean).join("; ")}.</p>`).join("")}
       <p><b>A luta:</b> quem luta é o primeiro Pokémon da equipe que estiver com vida. Vencer dá experiência; a vida que ele perder continua perdida até se recuperar (ela volta aos poucos sozinha, ou na hora no Centro Pokémon). Não há captura na Aventura: a captura continua no tabuleiro.</p>
@@ -6050,6 +6051,7 @@ function LIB() {
       <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota fica o prédio do Ginásio; entre pela porta e fale com o Líder no fundo do salão. O time dele é segredo: você só sabe quantos Pokémon ele usa, e a ordem é sorteada a cada tentativa. Antes de lutar, escolha a mesma quantidade de Pokémon seus, na ordem em que vão entrar; quem cai sai e entra o próximo, e a vida perdida continua perdida. Se perder e tentar de novo, os Pokémon do Líder voltam com a vida cheia. Vença os 4 para ganhar a <b>insígnia</b> da rota e um prêmio. Quem juntar as 6 insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio, e desistir encerra a tentativa.</p>
       <p>📜 <b>Missões:</b> os moradores dão ${S.cfg.rpg?.missoes?.por_dia ?? 3} missões por dia (vencer Pokémon numa rota, de um tipo, ou um selvagem forte). Volte a falar com quem deu a missão para pegar o prêmio. O botão 📜 Missões mostra todas.</p>
       <p>🌙 <b>Noite:</b> das ${S.cfg.rpg?.noite?.inicio ?? 19}h às ${S.cfg.rpg?.noite?.fim ?? 5}h a Aventura escurece, e Pokémon Fantasma e Sombrio aparecem em todas as áreas.</p>
+      <p>🏛️ <b>A Liga (Elite 4 e o Campeão):</b> no fim da Estrada da Vitória fica o Planalto da Liga, e só entra quem tem as ${S.cfg.rpg?.elite?.insignias_min ?? 8} insígnias. Lá você enfrenta a Elite 4 e depois o Campeão, um atrás do outro, Pokémon por Pokémon, como no Ginásio. Antes de entrar, escolha até ${S.cfg.rpg?.elite?.time_max ?? 6} Pokémon: <b>a vida deles nunca volta durante a Liga</b> (nem com o tempo, nem no Centro Pokémon). Começou, tem que terminar: ou vence o Campeão, ou cai com a equipe toda; fugir de uma luta é desistir. Dá para entrar ${(S.cfg.rpg?.elite?.tentativas_dia ?? 1) === 1 ? "uma vez" : `${S.cfg.rpg?.elite?.tentativas_dia} vezes`} por dia. Quem vence entra para o 👑 Hall da Fama, ganha um prêmio grande na primeira vez (e menor nas outras) e uma coroa em cima do boneco, que todos veem.</p>
       <p>👹 <b>Chefe da rota:</b> uma vez por semana um Pokémon gigante (nível ${S.cfg.rpg?.chefe?.nivel ?? 75}) aparece numa rota por ${S.cfg.rpg?.chefe?.horas ?? 48} horas. Todos lutam contra ele, e cada golpe tira da mesma barra de vida. Se a turma derrubar o chefe, todos que lutaram ganham prêmio, e os 3 que mais bateram ganham mais. Cada um luta ${S.cfg.rpg?.chefe?.tentativas_dia ?? 3} vezes por dia.</p>` },
     { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
       <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
@@ -7846,6 +7848,7 @@ Object.assign(ACTIONS, {
   "bt-forfeit": async v => {
     if (S.pk.bt?.data?.mode === "treino") {
       const tr = S.pk.bt.data.state?.treino || {}, rc = rpgCfg(), custo = tr.rpg ? Math.max(0, (rc.fuga_base ?? 10) + (rc.fuga_por_ataque ?? 10) * (tr.ataques || 0)) : 0;
+      if (tr.elite) { if (await confirmModal("Fugir da Liga?", "Fugir na Liga é desistir: a sua tentativa de hoje acaba e conta como derrota.", "Desistir da Liga")) await btAct("forfeit", null); return; }
       if (custo > (S.me?.coins ?? 0)) return toast(`Fugir agora custa ${custo} moedas e você tem ${S.me?.coins ?? 0}. Continue lutando!`, true);
       if (await confirmModal("Fugir da luta?", `${custo ? `Fugir agora custa ${custo} moedas (${rc.fuga_base ?? 10} + ${rc.fuga_por_ataque ?? 10} por ataque que você já fez). ` : ""}Você volta sem ganhar experiência. A vida que o Pokémon perdeu continua perdida.`, custo ? `Fugir por ${custo}` : "Fugir")) { await btAct("forfeit", null); if (custo) refreshMe().catch(() => {}); }
       return; }
@@ -9399,10 +9402,13 @@ async function grAfterBattle(b) {
   try { const ev = (await rpc("pk_sync"))?.events; if (ev?.length) await monEventsFlow(ev); } catch {}
 }
 function grEndHTML(b) {
-  const r = b.state?.treino?.res || {}, V = S.treino.st?.visita, tr = b.state?.treino || {}, pos = tr.pos || {}, aventura = tr.rpg || tr.gym || tr.chefe;
+  const r = b.state?.treino?.res || {}, V = S.treino.st?.visita, tr = b.state?.treino || {}, pos = tr.pos || {}, aventura = tr.rpg || tr.gym || tr.chefe || tr.elite;
   const msg = r.fugiu ? "Você fugiu da luta." : r.won ? `🏆 Vitória! ${esc(pkName(r.species))} ganhou <b>${r.xp} de experiência</b>${r.level_to > r.level_from ? ` e <b>subiu para o nível ${r.level_to}</b>! 🎉` : "."}`
-    : tr.gym ? "O Pokémon do Líder venceu esta." : tr.chefe ? "O chefe venceu desta vez." : "O selvagem venceu. Não ganhou experiência.";
-  const extra = tr.gym ? (pos.status === "venceu" ? `<p class="rpg-fim ok">🏅 Você venceu ${esc(pos.lider || "o Líder")} e ganhou a <b>insígnia</b>! O prêmio já está com você.</p>`
+    : tr.gym ? "O Pokémon do Líder venceu esta." : tr.elite ? "O Pokémon da Liga venceu esta." : tr.chefe ? "O chefe venceu desta vez." : "O selvagem venceu. Não ganhou experiência.";
+  const extra = tr.elite ? (pos.status === "venceu" ? `<p class="rpg-fim ok">👑 <b>VOCÊ VENCEU A LIGA!</b> Derrotou a Elite 4 e o Campeão e entrou para o Hall da Fama. O prêmio já está com você!</p>`
+      : pos.status === "perdeu" ? `<p class="rpg-fim">A sua equipe caiu na Liga. A tentativa acabou: treine e volte outro dia.</p>`
+      : `<p class="rpg-fim">🏛️ Liga: <b>${esc(pos.membro || "")}</b> (${(pos.etapa ?? 0) + 1}º de ${pos.n_etapas || 5}), <b>${pos.idx} de ${pos.total}</b> Pokémon dele derrotados. A vida dos seus não volta: continue!</p>`)
+    : tr.gym ? (pos.status === "venceu" ? `<p class="rpg-fim ok">🏅 Você venceu ${esc(pos.lider || "o Líder")} e ganhou a <b>insígnia</b>! O prêmio já está com você.</p>`
       : pos.status === "perdeu" ? `<p class="rpg-fim">A tentativa no Ginásio acabou. Cure a equipe e tente de novo.</p>` : `<p class="rpg-fim">🏟️ Ginásio: <b>${pos.idx} de ${pos.total}</b> Pokémon do Líder derrotados. Continue!</p>`)
     : tr.chefe ? `<p class="rpg-fim">👹 Você causou <b>${pos.dano ?? 0}</b> de dano no chefe. ${pos.status === "vencido" ? "🎉 <b>O chefe caiu!</b> Todos que lutaram ganharam o prêmio." : `A vida dele está em <b>${Math.max(0, Math.round(100 - (pos.total_dano || 0) * 100 / Math.max(1, pos.hp_total || 1)))}%</b>.`}</p>`
     : pos.missoes ? `<p class="rpg-fim ok">📜 Você tem missão completa! Fale com quem deu a missão para pegar o prêmio.</p>` : "";
@@ -9410,7 +9416,7 @@ function grEndHTML(b) {
   const comp = r.comp_xp ? ` 🎒 ${esc(pkName(r.comp_species))} (acompanhante) ganhou <b>${r.comp_xp}</b>.` : "";
   return `<div class="bt-end ${r.won ? "won" : "lost"}"><h3>${r.forte ? "⚡ " : ""}${r.won ? "Você venceu!" : r.fugiu ? "Fugiu!" : "Não foi dessa vez!"}</h3>
     <p>${msg}${comp} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> ${trGradual() ? "Leve ao Centro Pokémon ou espere a vida voltar aos poucos." : `Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.`}` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
-    ${extra}${achou}<div class="act-btns">${tr.gym && pos.status === "andando" ? `<button class="btn" data-act="rpg-gym-next" data-v="${tr.gym}">▶ Continuar o Ginásio</button>` : ""}${aventura ? `<button class="btn ${tr.gym && pos.status === "andando" ? "ghost" : ""}" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
+    ${extra}${achou}<div class="act-btns">${tr.gym && pos.status === "andando" ? `<button class="btn" data-act="rpg-gym-next" data-v="${tr.gym}">▶ Continuar o Ginásio</button>` : ""}${tr.elite && pos.status === "andando" ? `<button class="btn" data-act="rpg-elite-next">▶ Próxima luta da Liga</button>` : ""}${aventura ? `<button class="btn ${(tr.gym || tr.elite) && pos.status === "andando" ? "ghost" : ""}" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
 
 // =================================================================
@@ -9444,7 +9450,8 @@ const AJ_LABELS = {
   rpg: { on: "Aventura aberta para os jogadores", batalhas_dia: "Lutas contra selvagens por dia (por jogador)", chance_pct: "% de chance de encontro a cada passo no mato", espera_seg: "Segundos de espera entre encontros",
     envio_seg: "Segundos entre avisos de posição", fuga_base: "Fugir de luta: preço básico (moedas)", fuga_por_ataque: "Fugir de luta: + moedas por ataque já feito",
     nivel_pedra: "Evoluídos por pedra aparecem a partir do nível", nivel_troca: "Evoluídos por troca aparecem a partir do nível", folga: "A forma anterior some quantos níveis depois de poder evoluir",
-    lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "noite": "🌙 Noite", "noite.on": "Noite ligada", "noite.inicio": "Noite começa (hora)", "noite.fim": "Noite termina (hora)", "noite.tipos": "Tipos que aparecem de noite em todas as áreas", "missoes": "📜 Missões dos moradores", "missoes.on": "Missões ligadas", "missoes.por_dia": "Missões por dia", "missoes.moedas_min": "Prêmio: moedas (mínimo)", "missoes.moedas_max": "Prêmio: moedas (máximo)", "missoes.itens": "Itens sorteados de prêmio", "ginasios": "🏟️ Ginásios", "ginasios.on": "Ginásios abertos", "ginasios.tentativas_dia": "Tentativas por dia em cada Ginásio", "ginasios.moedas": "Prêmio da insígnia: moedas", "ginasios.itens": "Prêmio da insígnia: itens", "ginasios.todas_moedas": "Prêmio de todas as insígnias: moedas", "ginasios.todas_itens": "Prêmio de todas as insígnias: itens", "ginasios.lideres": "Líderes (nome, herói, tipo e time [espécie, nível])", "pvp": "⚔️ Batalha entre jogadores", "pvp.on": "Desafios na Aventura ligados", "pvp.distancia": "Distância para desafiar (casas)", "pvp.desafia_dia": "Desafios que cada um pode fazer por dia", "pvp.recebe_dia": "Vezes que cada um pode ser desafiado por dia", "pvp.teto": "Usar o teto de nível das batalhas", "chefe": "👹 Chefe da rota", "chefe.on": "Chefe automático ligado", "chefe.dia_semana": "Dia da semana (0 = domingo, 6 = sábado)", "chefe.hora": "Hora em que aparece", "chefe.horas": "Quantas horas fica", "chefe.nivel": "Nível do chefe", "chefe.vidas": "Tamanho da barra (vezes a vida dele)", "chefe.turnos": "Turnos por luta", "chefe.tentativas_dia": "Lutas por dia de cada jogador", "chefe.especies": "Espécies sorteadas (números da Pokédex)", "chefe.moedas": "Prêmio para quem lutou: moedas", "chefe.itens": "Prêmio para quem lutou: itens", "chefe.top_moedas": "Extra para o 1º, 2º e 3º que mais bateram", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem" },
+    lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "noite": "🌙 Noite", "noite.on": "Noite ligada", "noite.inicio": "Noite começa (hora)", "noite.fim": "Noite termina (hora)", "noite.tipos": "Tipos que aparecem de noite em todas as áreas", "missoes": "📜 Missões dos moradores", "missoes.on": "Missões ligadas", "missoes.por_dia": "Missões por dia", "missoes.moedas_min": "Prêmio: moedas (mínimo)", "missoes.moedas_max": "Prêmio: moedas (máximo)", "missoes.itens": "Itens sorteados de prêmio", "ginasios": "🏟️ Ginásios", "ginasios.on": "Ginásios abertos", "ginasios.tentativas_dia": "Tentativas por dia em cada Ginásio", "ginasios.moedas": "Prêmio da insígnia: moedas", "ginasios.itens": "Prêmio da insígnia: itens", "ginasios.todas_moedas": "Prêmio de todas as insígnias: moedas", "ginasios.todas_itens": "Prêmio de todas as insígnias: itens", "ginasios.lideres": "Líderes (nome, herói, tipo e time [espécie, nível])", "elite": "🏛️ Liga (Elite 4 e Campeão)", "elite.on": "Liga aberta", "elite.insignias_min": "Insígnias para entrar", "elite.tentativas_dia": "Tentativas por dia", "elite.time_max": "Pokémon que cada um leva (até 6)", "elite.moedas": "Prêmio da 1ª vitória (moedas)", "elite.itens": "Itens da 1ª vitória", "elite.doces": "Doces de Forja da 1ª vitória", "elite.repetir_moedas": "Prêmio das outras vitórias (moedas)", "elite.repetir_doces": "Doces de Forja das outras vitórias",
+    "pvp": "⚔️ Batalha entre jogadores", "pvp.on": "Desafios na Aventura ligados", "pvp.distancia": "Distância para desafiar (casas)", "pvp.desafia_dia": "Desafios que cada um pode fazer por dia", "pvp.recebe_dia": "Vezes que cada um pode ser desafiado por dia", "pvp.teto": "Usar o teto de nível das batalhas", "chefe": "👹 Chefe da rota", "chefe.on": "Chefe automático ligado", "chefe.dia_semana": "Dia da semana (0 = domingo, 6 = sábado)", "chefe.hora": "Hora em que aparece", "chefe.horas": "Quantas horas fica", "chefe.nivel": "Nível do chefe", "chefe.vidas": "Tamanho da barra (vezes a vida dele)", "chefe.turnos": "Turnos por luta", "chefe.tentativas_dia": "Lutas por dia de cada jogador", "chefe.especies": "Espécies sorteadas (números da Pokédex)", "chefe.moedas": "Prêmio para quem lutou: moedas", "chefe.itens": "Prêmio para quem lutou: itens", "chefe.top_moedas": "Extra para o 1º, 2º e 3º que mais bateram", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem", "zonas.vulcao": "Área: Vulcão: encosta", "zonas.vulcao.nome": "Nome que aparece", "zonas.vulcao.regiao": "Região (não mude)", "zonas.vulcao.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao.min": "Nível mínimo do selvagem", "zonas.vulcao.max": "Nível máximo do selvagem", "zonas.vulcao_fundo": "Área: Vulcão: cratera", "zonas.vulcao_fundo.nome": "Nome que aparece", "zonas.vulcao_fundo.regiao": "Região (não mude)", "zonas.vulcao_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao_fundo.min": "Nível mínimo do selvagem", "zonas.vulcao_fundo.max": "Nível máximo do selvagem", "zonas.estrada": "Área: Estrada da Vitória: trilha", "zonas.estrada.nome": "Nome que aparece", "zonas.estrada.regiao": "Região (não mude)", "zonas.estrada.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada.min": "Nível mínimo do selvagem", "zonas.estrada.max": "Nível máximo do selvagem", "zonas.estrada_fundo": "Área: Estrada da Vitória: desfiladeiro", "zonas.estrada_fundo.nome": "Nome que aparece", "zonas.estrada_fundo.regiao": "Região (não mude)", "zonas.estrada_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada_fundo.min": "Nível mínimo do selvagem", "zonas.estrada_fundo.max": "Nível máximo do selvagem" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
   visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
@@ -11149,7 +11156,7 @@ function pzChatNova(m) {
 const rpgCfg = () => ({ on: true, envio_seg: 1.2, chance_pct: 12, espera_seg: 8, batalhas_dia: 20, ...(S.cfg?.rpg || {}) });
 // Regiões (arquivo 97): a Vila Aurora (rpg-arte.js) e seis rotas montadas por código com as peças da Pipoya
 // (rpg-<id>.js, rascunho gerar_rotas.js). Cada letra da grade vira uma área do banco (rpg.zonas: nome, tipos e níveis).
-const RPG_ARTE_V = 2;
+const RPG_ARTE_V = 3;   // arquivo 106: Deserto e Pico ganharam saídas novas
 const RPG_REG = {
   vila: { nome: "Vila Aurora", ic: "🏡", arq: "rpg-arte.js", z: { m: "mato", e: "escura", p: "pantano", r: "pedra" }, como: "o começo de tudo" },
   bosque: { nome: "Bosque Sussurrante", ic: "🌳", arq: "rpg-bosque.js", z: { m: "bosque", e: "bosque_fundo" }, como: "saída oeste da Vila Aurora" },
@@ -11157,7 +11164,10 @@ const RPG_REG = {
   deserto: { nome: "Deserto Rubro", ic: "🏜️", arq: "rpg-deserto.js", z: { m: "deserto", e: "deserto_fundo" }, como: "saída leste da Vila Aurora (portão da cidade murada)" },
   pedreira: { nome: "Gruta da Pedreira", ic: "⛏️", arq: "rpg-pedreira.js", z: { m: "pedreira", e: "pedreira_fundo" }, como: "a caverna no alto do penhasco da Vila Aurora" },
   charco: { nome: "Charco Sombrio", ic: "🌫️", arq: "rpg-charco.js", z: { m: "charco", e: "charco_fundo" }, como: "saída oeste do Bosque Sussurrante" },
-  pico: { nome: "Pico Gelado", ic: "🏔️", arq: "rpg-pico.js", z: { m: "pico", e: "pico_fundo" }, como: "saída norte da Gruta da Pedreira" }
+  pico: { nome: "Pico Gelado", ic: "🏔️", arq: "rpg-pico.js", z: { m: "pico", e: "pico_fundo" }, como: "saída norte da Gruta da Pedreira" },
+  vulcao: { nome: "Vulcão Cinzento", ic: "🌋", arq: "rpg-vulcao.js", z: { m: "vulcao", e: "vulcao_fundo" }, como: "saída leste do Deserto Rubro" },
+  estrada: { nome: "Estrada da Vitória", ic: "🏆", arq: "rpg-estrada.js", z: { m: "estrada", e: "estrada_fundo" }, como: "saída norte do Pico Gelado" },
+  elite: { nome: "Planalto da Liga", ic: "🏛️", arq: null, z: {}, elite: true, como: "no fim da Estrada da Vitória (só com as 8 insígnias)" }
 };
 // arquivo 101: o salão de cada Ginásio é uma região a mais ("gym_<rota>"), desenhada por código (arte nossa)
 const RPG_GYM_TEMA = {
@@ -11166,7 +11176,9 @@ const RPG_GYM_TEMA = {
   deserto: { c1: "#4A1D14", c2: "#D0652E", f1: "#F2DDBF", f2: "#E6C9A2", campo: "#D3874A", luz: "255,210,140", ic: "🔥" },
   pedreira: { c1: "#2E2924", c2: "#8C7A62", f1: "#D9D2C6", f2: "#C6BDAE", campo: "#9C8B74", luz: "255,232,180", ic: "⛰️" },
   charco: { c1: "#21142E", c2: "#7B4FB5", f1: "#D8CDE6", f2: "#C4B6D8", campo: "#7D62A6", luz: "230,200,255", ic: "👻" },
-  pico: { c1: "#1C3346", c2: "#8EC3E6", f1: "#EEF6FB", f2: "#DCEBF5", campo: "#9CCAE6", luz: "255,255,255", ic: "❄️" }
+  pico: { c1: "#1C3346", c2: "#8EC3E6", f1: "#EEF6FB", f2: "#DCEBF5", campo: "#9CCAE6", luz: "255,255,255", ic: "❄️" },
+  vulcao: { c1: "#2A0E0A", c2: "#C2381E", f1: "#3A2522", f2: "#2E1C1A", campo: "#7A2A18", luz: "255,150,80", ic: "🌋" },
+  estrada: { c1: "#1E1A2E", c2: "#8A6A3A", f1: "#E2D8C4", f2: "#CFC2A8", campo: "#8C7A5C", luz: "255,225,150", ic: "🏆" }
 };
 for (const r of Object.keys(RPG_GYM_TEMA)) RPG_REG["gym_" + r] = { nome: `Ginásio ${RPG_REG[r].nome}`, ic: "🏟️", arq: null, z: {}, gym: r, como: `dentro da ${RPG_REG[r].nome}` };
 const rpgRegBase = r => RPG_REG[r]?.gym || r;   // a rota onde fica (o Ginásio conta como a rota dele)
@@ -11209,6 +11221,45 @@ function rpgGymInterior(r) {
   grid[4][8] = ".";
   return { g: grid.map(l => l.join("")), im: cv, saidas: [{ para: r, em: [[8, 20]], dentro: [8, 18] }], chegada: [8, 18], lider: [8, 4], pontos: {}, npcs: [] };
 }
+// arquivo 106: o salão da Liga (arte nossa, por código): tapete vermelho até o palco, 4 pedestais da Elite e o trono do Campeão
+const ELITE_IC = ["❄️", "🥊", "👻", "🐉", "👑"];
+function rpgEliteInterior() {
+  const W = 19, H = 25, Q = 32, cv = document.createElement("canvas"); cv.width = W * Q; cv.height = H * Q;
+  const g = cv.getContext("2d"), grid = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => y <= 2 || x === 0 || x === W - 1 || (y === H - 1 && x !== 9) ? "#" : "."));
+  const box = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(x * Q, y * Q, w * Q, h * Q); };
+  const brilho = (x, y, r0, a, cor = "255,215,120") => { const gr = g.createRadialGradient(x * Q, y * Q, 0, x * Q, y * Q, r0 * Q); gr.addColorStop(0, `rgba(${cor},${a})`); gr.addColorStop(1, `rgba(${cor},0)`); g.fillStyle = gr; g.fillRect((x - r0) * Q, (y - r0) * Q, 2 * r0 * Q, 2 * r0 * Q); };
+  box(0, 0, W, H, "#140B24");
+  const wg = g.createLinearGradient(0, 0, 0, 3 * Q); wg.addColorStop(0, "#0C0618"); wg.addColorStop(1, "#3A2160"); g.fillStyle = wg; g.fillRect(Q, 0, (W - 2) * Q, 3 * Q);
+  for (let y = 3; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { box(x, y, 1, 1, (x + y) % 2 ? "#3B2A57" : "#33244C"); g.fillStyle = "rgba(255,215,120,.06)"; g.fillRect(x * Q, y * Q, Q, 2); }
+  g.fillStyle = "rgba(0,0,0,.35)"; g.fillRect(Q, 3 * Q, (W - 2) * Q, 10);
+  // tapete vermelho com borda dourada, da porta até o palco
+  box(8, 6, 3, 18, "#8E1F2C"); g.fillStyle = "#E4B44C"; g.fillRect(8 * Q, 6 * Q, 4, 18 * Q); g.fillRect(11 * Q - 4, 6 * Q, 4, 18 * Q);
+  for (let y = 7; y < 24; y += 3) { g.fillStyle = "rgba(228,180,76,.55)"; g.beginPath(); g.moveTo(9.5 * Q, y * Q); g.lineTo(10 * Q, (y + .5) * Q); g.lineTo(9.5 * Q, (y + 1) * Q); g.lineTo(9 * Q, (y + .5) * Q); g.fill(); }
+  // palco e trono
+  box(5, 3, 9, 3, "#5B3A86"); box(6, 3, 7, 2, "#7A54AE"); g.fillStyle = "#E4B44C"; g.fillRect(5 * Q, 6 * Q - 6, 9 * Q, 6);
+  box(8.6, 2.2, 1.8, 1.9, "#E4B44C"); box(8.8, 2.4, 1.4, 1.4, "#9E2A2B");
+  // faixa com a coroa
+  box(6.5, .25, 6, 1.9, "#2A1748"); g.strokeStyle = "#E4B44C"; g.lineWidth = 3; g.strokeRect(6.5 * Q + 3, .25 * Q + 3, 6 * Q - 6, 1.9 * Q - 6);
+  g.font = `900 ${Math.round(Q * .55)}px Inter, system-ui, sans-serif`; g.fillStyle = "#FFE7A8"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("LIGA", 9.5 * Q, 1.2 * Q);
+  // 4 pedestais da Elite (2 de cada lado) e as colunas
+  [[3, 9], [15, 9], [3, 15], [15, 15]].forEach(([x, y], k) => {
+    grid[y][x] = "#"; brilho(x + .5, y - .2, 2.2, .35);
+    box(x - .1, y + .2, 1.2, .8, "#A9A094"); box(x, y - .6, 1, .9, "#5B3A86"); g.strokeStyle = "#E4B44C"; g.lineWidth = 2; g.strokeRect((x) * Q, (y - .6) * Q, Q, .9 * Q);
+    g.font = `${Math.round(Q * .6)}px "Segoe UI Emoji","Apple Color Emoji",sans-serif`; g.fillText(ELITE_IC[k], (x + .5) * Q, (y - .15) * Q);
+  });
+  for (const x of [2, 16]) for (const y of [5, 12, 19]) {
+    grid[y][x] = "#"; box(x + .18, y - .55, .64, 1.5, "#E9E3D6"); box(x + .18, y - .55, .12, 1.5, "#FFFFFF"); box(x + .1, y + .8, .8, .2, "#BDB5A6");
+    box(x + .32, y - .9, .36, .3, "#FFD98A"); brilho(x + .5, y - .75, 1.8, .5);
+  }
+  // porta
+  box(8.6, 24, 1.8, 1, "#05030A");
+  g.globalCompositeOperation = "lighter"; brilho(9.5, 4.2, 4.5, .28); brilho(9.5, 13, 8, .08, "200,160,255"); g.globalCompositeOperation = "source-over";
+  for (const [x0, x1] of [[5, 7], [12, 14]]) { const bg = g.createLinearGradient(0, 0, 0, 14 * Q); bg.addColorStop(0, "rgba(255,225,150,.2)"); bg.addColorStop(1, "rgba(255,225,150,0)"); g.fillStyle = bg; g.beginPath(); g.moveTo(x0 * Q, 0); g.lineTo(x1 * Q, 0); g.lineTo((x1 + 2) * Q, 14 * Q); g.lineTo((x0 - 2) * Q, 14 * Q); g.fill(); }
+  grid[4][9] = ".";
+  return { g: grid.map(l => l.join("")), im: cv, saidas: [{ para: "estrada", em: [[9, 24]], dentro: [9, 22] }], chegada: [9, 22], lider: [9, 4], pontos: {}, npcs: [] };
+}
+const rpgEliteMembro = () => { const E = AV.elite, ms = E?.membros || []; return ms[Math.min(ms.length - 1, E?.tentativa?.etapa ?? 0)] || null; };
+async function rpgEliteCarregar() { try { AV.elite = await rpc("rpg_elite"); } catch { AV.elite = null; } return AV.elite; }
 // o prédio do Ginásio na rota (arte nossa): 5 casas de largura por 4 de altura, porta na casa do Líder
 const rpgGymFoot = (x, y) => { if (RPG_REG[AV.r]?.gym || AV.r === "vila") return false; const gp = rpgGymPos(); return !!gp && x >= gp[0] - 2 && x <= gp[0] + 2 && y >= gp[1] - 4 && y <= gp[1] - 1; };
 function rpgDesenhaGinasio(g, gp, tile, cx, cy, now, dpr) {
@@ -11239,7 +11290,7 @@ function rpgDesenhaGinasio(g, gp, tile, cx, cy, now, dpr) {
     gr.addColorStop(0, `rgba(${T.luz},${.75 * pulso})`); gr.addColorStop(1, `rgba(${T.luz},0)`); g.fillStyle = gr; g.fillRect(px - u * 1.1, py - u * 1.1, u * 2.2, u * 2.2);
     g.fillStyle = `rgb(${T.luz})`; g.beginPath(); g.arc(px, py, u * .11, 0, 6.28); g.fill(); }
 }
-const RPG_ZONAS_DEF = {"mato": {"nome": "Capim alto", "regiao": "vila", "tipos": ["INSETO", "PLANTA", "NORMAL"], "min": 2, "max": 6}, "escura": {"nome": "Grama escura", "regiao": "vila", "tipos": ["NORMAL", "VOADOR", "ELETRICO"], "min": 3, "max": 7}, "pantano": {"nome": "Pântano", "regiao": "vila", "tipos": ["AGUA", "VENENO"], "min": 3, "max": 7}, "pedra": {"nome": "Alto do penhasco", "regiao": "vila", "tipos": ["PEDRA", "TERRA", "LUTA"], "min": 4, "max": 8}, "bosque": {"nome": "Bosque: mato", "regiao": "bosque", "tipos": ["INSETO", "PLANTA", "VENENO", "NORMAL"], "min": 8, "max": 16}, "bosque_fundo": {"nome": "Bosque: mata funda", "regiao": "bosque", "tipos": ["INSETO", "PLANTA", "VENENO", "NORMAL", "VOADOR"], "min": 18, "max": 34}, "praia": {"nome": "Praia: dunas", "regiao": "praia", "tipos": ["AGUA", "ELETRICO", "NORMAL"], "min": 8, "max": 16}, "praia_fundo": {"nome": "Praia: costão", "regiao": "praia", "tipos": ["AGUA", "ELETRICO", "GELO", "VOADOR"], "min": 18, "max": 38}, "deserto": {"nome": "Deserto: capim seco", "regiao": "deserto", "tipos": ["FOGO", "TERRA", "NORMAL"], "min": 12, "max": 22}, "deserto_fundo": {"nome": "Deserto: oásis distante", "regiao": "deserto", "tipos": ["FOGO", "TERRA", "PEDRA", "LUTA"], "min": 24, "max": 42}, "pedreira": {"nome": "Pedreira: entrada", "regiao": "pedreira", "tipos": ["PEDRA", "TERRA", "LUTA", "METALICO"], "min": 12, "max": 22}, "pedreira_fundo": {"nome": "Pedreira: fundo da gruta", "regiao": "pedreira", "tipos": ["PEDRA", "TERRA", "LUTA", "METALICO", "DRAGAO"], "min": 24, "max": 44}, "charco": {"nome": "Charco: margem", "regiao": "charco", "tipos": ["VENENO", "FANTASMA", "PSIQUICO", "SOMBRIO"], "min": 20, "max": 32}, "charco_fundo": {"nome": "Charco: brejo escuro", "regiao": "charco", "tipos": ["FANTASMA", "PSIQUICO", "SOMBRIO", "VENENO", "NORMAL"], "min": 32, "max": 46}, "pico": {"nome": "Pico: encosta", "regiao": "pico", "tipos": ["GELO", "AGUA", "PSIQUICO", "VOADOR", "ELETRICO"], "min": 34, "max": 48}, "pico_fundo": {"nome": "Pico: cume", "regiao": "pico", "tipos": ["DRAGAO", "GELO", "VOADOR", "PSIQUICO", "FOGO", "LUTA", "NORMAL", "PEDRA"], "min": 45, "max": 60}};
+const RPG_ZONAS_DEF = {"mato": {"nome": "Capim alto", "regiao": "vila", "tipos": ["INSETO", "PLANTA", "NORMAL"], "min": 2, "max": 6}, "escura": {"nome": "Grama escura", "regiao": "vila", "tipos": ["NORMAL", "VOADOR", "ELETRICO"], "min": 3, "max": 7}, "pantano": {"nome": "Pântano", "regiao": "vila", "tipos": ["AGUA", "VENENO"], "min": 3, "max": 7}, "pedra": {"nome": "Alto do penhasco", "regiao": "vila", "tipos": ["PEDRA", "TERRA", "LUTA"], "min": 4, "max": 8}, "bosque": {"nome": "Bosque: mato", "regiao": "bosque", "tipos": ["INSETO", "PLANTA", "VENENO", "NORMAL"], "min": 8, "max": 16}, "bosque_fundo": {"nome": "Bosque: mata funda", "regiao": "bosque", "tipos": ["INSETO", "PLANTA", "VENENO", "NORMAL", "VOADOR"], "min": 18, "max": 34}, "praia": {"nome": "Praia: dunas", "regiao": "praia", "tipos": ["AGUA", "ELETRICO", "NORMAL"], "min": 8, "max": 16}, "praia_fundo": {"nome": "Praia: costão", "regiao": "praia", "tipos": ["AGUA", "ELETRICO", "GELO", "VOADOR"], "min": 18, "max": 38}, "deserto": {"nome": "Deserto: capim seco", "regiao": "deserto", "tipos": ["FOGO", "TERRA", "NORMAL"], "min": 12, "max": 22}, "deserto_fundo": {"nome": "Deserto: oásis distante", "regiao": "deserto", "tipos": ["FOGO", "TERRA", "PEDRA", "LUTA"], "min": 24, "max": 42}, "pedreira": {"nome": "Pedreira: entrada", "regiao": "pedreira", "tipos": ["PEDRA", "TERRA", "LUTA", "METALICO"], "min": 12, "max": 22}, "pedreira_fundo": {"nome": "Pedreira: fundo da gruta", "regiao": "pedreira", "tipos": ["PEDRA", "TERRA", "LUTA", "METALICO", "DRAGAO"], "min": 24, "max": 44}, "charco": {"nome": "Charco: margem", "regiao": "charco", "tipos": ["VENENO", "FANTASMA", "PSIQUICO", "SOMBRIO"], "min": 20, "max": 32}, "charco_fundo": {"nome": "Charco: brejo escuro", "regiao": "charco", "tipos": ["FANTASMA", "PSIQUICO", "SOMBRIO", "VENENO", "NORMAL"], "min": 32, "max": 46}, "pico": {"nome": "Pico: encosta", "regiao": "pico", "tipos": ["GELO", "AGUA", "PSIQUICO", "VOADOR", "ELETRICO"], "min": 34, "max": 48}, "pico_fundo": {"nome": "Pico: cume", "regiao": "pico", "tipos": ["DRAGAO", "GELO", "VOADOR", "PSIQUICO", "FOGO", "LUTA", "NORMAL", "PEDRA"], "min": 45, "max": 60}, "vulcao": {"nome": "Vulcão: encosta", "regiao": "vulcao", "tipos": ["FOGO", "PEDRA", "TERRA", "LUTA"], "min": 40, "max": 50}, "vulcao_fundo": {"nome": "Vulcão: cratera", "regiao": "vulcao", "tipos": ["FOGO", "DRAGAO", "PEDRA", "TERRA", "VOADOR"], "min": 48, "max": 60}, "estrada": {"nome": "Estrada da Vitória: trilha", "regiao": "estrada", "tipos": ["LUTA", "PEDRA", "TERRA", "VENENO", "VOADOR", "NORMAL"], "min": 52, "max": 62}, "estrada_fundo": {"nome": "Estrada da Vitória: desfiladeiro", "regiao": "estrada", "tipos": ["DRAGAO", "PSIQUICO", "LUTA", "GELO", "FANTASMA", "AGUA"], "min": 58, "max": 70}};
 const RPG_ZIC = { mato: "🌿", escura: "🍃", pantano: "💧", pedra: "⛰️" };
 const rpgZonaInfo = k => { const z = S.cfg?.rpg?.zonas?.[k]; return z && typeof z === "object" && !Array.isArray(z) ? z : RPG_ZONAS_DEF[k]; };
 const rpgZonaKey = ch => RPG_REG[AV.r]?.z[ch] || null;
@@ -11253,8 +11304,10 @@ const RPG_NPC = {
   bosque: { nome: "Lenhador Davi", ch: { class: "guerreiro", outfit: {} }, fala: ["Este é o Bosque Sussurrante.", "Perto da entrada o mato é tranquilo. Lá no fundo, onde o chão fica escuro, os bichos são bem mais fortes.", "Do outro lado do bosque, a oeste, fica o Charco Sombrio. Só vá com a equipe treinada."] },
   praia: { nome: "Surfista Lu", ch: { class: "arqueiro", outfit: {} }, fala: ["Bem-vindo à Praia Coral!", "Nas dunas aparecem os de Água, Elétrico e Normal. Perto do mar, no costão, aparecem os mais fortes.", "Fugir de uma luta custa moedas, viu? Pense antes de entrar no mato."] },
   deserto: { nome: "Andarilha Sol", ch: { class: "mago", outfit: {} }, fala: ["O Deserto Rubro castiga quem chega despreparado.", "Fogo e Terra no capim seco. No oásis distante, Pedra e Luta também, e bem fortes."] },
-  pedreira: { nome: "Mineiro Zé", ch: { class: "domador", outfit: {} }, fala: ["Cuidado onde pisa na Gruta da Pedreira.", "Pedra, Terra, Luta e Metálico por aqui. Lá no fundo da gruta já viram até dragão!", "A saída norte leva ao Pico Gelado. É o lugar mais difícil da Aventura."] },
+  pedreira: { nome: "Mineiro Zé", ch: { class: "domador", outfit: {} }, fala: ["Cuidado onde pisa na Gruta da Pedreira.", "Pedra, Terra, Luta e Metálico por aqui. Lá no fundo da gruta já viram até dragão!", "A saída norte leva ao Pico Gelado, e de lá até a Estrada da Vitória."] },
   charco: { nome: "Coveiro Ivo", ch: { class: "ladino", outfit: {} }, fala: ["Shhh… o Charco Sombrio não gosta de barulho.", "Fantasmas, Psíquicos e Venenosos moram neste brejo. No escuro do fundo, os mais fortes."] },
+  vulcao: { nome: "Bombeira Rita", ch: { class: "guerreiro", outfit: {} }, fala: ["Cuidado com o chão quente do Vulcão Cinzento!", "Na encosta: Fogo, Pedra, Terra e Luta. Lá na cratera, longe da entrada, aparecem até dragões.", "O Ginásio daqui é do Líder Magma. Leve Pokémon de Água!"] },
+  estrada: { nome: "Veterano Bento", ch: { class: "mercador", outfit: {} }, fala: ["Esta é a Estrada da Vitória. Daqui para a frente, só os melhores.", "Na trilha e no desfiladeiro moram os Pokémon mais fortes de toda a Aventura.", "Lá no alto, ao norte, fica o Planalto da Liga. Só entra quem tem as 8 insígnias.", "Lá dentro a vida dos seus Pokémon não volta entre as lutas. Começou, tem que ir até o fim!"] },
   pico: { nome: "Monge Kai", ch: { class: "clerigo", outfit: {} }, fala: ["Você chegou ao Pico Gelado. Poucos chegam.", "Na encosta: Gelo, Água, Psíquico, Voador e Elétrico. No cume, os mais fortes de todos, até dragões.", "Se a sua equipe cair, o Centro Pokémon fica lá na Vila Aurora."] }
 };
 // lugares para interagir: células onde o jogador fica, símbolo, nome e o que acontece
@@ -11279,7 +11332,7 @@ const rpgAt = (x, y) => (AV.g?.[y] || "")[x] || "#";
 const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || rpgGymFoot(x, y) || rpgNpcs().some(n => n.x === x && n.y === y) || (rpgChefeAqui() && (p => p && p[0] === x && p[1] === y)(rpgChefePos()));
 function rpgPontos() {
   if (AV.r === "vila") return AV_PONTOS;
-  if (RPG_REG[AV.r]?.gym) return [];
+  if (RPG_REG[AV.r]?.gym || RPG_REG[AV.r]?.elite) return [];
   const pl = AV.dados?.pontos?.placa, R = RPG_REG[AV.r], gp = rpgGymPos(), L = rpgLider(AV.r);
   const porta = gp && L ? [{ em: [gp], ic: "🏟️", nome: `Ginásio · ${L.nome}`, vai: "gym_" + AV.r, alto: 5.1 }] : [];
   if (!pl) return porta;
@@ -11288,6 +11341,7 @@ function rpgPontos() {
 function rpgNpcs() {
   if (AV.r === "vila") return AV_NPCS;
   if (RPG_REG[AV.r]?.gym) { const r = RPG_REG[AV.r].gym, L = rpgLider(r), p = AV.dados?.lider; return L && p ? [{ x: p[0], y: p[1], nome: L.nome, ch: { class: L.classe, outfit: {} }, gym: r, fala: [] }] : []; }
+  if (RPG_REG[AV.r]?.elite) { const L = rpgEliteMembro(), p = AV.dados?.lider; return L && p ? [{ x: p[0], y: p[1], nome: L.nome, ch: { class: L.classe, outfit: {} }, elite: true, fala: [] }] : []; }
   const n = AV.dados?.npcs?.[0], i = RPG_NPC[AV.r], out = n && i ? [{ x: n[0], y: n[1], ...i }] : [];
   return out;
 }
@@ -11297,6 +11351,7 @@ function rpgCarregar(r = AV.r) {
   AV.cargas = AV.cargas || {}; AV.dc = AV.dc || {};
   if (AV.cargas[r]) return AV.cargas[r];
   if (RPG_REG[r]?.gym) { AV.dc[r] = rpgGymInterior(RPG_REG[r].gym); return (AV.cargas[r] = Promise.resolve(AV.dc[r])); }
+  if (RPG_REG[r]?.elite) { AV.dc[r] = rpgEliteInterior(); return (AV.cargas[r] = Promise.resolve(AV.dc[r])); }
   return (AV.cargas[r] = new Promise((ok, erro) => {
     const pronto = () => { const d = window.RPG_ARTE?.[r]; if (!d) return erro(new Error("sem arte")); const im = new Image(); im.onload = () => { AV.dc[r] = { ...d, im }; ok(AV.dc[r]); }; im.onerror = () => erro(new Error("imagem")); im.src = d.img; };
     if (window.RPG_ARTE?.[r]) return pronto();
@@ -11313,6 +11368,11 @@ function rpgSeguidor() { const lado = [[-AV.face, 0], [AV.face, 0], [0, 1], [0, 
 // trocar de região pela saída (ou pela porta da caverna)
 async function rpgViajar(para) {
   if (AV.busy || !RPG_REG[para]) return;
+  if (RPG_REG[para].elite) {   // arquivo 106
+    const min = AV.st?.elite?.insignias_min ?? 8;
+    if (rpgInsig().length < min && !S.isAdmin) { [AV.x, AV.y] = [AV.ax, AV.ay]; AV.fx = AV.x; AV.fy = AV.y; rpgPerto(); sfx("erro"); return toast(`🏛️ O Planalto da Liga só recebe quem tem as ${min} insígnias. Você tem ${rpgInsig().length}.`, true); }
+    rpgEliteCarregar().then(() => rpgPerto());
+  }
   AV.busy = true; AV.keys.clear(); const de = AV.r;
   const fl = $("#rpg-flash"); if (fl && !reduceMotion()) { fl.classList.add("on", "viagem"); await sleep(350); }
   try { await rpgEntra(para); }
@@ -11322,15 +11382,16 @@ async function rpgViajar(para) {
   [AV.x, AV.y] = ch && !rpgSolid(ch[0], ch[1]) ? ch : (AV.dados.chegada || [28, 30]); AV.moving = null; AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();
   try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
   rpgNetLeave(); rpgNetJoin(); rpgPerto();
-  const h = $("#rpg-hint"); if (h) { h.hidden = false; clearTimeout(AV.dicaT); AV.dicaT = setTimeout(() => { h.hidden = true; }, 5000); } if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" || RPG_REG[para].gym ? "" : ` · ${rpgFaixa(para)}`}`;
+  const h = $("#rpg-hint"); if (h) { h.hidden = false; clearTimeout(AV.dicaT); AV.dicaT = setTimeout(() => { h.hidden = true; }, 5000); } if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" || RPG_REG[para].gym || RPG_REG[para].elite ? "" : ` · ${rpgFaixa(para)}`}`;
   if (fl) { await sleep(150); fl.classList.remove("on", "viagem"); }
   sfx("tick"); AV.busy = false;
 }
 // quadro com todas as rotas, os níveis e os tipos
-const RPG_MAPA_POS = { pico: [1, 0], pedreira: [1, 1], charco: [0, 1], bosque: [0, 2], vila: [1, 2], deserto: [2, 2], praia: [1, 3] };
+const RPG_MAPA_POS = { elite: [1, 0], estrada: [1, 1], pico: [1, 2], pedreira: [1, 3], charco: [0, 3], bosque: [0, 4], vila: [1, 4], deserto: [2, 4], vulcao: [3, 4], praia: [1, 5] };
+const RPG_MAPA_LIG = [["vila", "bosque"], ["bosque", "charco"], ["vila", "deserto"], ["deserto", "vulcao"], ["vila", "praia"], ["vila", "pedreira"], ["pedreira", "pico"], ["pico", "estrada"], ["estrada", "elite"]];
 async function rpgMapaDesenha() {
   const cv = $("#rpg-mapa"); if (!cv) return;
-  const C = 190, G0 = 18, g = cv.getContext("2d"); cv.width = 3 * C + 2 * G0; cv.height = 4 * C + 3 * G0;
+  const C = 190, G0 = 18, g = cv.getContext("2d"), NC = Math.max(...Object.values(RPG_MAPA_POS).map(p => p[0])) + 1, NL = Math.max(...Object.values(RPG_MAPA_POS).map(p => p[1])) + 1; cv.width = NC * C + (NC - 1) * G0; cv.height = NL * C + (NL - 1) * G0;
   g.fillStyle = "#0F1726"; g.fillRect(0, 0, cv.width, cv.height);
   g.fillStyle = "#AFC0D8"; g.font = "700 15px Inter, system-ui, sans-serif"; g.textAlign = "center"; g.fillText("Carregando o mapa…", cv.width / 2, cv.height / 2);
   const ids = Object.keys(RPG_MAPA_POS); await Promise.all(ids.map(r => rpgCarregar(r).catch(() => null)));
@@ -11338,7 +11399,7 @@ async function rpgMapaDesenha() {
   g.fillStyle = "#0F1726"; g.fillRect(0, 0, cv.width, cv.height);
   const L = ([c, r]) => [c * (C + G0), r * (C + G0)];
   g.strokeStyle = "#FFE37A"; g.lineWidth = 6; g.setLineDash([3, 10]); g.lineCap = "round";
-  for (const [a, b] of [["vila", "bosque"], ["bosque", "charco"], ["vila", "deserto"], ["vila", "praia"], ["vila", "pedreira"], ["pedreira", "pico"]]) {
+  for (const [a, b] of RPG_MAPA_LIG) {
     const [ax, ay] = L(RPG_MAPA_POS[a]), [bx, by] = L(RPG_MAPA_POS[b]); g.beginPath(); g.moveTo(ax + C / 2, ay + C / 2); g.lineTo(bx + C / 2, by + C / 2); g.stroke(); }
   g.setLineDash([]);
   const aqui = rpgRegBase(AV.r);
@@ -11348,13 +11409,13 @@ async function rpgMapaDesenha() {
     if (d?.im) g.drawImage(d.im, x, y, C, C); else { g.fillStyle = "#24324A"; g.fillRect(x, y, C, C); }
     g.fillStyle = "rgba(8,12,22,.78)"; g.fillRect(x, y + C - 48, C, 48);
     g.fillStyle = "#FFE7A8"; g.font = "800 15px Inter, system-ui, sans-serif"; g.textAlign = "left"; g.fillText(`${R.ic} ${R.nome}`, x + 8, y + C - 28, C - 16);
-    g.fillStyle = "#9FE0B4"; g.font = "700 13px Inter, system-ui, sans-serif"; g.fillText(`${rpgFaixa(r)}${rpgLider(r) ? ` · 🏟️ ${rpgInsig().includes(r) ? "✅" : rpgLider(r).nome}` : ""}`, x + 8, y + C - 10, C - 16);
+    g.fillStyle = "#9FE0B4"; g.font = "700 13px Inter, system-ui, sans-serif"; g.fillText(R.elite ? `Elite 4 + Campeão${AV.st?.elite?.campeao ? " · 👑 você venceu!" : ""}` : `${rpgFaixa(r)}${rpgLider(r) ? ` · 🏟️ ${rpgInsig().includes(r) ? "✅" : rpgLider(r).nome}` : ""}`, x + 8, y + C - 10, C - 16);
     // o prédio do Ginásio no mapa
     const gp = d && rpgLider(r) ? rpgGymPos(r) : null; if (gp) { const kx = C / d.g[0].length, ky = C / d.g.length; g.font = "18px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.fillText("🏟️", x + (gp[0] + .5) * kx, y + (gp[1] - 1) * ky); }
     g.restore();
     g.strokeStyle = r === aqui ? "#FFE37A" : "rgba(201,160,90,.75)"; g.lineWidth = r === aqui ? 4 : 2; g.beginPath(); g.roundRect(x, y, C, C, 14); g.stroke();
     if (r === aqui && d) {   // você está aqui
-      const dentro = RPG_REG[AV.r]?.gym ? rpgGymPos(r) || [AV.x, AV.y] : [AV.x, AV.y], px = x + (dentro[0] + .5) * C / d.g[0].length, py = y + (dentro[1] + .5) * C / d.g.length;
+      const dentro = RPG_REG[AV.r]?.gym ? rpgGymPos(r) || [AV.x, AV.y] : [Math.min(AV.x, d.g[0].length - 1), Math.min(AV.y, d.g.length - 1)], px = x + (dentro[0] + .5) * C / d.g[0].length, py = y + (dentro[1] + .5) * C / d.g.length;
       g.fillStyle = "#E05A5A"; g.strokeStyle = "#fff"; g.lineWidth = 2; g.beginPath(); g.arc(px, py, 7, 0, 6.28); g.fill(); g.stroke();
       const txt = `Você · ${AV.x}, ${AV.y}`; g.font = "800 12px Inter, system-ui, sans-serif"; const w = g.measureText(txt).width + 12;
       g.fillStyle = "rgba(10,14,24,.9)"; g.beginPath(); g.roundRect(px - w / 2, py - 30, w, 20, 6); g.fill(); g.fillStyle = "#FFE37A"; g.textAlign = "center"; g.fillText(txt, px, py - 15);
@@ -11368,6 +11429,7 @@ function rpgRotasHTML() {
     <p class="muted">Cada área tem uma faixa de nível. Perto da Vila Aurora os Pokémon são fracos; no fundo das rotas (chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Quanto mais forte o selvagem, mais experiência ele dá. Os evoluídos só aparecem nas áreas de nível alto.</p>
     <p>🏅 Suas insígnias: <b>${rpgInsig().length} de ${Object.keys(rpgLideres()).length}</b>${rpgInsig().length ? ` (${rpgInsig().map(r => RPG_REG[r]?.ic || "").join(" ")})` : ""}</p>
     ${Object.entries(RPG_REG).filter(([, R]) => !R.gym).map(([id, R]) => `<div class="rpg-rota ${id === rpgRegBase(AV.r) ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>${rpgLider(id) ? `<p class="rpg-gin-l">🏟️ Ginásio: <b>${esc(rpgLider(id).nome)}</b> (${esc(rpgLider(id).tipo || "")}, ${rpgLider(id).n} Pokémon) ${rpgInsig().includes(id) ? "· ✅ insígnia" : ""}</p>` : ""}
+      ${R.elite ? `<p class="rpg-gin-l">🏛️ A Elite 4 e o Campeão. Só entra quem tem as ${AV.st?.elite?.insignias_min ?? 8} insígnias.${AV.st?.elite?.campeao ? " · 👑 você já venceu!" : ""}</p>` : ""}
       <ul>${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `<li><b>${esc(z.nome)}</b> <span class="rpg-nv">Nv ${z.min}–${z.max}</span><small>${esc(rpgTipos(z))}</small></li>` : ""; }).join("")}</ul></div>`).join("")}
     <p class="muted" style="margin-top:10px">🏃 Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez nela. Lutas por dia: ${AV.st?.batalhas_dia ?? rpgCfg().batalhas_dia}.</p></div>`;
 }
@@ -11454,7 +11516,7 @@ function rpgVoltaCheck() { if (AV.volta && !AV.open && !S.win && !GR.open && !PZ
 // ---------- interação: casas, placas e moradores ----------
 function rpgPerto() {
   let p = rpgPontos().find(p => p.em.some(([x, y]) => x === AV.x && y === AV.y)) || null;
-  if (!p) { const n = rpgNpcs().find(n => Math.abs(n.x - AV.x) + Math.abs(n.y - AV.y) === 1); if (n) p = { npc: n, ic: n.gym ? "🏟️" : "💬", nome: n.nome, fala: n.fala }; }
+  if (!p) { const n = rpgNpcs().find(n => Math.abs(n.x - AV.x) + Math.abs(n.y - AV.y) === 1); if (n) p = { npc: n, ic: n.gym ? "🏟️" : n.elite ? "🏛️" : "💬", nome: n.nome, fala: n.fala }; }
   if (!p && rpgCfg().pvp?.on !== false) {   // arquivo 102: outro jogador perto → desafiar
     const d = rpgCfg().pvp?.distancia ?? 2, o = Object.values(AV.others).filter(o => o.x != null && Math.max(Math.abs(o.x - AV.x), Math.abs(o.y - AV.y)) <= d)
       .sort((a, b) => Math.hypot(a.x - AV.x, a.y - AV.y) - Math.hypot(b.x - AV.x, b.y - AV.y))[0];
@@ -11462,7 +11524,7 @@ function rpgPerto() {
   }
   if (!p && rpgChefeAqui()) { const cp = rpgChefePos(); if (cp && Math.abs(cp[0] - AV.x) + Math.abs(cp[1] - AV.y) <= 1) p = { chefe: true, ic: "👹", nome: `Chefe: ${pkName(AV.st.chefe.especie)}` }; }
   AV.perto = p;
-  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai ? "Entrar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym ? "Desafiar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
+  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai ? "Entrar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym || p.npc?.elite ? "Desafiar" : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
   const z = rpgZonaKey(rpgAt(AV.x, AV.y)), ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = rpgZonaTxt(z); }
   rpgTit();   // arquivo 101: sempre onde você está
 }
@@ -11472,6 +11534,7 @@ function rpgUsar() {
   if (p.vai) return rpgViajar(p.vai);
   if (p.pvp) return rpgDesafiar(p.pvp, p.nome);
   if (p.npc?.gym) return rpgGinasioAbrir(p.npc.gym);
+  if (p.npc?.elite) return rpgEliteAbrir();
   if (p.chefe) return rpgChefeAbrir();
   if (p.npc && rpgMissoesDe(AV.r).length) return rpgMissoesAbrir(AV.r, p.nome, p.fala);
   if (p.fala) { AV.fala = { nome: p.nome, linhas: p.fala, i: 0 }; return rpgFalaMostra(); }
@@ -11559,7 +11622,7 @@ function rpgPinta(now) {
   const texto = (txt, x, y, px, cor = "#F4F8E8") => { g.font = `700 ${Math.round(px * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(10,14,24,.92)"; g.strokeText(txt, x, y); g.fillStyle = cor; g.fillText(txt, x, y); };
   // plaquinhas dos lugares
   const placas = [...rpgPontos(), ...rpgSaidas().map(sd => { const [ex, ey] = sd.em[Math.floor((sd.em.length - 1) / 2)], R = RPG_REG[sd.para], dx = ex === 0 ? 1.5 : ex >= AV.g[0].length - 1 ? -1.5 : 0, dy = ey === 0 ? 2.2 : ey >= AV.g.length - 1 ? -0.6 : 0;
-    return { em: [[ex + dx, ey + dy]], ic: "➡️", nome: `${R.nome}${sd.para === "vila" ? "" : ` · ${rpgFaixa(sd.para)}`}`, saida: true }; })];
+    return { em: [[ex + dx, ey + dy]], ic: "➡️", nome: `${R.ic} ${R.nome}${sd.para === "vila" || !rpgFaixa(sd.para) ? "" : ` · ${rpgFaixa(sd.para)}`}`, saida: true }; })];
   for (const p of placas) {
     const [px0, py0] = p.em[0], x = (px0 + (p.em.length > 1 ? 1 : .5)) * tile - cx, y = (py0 - (p.alto ?? (p.win && !["mercado", "jornal", "caixa", "ranking"].includes(p.win) ? 2.2 : 1.3))) * tile - cy;
     if (x < -200 || y < -60 || x > cv.width + 200 || y > cv.height + 60) continue;
@@ -11571,9 +11634,9 @@ function rpgPinta(now) {
   }
   // moradores, outros jogadores e você, de trás para a frente
   const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: rpgSegue() ? pkTeam()[0]?.species_id : null, eq: eqSoma(AV.eq), eqs: eqSlotsDe(AV.eq), dir: AV.dir || "down", anda: !!AV.moving, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
-  const LID = n => n === "pico" ? 9 : 6;   // os Líderes de Ginásio vestem aço (o do Pico, ouro)
-  const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.gym ? `🏟️ ${n.nome}` : n.nome, ch: n.ch, npc: true, gym: n.gym, dir: "down",
-      eqs: n.gym ? { peitoral: LID(n.gym), calca: LID(n.gym), botas: LID(n.gym), luvas: LID(n.gym) } : {} })),
+  const LID = n => ["pico", "vulcao", "estrada"].includes(n) ? 9 : 6;   // os Líderes vestem aço (os 3 últimos e a Elite, ouro)
+  const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.gym ? `🏟️ ${n.nome}` : n.elite ? `🏛️ ${n.nome}` : n.nome, ch: n.ch, npc: true, gym: n.gym, elite: n.elite, dir: "down",
+      eqs: n.gym || n.elite ? (k => ({ peitoral: k, calca: k, botas: k, luvas: k }))(n.elite ? 9 : LID(n.gym)) : {} })),
     ...Object.values(AV.others).map(o => { const mv = o.x != null && (Math.abs(o.x - o.fx) > .03 || Math.abs(o.y - o.fy) > .03), dx = (o.x ?? o.fx) - o.fx, dy = (o.y ?? o.fy) - o.fy;
       return { ...o, eqs: o.es || {}, anda: mv, dir: mv ? (Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up")) : (o.d || "down"),
         ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } }; }), eu].filter(o => o.ch?.class && o.fx != null).sort((a, b) => a.fy - b.fy);
@@ -11596,7 +11659,8 @@ function rpgPinta(now) {
       g.imageSmoothingEnabled = false; g.drawImage(fo, col * 64, lin * 64, 64, 64, Math.round(ox - S2 / 2), Math.round(oy - S2 * .97), Math.round(S2), Math.round(S2));
     } else { g.save(); g.translate(ox, oy - (o.pulo || 0) - 2 * dpr); if ((o.f || 1) < 0) g.scale(-1, 1); avDraw(g, sp, -w / 2, -h, w, h); g.restore(); }
     texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : o.npc ? "#BFE8FF" : "#F4F8E8");
-    if (o.npc) texto(o.gym ? (rpgInsig().includes(o.gym) ? "🏅" : "🏟️") : rpgMissoesDe(AV.r).some(m => !m.resgatada && m.prog >= m.meta) ? "🎁" : "!", ox + w * 0.45, oy - h + 4 * dpr, 16, "#FFE37A");
+    if (!o.npc && AV.st?.campeoes?.includes(o.uid)) texto("👑", ox, oy - h - 22 * dpr, 16, "#FFE37A");   // arquivo 106: venceu a Liga
+    if (o.npc) texto(o.gym ? (rpgInsig().includes(o.gym) ? "🏅" : "🏟️") : o.elite ? "👑" : rpgMissoesDe(AV.r).some(m => !m.resgatada && m.prog >= m.meta) ? "🎁" : "!", ox + w * 0.45, oy - h + 4 * dpr, 16, "#FFE37A");
     const bl = AV.baloes[o.uid];
     if (bl && bl.ate > now && pzCfg().baloes !== false) {
       g.font = `600 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`; const t = bl.txt, bw = Math.min(g.measureText(t).width + 16 * dpr, 260 * dpr), bh = 24 * dpr, by = oy - h - 22 * dpr;
@@ -11824,7 +11888,7 @@ function rpgSupAbrir() {
   });
 }
 // ---------- Ginásios, missões, noite e Chefe da rota (arquivo 99) ----------
-const RPG_LIDER_DEF = {"bosque": {"nome": "Líder Flora", "classe": "domador", "tipo": "Inseto e Planta", "n": 4}, "praia": {"nome": "Líder Marina", "classe": "arqueiro", "tipo": "Água e Elétrico", "n": 4}, "deserto": {"nome": "Líder Brasa", "classe": "guerreiro", "tipo": "Fogo e Terra", "n": 4}, "pedreira": {"nome": "Líder Rocha", "classe": "mercador", "tipo": "Pedra", "n": 4}, "charco": {"nome": "Líder Sombra", "classe": "mago", "tipo": "Fantasma e Psíquico", "n": 4}, "pico": {"nome": "Líder Neve", "classe": "clerigo", "tipo": "Gelo e Dragão", "n": 4}};
+const RPG_LIDER_DEF = {"bosque": {"nome": "Líder Flora", "classe": "domador", "tipo": "Inseto e Planta", "n": 4}, "praia": {"nome": "Líder Marina", "classe": "arqueiro", "tipo": "Água e Elétrico", "n": 4}, "deserto": {"nome": "Líder Brasa", "classe": "guerreiro", "tipo": "Fogo e Terra", "n": 4}, "pedreira": {"nome": "Líder Rocha", "classe": "mercador", "tipo": "Pedra", "n": 4}, "charco": {"nome": "Líder Sombra", "classe": "mago", "tipo": "Fantasma e Psíquico", "n": 4}, "pico": {"nome": "Líder Neve", "classe": "clerigo", "tipo": "Gelo e Dragão", "n": 4}, "vulcao": {"nome": "Líder Magma", "classe": "guerreiro", "tipo": "Fogo", "n": 5}, "estrada": {"nome": "Líder Titã", "classe": "ladino", "tipo": "Terra e Pedra", "n": 6}};
 const rpgLideres = () => AV.st?.lideres || RPG_LIDER_DEF;   // arquivo 101: só nome, herói, tipo e quantos (o time é segredo do servidor)
 const rpgLider = r => rpgLideres()[r];
 const rpgInsig = () => AV.st?.insignias || [];
@@ -11935,6 +11999,70 @@ async function rpgGinasioAbrir(r) {
   try { G = await rpc("rpg_ginasio", { _regiao: r }); } catch (e) { closeModal(); return toast(errMsg(e), true); }
   pinta();
 }
+// arquivo 106: a Liga. Escolha até 6 Pokémon e enfrente os 5 em sequência; a vida não volta entre as lutas
+function rpgEliteHTML(E, sel, adm) {
+  const t = E.tentativa, ms = E.membros || [], etapa = t?.etapa ?? 0, vivos = (S.pk?.mons || []).filter(x => treinoHpOf(x) > 0).sort((a, b) => b.level - a.level);
+  const card = (x, extra = "") => `${monCv(x.species_id ?? x.species, x.outfit, 64)}<span class="mc-name">${esc(pkName(x.species_id ?? x.species))}</span><span class="mc-lv">Nv ${x.level}</span>${extra}`;
+  const fila = `<ol class="elite-fila">${ms.map((m, k) => `<li class="${t && k < etapa ? "ok" : t && k === etapa ? "agora" : ""}"><b>${ELITE_IC[k] || "⭐"} ${esc(m.nome)}</b><small>${esc(m.tipo || "")} · ${m.n} Pokémon${t && k < etapa ? " · ✅ vencido" : t && k === etapa ? " · ⚔️ agora" : ""}</small></li>`).join("")}</ol>`;
+  let corpo;
+  if (E.insignias < E.insignias_min) corpo = `<p class="rpg-fim">🏅 Você tem <b>${E.insignias} de ${E.insignias_min}</b> insígnias. Volte quando tiver todas.</p>`;
+  else if (t) corpo = `<p>Tentativa em andamento: <b>${esc(ms[etapa]?.nome || "")}</b> (${etapa + 1}º de ${ms.length}), <b>${t.idx} de ${t.total}</b> Pokémon dele derrotados. A sua equipe da Liga, na ordem:</p>
+      <div class="tr-pick">${t.meus.map((x, k) => `<div class="mon-card ${x.vida <= 0 ? "ko" : ""}"><i class="gym-ord">${k + 1}</i>${card(x, x.vida <= 0 ? `<span class="ko-tag">💤 caiu</span>` : trHpBar(x.vida))}</div>`).join("")}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-elite="1">▶ Continuar a Liga</button><button class="btn ghost small" data-edesiste="1">🏳️ Desistir</button></div>`;
+  else if (E.tentativas >= E.tentativas_dia) corpo = `<p class="rpg-fim">Você já entrou na Liga hoje. Volte amanhã!</p>`;
+  else corpo = `<p><b>Escolha até ${E.time_max} Pokémon</b>, na ordem em que vão entrar (${sel.length}/${E.time_max}). Quem cai sai e entra o próximo.</p>
+      <div class="tr-pick">${vivos.map(x => { const k = sel.indexOf(x.id); return `<button class="mon-card ${k >= 0 ? "sel" : ""}" data-esel="${x.id}">${k >= 0 ? `<i class="gym-ord">${k + 1}</i>` : ""}${card(x, treinoHpOf(x) < 100 ? trHpBar(treinoHpOf(x)) : "")}</button>`; }).join("") || `<p class="muted">Nenhum Pokémon com vida. Cure no Centro Pokémon.</p>`}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-elite="1" ${sel.length ? "" : "disabled"}>🏛️ Entrar na Liga com ${sel.length || "estes"} Pokémon</button>${sel.length ? `<button class="btn ghost small" data-elimpa="1">Limpar</button>` : ""}</div>`;
+  const hall = E.hall?.length ? `<h3 style="margin-top:14px">👑 Hall da Fama</h3><ol class="rpg-rank">${E.hall.map(h => `<li><b>${esc(h.name)}</b> <span>${h.vezes > 1 ? `${h.vezes}×` : "1ª vez"} · ${new Date(h.em).toLocaleDateString("pt-BR")}</span><small style="display:block">${(h.time || []).map(m => `${esc(pkName(m.species))} ${m.level}`).join(" · ")}</small></li>`).join("")}</ol>`
+    : `<p class="muted" style="margin-top:10px">👑 Hall da Fama: ninguém venceu a Liga ainda. Seja o primeiro!</p>`;
+  const adm1 = adm ? `<form class="gym-adm" data-eform="1"><h3>🛠️ Editar a Liga (só admin)</h3><label>Quem <select name="ordem">${adm.map(m => `<option value="${m.ordem}">${m.ordem}. ${esc(m.nome)}</option>`).join("")}</select></label>
+      ${adm.map(m => `<div data-eadm="${m.ordem}" ${m.ordem === 1 ? "" : "hidden"}><label>Nome <input name="nome${m.ordem}" value="${esc(m.nome)}"></label><label>Tipo (texto) <input name="tipo${m.ordem}" value="${esc(m.tipo)}"></label>
+        <label>Herói <input name="classe${m.ordem}" value="${esc(m.classe)}"></label><label>Time: número da Pokédex : nível, separados por vírgula <input name="time${m.ordem}" value="${esc(m.time.map(t => `${t[0]}:${t[1]}`).join(", "))}"></label>
+        <small class="muted">${esc(m.time.map(t => `${pkName(t[0])} ${t[1]}`).join(" · "))}</small></div>`).join("")}<button class="btn small">Salvar</button></form>` : "";
+  return `<div class="rpg-rotas"><div class="av-head"><h2>🏛️ Planalto da Liga</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <p>A Elite 4 e o Campeão te esperam, <b>um depois do outro</b>. Cada um usa sempre os mesmos Pokémon, e só lutando para descobrir quais são.</p>
+    <p class="rpg-fim"><b>⚠️ A vida dos seus Pokémon NUNCA volta durante a Liga</b>: nem com o tempo, nem no Centro Pokémon. Começou, tem que terminar: ou você vence o Campeão, ou cai com a equipe toda. Fugir de uma luta é desistir da Liga. Só dá para entrar <b>${E.tentativas_dia === 1 ? "uma vez" : `${E.tentativas_dia} vezes`} por dia</b>.</p>
+    ${fila}
+    <p class="muted">Prêmio de quem vence o Campeão: entra no <b>Hall da Fama</b>, ganha a 👑 no boneco${E.campeao ? "" : `, ${E.moedas} moedas, ${esc(Object.entries(E.itens || {}).map(([k, q]) => `${q}× ${rpgItemNome(k)}`).join(" e "))} e ${E.doces} Doces de Forja`}${E.campeao ? ` e ${E.repetir_moedas} moedas (você já venceu ${E.campeao}×)` : ""}.</p>
+    ${corpo}${hall}
+    ${S.isAdmin ? (adm1 || `<p style="margin-top:10px"><button class="btn ghost small" data-eadmin="1">🛠️ Admin: ver e editar a Liga</button></p>`) : ""}</div>`;
+}
+async function rpgEliteLutar(meus) {
+  let res; try { res = await rpc("rpg_elite_lutar", { _comp: rpgSupId(), _meus: meus || null }); } catch (e) { return toast(errMsg(e), true); }
+  if (res.fim) { toast(res.msg || "A tentativa acabou.", true); closeModal(); rpgEliteCarregar().then(() => rpgPerto()); if (!AV.open && AV.volta) { S.win = null; AV.volta = false; rpgOpen(); } return; }
+  await rpgLutaAbre(res.battle);
+}
+async function rpgEliteAbrir() {
+  const m = openModal(`<p class="muted">Abrindo a Liga…</p>`); m.querySelector(".modal").classList.add("modal-av");
+  let E, adm = null; const sel = [];
+  const pinta = () => { const box = $("#modal-root .modal"); if (box && E) box.innerHTML = rpgEliteHTML(E, sel, adm); };
+  m.addEventListener("click", async e => {
+    if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
+    const es = e.target.closest("[data-esel]");
+    if (es) { const id = es.dataset.esel, k = sel.indexOf(id); if (k >= 0) sel.splice(k, 1); else if (sel.length < (E.time_max || 6)) sel.push(id); sfx("tick"); return pinta(); }
+    if (e.target.closest("[data-elimpa]")) { sel.length = 0; return pinta(); }
+    if (e.target.closest("[data-elite]")) {
+      if (!E.tentativa && !await confirmModal("Entrar na Liga?", `Você vai enfrentar os ${E.membros.length} em sequência com ${sel.length} Pokémon. A vida deles não volta até o fim. Começou, tem que terminar (ou desistir, e perde a tentativa de hoje).`, "Entrar")) return;
+      return rpgEliteLutar(E.tentativa ? null : sel.slice());
+    }
+    if (e.target.closest("[data-edesiste]")) {
+      if (!await confirmModal("Desistir da Liga?", "A tentativa acaba e conta como derrota.", "Desistir")) return;
+      try { await rpc("rpg_elite_desistir"); toast("Você desistiu da Liga."); E = await rpgEliteCarregar(); rpgPerto(); pinta(); } catch (er) { toast(errMsg(er), true); } return;
+    }
+    if (e.target.closest("[data-eadmin]")) { try { adm = await rpc("admin_rpg_elite"); pinta(); } catch (er) { toast(errMsg(er), true); } }
+  });
+  m.addEventListener("change", e => { if (e.target.name === "ordem") m.querySelectorAll("[data-eadm]").forEach(d => { d.hidden = d.dataset.eadm !== e.target.value; }); });
+  m.addEventListener("submit", async e => {
+    if (!e.target.matches("[data-eform]")) return; e.preventDefault(); const f = new FormData(e.target), o = +f.get("ordem");
+    const time = String(f.get("time" + o) || "").split(",").map(p => p.trim()).filter(Boolean).map(p => p.split(":").map(v => parseInt(v, 10)));
+    if (!time.length || time.some(t => t.length !== 2 || t.some(v => !(v > 0)))) return toast("Escreva o time assim: 3:35, 6:40 (número da Pokédex : nível).", true);
+    try { adm = await rpc("admin_rpg_elite_salvar", { _ordem: o, _nome: f.get("nome" + o), _classe: f.get("classe" + o), _tipo: f.get("tipo" + o), _time: time }); toast("Liga salva!"); E = await rpgEliteCarregar(); pinta(); }
+    catch (er) { toast(errMsg(er), true); }
+  });
+  E = await rpgEliteCarregar(); if (!E) { closeModal(); return toast("Não consegui abrir a Liga. Tente de novo.", true); }
+  pinta();
+}
+ACTIONS["rpg-elite-next"] = async () => { await guarded(async () => { await Promise.all([loadPk(), loadTreino()]); }); await rpgEliteLutar(); };
 // Chefe da rota
 function rpgChefeHTML() {
   const c = AV.st?.chefe; if (!c) return `<p class="muted">Nenhum chefe agora.</p>`;
@@ -13406,6 +13534,14 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "elite-2026-11-13", sql: "106", title: "🏛️ Aventura: 2 Ginásios novos e a Elite 4", body: () => `A Aventura cresceu e agora tem um fim de verdade:
+• 🌋 Vulcão Cinzento (saída leste do Deserto Rubro) e 🏆 Estrada da Vitória (saída norte do Pico Gelado): duas rotas novas, as mais fortes do mapa, cada uma com o seu Ginásio. Agora são 8 insígnias.
+• 🏛️ No fim da Estrada da Vitória fica o Planalto da Liga. Só entra quem tem as 8 insígnias.
+• Lá esperam a Elite 4 e, depois deles, o Campeão. São 5 lutas seguidas, uma atrás da outra.
+• Antes de entrar, escolha até 6 Pokémon. A vida deles NUNCA volta durante a Liga: nem com o tempo, nem no Centro Pokémon. Começou, tem que terminar: ou vence o Campeão, ou cai com a equipe toda. Fugir de uma luta é desistir da Liga.
+• Só dá para entrar uma vez por dia.
+• Quem vencer o Campeão entra para o Hall da Fama da Aventura, ganha um prêmio grande e uma coroa no boneco que todos veem.
+Boa sorte: é muito, muito difícil.` },
   { id: "equipe-facil-2026-11-12", sql: "105", title: "🐾 Minha equipe: arrumar ficou fácil", body: () => `Ficou muito mais fácil arrumar a equipe:
 • Nova tela 🐾 Minha equipe (menu Pokémon, e o botão 🐾 Equipe dentro da Aventura).
 • Toque num Pokémon e depois em outro para trocar de lugar. No computador, dá para arrastar.
