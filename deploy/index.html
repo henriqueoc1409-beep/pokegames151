@@ -2044,6 +2044,11 @@ body.pb-on{overflow:hidden}
 .pb-box{width:min(980px,94vw);background:linear-gradient(#22313B,#18242C);border:3px solid #E0B44C;border-radius:16px;padding:20px 24px;color:#E8ECF3;text-align:center}
 .pb-box h2{margin:0 0 6px;color:#FFE37A;font-size:30px}
 .pb-chars{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+.pb-abas{display:flex;gap:6px;justify-content:center;margin:6px 0 12px}.pb-abas button{background:#1A2630;border:2px solid #3A5060;color:#D8E2EC;border-radius:10px;padding:7px 16px;font:800 15px var(--sans);cursor:pointer}.pb-abas button.on{background:#E0B44C;border-color:#FFE7A8;color:#1E150C}
+.pb-char.sel{outline:3px solid #FFE37A;outline-offset:2px}.pb-des{display:flex;justify-content:center;gap:10px}.pb-des select{font-size:16px;padding:6px 10px;border-radius:8px;min-width:240px}
+.pb-aviso{background:#2B3A46;border-radius:10px;padding:10px;margin:8px 0}.pb-conv{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}.pb-conv img{vertical-align:middle}
+.pb-rank{text-align:left;max-height:380px;overflow:auto;margin:10px auto;max-width:620px;padding-left:28px}.pb-rank li{display:grid;grid-template-columns:1fr 130px 70px 80px;gap:8px;padding:5px 4px;border-bottom:1px solid #2E3E4A;align-items:center}
+.pb-rank li.eu{background:#3A4A2A;border-radius:6px}.pb-rank em{font-style:normal;font-weight:800}.pb-rank b{text-align:right}.pb-rank small{color:#AFC0D0}
 .pb-char{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border-radius:12px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:inherit;cursor:pointer;font:inherit}
 .pb-char:hover{border-color:#F5C542;background:rgba(245,197,66,.1)}.pb-char img{width:110px;height:110px;object-fit:contain}
 .pb-char b{font-size:18px;color:#FFE37A}.pb-char small{color:#BFD0DD;line-height:1.4}.pb-char em{font-style:normal;font-size:12px;color:#FFE7A8}
@@ -6074,7 +6079,10 @@ function LIB() {
     { id: "pokebound", ic: "💥", t: "PokeBound", h: `<p>O <b>PokeBound</b> (menu Competir, só no computador) é o nosso duelo de artilharia: cada um num lado do mapa, um tiro por vez, e vence quem derrubar o outro.</p>
       <p><b>Pokémon:</b> Blastoise, Electrode, Golem e Dragonite. Todos têm a mesma força no total, distribuída de um jeito diferente (vida, dano, tamanho da explosão, alcance e quanto sentem o vento), e cada um tem um ataque especial que volta a cada ${S.cfg.pokebound?.recarga ?? 3} turnos.</p>
       <p><b>Controles:</b> ↑ ↓ mudam o ângulo; segure ESPAÇO (ou o botão Atirar) e solte para atirar: a barra de força vai e volta, sem número, e fica a marca do seu último tiro; ← → andam enquanto houver fôlego (sobe ladeira e entra em cratera); ⭐ arma o especial antes de carregar a força. Arraste a tela, use a rodinha do mouse ou clique no minimapa para ver o campo; "👁 Ver adversário" mostra o outro lado.</p>
-      <p><b>Vento:</b> dura ${S.cfg.pokebound?.vento_turnos ?? 4} turnos e depois muda. Cada turno tem ${S.cfg.pokebound?.turno_seg ?? 45} segundos; se o tempo acabar, a vez passa. O tiro abre crateras e muda o mapa. Por enquanto é contra o computador, só por diversão: não vale moedas nem XP.</p>` },
+      <p><b>Vento:</b> dura ${S.cfg.pokebound?.vento_turnos ?? 4} turnos e depois muda. Cada turno tem ${S.cfg.pokebound?.turno_seg ?? 45} segundos; se o tempo acabar, a vez passa. O tiro abre crateras e muda o mapa.</p>
+      <p>🤖 <b>Treino:</b> contra o computador, só por diversão.</p>
+      <p>⚔️ <b>Entre jogadores (valendo ranking):</b> na aba ⚔️ Desafiar, escolha o jogador e o seu Pokémon. Quem foi desafiado recebe o aviso na hora (precisa estar com o jogo aberto no computador) e tem ${Math.round((S.cfg.pokebound?.pvp?.convite_seg ?? 120) / 60)} minutos para aceitar. A partida é ao vivo, ${S.cfg.pokebound?.turno_seg ?? 45} segundos por turno; quem perde a vez ${S.cfg.pokebound?.pvp?.pulos_max ?? 3} vezes seguidas perde a partida. Os tiros são calculados no servidor, iguais para os dois. Até ${S.cfg.pokebound?.pvp?.partidas_dia ?? 10} partidas por dia (${S.cfg.pokebound?.pvp?.mesmo_par_dia ?? 3} contra a mesma pessoa).</p>
+      <p>🏆 <b>Ranking:</b> todo mundo começa com ${S.cfg.pokebound?.pvp?.pontos_inicio ?? 1000} pontos. Quem vence ganha os pontos que o outro perde, e ganhar de quem está acima vale mais. Divisões: 🥉 Bronze, 🥈 Prata (1000), 🥇 Ouro (1100), 💎 Diamante (1200) e 👑 Mestre (1300). Não vale moedas.</p>` },
     { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b> (${S.cfg.cartas?.brilhante_pct ?? 1}% das cartas): dourada e um pouco mais forte.</p>
       <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
       <p><b>Duelo:</b> monte um deck de ${S.cfg.cartas?.deck ?? 10} cartas (no máximo ${S.cfg.cartas?.max_iguais ?? 2} iguais). Você começa com 1 em campo e 3 na mão. Cada turno dá +1 ⚡ (até ${S.cfg.cartas?.energia_max ?? 5}); o ataque fraco custa ${S.cfg.cartas?.custo_fraco ?? 1} ⚡, o forte ${S.cfg.cartas?.custo_forte ?? 3} ⚡, e trocar o Pokémon em campo custa ${S.cfg.cartas?.custo_trocar ?? 1} ⚡. Fraqueza dá dano ×2 e resistência ×½, pela tabela de tipos das batalhas. Quando um Pokémon cai, entra o de mais vida da mão. Vence quem derrubar ${S.cfg.cartas?.nocautes ?? 3}. Contra outro jogador vale moedas (de ${S.cfg.cartas?.aposta_min ?? 10} a ${S.cfg.cartas?.aposta_max ?? 100}); contra o computador é só treino, sem prêmio.</p>` },
@@ -9512,7 +9520,9 @@ const AJ_LABELS = {
   visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
     vel_max: "Velocidade máxima do tiro", carga_vel: "Velocidade da barra de força", turno_seg: "Segundos por turno", recarga: "Turnos de espera do especial",
-    raio_jogador: "Tamanho do alvo (acerto direto)", folego: "Fôlego para andar por turno", zoom: "Zoom inicial da câmera" },
+    raio_jogador: "Tamanho do alvo (acerto direto)", folego: "Fôlego para andar por turno", zoom: "Zoom inicial da câmera",
+    pvp: "⚔️ Entre jogadores (ranking)", "pvp.on": "Partidas entre jogadores ligadas", "pvp.folga_seg": "Segundos de folga depois do turno", "pvp.pulos_max": "Vezes perdidas seguidas que dão derrota",
+    "pvp.convite_seg": "Segundos para aceitar o desafio", "pvp.partidas_dia": "Partidas valendo ranking por dia", "pvp.mesmo_par_dia": "Partidas por dia contra o mesmo jogador", "pvp.pontos_inicio": "Pontos de quem começa", "pvp.k": "Quanto cada partida mexe nos pontos" },
   cartas: { on: "Cartas ligadas", pacote_preco: "Preço do pacote (moedas)", pacote_inicial: "Pacotes de boas-vindas", carta_dia: "1 carta por dia ao andar", pacote_rodada: "Pacotes pela vitória na rodada",
     pacote_quiz: "Pacotes por vencer o Quiz", pacote_temporada: "Pacotes por prêmio da temporada", bau_pct: "% de chance de pacote num baú", "chances.comum": "Chance de comum", "chances.incomum": "Chance de incomum",
     "chances.rara": "Chance de rara", "chances.ultra": "Chance de ultra rara", brilhante_pct: "% de chance de brilhante", brilhante_bonus: "Bônus da brilhante (PV e dano)", deck: "Cartas no deck",
@@ -9796,6 +9806,7 @@ function avSeen() { try { return JSON.parse(localStorage.getItem(avKey()) || "nu
 function avSave(p) { const s = { ...(avSeen() || {}), ...p }; try { localStorage.setItem(avKey(), JSON.stringify(s)); } catch {} return s; }
 async function avCheck() {
   if (!sb || !S.session || !S.me) return;
+  if (pbNoComputador() && pbPvpOn() && S.cfg.pokebound?.on !== false) pbMeusCheck();   // arquivo 110: desafios do PokeBound
   if (!AV.open && rpgCfg().on !== false) rpgPvpCheck(true);   // arquivo 107: desafio na Aventura esperando resposta
   const me = S.session.user.id, ontem = new Date(Date.now() - 864e5).toISOString();
   let seen = avSeen() || avSave({ mercado: ontem, leilao: ontem, chat: null, cob: {} });
@@ -10299,6 +10310,7 @@ function pbComecar(ch) {
 function pbDisparar() {
   const p = PB.players[PB.turn], C = PB_CHARS[p.ch], esp = PB.esp && p.cd === 0;
   if (PB.phase !== "mira") return;
+  if (PB.on) return pbOnlineJogar(p, esp);   // arquivo 110: entre jogadores, o servidor calcula
   const b = pbBoca(p), base = { x: b.x, y: b.y, pot: p.pot, vel: C.vel, ventoK: C.vento, wind: PB.wind };
   const ang = p.face === 1 ? p.ang : 180 - p.ang, tiros = [];
   if (esp && p.ch === "blastoise") tiros.push({ ...base, ang: ang + 3, mult: 0.6 }, { ...base, ang: ang - 3, mult: 0.6 });
@@ -10341,6 +10353,7 @@ function pbSuavizar(i0, i1) {
   for (let i = i1 - 1; i >= i0; i--) if (t[i] < t[i + 1] - S) t[i] = t[i + 1] - S;
 }
 function pbFimDoVoo() {
+  if (PB.on) { const st = PB.on.pend; PB.on.pend = null; if (st) pbOnlineAplica(st); return; }   // arquivo 110: vale o que o servidor disse
   const vivos = PB.players.filter(p => p.hp > 0);
   if (vivos.length < 2) {
     PB.phase = "fim"; const ganhei = vivos[0] && !vivos[0].cpu;
@@ -10552,7 +10565,7 @@ function pbDesenhaJogador(g, p, ativo) {
   g.fillStyle = "rgba(0,0,0,.65)"; g.fillRect(p.x - w / 2 - 3, p.y - 158, w + 6, 13);
   g.fillStyle = pct > 0.5 ? "#4CC38A" : pct > 0.2 ? "#E5B92E" : "#E05A5A"; g.fillRect(p.x - w / 2, p.y - 155, w * pct, 7);
   g.font = "800 15px Inter, sans-serif"; g.textAlign = "center"; g.lineWidth = 4; g.strokeStyle = "rgba(0,0,0,.7)";
-  const nm = p.cpu ? "Computador" : "Você"; g.strokeText(nm, p.x, p.y - 164); g.fillStyle = "#FFF"; g.fillText(nm, p.x, p.y - 164); g.textAlign = "left";
+  const nm = PB.on ? (p.cpu ? PB.on.nomes[1 - PB.on.eu] : "Você") : p.cpu ? "Computador" : "Você"; g.strokeText(nm, p.x, p.y - 164); g.fillStyle = "#FFF"; g.fillText(nm, p.x, p.y - 164); g.textAlign = "left";
   if (ativo) { g.fillStyle = "#FFE37A"; g.beginPath(); g.moveTo(p.x - 10, p.y - 192); g.lineTo(p.x + 10, p.y - 192); g.lineTo(p.x, p.y - 179); g.fill(); }
 }
 // câmera: segue quem joga, o tiro em voo e a explosão; o zoom deixa tudo maior.
@@ -10674,7 +10687,7 @@ function pbLoop(t) {
         p.pot = PB.charge;
       }
     } else if (PB.cpuAt && t >= PB.cpuAt) { PB.cpuAt = 0; pbCpu(); }
-    if (performance.now() > PB.timerEnd) { PB.turn = 1 - PB.turn; pbNovoTurno(); PB.msg = "Tempo esgotado: o turno pulou."; pbHud(); }
+    if (!PB.on && performance.now() > PB.timerEnd) { PB.turn = 1 - PB.turn; pbNovoTurno(); PB.msg = "Tempo esgotado: o turno pulou."; pbHud(); }
   }
   pbDesenhar(dt); pbHudLive();
 }
@@ -10693,7 +10706,7 @@ function pbHud() {
   const p = PB.players[PB.turn], C = PB_CHARS[p.ch], minha = !p.cpu && PB.phase === "mira";
   $("#pb-msg").textContent = PB.esp && minha ? `⭐ ${C.esp} armado: ${C.espTxt}. Agora carregue a força.` : PB.msg;
   $("#pb-vento").innerHTML = `Vento <b>${PB.wind === 0 ? "parado" : `${PB.wind < 0 ? "←" : ""} ${Math.abs(PB.wind)} ${PB.wind > 0 ? "→" : ""}`}</b> <small>${PB.windLeft > 1 ? `· muda em ${PB.windLeft} turnos` : "· muda no próximo turno"}</small>`;
-  PB.players.forEach((q, i) => { const n = $(`#pb-nome${i}`); if (n) n.textContent = `${q.cpu ? "Computador" : "Você"} · ${PB_CHARS[q.ch].nome}`; });
+  PB.players.forEach((q, i) => { const n = $(`#pb-nome${i}`); if (n) n.textContent = `${PB.on ? `${PB.on.nomes[i]}${i === PB.on.eu ? " (você)" : ""}` : q.cpu ? "Computador" : "Você"} · ${PB_CHARS[q.ch].nome}`; });
   $("#pb-tiro").disabled = !minha;
   const e = $("#pb-esp"); e.disabled = !minha || p.cd > 0; e.classList.toggle("on", PB.esp && minha);
   e.textContent = p.cd > 0 ? `${C.esp} (em ${p.cd} turnos)` : PB.esp && minha ? `⭐ ${C.esp} armado (clique para desarmar)` : `⭐ ${C.esp}`; e.title = C.espTxt;
@@ -10709,17 +10722,23 @@ function pbRoot() {
     <div class="pb-bot"><div class="pb-dica">↑ ↓ ângulo · ← → andar · <b>segure ESPAÇO</b> (ou o botão Atirar) para a força e solte para atirar · ⭐ arma o especial antes · <b>arraste a tela</b> para olhar o campo e use a <b>rodinha do mouse</b> para o zoom (ou clique no minimapa)</div>
       <div class="pb-ctl"><span>Ângulo <b id="pb-ang"></b></span><span class="pb-pot">Força<i><u id="pb-potbar"></u><em id="pb-potmk" hidden></em></i></span><span class="pb-fol">Fôlego<i><u id="pb-fol"></u></i></span>
       <button class="btn" id="pb-tiro">🎯 Segure para atirar</button><button class="btn ghost" id="pb-esp"></button><button class="btn ghost small" id="pb-ver" title="Mostra o adversário; clique de novo para voltar">👁 Ver adversário</button><button class="btn ghost small" id="pb-sair">Sair</button></div></div>
-    <div class="pb-over" id="pb-escolha"><div class="pb-box"><h2>💥 PokeBound</h2><p>Escolha quem vai para o canhão. Cada um tem o mesmo total de força, distribuído de um jeito diferente.</p>
-      <div class="pb-chars">${Object.entries(PB_CHARS).map(([k, c]) => `<button class="pb-char" data-pb="${k}"><img src="${ART(c.sp)}" alt=""><b>${c.nome}</b>
-        <small>Dano ${c.dano} · Raio ${c.raio} · Vida ${c.hp}<br>Velocidade ${Math.round(c.vel * 100)}% · Vento ${Math.round(c.vento * 100)}%</small><em>⭐ ${c.esp}: ${c.espTxt}</em></button>`).join("")}</div>
-      <p class="muted">Duelo contra o computador, só por diversão: não vale moedas nem XP.</p><button class="btn ghost" id="pb-sair2">Sair</button></div></div>
-    <div class="pb-over" id="pb-fim" hidden><div class="pb-box"><h2 id="pb-fim-t"></h2><div class="act-btns" style="justify-content:center"><button class="btn" id="pb-denovo">Jogar de novo</button><button class="btn ghost" id="pb-sair3">Sair</button></div></div></div>`;
+    <div class="pb-over" id="pb-escolha"><div class="pb-box" id="pb-lobby"></div></div>
+    <div class="pb-over" id="pb-fim" hidden><div class="pb-box"><h2 id="pb-fim-t"></h2><p id="pb-fim-p"></p><div class="act-btns" style="justify-content:center"><button class="btn" id="pb-denovo">Jogar de novo</button><button class="btn ghost" id="pb-sair3">Sair</button></div></div></div>`;
   document.body.appendChild(el);
   el.addEventListener("click", e => {
     const ch = e.target.closest("[data-pb]"); if (ch) return pbComecar(ch.dataset.pb);
+    const ab = e.target.closest("[data-pbaba]"); if (ab) { PB.aba = ab.dataset.pbaba; sfx("tick"); return pbLobby(); }   // arquivo 110
+    const pc = e.target.closest("[data-pbch]"); if (pc) { PB.chSel = pc.dataset.pbch; sfx("tick"); return pbLobby(); }
+    if (e.target.closest("#pb-desafiar")) return pbDesafiar();
+    const cc = e.target.closest("[data-pbcancel]"); if (cc) return guarded(async () => { await rpc("pb_cancelar", { _id: +cc.dataset.pbcancel }); await pbMeusCheck(); pbLobby(); });
+    if (e.target.closest("#pb-voltar")) return pbOnlineAbrir(PB.meus.ativa);
     if (e.target.closest("#pb-esp")) { const p = PB.players[PB.turn]; if (p && !p.cpu && PB.phase === "mira" && p.cd === 0 && PB.charge == null) { PB.esp = !PB.esp; sfx("tick"); pbHud(); } return; }
     if (e.target.closest("#pb-ver")) { pbVer(PB.verAdv ? null : PB.players.find(q => q.cpu)); return; }   // o adversário (no protótipo, o computador)
-    if (e.target.closest("#pb-denovo")) { $("#pb-fim").hidden = true; $("#pb-escolha").hidden = false; PB.phase = "escolha"; return; }
+    if (e.target.closest("#pb-denovo")) { if (PB.on) { PB.on = null; PB.aba = "desafiar"; pbMeusCheck(); } $("#pb-fim").hidden = true; $("#pb-escolha").hidden = false; PB.phase = "escolha"; pbLobby(); return; }
+    if (e.target.closest("#pb-sair") && PB.on && PB.on.status !== "fim") {
+      return confirmModal("Sair da partida?", "A partida continua: se você não jogar na sua vez, perde a vez, e perder a vez 3 vezes é derrota. Você pode voltar pelo PokeBound → Desafiar. Ou desista agora (conta como derrota).", "Desistir").then(async ok => {
+        if (ok) { try { const o = PB.on.outro; pbOnlineAplica(await rpc("pb_desistir", { _id: PB.on.id })); pbAvisa(o); } catch (er) { toast(errMsg(er), true); } } });
+    }
     if (e.target.closest("#pb-sair,#pb-sair2,#pb-sair3")) return pbClose();
   });
   // arrastar a tela, rodinha para o zoom (mantém o ponto do mouse parado) e clique no minimapa
@@ -10780,9 +10799,141 @@ addEventListener("keydown", pbKey); addEventListener("keyup", pbKey);
 function pbOpen() {
   const el = pbRoot(); el.hidden = false; PB.open = true; document.body.classList.add("pb-on");
   $("#pb-escolha").hidden = PB.phase !== "escolha"; Object.values(PB_CHARS).forEach(c => pbImg(c.sp));
+  if (PB.phase === "escolha") { pbLobby(); pbMeusCheck().then(() => { if (PB.phase === "escolha") pbLobby(); }); }
   cancelAnimationFrame(PB.raf); PB.last = performance.now(); PB.raf = requestAnimationFrame(pbLoop);
 }
-function pbClose() { PB.open = false; PB.keys.clear(); PB.charge = null; cancelAnimationFrame(PB.raf); const el = $("#pokebound"); if (el) el.hidden = true; document.body.classList.remove("pb-on"); }
+function pbClose() { if (PB.on) clearInterval(PB.on.poll); PB.open = false; PB.keys.clear(); PB.charge = null; cancelAnimationFrame(PB.raf); const el = $("#pokebound"); if (el) el.hidden = true; document.body.classList.remove("pb-on"); }
+// =================================================================
+// POKEBOUND ENTRE JOGADORES (arquivo 110, pedido do dono em 13/11/2026): desafio, partida ao vivo valendo ranking.
+// O servidor calcula o andar, o tiro, a explosão e o vento (pb_jogar); as duas telas só desenham o caminho devolvido.
+// =================================================================
+PB.aba = "treino"; PB.chSel = "golem"; PB.meus = { recebidos: [], enviados: [], ativa: null };
+const PB_DIVS = [[1300, "👑 Mestre", "#FFD15A"], [1200, "💎 Diamante", "#7FD3FF"], [1100, "🥇 Ouro", "#F2C04A"], [1000, "🥈 Prata", "#C9D3DE"], [0, "🥉 Bronze", "#D59A6A"]];
+const pbDiv = pts => PB_DIVS.find(d => (pts ?? 1000) >= d[0]);
+const pbCharsHTML = (attr, sel) => `<div class="pb-chars">${Object.entries(PB_CHARS).map(([k, c]) => `<button class="pb-char ${sel === k ? "sel" : ""}" ${attr}="${k}"><img src="${ART(c.sp)}" alt=""><b>${c.nome}</b>
+  <small>Dano ${c.dano} · Raio ${c.raio} · Vida ${c.hp}<br>Velocidade ${Math.round(c.vel * 100)}% · Vento ${Math.round(c.vento * 100)}%</small><em>⭐ ${c.esp}: ${c.espTxt}</em></button>`).join("")}</div>`;
+const pbPvpOn = () => S.cfg.pokebound?.pvp?.on !== false;
+function pbLobby() {
+  const box = $("#pb-lobby"); if (!box) return;
+  const M = PB.meus || {}, abas = [["treino", "🤖 Treino"], ...(pbPvpOn() ? [["desafiar", "⚔️ Desafiar"], ["ranking", "🏆 Ranking"]] : [])];
+  if (!abas.some(a => a[0] === PB.aba)) PB.aba = "treino";
+  let corpo = "";
+  if (PB.aba === "treino") corpo = `<p>Escolha quem vai para o canhão. Cada um tem o mesmo total de força, distribuído de um jeito diferente.</p>${pbCharsHTML("data-pb")}<p class="muted">Contra o computador, para treinar: não vale ranking.</p>`;
+  else if (PB.aba === "desafiar") {
+    const outros = (S.chars || []).filter(c => c.user_id !== pkMe()).sort((a, b) => a.name.localeCompare(b.name));
+    corpo = M.ativa ? `<p class="pb-aviso">⚔️ Você tem uma partida em andamento.</p><button class="btn" id="pb-voltar">▶ Voltar para a partida</button>`
+      : M.enviados?.length ? `<p class="pb-aviso">⏳ Esperando <b>${esc(M.enviados[0].nome)}</b> aceitar o desafio… (a pessoa precisa estar com o jogo aberto no computador)</p><button class="btn ghost" data-pbcancel="${M.enviados[0].id}">Cancelar o desafio</button>`
+      : `<p>Desafie outro jogador para uma partida <b>ao vivo</b> valendo pontos no ranking. Cada um tem ${pbCfg().turno_seg} segundos por turno.</p>
+        <div class="pb-des"><label>Jogador <select id="pb-op">${outros.map(c => `<option value="${c.user_id}">${esc(c.name)}</option>`).join("")}</select></label></div>
+        <p style="margin:8px 0 0"><b>Seu Pokémon:</b></p>${pbCharsHTML("data-pbch", PB.chSel)}<button class="btn" id="pb-desafiar">⚔️ Enviar desafio</button>`;
+    if (M.recebidos?.length) corpo = `<p class="pb-aviso">📨 <b>${esc(M.recebidos[0].nome)}</b> te desafiou!</p><button class="btn" data-pbaceitar="${M.recebidos[0].id}">Responder</button>` + corpo;
+  } else {
+    const R = PB.rank;
+    corpo = !R ? `<p class="muted">Carregando o ranking…</p>` : `${R.eu ? `<p>Você: <b style="color:${pbDiv(R.eu.pontos)[2]}">${pbDiv(R.eu.pontos)[1]}</b> · <b>${R.eu.pontos} pontos</b> · ${R.posicao}º lugar · ${R.eu.vitorias}V ${R.eu.derrotas}D</p>` : `<p class="muted">Você ainda não jogou valendo ranking.</p>`}
+      <ol class="pb-rank">${R.top.map(x => `<li class="${x.user_id === pkMe() ? "eu" : ""}"><span>${esc(x.name)}</span><em style="color:${pbDiv(x.pontos)[2]}">${pbDiv(x.pontos)[1]}</em><b>${x.pontos}</b><small>${x.vitorias}V ${x.derrotas}D</small></li>`).join("") || `<li class="muted">Ninguém jogou ainda. Seja o primeiro!</li>`}</ol>
+      <p class="muted">Ganhar de quem está acima de você vale mais; perder para quem está abaixo custa mais. Todos começam com ${S.cfg.pokebound?.pvp?.pontos_inicio ?? 1000}.</p>`;
+    if (!R) pbRankCarregar();
+  }
+  box.innerHTML = `<h2>💥 PokeBound</h2><div class="pb-abas">${abas.map(([k, n]) => `<button class="${PB.aba === k ? "on" : ""}" data-pbaba="${k}">${n}</button>`).join("")}</div>${corpo}<button class="btn ghost" id="pb-sair2">Sair</button>`;
+  box.querySelector("[data-pbaceitar]")?.addEventListener("click", () => pbConvite(M.recebidos[0]));
+}
+async function pbRankCarregar() { try { PB.rank = await rpc("pb_ranking"); } catch (e) { PB.rank = { top: [] }; } if (PB.aba === "ranking") pbLobby(); }
+// avisos de desafio: pelo canal "pokebound" (na hora) e pelo pb_meus (conferido a cada minuto e ao abrir)
+let pbCanal = null;
+function pbCanalLiga() {
+  if (pbCanal || !sb || !S.session) return;
+  pbCanal = sb.channel("pokebound").on("broadcast", { event: "pb" }, ({ payload: p }) => { if (p?.to !== pkMe()) return; if (PB.on && PB.on.status !== "fim") pbOnlinePoll(); else pbMeusCheck(); }).subscribe();
+}
+const pbAvisa = to => { try { pbCanal?.send({ type: "broadcast", event: "pb", payload: { to } }); } catch {} };
+async function pbMeusCheck() {
+  if (!pbPvpOn() || !pbNoComputador()) return;
+  pbCanalLiga();
+  let M; try { M = await rpc("pb_meus"); } catch { return; }
+  const antes = PB.meus || {}; PB.meus = M;
+  const novo = M.recebidos?.find(r => !(antes.recebidos || []).some(a => a.id === r.id));
+  if (novo && !PB.on) { sfx("acerto"); pbConvite(novo); }
+  if (M.ativa && !PB.on && antes.enviados?.length && !M.enviados?.length) { sfx("fanfarra"); toast("💥 O desafio foi aceito! A partida começou."); pbOnlineAbrir(M.ativa); }
+  if (PB.open && PB.phase === "escolha") pbLobby();
+}
+function pbConvite(c) {
+  const m = openModal(`<div class="rpg-desafio"><p class="gr-leg-tag">💥 POKEBOUND</p><h2>${esc(c.nome)} te desafiou!</h2>
+    <p>Partida ao vivo valendo pontos no ranking. ${esc(c.nome)} vai com <b>${PB_CHARS[c.ch]?.nome || "?"}</b>. Escolha o seu Pokémon para aceitar:</p>
+    <div class="pb-conv">${Object.entries(PB_CHARS).map(([k, x]) => `<button class="btn ghost" data-pbac="${k}"><img src="${ART(x.sp)}" alt="" width="48" height="48"> ${x.nome}</button>`).join("")}</div>
+    <div class="actions"><button class="btn ghost" data-pbrec="1">Recusar</button></div></div>`);
+  m.querySelector(".modal").classList.add("modal-av");
+  m.addEventListener("click", async e => {
+    const b = e.target.closest("[data-pbac]"), r = e.target.closest("[data-pbrec]");
+    if (!b && !r) { if (e.target === m) closeModal(); return; }
+    try {
+      if (r) { await rpc("pb_responder", { _id: c.id, _aceita: false, _ch: null }); closeModal(); pbAvisa(c.de); return pbMeusCheck(); }
+      await rpc("pb_responder", { _id: c.id, _aceita: true, _ch: b.dataset.pbac }); closeModal(); pbAvisa(c.de); S.win = null; render(); pbOnlineAbrir(c.id);
+    } catch (er) { closeModal(); toast(errMsg(er), true); pbMeusCheck(); }
+  });
+}
+async function pbDesafiar() {
+  const op = $("#pb-op")?.value; if (!op) return toast("Escolha um jogador.", true);
+  try { const r = await rpc("pb_desafiar", { _op: op, _ch: PB.chSel }); pbAvisa(op); sfx("tick"); toast(`💥 Desafio enviado para ${r.para}! Ele(a) tem ${Math.round(r.expira_seg / 60)} min para aceitar.`); await pbMeusCheck(); pbLobby(); }
+  catch (e) { toast(errMsg(e), true); }
+}
+// partida ao vivo
+async function pbOnlineAbrir(id) {
+  if (!id) return; if (!PB.open) pbOpen();
+  let st; try { st = await rpc("pb_estado", { _id: id }); } catch (e) { return toast(errMsg(e), true); }
+  if (PB.on) clearInterval(PB.on.poll);
+  PB.on = { id, eu: st.eu, outro: st.eu === 0 ? st.p2 : st.p1, jogada: -1, nomes: st.nomes, pend: null, poll: setInterval(pbOnlinePoll, 1500) };
+  PB.seed = id * 7919; PB.tema = st.tema; PB.projs = []; PB.parts = []; PB.z = 0; PB.livre = false;
+  $("#pb-escolha").hidden = true; $("#pb-fim").hidden = true;
+  pbOnlineAplica(st, true);
+}
+function pbOnlineAplica(st, cheio) {
+  const O = PB.on; if (!O) return;
+  O.jogada = st.jogada; O.status = st.status;
+  PB.terr = Float32Array.from(st.terr); PB.pos = st.pos; PB.dirty = true;
+  if (cheio || !PB.deco?.length) PB.deco = pbEnfeites(PB.seed);
+  PB.players = st.jogadores.map((j, i) => ({ ch: j.ch, x: j.x, y: j.y, hp: j.hp, face: j.face, ang: j.ang, cd: j.cd || 0, cpu: i !== st.eu, pot: 0, ultima: PB.players?.[i]?.ultima ?? null, folego: pbCfg().folego }));
+  PB.turn = st.vez; PB.wind = st.vento; PB.windLeft = st.vento_left;
+  PB.timerEnd = performance.now() + Math.max(0, new Date(st.turno_fim || st.agora) - new Date(st.agora));
+  PB.charge = null; PB.esp = false;
+  if (cheio) { const P = PB.players[st.eu]; PB.cam = { x: P.x - PB_CW / pbZ() / 2, y: P.y - 520 }; }
+  if (st.status === "fim") return pbOnlineFim(st);
+  PB.phase = "mira"; PB.foco = null;
+  PB.msg = st.vez === st.eu ? "Sua vez!" : `Vez de ${st.nomes[st.vez]}…`;
+  if (st.ultimo?.pulou != null && !cheio) toast(st.ultimo.pulou === st.eu ? "⏰ O seu tempo acabou e você perdeu a vez." : `⏰ ${st.nomes[st.ultimo.pulou]} demorou e perdeu a vez.`);
+  if (st.vez === st.eu && !cheio) sfx("tick");
+  pbHud();
+}
+function pbOnlineAnimar(st) {
+  const u = st.ultimo, O = PB.on, dono = PB.players[u.vez]; O.pend = st; O.jogada = st.jogada;
+  dono.x = u.x; dono.y = pbChao(u.x); dono.face = u.face; dono.ang = u.ang; dono.ultima = u.pot; dono.recuoAt = performance.now();
+  const C = PB_CHARS[dono.ch];
+  PB.projs = u.tiros.map(t => ({ ...t, hit: t.hit ? { x: t.hit.x, y: t.hit.y, direto: t.hit.direto != null ? PB.players[t.hit.direto] : undefined } : null, i: 0, dono, C, esp: u.esp }));
+  PB.phase = "voo"; PB.charge = null; PB.esp = false; PB.livre = false; sfx("raio"); pbHud();
+}
+async function pbOnlineJogar(p, esp) {
+  const O = PB.on; PB.phase = "enviando"; PB.msg = "Atirando…"; pbHud();
+  try {
+    const st = await rpc("pb_jogar", { _id: O.id, _x: p.x, _face: p.face, _ang: p.ang, _pot: p.pot, _esp: esp }); pbAvisa(O.outro);
+    if (st.ultimo?.tiros) pbOnlineAnimar(st); else pbOnlineAplica(st);
+  } catch (e) { toast(errMsg(e), true); try { pbOnlineAplica(await rpc("pb_estado", { _id: O.id })); } catch {} }
+}
+async function pbOnlinePoll() {
+  const O = PB.on; if (!O || !PB.open || O.status === "fim" || ["voo", "pausa", "enviando"].includes(PB.phase)) return;
+  let st; try { st = await rpc("pb_estado", { _id: O.id }); } catch { return; }
+  if (!PB.on || PB.on.id !== st.id || st.jogada <= O.jogada || ["voo", "pausa", "enviando"].includes(PB.phase)) {
+    if (PB.on && st.jogada === O.jogada) PB.timerEnd = performance.now() + Math.max(0, new Date(st.turno_fim || st.agora) - new Date(st.agora));
+    return;
+  }
+  if (st.ultimo?.tiros && st.ultimo.vez !== O.eu) pbOnlineAnimar(st); else pbOnlineAplica(st);
+}
+function pbOnlineFim(st) {
+  const O = PB.on; if (O) { clearInterval(O.poll); O.status = "fim"; }
+  PB.phase = "fim"; const eu = st.eu, ganhei = st.vencedor === (eu === 0 ? st.p1 : st.p2), d = st.pontos?.[eu === 0 ? st.p1 : st.p2] ?? 0;
+  $("#pb-fim").hidden = false;
+  $("#pb-fim-t").textContent = !st.vencedor ? "🤝 Empate!" : ganhei ? "🏆 Vitória!" : "💥 Derrota…";
+  $("#pb-fim-p").textContent = `${st.motivo === "ausente" ? (ganhei ? "O adversário sumiu e perdeu a vez demais. " : "Você perdeu a vez demais. ") : st.motivo === "desistiu" ? (ganhei ? "O adversário desistiu. " : "Você desistiu. ") : ""}Ranking: ${d >= 0 ? "+" : ""}${d} pontos.`;
+  $("#pb-denovo").textContent = "Voltar ao PokeBound";
+  sfx(ganhei ? "fanfarra" : "erro"); PB.rank = null; pbHud();
+}
 // só no computador (tela larga e mouse)
 const pbNoComputador = () => !matchMedia("(max-width: 760px)").matches && !matchMedia("(pointer:coarse)").matches;
 // =================================================================
@@ -13652,6 +13803,13 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "pokebound-pvp-2026-11-13", sql: "110", title: "💥 PokeBound entre jogadores, valendo ranking!", body: () => `Agora dá para jogar PokeBound contra os amigos (no computador):
+• Abra o PokeBound (menu Competir), vá em ⚔️ Desafiar, escolha o jogador e o seu Pokémon.
+• Quem foi desafiado recebe o aviso na hora: aceita, escolhe o Pokémon dele e a partida começa ao vivo.
+• Cada um tem 45 segundos por turno. Quem sumir perde a vez, e quem perder a vez 3 vezes seguidas perde a partida.
+• Vale pontos no 🏆 Ranking do PokeBound: ganhar de quem está acima de você vale mais, perder para quem está abaixo custa mais.
+• Os tiros são calculados no servidor: é a mira e a leitura do vento que decidem, para os dois lados igual.
+• Não vale moedas, só a glória. Contra o computador continua valendo para treinar.` },
   { id: "desmaio-72h-2026-11-13", sql: "109", title: "💤 Centro Pokémon: desmaiado fica bom em 72 horas", body: () => `Acertamos a cura de graça do Pokémon desmaiado:
 • Do desmaio até a vida cheia são 72 horas no total.
 • Nas primeiras 24 horas ele fica parado, sem recuperar.
