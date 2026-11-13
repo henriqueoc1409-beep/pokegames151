@@ -2193,6 +2193,20 @@ body.pb-on{overflow:hidden}
 @media (max-width:560px){.rpg-gym{grid-template-columns:repeat(2,1fr)}.rpg-chefe{flex-direction:column;text-align:center}}
 /* Ginásios por dentro e mapa completo (arquivo 101) */
 .pvp-oferta{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin:10px 0}.pvp-oferta label{display:flex;flex-direction:column;gap:4px;font-weight:700}.pvp-oferta input{width:140px}
+.bt-box.com-bolsa{display:block}.bt-box.com-bolsa .bt-msg{display:none}
+.bag-ui{display:grid;grid-template-columns:180px minmax(0,1.1fr) minmax(0,1fr);grid-template-rows:1fr auto;grid-template-areas:"l lista txt" "l lista ac";gap:10px;background:linear-gradient(135deg,#1C3B5A,#24506F);border:3px solid #E4B44C;border-radius:16px;padding:12px;box-shadow:inset 0 0 0 2px #0B1A2A;outline:none}
+.bag-l{grid-area:l;display:flex;flex-direction:column;gap:8px}.bag-tit{background:#F6E7B8;color:#2A1C08;font:900 18px var(--mono,monospace);letter-spacing:3px;text-align:center;border-radius:10px;padding:6px;border:2px solid #8C6A2E}
+.bag-bolsos{display:flex;flex-direction:column;gap:5px}.bag-bolso{display:flex;align-items:center;gap:8px;background:#0F2236;border:2px solid #36597A;border-radius:10px;padding:4px 9px;color:#D8E6F3;font:700 14px var(--sans);cursor:pointer;text-align:left}
+.bag-bolso span{font-size:18px}.bag-bolso em{font-style:normal;flex:1}.bag-bolso i{font-style:normal;font-size:12px;color:#9FB3C8}.bag-bolso.on{background:#E4B44C;border-color:#FFF2C4;color:#1E150C}.bag-bolso.on i{color:#4A3310}
+.bag-lim{font-size:12px;color:#C9D8E8;line-height:1.3}
+.bag-lista{grid-area:lista;background:#FBF6E6;border:3px solid #8C6A2E;border-radius:12px;padding:6px;max-height:250px;overflow:auto;box-shadow:inset 0 2px 0 #fff}
+.bag-row{display:flex;align-items:center;width:100%;gap:6px;background:none;border:0;border-bottom:1px dashed #D9CDAA;padding:7px 6px;font:700 17px var(--mono,monospace);color:#2B2418;cursor:pointer;text-align:left;text-transform:uppercase}
+.bag-row:last-child{border-bottom:0}.bag-row.on{background:#F1E2B0;border-radius:6px}.bag-row.off .bag-nm,.bag-row.off .bag-q{color:#9A917C}
+.bag-cur{width:16px;color:#C0392B}.bag-nm{flex:1}.bag-q{white-space:nowrap}.bag-vazio{color:#8A8070;font:700 15px var(--mono,monospace);text-align:center;margin:18px 0}
+.bag-txt{grid-area:txt;background:#0B1624;border:3px solid #4FC3C9;border-radius:14px;padding:10px 14px;color:#EAF2FA;font:600 15px/1.45 var(--mono,monospace);min-height:52px}
+.bag-acoes{grid-area:ac;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.bag-acoes small{color:#C9D8E8;font-size:12px}
+@media (max-width:1100px){.bag-ui{grid-template-columns:170px 1fr;grid-template-rows:auto;grid-template-areas:"l lista" "txt txt" "ac ac"}}
+@media (max-width:760px){.bag-ui{grid-template-columns:1fr;grid-template-areas:"l" "lista" "txt" "ac"}.bag-bolsos{flex-direction:row;overflow:auto}.bag-bolso em,.bag-lim{display:none}.bag-row{font-size:15px}.bag-acoes small{display:none}}
 .elite-fila{margin:10px 0;padding-left:22px}.elite-fila li{margin:4px 0}.elite-fila small{display:block;color:var(--muted,#9AA6B8)}.elite-fila li.ok b{color:#6FD18B;text-decoration:line-through}.elite-fila li.agora b{color:#FFE37A}
 .gym-ord{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:#F5C542;color:#1E150C;font:900 12px/22px var(--sans);font-style:normal;text-align:center;z-index:1}
 .rpg-rotas .mon-card{position:relative}
@@ -6106,7 +6120,7 @@ function LIB() {
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
       <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
       <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
-      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${trGradual() ? `O preço é só da vida que falta. Ou espere: <b>a vida volta sozinha, de graça, um pouco a cada hora</b> (de desmaiado a inteiro em ${S.treino?.st?.gratis_horas ?? 72} horas). Desmaiado fica <b>${S.cfg.treino?.desmaio_espera_horas ?? 24} horas</b> parado antes de a vida começar a voltar.` : `O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.`}</p>
+      <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${trGradual() ? `O preço é só da vida que falta. Ou espere: <b>a vida volta sozinha, de graça, um pouco a cada hora</b> (de desmaiado a inteiro em ${S.treino?.st?.gratis_horas ?? 72} horas). Desmaiado fica <b>${S.cfg.treino?.desmaio_espera_horas ?? 24} horas</b> parado, e a vida volta aos poucos no resto do tempo (no total, ${S.treino?.st?.gratis_horas ?? 72} horas).` : `O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.`}</p>
       <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
     { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
       <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
@@ -6127,7 +6141,7 @@ function LIB() {
       <li><b>TMs</b>: ensinam um ataque e acabam. Nem todo Pokémon aprende todas, igual à Red/Blue. Cada TM pede um nível mínimo pela força do ataque: fraca (até 60 de poder, ou sem dano) a partir do nível ${S.cfg.tm_nivel?.fraca_nivel ?? 10}, média (até 90) a partir do ${S.cfg.tm_nivel?.media_nivel ?? 25} e forte (acima de 90) a partir do ${S.cfg.tm_nivel?.forte_nivel ?? 40}. Quem ensinou antes dessa regra fica com o ataque, mas ele aparece com 🔒 e só entra na batalha quando o Pokémon chega ao nível (nas batalhas com limite de nível, conta o nível da batalha). As HMs continuam livres.</li>
       <li><b>Cabo Link</b>: faz evoluir quem, na Red/Blue, só evolui por troca (Kadabra, Machoke, Graveler e Haunter). Acaba ao usar.</li>
       <li><b>HMs</b>: raras, nunca acabam e abrem atalhos no mapa (veja "HMs e atalhos").</li></ul>
-      <p>Para ensinar, abra o Pokémon na coleção e toque em <b>📀 Ensinar TM/HM</b>. Na batalha, toque em <b>🎒 Bolsa</b>.</p>
+      <p>Para ensinar, abra o Pokémon na coleção e toque em <b>📀 Ensinar TM/HM</b>. Na batalha, toque em <b>🎒 Bolsa</b>: ela abre com tudo o que você tem, separado em bolsos (Curas, Estados, Reviver, Itens X e Outros), com a quantidade de cada um e a descrição do item escolhido. O que não faria efeito agora fica apagado. No computador dá para usar as setas, o Enter e o Esc.</p>
       <p>Às vezes um baú (${ic.bau_pct}%) ou a Fonte das Bolas (${ic.fonte_pct}%) também dá um item.</p>` },
     { id: "treinadores", ic: "🧢", t: "Treinadores e casas novas", h: `<p><b>Treinadores são obrigatórios:</b> passou pela casa de um Treinador (parando nela ou não), tem que batalhar. Vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
       <p>🔴 <b>Red, o treinador lendário</b>, fica no caminho perto do Castelo, com 6 Pokémon dos níveis 73 a 81. Todo mundo enfrenta… quem vencer ganha ${c.casas?.red_premio ?? 1000} moedas.</p><p><b>Treinadores do mapa:</b> ficam em pé em algumas casas. Quem parar ali enfrenta uma batalha automática contra 3 Pokémon do tipo dele, no nível da sua equipe. Vencendo, ganha moedas e XP (e, com muita sorte, uma HM). Perdendo, não perde nada.</p>
@@ -7657,19 +7671,56 @@ async function btAnimate() {
   if (S.win === "batalha") render();
 }
 // bolsa na batalha (arquivo 47): usar um item gasta a vez
+addEventListener("keydown", e => {
+  const bt = S.pk?.bt; if (S.win !== "batalha" || !bt || bt.panel !== "bag" || bt.busy || e.target.closest?.("input,textarea,select")) return;
+  const M = bt.view?.sides?.[btMySide(bt.data)]; if (!M) return;
+  const { k, lista, it } = bagEstado(M), ks = BAG_BOLSOS.map(x => x[0]);
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { bt.bagSel = Math.max(0, Math.min(lista.length - 1, bt.bagSel + (e.key === "ArrowDown" ? 1 : -1))); }
+  else if (e.key === "ArrowLeft" || e.key === "ArrowRight") { bt.bagTab = ks[(ks.indexOf(k) + (e.key === "ArrowRight" ? 1 : ks.length - 1)) % ks.length]; bt.bagSel = 0; }
+  else if (e.key === "Enter") { if (it && !it.fora && (M.items || 0) < itemsCfg().per_battle && bagPode(it, M)) { e.preventDefault(); return ACTIONS["bt-pick-item"](it.id); } return; }
+  else if (e.key === "Escape") { bt.panel = "moves"; }
+  else return;
+  e.preventDefault(); sfx("tick"); render();
+});
 const btItemOk = (it, m, active) => it.kind === "reviver" ? m.hp <= 0 : m.hp <= 0 ? false
   : it.kind === "cura" ? (m.hp < m.maxhp || (!!it.effect?.cure && !!m.status))
   : it.kind === "estado" ? !!m.status && (it.effect?.cures || []).includes(m.status)
   : it.kind === "x" ? active && (m.st?.[it.effect?.stat] ?? 0) < 6 : false;
+// bolsa nova (pedido do dono em 13/11/2026): bolsos por tipo, a lista de tudo o que a pessoa tem com a quantidade,
+// uma seta no item escolhido e a caixa com a descrição embaixo; setas do teclado, Enter usa, Esc volta. Arte nossa.
+const BAG_BOLSOS = [["cura", "💊", "Curas"], ["estado", "🧪", "Estados"], ["reviver", "✨", "Reviver"], ["x", "⚔️", "Itens X"], ["outros", "🎒", "Outros"]];
+const bagNome = id => S.pk.items?.[id]?.name || PK_STONES[id] || String(id).replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+function bagLista(k) {
+  if (k !== "outros") return pkItemsOf([k]).filter(i => (S.pk.bag[i.id] || 0) > 0);
+  return Object.entries(S.pk.bag || {}).filter(([id, q]) => q > 0 && !PKI_BATTLE.includes(S.pk.items?.[id]?.kind))
+    .map(([id]) => ({ id, name: bagNome(id), descr: S.pk.items?.[id]?.descr || "", fora: true })).sort((x, y) => x.name.localeCompare(y.name));
+}
+function bagEstado(M) {   // bolso e item escolhidos (pula para um bolso que tenha algo)
+  const bt = S.pk.bt; let k = bt.bagTab;
+  if (!k || !BAG_BOLSOS.some(x => x[0] === k)) k = BAG_BOLSOS.find(([kk]) => bagLista(kk).length)?.[0] || "cura";
+  const lista = bagLista(k), i = Math.max(0, Math.min(lista.length - 1, bt.bagSel ?? 0));
+  bt.bagTab = k; bt.bagSel = i;
+  return { k, lista, it: lista[i] || null };
+}
+const bagPode = (it, M) => !it || it.fora ? false : M.mons.some((m, i) => btItemOk(it, m, i === M.active));
 function btBagPanel(M) {
   const bt = S.pk.bt, lim = itemsCfg().per_battle, used = M.items || 0;
   const back = `<button class="btn ghost" data-act="bt-panel" data-v="moves">Voltar</button>`;
   if (bt.bagLoading) return `<p class="muted">Abrindo a bolsa…</p>`;
-  if (used >= lim) return `<p class="bt-ask">Você já usou ${lim} ${lim === 1 ? "item" : "itens"} nesta batalha, que é o limite.</p><div class="bt-switch">${back}</div>`;
-  const it = bt.panel === "bagmon" && S.pk.items?.[bt.item];
-  if (it) return `<p class="bt-ask">Usar ${esc(it.name)} em qual Pokémon?</p><div class="bt-switch">${M.mons.map((m, i) => `<button class="btn ghost" data-act="bt-item" data-v="${i}" ${btItemOk(it, m, i === M.active) ? "" : "disabled"}>${esc(m.name)} <small>${m.hp <= 0 ? "desmaiado" : `${m.hp}/${m.maxhp}`}${m.status && PK_STATUS[m.status] ? ` · ${PK_STATUS[m.status][0]}` : ""}</small></button>`).join("")}<button class="btn ghost" data-act="bt-panel" data-v="bag">Voltar</button></div>`;
-  const list = pkItemsOf(PKI_BATTLE).filter(i => (S.pk.bag[i.id] || 0) > 0);
-  return `<p class="bt-ask">🎒 Usar um item gasta a sua vez. Pode usar mais ${lim - used} nesta batalha.</p><div class="bt-switch">${list.map(i => `<button class="btn ghost" data-act="bt-pick-item" data-v="${i.id}" title="${esc(i.descr)}">${esc(i.name)} <small>×${S.pk.bag[i.id]} · ${esc(i.descr)}</small></button>`).join("") || `<p class="muted">Você não tem itens de batalha. Compre na Loja Pokémon.</p>`}${back}</div>`;
+  const it0 = bt.panel === "bagmon" && S.pk.items?.[bt.item];
+  if (it0) return `<p class="bt-ask">Usar ${esc(it0.name)} em qual Pokémon?</p><div class="bt-switch">${M.mons.map((m, i) => `<button class="btn ghost" data-act="bt-item" data-v="${i}" ${btItemOk(it0, m, i === M.active) ? "" : "disabled"}>${esc(m.name)} <small>${m.hp <= 0 ? "desmaiado" : `${m.hp}/${m.maxhp}`}${m.status && PK_STATUS[m.status] ? ` · ${PK_STATUS[m.status][0]}` : ""}</small></button>`).join("")}<button class="btn ghost" data-act="bt-panel" data-v="bag">Voltar</button></div>`;
+  const { k, lista, it } = bagEstado(M), acabou = used >= lim, pode = !acabou && bagPode(it, M);
+  const texto = !it ? (k === "outros" ? "Aqui ficam as bolas, pedras e discos. Eles não servem durante a batalha." : "Você não tem nada neste bolso. Compre na Loja Pokémon.")
+    : it.fora ? `${esc(it.descr || it.name)}<br><b>Isso não serve numa batalha.</b>`
+    : `${esc(it.descr || "")}${acabou ? `<br><b>Você já usou ${lim} ${lim === 1 ? "item" : "itens"} nesta batalha, que é o limite.</b>` : !pode ? "<br><b>Agora isso não faria efeito em nenhum Pokémon seu.</b>" : ""}`;
+  return `<div class="bag-ui" tabindex="-1">
+    <div class="bag-l"><div class="bag-tit">🎒 BOLSA</div>
+      <div class="bag-bolsos">${BAG_BOLSOS.map(([kk, ic, nm]) => `<button class="bag-bolso ${kk === k ? "on" : ""}" data-act="bag-tab" data-v="${kk}" title="${nm}"><span>${ic}</span><em>${nm}</em><i>${bagLista(kk).length || ""}</i></button>`).join("")}</div>
+      <div class="bag-lim">${acabou ? "Limite de itens atingido" : `Pode usar mais <b>${lim - used}</b> ${lim - used === 1 ? "item" : "itens"} nesta batalha`}</div></div>
+    <div class="bag-lista">${lista.map((x, i) => `<button class="bag-row ${x === it ? "on" : ""} ${x.fora || !bagPode(x, M) ? "off" : ""}" data-act="bag-sel" data-v="${i}"><span class="bag-cur">${x === it ? "▶" : ""}</span><span class="bag-nm">${esc(x.name)}</span><span class="bag-q">× ${S.pk.bag[x.id] || 0}</span></button>`).join("") || `<p class="bag-vazio">Vazio</p>`}</div>
+    <div class="bag-txt">${texto}</div>
+    <div class="bag-acoes"><button class="btn" data-act="bt-pick-item" data-v="${it?.id || ""}" ${pode ? "" : "disabled"}>Usar ${it && !it.fora ? esc(it.name) : ""}</button>${back}<small>Usar um item gasta a sua vez · ↑↓ escolher · ←→ bolso · Enter usar</small></div>
+  </div>`;
 }
 function btHp(m, mine) {
   const pct = Math.max(0, Math.round(m.hp / m.maxhp * 100)), col = pct > 50 ? "#3DBE7A" : pct > 20 ? "#E5C04A" : "#E0533A";
@@ -7727,7 +7778,7 @@ function viewBattle() {
       <div class="bt-side op" data-side="${op}">${btHp(om, false)}${party(O)}<div class="bt-sprite ${om.hp <= 0 ? "faint" : ""}">${monCv(om.species, om.outfit, 192)}</div><span class="trainer">${esc(O.name)}</span></div>
       <div class="bt-side me" data-side="${me}"><div class="bt-sprite ${mm.hp <= 0 ? "faint" : ""}">${monCv(mm.species, {}, 192, true)}</div>${btHp(mm, !spec)}${party(M)}<span class="trainer">${spec ? esc(M.name) : "Você"}</span></div>
     </div>
-    <div class="bt-box"><div class="bt-msg" aria-live="polite">${(bt.lines || []).slice(-3).map(esc).join("<br>") || `O que ${esc(mm.name)} vai fazer?`}</div><div class="bt-ctl">${controls}</div></div>
+    <div class="bt-box${bt.panel === "bag" && !bt.bagLoading ? " com-bolsa" : ""}"><div class="bt-msg" aria-live="polite">${(bt.lines || []).slice(-3).map(esc).join("<br>") || `O que ${esc(mm.name)} vai fazer?`}</div><div class="bt-ctl">${controls}</div></div>
     <details class="bt-hist"><summary>Histórico da batalha (turno ${b.turn})</summary><ul>${hist}</ul></details>
     ${arCheerPanel(b, v)}</div>`;
 }
@@ -7822,6 +7873,8 @@ Object.assign(ACTIONS, {
     if (v === "bag") { bt.bagLoading = true; render(); try { await loadPkStatic(); await loadPk(); } catch (e) { toast(errMsg(e), true); } bt.bagLoading = false; }
     render();
   },
+  "bag-tab": v => { const bt = S.pk.bt; if (!bt) return; bt.bagTab = v; bt.bagSel = 0; sfx("tick"); render(); },
+  "bag-sel": v => { const bt = S.pk.bt; if (!bt) return; bt.bagSel = +v; sfx("tick"); render(); },
   "bt-pick-item": v => {
     const bt = S.pk.bt, it = S.pk.items?.[v]; if (!bt || !it) return;
     bt.item = v;
@@ -8946,8 +8999,10 @@ function treinoHpOf(m) {
   const hp = m?.tr_hp ?? 100; if (hp >= 100) return 100;
   if (!trGradual() || !m.tr_hurt_at) return hp;
   const H = (S.treino?.st?.gratis_horas ?? 72) * 3600000;   // de 0% a 100% (arquivo 95: a vida volta aos poucos)
-  const esp = hp <= 0 ? (S.cfg.treino?.desmaio_espera_horas ?? 24) * 3600000 : 0;   // arquivo 98: desmaiado espera antes de começar
-  return Math.min(100, hp + Math.max(0, Math.floor((treinoNow() - new Date(m.tr_hurt_at) - esp) * 100 / H)));
+  const espH = S.treino?.st?.espera_desmaio ?? S.cfg.treino?.desmaio_espera_horas ?? 24, esp = hp <= 0 ? espH * 3600000 : 0;   // arquivo 98: desmaiado espera antes de começar
+  // arquivo 109: são 72 h no total; quem acordou do desmaio recupera no que sobra (48 h), e o ritmo fica em m.tr_ritmo
+  const R = hp <= 0 ? Math.max(3600000, H - espH * 3600000) : m.tr_ritmo ? m.tr_ritmo * 3600000 : H;
+  return Math.min(100, hp + Math.max(0, Math.floor((treinoNow() - new Date(m.tr_hurt_at) - esp) * 100 / R)));
 }
 function hoursLeft(ts) {
   const ms = new Date(ts) - treinoNow(); if (ms <= 0) return "agora";
@@ -9008,7 +9063,7 @@ function viewCentro() {
     <div class="ce-head"><p><b>🏥 Bem-vindo ao Centro Pokémon!</b></p>
       <p>Aqui você cura os Pokémon que se feriram na <b>Grama de Treino</b>. Pokémon ferido entra na próxima luta com a vida que sobrou, e o <b>desmaiado não pode treinar</b>.</p>
       <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${st.cura_gradual ? `O preço é só da vida que falta: quanto mais ele já se recuperou, mais barato.<br>
-         • <b>De graça:</b> a vida volta sozinha, <b>um pouco a cada hora</b>. De desmaiado até a vida cheia são <b>${st.gratis_horas} horas</b>; quem está pouco ferido fica bom antes. <b>Desmaiado fica ${S.cfg.treino?.desmaio_espera_horas ?? 24} horas parado</b> antes de a vida começar a voltar.` : `<b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
+         • <b>De graça:</b> a vida volta sozinha, <b>um pouco a cada hora</b>. De desmaiado até a vida cheia são <b>${st.gratis_horas} horas</b>; quem está pouco ferido fica bom antes. <b>Desmaiado fica ${S.cfg.treino?.desmaio_espera_horas ?? 24} horas parado</b>, e a vida volta aos poucos no resto do tempo (as ${st.gratis_horas} horas são o total).` : `<b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
          • <b>De graça:</b> espere <b>${st.gratis_horas} horas</b> depois do último ferimento e ele volta inteiro sozinho.`}</p>
       <p style="font-size:13px">A vida do treino só vale na Grama de Treino. Nas outras batalhas, seus Pokémon começam sempre com a vida cheia.</p></div>
     ${list.length ? `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px"><span>Você tem <b>${coins} moedas</b>.</span>
@@ -9479,7 +9534,7 @@ const AJ_LABELS = {
     nivel_mais: "Selvagem: até quantos níveis acima", forte_pct: "Chance do Pokémon forte (%)", forte_min: "Forte: mínimo de níveis acima", forte_max: "Forte: máximo de níveis acima",
     forte_xp_mult: "Forte: multiplicador de experiência", lendario_pct: "Chance do lendário (%)", acompanhante_pct: "Acompanhante: % da experiência que ele ganha", lendario_nivel: "Nível do lendário", turnos: "Turnos máximos por luta (depois o selvagem foge)",
     lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
-    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça (de desmaiado a vida cheia)", cura_gradual: "A vida volta aos poucos (desligado: só no fim da espera)", desmaio_espera_horas: "Desmaiado: horas parado antes de a vida começar a voltar" },
+    centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça (de desmaiado a vida cheia, já contando a espera)", cura_gradual: "A vida volta aos poucos (desligado: só no fim da espera)", desmaio_espera_horas: "Desmaiado: horas parado antes de a vida começar a voltar" },
   rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
     hp_factor: "Vida da barra (multiplicador)", max_turns: "Turnos máximos por luta", level_bonus: "Níveis a mais da equipe da Rocket" },
   pk: { "encounter.level_min": "Encontro: nível mínimo dos selvagens", "encounter.level_span": "Encontro: níveis a mais até o Castelo", "encounter.level_spread": "Encontro: sorteio de níveis a mais",
@@ -13597,6 +13652,18 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "desmaio-72h-2026-11-13", sql: "109", title: "💤 Centro Pokémon: desmaiado fica bom em 72 horas", body: () => `Acertamos a cura de graça do Pokémon desmaiado:
+• Do desmaio até a vida cheia são 72 horas no total.
+• Nas primeiras 24 horas ele fica parado, sem recuperar.
+• Nas 48 horas seguintes a vida volta aos poucos, até ficar cheia.
+• Pokémon só ferido (sem desmaiar) continua igual: a vida volta um pouco a cada hora.
+• Com pressa? O Centro Pokémon cura na hora, pagando moedas.` },
+  { id: "bolsa-nova-2026-11-13", sql: "108", title: "🎒 Bolsa nova nas batalhas", body: () => `A bolsa das batalhas ficou nova:
+• Abre com tudo o que você tem, separado em bolsos: Curas, Estados, Reviver, Itens X e Outros.
+• Cada item aparece com a quantidade. Escolha um e a descrição aparece embaixo.
+• O que não faria efeito agora fica apagadinho, e o botão Usar só acende quando dá para usar.
+• No computador: setas para escolher, Enter para usar, Esc para voltar.
+• O limite continua: usar um item gasta a sua vez, e há um número máximo de itens por batalha.` },
   { id: "desafio-oferta-2026-11-13", sql: "107", title: "⚔️ Aventura: desafio com escolha", body: () => `O desafio entre jogadores na Aventura mudou:
 • Cada um pode desafiar 1 jogador por dia.
 • O desafio não começa sozinho: quem foi desafiado escolhe se quer lutar ou se oferece moedas para não lutar.

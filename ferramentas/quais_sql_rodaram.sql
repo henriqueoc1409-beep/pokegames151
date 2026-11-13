@@ -85,6 +85,8 @@ from (values
   ('105_equipe_facil', exists (select 1 from public.posts where title = '🐾 Minha equipe: arrumar ficou fácil')),
   ('106_elite_quatro', exists (select 1 from public.posts where title = '🏛️ Aventura: 2 Ginásios novos e a Elite 4')),
   ('107_desafio_com_oferta', to_regclass('public.rpg_pvp_desafios') is not null),
+  ('108_bolsa_nova', exists (select 1 from public.posts where title = '🎒 Bolsa nova nas batalhas')),
+  ('109_desmaio_72h', exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'monsters' and column_name = 'tr_ritmo')),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
