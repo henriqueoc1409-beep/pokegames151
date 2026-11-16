@@ -2045,6 +2045,41 @@ body.pb-on{overflow:hidden}
 .pb-box h2{margin:0 0 6px;color:#FFE37A;font-size:30px}
 .pb-chars{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
 .exp{max-width:980px;margin:0 auto}.exp-mapa-cta{background:#2A1E10;border:2px solid #FFD98A;border-radius:12px;padding:10px 14px;margin:10px 0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+/* arquivo 112: Vale do Treino, vila nova e Fazenda */
+@media (min-width:761px){.win.win-vila{width:min(1720px,98vw);height:min(96vh,1240px)}}
+#vila-cv.vn{max-width:none;width:100%;image-rendering:pixelated}
+.vila-arraste{display:none}
+@media (max-width:760px){.vila-cv-box{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-md,10px)}.vila-cv-box #vila-cv.vn{width:940px}.vila-arraste{display:block;font-size:12px;margin:4px 0 0}}
+.fazenda h3{margin-top:0}.fazenda h4{margin:14px 0 6px}.fazenda.sel{border-color:#E0B44C}
+.fz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.fz-c{background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:4px}
+.fz-c.vazio{opacity:.85}.fz-c.pronto{border-color:#7FD07F;box-shadow:0 0 0 2px rgba(127,208,127,.25)}
+.fz-bar{height:8px;background:rgba(0,0,0,.4);border-radius:6px;overflow:hidden}.fz-bar i{display:block;height:100%;background:#7AC74C}
+.fz-ok{color:#9CF29C;font-weight:800}
+.fz-acoes{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:6px 0 10px}
+.fz-form{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}.fz-form label{width:100%;margin:0}.fz-form select{max-width:340px}
+.fz-mais{margin:10px 0 0}
+.fz-cesta{display:flex;flex-wrap:wrap;gap:6px}.fz-fr{border:2px solid var(--fc);border-radius:999px;padding:3px 10px;background:rgba(0,0,0,.2)}
+.fz-dar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.fz-dar select{max-width:280px}.fz-mon-im{width:56px;height:56px;image-rendering:pixelated}
+.fz-frutas{display:flex;gap:6px;flex-wrap:wrap}
+.fz-fb{position:relative;font-size:26px;width:60px;height:60px;border-radius:12px;border:2px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);color:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.fz-fb small{font-size:12px;font-weight:700}.fz-fb b{position:absolute;top:-7px;right:-7px;font-size:15px}.fz-fb.gosta{border-color:#F08AA8;background:rgba(240,138,168,.15)}.fz-fb:disabled{opacity:.35;cursor:default}
+.fz-esc{display:grid;gap:6px;margin:10px 0}.fz-esc button{justify-content:flex-start;text-align:left}
+.fz-reg{display:flex;flex-wrap:wrap;gap:6px}
+.modal.modal-vale{width:min(720px,100%);max-height:94vh;background:linear-gradient(var(--v1,#1B2A1B),#0F141C 70%)!important;color:#F4F0E6}
+.vale-box .vale-top{display:flex;gap:12px;align-items:flex-start}.vale-ic{font-size:46px;line-height:1}
+.vale-box h2{margin:0 0 4px;color:#FFE7A8}.vale-box h3{margin:12px 0 6px}
+.vale-comb{display:flex;flex-wrap:wrap;gap:4px;align-items:center}.vale-cont{margin:6px 0}
+.vale-mons{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:6px;max-height:min(280px,36vh);overflow:auto;padding:2px}
+.vale-mon{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 4px;border-radius:10px;border:2px solid rgba(255,255,255,.15);background:rgba(0,0,0,.28);color:inherit;cursor:pointer;font:600 12px Inter,system-ui,sans-serif}
+.vale-mon img{width:56px;height:56px;image-rendering:pixelated}.vale-mon.on{border-color:#FFD25A;background:rgba(255,210,90,.16)}.vale-mon:disabled{opacity:.4}.vale-star{position:absolute;top:2px;right:4px}
+.vale-ult{font-size:13px}.vale-pe{font-size:12px;margin:4px 0 0}
+.vale-hud{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}.vale-hud span{font-weight:800;color:#FFE7A8}
+#vj-cv{display:block;width:100%;height:auto;border-radius:12px;border:2px solid rgba(255,255,255,.2);touch-action:none;user-select:none;-webkit-user-select:none}
+.vale-dica{margin:6px 0 0;font-size:13px}
+.vale-res{text-align:center}.vale-res-im{width:140px;height:140px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
+.vale-nota{font-size:20px;margin:4px 0}.vale-nota b{font-size:42px;color:#FFE7A8}.vale-nota span{display:block;font-size:28px}
+.vale-xp{font-weight:800;color:#9CF29C;font-size:18px}.vale-up{font-weight:900;color:#FFD25A;font-size:20px}
 .modal-mina{max-width:760px!important;background:linear-gradient(#241B14,#120D09)!important;border-color:#8C6A3E!important;color:#F2E6D2}.mina-ev h2{color:#FFD98A;margin:6px 0}.mina-ev-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}.mina-pe{display:flex;justify-content:space-between;align-items:center;margin-top:8px}.exp-abas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.exp-abas button{background:#1E1712;border:2px solid #5A4630;color:#EADBC4;border-radius:10px;padding:7px 14px;font:800 14px var(--sans);cursor:pointer}.exp-abas button.on{background:#C98B3A;border-color:#F2D29A;color:#1E150C}
 .exp-cena{width:100%;height:auto;display:block;border-radius:14px;border:3px solid #5A4630;background:#0E0B09;image-rendering:auto}
 .exp-card{background:linear-gradient(#2A2018,#18120D);border:3px solid #8C6A3E;border-radius:18px;overflow:hidden;margin-bottom:14px;color:#F2E6D2}.exp-card .exp-cena{border:0;border-radius:0}.exp-card-in{padding:14px 18px}.exp-card h2{margin:0 0 6px;color:#FFD98A}
@@ -4709,7 +4744,7 @@ function renderWindow() {
   const [title, view] = WINS[S.win];
   // a torcida chega ao vivo: não apagar o que a pessoa está escrevendo
   const ae = document.activeElement, keepIn = ae?.id === "cheer-in" ? { v: ae.value, a: ae.selectionStart, b: ae.selectionEnd } : null;
-  root.innerHTML = `<div class="win-bg"><section class="win" role="dialog" aria-modal="true" aria-label="${title}">
+  root.innerHTML = `<div class="win-bg"><section class="win${S.win === "vila" && vilaNovaOn() ? " win-vila" : ""}" role="dialog" aria-modal="true" aria-label="${title}">
     <header class="win-head"><h2>${MENU[S.win] ? `<span aria-hidden="true">${MENU[S.win][0]}</span> ` : ""}${title}</h2><button class="btn ghost small" data-act="go" data-v="mapa">Voltar ao mapa</button></header>
     <nav class="win-tabs" aria-label="Abas">${tabs.map(([k, [t]]) => `<button data-act="go" data-v="${k}" aria-current="${S.win === k}">${MENU[k] ? `<span class="wt-ic" aria-hidden="true">${MENU[k][0]}</span>` : ""}${t}</button>`).join("")}</nav>
     <div class="win-body">${view()}</div></section></div>`;
@@ -5144,7 +5179,11 @@ const VSPR = {
   trash:   { s: 4, rows: ["gg.", "gGg", ".g."], pal: { g: "#6B6F5A", G: "#A3A48A" } },
   mud:     { s: 6, rows: ["..mmm...", ".mmmmmm.", "mmMmmmmm", ".mmmmMm.", "..mmm..."], pal: { m: "#6B4F2A", M: "#8A6A3A" } }
 };
-async function loadVila() { S.vila = await rpc("village_state", { _user: S.vilaUser || null }); if (S.vila?.mine) { S.myVila = S.vila; S.myVilaAt = Date.now(); } }
+async function loadVila() {
+  const [v, f] = await Promise.all([rpc("village_state", { _user: S.vilaUser || null }), rpc("fazenda_estado", { _user: S.vilaUser || null }).catch(() => null)]);   // arquivo 112: a fazenda junto
+  S.vila = v; S.fazenda = f; S.fzRegaveis = null; S.fzRegLoad = false;
+  if (S.vila?.mine) { S.myVila = S.vila; S.myVilaAt = Date.now(); }
+}
 // ---------- Lendário ----------
 async function loadBoss() { try { S.boss = await rpc("boss_state"); } catch (e) { console.warn(e); } }
 function bossImg() {
@@ -5815,9 +5854,9 @@ function flagCanvas(id) {
   return flagCache[id] = cv;
 }
 function flagImg(id, h) { const cv = flagCanvas(id); return cv ? `<img class="flag-ic" src="${cv.toDataURL()}" alt="" style="height:${h}px">` : ""; }
-function drawVilaFlag(g, v) {
+function drawVilaFlag(g, v, base = null) {   // base = {x, y} do pé do mastro (vila nova); sem ele, o mastro antigo
   const cv = flagCanvas(v.outfit?.vila_bandeira); if (!cv) return;
-  const s = Math.min(2, 96 / cv.height, 100 / cv.width), w = Math.round(cv.width * s), h = Math.round(cv.height * s), px = FLAG_POLE.x, top = FLAG_POLE.y;
+  const s = Math.min(2, 96 / cv.height, 100 / cv.width), w = Math.round(cv.width * s), h = Math.round(cv.height * s), px = base ? base.x : FLAG_POLE.x, top = base ? base.y - h - 52 : FLAG_POLE.y;
   g.fillStyle = "rgba(0,0,0,.25)"; g.beginPath(); g.ellipse(px, top + h + 52, 16, 5, 0, 0, 7); g.fill();
   g.fillStyle = "#4A2F1C"; g.fillRect(px - 3, top, 6, h + 52); g.fillStyle = "#6E4A2E"; g.fillRect(px - 1, top, 2, h + 52);
   g.fillStyle = "#E0B44C"; g.fillRect(px - 6, top - 8, 12, 9);
@@ -5826,6 +5865,12 @@ function drawVilaFlag(g, v) {
 }
 const FLAG_POLE = { x: 540, y: 24 };
 function drawVila(cv, v) {
+  if (vilaNovaOn() && VA.st !== "erro") {   // arquivo 112: o desenho novo (com a fazenda)
+    if (VA.st === "ok") return drawVilaNova(cv, v);
+    const g0 = cv.getContext("2d"); g0.fillStyle = "#1E3A22"; g0.fillRect(0, 0, cv.width, cv.height); g0.fillStyle = "#CFE8C0"; g0.font = "700 22px Inter, system-ui, sans-serif"; g0.textAlign = "center"; g0.fillText("Carregando a vila…", cv.width / 2, cv.height / 2);
+    VA.st = "carregando"; vilaArteCarregar().then(() => { const c = $("#vila-cv"); if (c && S.win === "vila" && S.vila) drawVila(c, S.vila); }).catch(() => { const c = $("#vila-cv"); if (c && S.win === "vila" && S.vila) { c.width = 960; c.height = 600; c.classList.remove("vn"); drawVila(c, S.vila); } });
+    return;
+  }
   const g = cv.getContext("2d"), W2 = cv.width, H2 = cv.height;
   g.imageSmoothingEnabled = false;
   const rnd = mulberry(42);
@@ -5860,6 +5905,185 @@ function drawVila(cv, v) {
     for (let i = 0; i < v.mud * 8; i++) drawSprite(g, VSPR.trash, 20 + mr() * (W2 - 40), 20 + mr() * (H2 - 40));
   }
 }
+// =================================================================
+// VILA NOVA E FAZENDA DE FRUTAS (arquivo 112, pedido do dono em 16/11/2026)
+// O desenho novo da vila vem de deploy/vila-arte.js (fundo + atlas das construções, feitos com as peças da Pipoya),
+// carregado só quando a vila abre. Sem o arquivo (ou com visual.vila_nova desligado), vale o desenho antigo.
+// A fazenda fica dentro da vila: canteiros (fazenda_estado), plantar, colher, regar a dos amigos e dar de comer.
+// =================================================================
+const vilaNovaOn = () => S.cfg?.visual?.vila_nova !== false;
+const VA = { st: "nada", p: null, fundo: null, atlas: null };
+function vilaArteCarregar() {
+  if (VA.p) return VA.p;
+  return (VA.p = new Promise((ok, erro) => {
+    const pronto = () => { const A = window.VILA_ARTE; if (!A) return erro(new Error("sem arte"));
+      let n = 0; const um = () => { if (++n === 2) { VA.st = "ok"; ok(A); } };
+      VA.fundo = Object.assign(new Image(), { onload: um, onerror: () => erro(new Error("imagem")), src: A.fundo });
+      VA.atlas = Object.assign(new Image(), { onload: um, onerror: () => erro(new Error("imagem")), src: A.atlas }); };
+    if (window.VILA_ARTE) return pronto();
+    const sc = document.createElement("script"); sc.src = "vila-arte.js?v=1"; sc.onload = pronto; sc.onerror = () => erro(new Error("arquivo")); document.head.appendChild(sc);
+  }).catch(e => { VA.st = "erro"; VA.p = null; throw e; }));
+}
+const FZ_FRUTA = { mel: { ic: "🍑", cor: "#F2A33A" }, gota: { ic: "🫐", cor: "#4A90D9" }, brasa: { ic: "🌶️", cor: "#E23B3B" }, faisca: { ic: "🍋", cor: "#F2D23A" }, sombra: { ic: "🍇", cor: "#8A4FC2" }, rocha: { ic: "🥥", cor: "#9C7A52" } };
+const fzF = k => ({ ...(S.fazenda?.frutas?.[k] || {}), ...(FZ_FRUTA[k] || { ic: "🍓", cor: "#E23B3B" }) });
+const fzGosta = (sp, k) => { const p = S.pokeById?.[sp], t = S.fazenda?.frutas?.[k]?.tipos || []; return !!p && t.some(x => x === p.g1_type1 || x === p.g1_type2); };
+const fzFalta = ts => { const s = Math.max(0, Math.round((new Date(ts) - Date.now()) / 1000)); if (s < 60) return "menos de 1 min"; const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? `${h} h${m ? ` ${m} min` : ""}` : `${m} min`; };
+const fzProg = k => { const a = new Date(k.plantado_em).getTime(), b = new Date(k.pronto_em).getTime(); return k.pronto ? 1 : Math.max(0, Math.min(1, (Date.now() - a) / Math.max(1, b - a))); };
+async function loadFazenda() { try { S.fazenda = await rpc("fazenda_estado", { _user: S.vilaUser || null }); } catch (e) { S.fazenda = null; } }
+// ---------- o desenho novo ----------
+function drawVilaNova(cv, v) {
+  const A = window.VILA_ARTE, T = A.T, g = cv.getContext("2d");
+  if (cv.width !== A.W * T) { cv.width = A.W * T; cv.height = A.H * T; } cv.classList.add("vn");
+  g.imageSmoothingEnabled = false; g.drawImage(VA.fundo, 0, 0);
+  // os nomes ficam para o fim: um não cobre o outro (desce ou sobe um pouco) e nenhum sai da tela
+  const rotulos = [], pill = (t, x, y, on = true) => rotulos.push({ t, x, y, on });
+  const desenhaRotulos = () => { const feitos = []; g.font = "700 13px Inter, system-ui, sans-serif";
+    for (const r of rotulos) { const w = g.measureText(r.t).width + 14, x = Math.max(w / 2 + 4, Math.min(cv.width - w / 2 - 4, r.x));
+      let y = r.y; for (const d of [0, 21, -21, 42, -42]) { const yy = r.y + d; if (!feitos.some(f => Math.abs(f.x - x) < (f.w + w) / 2 + 2 && Math.abs(f.y - yy) < 21)) { y = yy; break; } }
+      feitos.push({ x, y, w }); g.fillStyle = r.on ? "rgba(14,20,32,.82)" : "rgba(14,20,32,.5)"; g.beginPath(); g.roundRect(x - w / 2, y - 10, w, 20, 8); g.fill();
+      g.fillStyle = r.on ? "#FFF4D6" : "rgba(255,244,214,.75)"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(r.t, x, y + 1); } };
+  const stamp = (k, x, y) => { const s = A.st[k]; if (s) g.drawImage(VA.atlas, s[0], s[1], s[2], s[3], x, y, s[2], s[3]); };
+  S.vilaHits = [];
+  // a base: barraca ou castelo
+  const [bx, by, bw, bh] = A.base;
+  if (v.castles > 0) { stamp("castelo", bx * T, by * T); pill(`🏰 Castelo da Liga${v.castles > 1 ? ` x${v.castles}` : ""}`, (bx + bw / 2) * T, (by + bh) * T + 12); }
+  else { stamp("barraca", (bx + bw / 2 - 1.5) * T, (by + bh - 4) * T); pill("⛺ Barraca", (bx + bw / 2) * T, (by + bh) * T + 12); }
+  // a fazenda
+  drawFazenda(g, A, T, pill);
+  // construções
+  for (const b of VB()) {
+    const L = A.lotes[b.k]; if (!L) continue;
+    const lvl = b.k === "muralha" ? (v.wall_level || 0) : (v[b.col + "_level"] || 0), [lx, ly, lw, lh] = L, X = lx * T, Y = ly * T, Wd = lw * T, Hd = lh * T, dmg = v.damaged?.[b.k];
+    if (lvl > 0) stamp(b.k, X, Y);
+    else if (b.k !== "muralha") {   // terreno vazio: estacas, corda e a placa
+      g.fillStyle = "rgba(196,160,104,.32)"; g.beginPath(); g.roundRect(X + 6, Y + Hd * .35, Wd - 12, Hd * .65 - 6, 10); g.fill();
+      g.setLineDash([7, 6]); g.strokeStyle = "rgba(255,244,214,.75)"; g.lineWidth = 2; g.strokeRect(X + 8, Y + Hd * .35 + 2, Wd - 16, Hd * .65 - 10); g.setLineDash([]);
+      if (v.mine) { g.font = "22px 'Segoe UI Emoji','Apple Color Emoji',sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("🔨", X + Wd / 2, Y + Hd * .68); }
+    }
+    if (dmg && lvl > 0) {   // danificada na guerra: escurece e solta fumaça
+      g.fillStyle = "rgba(20,10,6,.38)"; g.fillRect(X, Y, Wd, Hd);
+      for (let k = 0; k < 3; k++) { const fx = X + Wd * (.25 + k * .25), fy = Y + Hd * .35; g.fillStyle = "rgba(90,90,90,.55)"; g.beginPath(); g.arc(fx, fy - 10 - k * 4, 10 + k * 3, 0, 6.28); g.fill(); g.font = "18px 'Segoe UI Emoji',sans-serif"; g.fillText("🔥", fx, fy + 12); }
+    }
+    if (S.vilaSel === b.k) { g.strokeStyle = "#E0B44C"; g.lineWidth = 4; g.beginPath(); g.roundRect(X - 4, Y - 4, Wd + 8, Hd + 8, 10); g.stroke(); }
+    const nome = b.k === "muralha" ? b.nome : `${b.nome}${lvl > 1 || (lvl && vbMax(b.k) > 1) ? ` · nv ${lvl}` : ""}`;
+    if (b.k === "muralha") pill(lvl ? "🧱 Muralha" : "🧱 Muralha (vazio)", 21.5 * T, Y + T / 2, !!lvl);
+    else pill(lvl ? nome : b.nome, X + Wd / 2, Y + Hd + 10, !!lvl);
+    S.vilaHits.push(b.k === "muralha" ? { k: b.k, x: 0, y: Y - 6, w: A.W * T, h: T + 12 } : { k: b.k, x: X - 4, y: Y - 4, w: Wd + 8, h: Hd + 22 });
+  }
+  drawVilaFlag(g, v, { x: A.mastro[0], y: A.mastro[1] });
+  avDraw(g, avatarCanvas(v), A.avatar[0] - 24, A.avatar[1] - 57, 48, 57);
+  if (v.mud > 0) {
+    const mr = mulberry(7 + v.mud), W2 = cv.width, H2 = cv.height;
+    g.fillStyle = `rgba(80,58,30,${0.12 * v.mud})`; g.fillRect(0, 0, W2, H2);
+    for (let i = 0; i < v.mud * 12; i++) drawSprite(g, VSPR.mud, 30 + mr() * (W2 - 90), 30 + mr() * (H2 - 70));
+    for (let i = 0; i < v.mud * 10; i++) drawSprite(g, VSPR.trash, 20 + mr() * (W2 - 40), 20 + mr() * (H2 - 40));
+  }
+  desenhaRotulos();
+}
+// os canteiros: terra arada (no fundo), plantas pela fase e cadeado no que ainda não tem
+function drawFazenda(g, A, T, pill) {
+  const F = S.fazenda, [fx, fy, fw] = A.fazenda.area;
+  pill(F && !F.mine ? `🍓 Fazenda de ${F.nome || ""}` : "🍓 Fazenda de Frutas", (fx + fw / 2) * T, fy * T - 2);
+  S.fzHits = [];
+  A.fazenda.slots.forEach(([x, y, w], i) => {
+    const slot = i + 1, k = F?.canteiros?.find(c => c.slot === slot), X = x * T, Y = y * T;
+    S.fzHits.push({ slot, x: X - 4, y: Y - 18, w: w * T + 8, h: T + 22 });
+    if (!F) return;
+    if (slot > F.total) { g.fillStyle = "rgba(30,24,16,.55)"; g.beginPath(); g.roundRect(X + 2, Y + 4, w * T - 4, T - 8, 8); g.fill(); g.font = "16px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("🔒", X + w * T / 2, Y + T / 2); return; }
+    if (!k) return;
+    const p = fzProg(k), f = fzF(k.fruta), fase = k.pronto ? 3 : p < .34 ? 0 : p < .67 ? 1 : 2;
+    for (let j = 0; j < w; j++) {
+      const cx = X + j * T + T / 2, cy = Y + T * .62;
+      g.fillStyle = "#2E6B22"; g.strokeStyle = "#1C4414"; g.lineWidth = 2;
+      if (fase === 0) { g.fillStyle = "#58A83A"; g.fillRect(cx - 1, cy - 8, 3, 8); g.beginPath(); g.ellipse(cx - 4, cy - 9, 4, 2.5, -.5, 0, 6.28); g.ellipse(cx + 5, cy - 10, 4, 2.5, .5, 0, 6.28); g.fill(); continue; }
+      const r = fase === 1 ? 8 : 11; g.fillStyle = "#3E8A2E"; g.beginPath(); g.arc(cx, cy - r, r, 0, 6.28); g.fill(); g.stroke(); g.fillStyle = "#5FB04A"; g.beginPath(); g.arc(cx - r * .3, cy - r * 1.3, r * .45, 0, 6.28); g.fill();
+      if (fase >= 2) for (const [dx, dy] of [[-5, -14], [5, -9], [2, -18]]) { g.fillStyle = fase === 3 ? f.cor : "#9BCF6A"; g.beginPath(); g.arc(cx + dx, cy + dy, fase === 3 ? 4 : 3, 0, 6.28); g.fill(); if (fase === 3) { g.fillStyle = "rgba(255,255,255,.7)"; g.fillRect(cx + dx - 2, cy + dy - 2, 2, 2); } }
+    }
+    if (k.pronto) { g.font = "15px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(`✨${f.ic}`, X + w * T / 2, Y - 6); }
+    else if (k.regas) { g.font = "13px 'Segoe UI Emoji',sans-serif"; g.textAlign = "left"; g.fillText("💧".repeat(Math.min(3, k.regas)), X + 2, Y - 4); }
+  });
+}
+// tocar num canteiro no desenho
+function fzTocar(slot) {
+  const F = S.fazenda; if (!F) return; const k = F.canteiros.find(c => c.slot === slot);
+  S.vilaSel = "fazenda";
+  if (F.mine && k?.pronto) return ACTIONS["fz-colher"](String(slot));
+  if (!F.mine && k && !k.pronto) return ACTIONS["fz-regar"](String(slot));
+  render(); $("#vc-fazenda")?.scrollIntoView({ block: "nearest", behavior: reduceMotion() ? "auto" : "smooth" });
+}
+// ---------- o quadro da fazenda (embaixo do desenho) ----------
+function fazendaHTML() {
+  const F = S.fazenda; if (!F) return "";
+  if (F.on === false && !S.isAdmin) return "";
+  const L = F.limites || {}, frutas = Object.keys(F.frutas || {});
+  const opt = frutas.map(k => { const f = fzF(k); return `<option value="${k}">${f.ic} ${esc(f.nome)} · ${f.horas} h · ${f.semente} moedas</option>`; }).join("");
+  const cant = Array.from({ length: Math.max(F.total, F.mine ? 0 : 0) }, (_, i) => i + 1).map(slot => {
+    const k = F.canteiros.find(c => c.slot === slot);
+    if (!k) return `<div class="fz-c vazio"><b>Canteiro ${slot}</b><span class="muted">Vazio</span>${F.mine ? `<button class="btn ghost small" data-act="fz-plant" data-v="${slot}">🌱 Plantar aqui</button>` : ""}</div>`;
+    const f = fzF(k.fruta), p = fzProg(k);
+    return `<div class="fz-c ${k.pronto ? "pronto" : ""}"><b>${f.ic} ${esc(f.nome)}</b>
+      ${k.pronto ? `<span class="fz-ok">Pronta!</span>` : `<span class="fz-bar"><i style="width:${Math.round(p * 100)}%"></i></span><small>pronta em ${fzFalta(k.pronto_em)}</small>`}
+      ${k.regadores?.length ? `<small>💧 regada por ${k.regadores.map(esc).join(", ")}</small>` : ""}
+      ${F.mine && k.pronto ? `<button class="btn small" data-act="fz-colher" data-v="${slot}">🧺 Colher</button>` : ""}
+      ${!F.mine && !k.pronto ? (k.eu_reguei ? `<small>✅ você já regou</small>` : k.regas >= (L.regas_max ?? 3) ? `<small>Já foi bem regada</small>` : `<button class="btn small" data-act="fz-regar" data-v="${slot}">💧 Regar</button>`) : ""}</div>`;
+  }).join("");
+  const pront = F.canteiros.filter(c => c.pronto).length, vaz = F.total - F.canteiros.length;
+  let corpo;
+  if (F.mine) {
+    const cesta = Object.entries(F.cesta || {}).filter(([, q]) => q > 0);
+    const mons = [...(S.pk?.mons || [])].sort((a, b) => ((a.team_slot || 99) - (b.team_slot || 99)) || (b.level - a.level));
+    S.fzMon = S.fzMon && mons.some(m => m.id === S.fzMon) ? S.fzMon : mons[0]?.id;
+    const mon = mons.find(m => m.id === S.fzMon);
+    const tranc = [];
+    if (!F.tem_pomar && (L.canteiros_pomar || 0) > 0) tranc.push(`🍎 Construa o <b>Pomar</b> e ganhe +${L.canteiros_pomar} canteiros.`);
+    corpo = `<div class="fz-acoes">
+        ${vaz > 0 ? `<form id="fzform" class="fz-form"><label for="fz-fruta">Plantar nos ${vaz} ${vaz === 1 ? "canteiro vazio" : "canteiros vazios"}</label><select id="fz-fruta">${opt}</select><button class="btn small">🌱 Plantar</button></form>` : ""}
+        ${pront ? `<button class="btn" data-act="fz-colher">🧺 Colher tudo (${pront})</button>` : ""}
+      </div>
+      <div class="fz-grid">${cant}</div>
+      ${tranc.length || F.proximo_preco != null ? `<p class="fz-mais">${tranc.join(" ")}${F.proximo_preco != null ? ` <button class="btn ghost small" data-act="fz-canteiro" ${S.me.coins < F.proximo_preco ? "disabled" : ""}>➕ Comprar 1 canteiro por ${F.proximo_preco} moedas</button>` : ""}</p>` : ""}
+      <h4>🧺 Cesta</h4>
+      ${cesta.length ? `<p class="fz-cesta">${cesta.map(([k, q]) => `<span class="fz-fr" style="--fc:${fzF(k).cor}">${fzF(k).ic} ${esc(fzF(k).nome)} <b>×${q}</b></span>`).join("")}</p>` : `<p class="muted">Vazia. Plante, espere crescer e colha.</p>`}
+      <h4>🍽️ Dar de comer <small class="muted">(${F.hoje.comidas}/${L.frutas_dia} frutas hoje)</small></h4>
+      ${mons.length ? `<div class="fz-dar"><label for="fz-mon" class="sr">Pokémon</label><select id="fz-mon">${mons.map(m => `<option value="${m.id}" ${m.id === S.fzMon ? "selected" : ""}>${esc(pkName(m.species_id))} · Nv ${m.level}${m.team_slot ? " · equipe" : ""}</option>`).join("")}</select>
+        ${mon ? `<img class="fz-mon-im" src="${SPRITE(mon.species_id)}" alt="">` : ""}
+        <div class="fz-frutas">${frutas.map(k => { const f = fzF(k), q = F.cesta?.[k] || 0, gosta = mon && fzGosta(mon.species_id, k);
+          return `<button class="fz-fb ${gosta ? "gosta" : ""}" data-act="fz-dar" data-v="${k}" ${q && F.hoje.comidas < L.frutas_dia && mon?.level < 100 ? "" : "disabled"} title="${esc(f.nome)} (${esc(f.sabor || "")})">${f.ic}<small>×${q}</small>${gosta ? "<b>❤️</b>" : ""}</button>`; }).join("")}</div></div>
+        <p class="muted">❤️ = a fruta preferida desse Pokémon (rende ${Math.round(((L.gosta_mult ?? 1.5) - 1) * 100)}% a mais de experiência). Cada fruta tem os tipos que gostam dela.</p>` : `<p class="muted">Você ainda não tem Pokémon.</p>`}
+      <div id="fz-amigos" class="fz-amigos">${fzAmigosHTML()}</div>`;
+  } else {
+    corpo = `<p>Regue a horta de ${esc(F.nome || "")}: a planta cresce ${L.rega_pct ?? 15}% mais rápido e você ganha ${L.rega_fruta ?? 1} fruta igual. <small class="muted">(suas regas hoje: ${F.hoje.regas}/${L.regas_dia})</small></p>
+      ${F.canteiros.length ? `<div class="fz-grid">${cant}</div>` : `<p class="muted">Nada plantado agora.</p>`}`;
+  }
+  return `<section class="panel lo fazenda ${S.vilaSel === "fazenda" ? "sel" : ""}" id="vc-fazenda"><h3>🍓 Fazenda de Frutas${F.mine ? "" : ` de ${esc(F.nome || "")}`}</h3>${corpo}</section>`;
+}
+function fzAmigosHTML() {
+  const R = S.fzRegaveis;
+  if (!R) { if (!S.fzRegLoad) { S.fzRegLoad = true; rpc("fazenda_regaveis").then(x => { S.fzRegaveis = x || []; const el = $("#fz-amigos"); if (el) el.innerHTML = fzAmigosHTML(); }).catch(() => { S.fzRegaveis = []; }); } return ""; }
+  const L = S.fazenda?.limites || {};
+  return R.length ? `<h4>💧 Hortas de amigos para regar <small class="muted">(${S.fazenda?.hoje?.regas ?? 0}/${L.regas_dia} regas hoje)</small></h4><p class="fz-reg">${R.slice(0, 12).map(r => `<button class="btn ghost small" data-act="fz-visitar" data-v="${r.user_id}">${esc(r.nome)} · ${r.n} 🌱</button>`).join("")}</p>` : `<p class="muted">Nenhuma horta de amigo precisando de água agora.</p>`;
+}
+const FZ_ACOES = {   // registradas no ACTIONS logo depois que ele existe
+  "fz-plant": async slot => { const sel = $("#fz-fruta"); let fruta = sel?.value;
+    if (slot) { const opts = Object.keys(S.fazenda?.frutas || {}).map(k => `<button class="btn ghost" data-r="${k}">${fzF(k).ic} ${esc(fzF(k).nome)}<small> · ${fzF(k).horas} h · ${fzF(k).semente} moedas</small></button>`).join("");
+      fruta = await new Promise(res => { const m = openModal(`<h2>🌱 O que plantar no canteiro ${slot}?</h2><div class="fz-esc">${opts}</div><div class="actions"><button class="btn ghost" data-r="">Cancelar</button></div>`); m.addEventListener("click", e => { const b = e.target.closest("[data-r]"); if (b) { closeModal(); res(b.dataset.r); } }); });
+      if (!fruta) return; }
+    if (!fruta) return;
+    guarded(async () => { const r = await rpc("fazenda_plantar", { _slot: slot ? +slot : null, _fruta: fruta }); S.fazenda = r.estado; if (S.me) S.me.coins = r.coins; sfx("tick"); toast(`🌱 Plantou ${r.plantados} ${r.plantados === 1 ? "canteiro" : "canteiros"} de ${fzF(fruta).nome} (${r.custo} moedas).`); render(); if ($("#game")) renderHUD(); }); },
+  "fz-colher": slot => guarded(async () => { const r = await rpc("fazenda_colher", { _slot: slot ? +slot : null }); S.fazenda = r.estado; sfx("moeda");
+    toast(`🧺 Colheu: ${Object.entries(r.frutas).map(([k, q]) => `${q} ${fzF(k).ic}`).join(", ")}`); render(); }),
+  "fz-regar": slot => guarded(async () => { const r = await rpc("fazenda_regar", { _dono: S.fazenda.dono, _slot: +slot }); S.fazenda = r.estado; S.fzRegaveis = null; S.fzRegLoad = false; sfx("acerto");
+    toast(`💧 Regou! A planta cresce mais rápido e você ganhou ${r.ganhou} ${fzF(r.fruta).ic}.`); render(); }),
+  "fz-dar": fruta => guarded(async () => { const mon = (S.pk?.mons || []).find(m => m.id === S.fzMon); if (!mon) return;
+    const r = await rpc("fazenda_dar", { _mon: mon.id, _fruta: fruta }); S.fazenda = r.estado; sfx(r.gosta ? "fanfarra" : "acerto");
+    toast(`${r.gosta ? "❤️ Adorou! " : "😋 "}${pkName(mon.species_id)} ganhou ${r.xp} XP${r.nivel_depois > r.nivel_antes ? ` e subiu para o nível ${r.nivel_depois}!` : "."}`);
+    await loadPk(); render(); if (r.events?.length) await monEventsFlow(r.events); }),
+  "fz-canteiro": () => guarded(async () => { const p = S.fazenda?.proximo_preco; if (!await confirmModal("Comprar canteiro?", `Mais 1 canteiro na sua fazenda por ${p} moedas.`, `Comprar por ${p}`)) return;
+    const r = await rpc("fazenda_comprar_canteiro"); S.fazenda = r.estado; if (S.me) S.me.coins = r.coins; sfx("moeda"); toast("➕ Canteiro novo na fazenda!"); render(); if ($("#game")) renderHUD(); }),
+  "fz-visitar": uid => guarded(async () => { S.vilaUser = uid; S.vilaSel = "fazenda"; await loadVila(); render(); $("#vc-fazenda")?.scrollIntoView({ block: "start", behavior: reduceMotion() ? "auto" : "smooth" }); })
+};
+document.addEventListener("change", e => { if (e.target.id === "fz-mon") { S.fzMon = e.target.value; render(); } });
+document.addEventListener("submit", e => { if (e.target.id === "fzform") { e.preventDefault(); ACTIONS["fz-plant"](); } });
 function vilaCard(b, v) {
   if (S.cfg.war?.buildings?.[b.k]) return wbCard(b, v);
   const c = S.cfg, lvl = v[b.col + "_level"] || 0, cost = b.cost(v), minlv = b.lv ? b.lv() : 1, me = S.me;
@@ -5889,11 +6113,12 @@ function viewVila() {
       <button class="btn small" data-act="vila-clean" ${S.me.coins < v.clean_cost ? "disabled" : ""}>Limpar por ${v.clean_cost} moedas</button></div>` : ""}
     <div class="act-btns" style="margin:12px 0"><button class="btn" data-act="vila-collect" ${pend.length && !v.mud ? "" : "disabled"}>${pend.length ? `Coletar: ${pend.join(", ")}` : "Nada para coletar ainda"}</button></div>` : `<p class="muted">Visitando a vila de ${esc(v.name)}, nível ${v.level}.</p>`;
   return `<div class="vila"><div class="vila-head"><h3>${mine ? "Minha Vila" : `Vila de ${esc(v.name)}`}</h3>${visit}</div>
-    <canvas id="vila-cv" width="960" height="600" aria-label="Desenho da vila: toque numa construção para ver os detalhes"></canvas>
-    ${stats}${top}${mine ? vilaBonusHTML(v) : ""}
+    <div class="vila-cv-box"><canvas id="vila-cv" ${vilaNovaOn() && VA.st !== "erro" ? `class="vn" width="1408" height="864"` : `width="960" height="600"`} aria-label="Desenho da vila: toque numa construção ou num canteiro"></canvas></div>
+    ${vilaNovaOn() ? `<p class="muted vila-arraste">↔ Arraste para os lados para ver a vila inteira.</p>` : ""}
+    ${stats}${top}${fazendaHTML()}${mine ? vilaBonusHTML(v) : ""}
     ${war ? `<div class="vila-cats" role="group" aria-label="Categorias">${VCAT.map(([k, t]) => { const n = all.filter(b => VCAT_OF[b.k] === k && v.damaged?.[b.k]).length; return `<button data-act="vila-cat" data-v="${k}" aria-pressed="${S.vilaCat === k}">${t}${n ? `<b>${n}</b>` : ""}</button>`; }).join("")}</div>` : ""}
     <div class="vila-grid">${all.filter(b => !war || VCAT_OF[b.k] === S.vilaCat).map(b => vilaCard(b, v)).join("")}</div>
-    <p class="muted mk-note">Toque numa construção no desenho para ir até ela. A barraca vira Castelo da Liga quando você vence uma temporada; cada vitória na rodada soma um troféu (🏆) no painel; quem termina a rodada em último acorda com a vila cheia de lama.</p></div>`;
+    <p class="muted mk-note">Toque numa construção no desenho para ir até ela (num canteiro pronto, colhe; na vila de um amigo, rega). A barraca vira Castelo da Liga quando você vence uma temporada; cada vitória na rodada soma um troféu (🏆) no painel; quem termina a rodada em último acorda com a vila cheia de lama.</p></div>`;
 }
 
 // =================================================================
@@ -6071,6 +6296,7 @@ function LIB() {
     { id: "visual-herois", ic: "🧙", t: "Visual dos heróis", h: `<p>Os 8 heróis têm um desenho próprio do Pokegames: cabeça grande, traço grosso e cores vivas. Cada um carrega a sua marca: o Guerreiro a espada e o escudo, o Mago o chapéu e o cajado de cristal, o Arqueiro o arco, o Ladino o capuz e as adagas, o Clérigo o cajado dourado, o Domador o chapéu e o chicote, o Pesquisador os óculos e a lupa, e o Mercador a bolsa de moedas.</p>
       <p>As skins da <b>Loja & Visuais</b> mudam o desenho: a <b>roupa</b> troca as cores (algumas têm listras ou detalhes), a <b>capa</b> aparece nas costas (ou vira asas), o <b>chapéu</b> substitui o enfeite de cabeça do herói, o <b>acessório</b> vai no rosto ou no peito e a <b>aura</b> deixa um brilho em volta.</p>` },
     { id: "aventura", ic: "🧭", t: "Aventura (RPG)", h: `<p>A <b>Aventura</b> (menu Competir, ou o botão 🧭 no alto do mapa) é um jogo a mais dentro do Pokegames, para andar e explorar. O tabuleiro continua igual. Os <b>Pokémon e as moedas são os mesmos</b> dos dois jogos.</p>
+      <p>🥋 <b>Vale do Treino:</b> na trilha ao norte da Vila Aurora (no alto do penhasco) fica um vale com 6 estações de treino, onde os Pokémon ganham experiência sem lutar (veja o assunto Vale do Treino).</p>
       <p><b>Vila Aurora:</b> ande com WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas. Os outros jogadores aparecem andando ao vivo.</p>
       <p><b>É aqui que se treina:</b> a Grama de Treino fechou, e a Aventura é o lugar de ganhar experiência e evoluir os Pokémon. Todos os Pokémon aparecem por aqui (menos os lendários), cada um nas áreas do seu tipo.</p>
       <p>📍 <b>Onde estou?</b> No alto da tela aparece sempre o nome do lugar e as coordenadas (coluna, linha). O botão <b>🗺️ Mapa</b> abre o mapa completo com todas as regiões, os nomes, os níveis, os Ginásios e você marcado.</p>
@@ -6094,6 +6320,18 @@ function LIB() {
     { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
       <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
       <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
+    { id: "vale", ic: "🥋", t: "Vale do Treino", h: `<p>O <b>Vale do Treino</b> fica na Aventura, na trilha ao norte da Vila Aurora (no alto do penhasco). Lá os Pokémon ganham experiência <b>treinando</b>, sem lutar no mato.</p>
+      <p>São <b>6 estações</b>. Chegue perto de uma e aperte <b>E</b>, escolha o Pokémon e faça o exercício (uns 20 segundos):</p>
+      <ul><li>🏃 <b>Pista de Corrida:</b> aperte quando a marca passar pela faixa verde (no meio vale mais).</li><li>🥊 <b>Saco de Pancada:</b> repita a sequência de setas antes do tempo acabar.</li>
+      <li>🧘 <b>Templo da Meditação:</b> os cristais acendem numa ordem; repita a ordem. A cada rodada, um a mais.</li><li>🏊 <b>Lago das Correntes:</b> nade desviando das pedras e pegue as bolhas.</li>
+      <li>🧗 <b>Paredão de Escalada:</b> toque rápido na pedra que brilhar.</li><li>🔥 <b>Fogueira do Fôlego:</b> segure para soprar e solte para descansar, deixando a chama dentro da faixa.</li></ul>
+      <p>A <b>nota</b> (0 a 100) vira experiência: quanto melhor a nota e maior o nível do Pokémon, mais experiência. Cada estação combina com alguns tipos (⭐ no nome da estação e na lista): o Pokémon do tipo certo rende ${Math.round(((S.cfg.vale?.afinidade_mult ?? 1.5) - 1) * 100)}% a mais.</p>
+      <p>São <b>${S.cfg.vale?.treinos_dia ?? 8} treinos por dia</b>. O treino conta quando começa; se você sair no meio, ele termina sem experiência.</p>` },
+    { id: "fazenda", ic: "🍓", t: "Fazenda de Frutas", h: `<p>A <b>Fazenda de Frutas</b> fica dentro da <b>Minha Vila</b> (o cercado com os canteiros). Toque num canteiro no desenho ou use o quadro embaixo.</p>
+      <p>🌱 <b>Plantar:</b> escolha a fruta e pague a semente. Ela cresce em horas de verdade (a fruta mais forte demora mais). 🧺 <b>Colher:</b> quando estiver pronta, as frutas vão para a cesta.</p>
+      <p>🍽️ <b>Dar de comer:</b> escolha o Pokémon e a fruta; ele ganha experiência. Cada fruta é a preferida (❤️) de alguns tipos e rende ${Math.round(((S.cfg.fazenda?.gosta_mult ?? 1.5) - 1) * 100)}% a mais para eles. Os Pokémon comem até ${S.cfg.fazenda?.frutas_dia ?? 10} frutas por dia.</p>
+      <p>💧 <b>Regar a horta dos amigos:</b> visite a vila de outro jogador e regue um canteiro que está crescendo. A planta dele cresce mais rápido e você ganha uma fruta igual. Até ${S.cfg.fazenda?.regas_dia ?? 5} regas por dia.</p>
+      <p>Você começa com ${S.cfg.fazenda?.canteiros ?? 4} canteiros. O <b>Pomar</b> da vila dá mais ${S.cfg.fazenda?.canteiros_pomar ?? 2}, e dá para comprar outros.</p>` },
     { id: "expedicoes", ic: "⛏️", t: "Expedições (Mina Esquecida)", h: `<p>🗺️ <b>A Mina Esquecida é um mapa para andar</b>, dentro da Aventura: entre pela porta ⛏️ na Gruta da Pedreira (ou pelo menu). São 5 salas em fila; em cada uma, o acontecimento é um morador ou um objeto (o minerador, a mercadora, um baú, a porta dos símbolos, o guardião). Chegue perto e aperte <b>E</b>. Resolveu a sala, a passagem para a próxima se abre. Quanto menos 🔦 luz, menos você enxerga.</p>
       <p>As <b>Expedições</b> (menu Competir, ou a entrada ⛏️ da mina na Gruta da Pedreira, na Aventura) são aventuras curtas, de 5 a 10 minutos, em <b>5 etapas</b>: escolher o caminho, explorar, enfrentar um desafio, viver a consequência do que fez antes e chegar à câmara final.</p>
       <p><b>Escolhas de verdade:</b> cada escolha muda o que aparece depois. Não existe opção sempre certa: umas são seguras e rendem pouco, outras arriscam mais. Pokémon na equipe que sabem <b>Força</b> ou <b>Flash</b> abrem opções novas.</p>
@@ -6202,6 +6440,7 @@ function LIB() {
       <p><b>Mercado:</b> venda ou troque visuais e ajudas com outros jogadores. O anúncio dura ${libN(c.market_hours, 72)} horas e cada venda paga ${libN(c.market_fee_pct, 5)}% de taxa.</p>
       <p><b>Reações:</b> toque num jogador no mapa para mandar uma reação.</p>` },
     { id: "vila", ic: "🏰", t: "Vila e Guerras", h: `<p><b>Minha Vila</b> tem construções que produzem moedas e outras vantagens. Melhore as construções com moedas e colete a produção.</p>
+      <p>🏡 No computador a vila abre em <b>tela grande</b>, com cada construção no seu terreno (o terreno vazio tem as estacas e o 🔨). Toque numa construção para ir até o cartão dela. A <b>🍓 Fazenda de Frutas</b> fica no cercado da vila (veja o assunto Fazenda de Frutas).</p>
       <p>O Snorlax da Rodada acorda com a vila <b>enlameada</b>: a produção para até limpar.</p>
       <p>🏰 <b>A vila ajuda em tudo:</b> cada construção dá um bônus no resto do jogo. Centro da Vila: casas a mais em toda andada (a partir do nível 3). Estábulo: casa de bônus a cada ${S.cfg.stable_days ?? 2} dias. Pomar: mais chance de captura. Taverna: +1 Poké Bola por encontro. Torre de Vigia: mais Pokémon raros. Academia: mais XP na Grama. Arena: mais minutos na Grama. Centro Pokémon de Guerra: Centro Pokémon mais barato e cura grátis mais rápida. Poço: Creche mais barata. Torre de Defesa: mais dano na Equipe Rocket. Muralha: limpar a lama mais barato. Mina: salário maior. Cofre: taxa menor no Mercado e no Leilão. Na Minha Vila aparece o que a sua vila te dá agora. Construção danificada para de dar o bônus até ser consertada.</p>
       <p><b>Guerras (opcionais):</b> monte esquadrões de ataque e defesa com 3 Pokémon cada e ataque outras vilas parecidas com a sua. A luta é automática. Quem vence leva uma parte das moedas (o Cofre protege), e as construções atingidas precisam de conserto. Os Pokémon feridos se curam no Centro Pokémon ou sozinhos com o tempo.</p>
@@ -6691,6 +6930,7 @@ const ACTIONS = {
   },
   "adm-import-all": async () => { if (await confirmModal("Reimportar tudo?", `Isso baixa de novo os ${S.pokemon.length} Pokémon.`, "Reimportar")) importPokedex(true); }
 };
+Object.assign(ACTIONS, FZ_ACOES);   // arquivo 112: Fazenda
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]"); if (!el) return;
   const fn = ACTIONS[el.dataset.act]; if (fn) { e.preventDefault(); fn(el.dataset.v, el); }
@@ -9516,7 +9756,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["exp", "⛏️ Expedições"], ["equip", "🛡️ Equipamentos"], ["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["rpg", "🧭 Aventura (RPG)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["vale", "🥋 Vale do Treino"], ["fazenda", "🍓 Fazenda de Frutas"], ["exp", "⛏️ Expedições"], ["equip", "🛡️ Equipamentos"], ["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["rpg", "🧭 Aventura (RPG)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
@@ -9544,7 +9784,13 @@ const AJ_LABELS = {
     lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "noite": "🌙 Noite", "noite.on": "Noite ligada", "noite.inicio": "Noite começa (hora)", "noite.fim": "Noite termina (hora)", "noite.tipos": "Tipos que aparecem de noite em todas as áreas", "missoes": "📜 Missões dos moradores", "missoes.on": "Missões ligadas", "missoes.por_dia": "Missões por dia", "missoes.moedas_min": "Prêmio: moedas (mínimo)", "missoes.moedas_max": "Prêmio: moedas (máximo)", "missoes.itens": "Itens sorteados de prêmio", "ginasios": "🏟️ Ginásios", "ginasios.on": "Ginásios abertos", "ginasios.tentativas_dia": "Tentativas por dia em cada Ginásio", "ginasios.moedas": "Prêmio da insígnia: moedas", "ginasios.itens": "Prêmio da insígnia: itens", "ginasios.todas_moedas": "Prêmio de todas as insígnias: moedas", "ginasios.todas_itens": "Prêmio de todas as insígnias: itens", "ginasios.lideres": "Líderes (nome, herói, tipo e time [espécie, nível])", "elite": "🏛️ Liga (Elite 4 e Campeão)", "elite.on": "Liga aberta", "elite.insignias_min": "Insígnias para entrar", "elite.tentativas_dia": "Tentativas por dia", "elite.time_max": "Pokémon que cada um leva (até 6)", "elite.moedas": "Prêmio da 1ª vitória (moedas)", "elite.itens": "Itens da 1ª vitória", "elite.doces": "Doces de Forja da 1ª vitória", "elite.repetir_moedas": "Prêmio das outras vitórias (moedas)", "elite.repetir_doces": "Doces de Forja das outras vitórias",
     "pvp": "⚔️ Batalha entre jogadores", "pvp.on": "Desafios na Aventura ligados", "pvp.distancia": "Distância para desafiar (casas)", "pvp.desafia_dia": "Desafios que cada um pode fazer por dia", "pvp.recebe_dia": "Vezes que cada um pode ser desafiado por dia", "pvp.prazo_horas": "Horas para responder o desafio (depois some)", "pvp.oferta_min": "Oferta mínima para não lutar (moedas)", "pvp.teto": "Usar o teto de nível das batalhas", "chefe": "👹 Chefe da rota", "chefe.on": "Chefe automático ligado", "chefe.dia_semana": "Dia da semana (0 = domingo, 6 = sábado)", "chefe.hora": "Hora em que aparece", "chefe.horas": "Quantas horas fica", "chefe.nivel": "Nível do chefe", "chefe.vidas": "Tamanho da barra (vezes a vida dele)", "chefe.turnos": "Turnos por luta", "chefe.tentativas_dia": "Lutas por dia de cada jogador", "chefe.especies": "Espécies sorteadas (números da Pokédex)", "chefe.moedas": "Prêmio para quem lutou: moedas", "chefe.itens": "Prêmio para quem lutou: itens", "chefe.top_moedas": "Extra para o 1º, 2º e 3º que mais bateram", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem", "zonas.vulcao": "Área: Vulcão: encosta", "zonas.vulcao.nome": "Nome que aparece", "zonas.vulcao.regiao": "Região (não mude)", "zonas.vulcao.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao.min": "Nível mínimo do selvagem", "zonas.vulcao.max": "Nível máximo do selvagem", "zonas.vulcao_fundo": "Área: Vulcão: cratera", "zonas.vulcao_fundo.nome": "Nome que aparece", "zonas.vulcao_fundo.regiao": "Região (não mude)", "zonas.vulcao_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao_fundo.min": "Nível mínimo do selvagem", "zonas.vulcao_fundo.max": "Nível máximo do selvagem", "zonas.estrada": "Área: Estrada da Vitória: trilha", "zonas.estrada.nome": "Nome que aparece", "zonas.estrada.regiao": "Região (não mude)", "zonas.estrada.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada.min": "Nível mínimo do selvagem", "zonas.estrada.max": "Nível máximo do selvagem", "zonas.estrada_fundo": "Área: Estrada da Vitória: desfiladeiro", "zonas.estrada_fundo.nome": "Nome que aparece", "zonas.estrada_fundo.regiao": "Região (não mude)", "zonas.estrada_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada_fundo.min": "Nível mínimo do selvagem", "zonas.estrada_fundo.max": "Nível máximo do selvagem" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
-  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)" },
+  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)", vila_nova: "Minha Vila nova (desenho grande com a Fazenda; desligado = desenho antigo)" },
+  vale: { on: "Vale do Treino aberto para os jogadores", treinos_dia: "Treinos por dia (cada jogador)", exp_ref: "Força do treino (experiência de referência; 120 ≈ vencer um selvagem do mesmo nível)", xp_mult: "Multiplicador da experiência",
+    afinidade_mult: "Bônus quando o tipo combina com a estação (1,5 = +50%)", nota_min: "Nota mínima para ganhar experiência", duracao_min_seg: "Segundos mínimos de um treino", duracao_max_min: "Minutos máximos (depois disso o treino vence sem XP)",
+    estacoes: "Estações (nome e tipos que combinam com cada uma)" },
+  fazenda: { on: "Fazenda aberta para os jogadores", canteiros: "Canteiros de começo", canteiros_pomar: "Canteiros a mais com o Pomar construído", canteiros_precos: "Preço dos canteiros extras (um por canteiro, em ordem)",
+    frutas_dia: "Frutas que os Pokémon comem por dia (cada jogador)", xp_mult: "Multiplicador da experiência das frutas", gosta_mult: "Bônus da fruta preferida (1,5 = +50%)", regas_dia: "Regas por dia (cada jogador)",
+    rega_pct: "Quanto cada rega adianta a planta (%)", regas_max: "Regas no máximo por canteiro", rega_fruta: "Frutas que quem rega ganha", frutas: "Frutas (nome, sabor, horas para crescer, preço da semente, quantas colhe, experiência e tipos que gostam)" },
   exp: { on: "Expedições abertas para os jogadores", limite_dia: "Expedições por dia (cada jogador)", expira_horas: "Horas até a expedição expirar (perde a mochila)", dificuldade: "Dificuldade (1 = normal; mais alto = mais coisa ruim e lutas mais fortes)",
     recompensa_mult: "Multiplicador das moedas achadas", especiais_on: "Encontros com Pokémon especiais (raros)", captura_on: "Dá para capturar depois de vencer", chefe_vida: "Vida do guardião (× a vida normal)", nivel_min: "Nível mínimo dos selvagens", nivel_max: "Nível máximo dos selvagens" },
   pokebound: { on: "PokeBound ligado para os jogadores", gravidade: "Gravidade", vento_max: "Vento máximo", vento_forca: "Força do vento no tiro", vento_turnos: "Turnos até o vento mudar",
@@ -10878,6 +11124,7 @@ async function pbMeusCheck() {
   if (!pbPvpOn() || !pbNoComputador()) return;
   pbCanalLiga();
   let M; try { M = await rpc("pb_meus"); } catch { return; }
+  if (!M) return;
   const antes = PB.meus || {}; PB.meus = M;
   const novo = M.recebidos?.find(r => !(antes.recebidos || []).some(a => a.id === r.id));
   if (novo && !PB.on) { sfx("acerto"); pbConvite(novo); }
@@ -11405,7 +11652,8 @@ const RPG_REG = {
   vulcao: { nome: "Vulcão Cinzento", ic: "🌋", arq: "rpg-vulcao.js", z: { m: "vulcao", e: "vulcao_fundo" }, como: "saída leste do Deserto Rubro" },
   estrada: { nome: "Estrada da Vitória", ic: "🏆", arq: "rpg-estrada.js", z: { m: "estrada", e: "estrada_fundo" }, como: "saída norte do Pico Gelado" },
   elite: { nome: "Planalto da Liga", ic: "🏛️", arq: null, z: {}, elite: true, como: "no fim da Estrada da Vitória (só com as 8 insígnias)" },
-  mina: { nome: "Mina Esquecida", ic: "⛏️", arq: null, z: {}, mina: true, como: "a Expedição dentro da Gruta da Pedreira" }
+  mina: { nome: "Mina Esquecida", ic: "⛏️", arq: null, z: {}, mina: true, como: "a Expedição dentro da Gruta da Pedreira" },
+  vale: { nome: "Vale do Treino", ic: "🥋", arq: "rpg-vale.js", z: {}, vale: true, como: "a trilha ao norte da Vila Aurora, no alto do penhasco" }   // arquivo 112
 };
 // arquivo 101: o salão de cada Ginásio é uma região a mais ("gym_<rota>"), desenhada por código (arte nossa)
 const RPG_GYM_TEMA = {
@@ -11820,6 +12068,305 @@ function minaEventoAbrir() {
 }
 // acabou a expedição: volta para a porta da mina, na Gruta da Pedreira
 function minaSaiu() { if (AV.open && RPG_REG[AV.r]?.mina) rpgViajar("pedreira"); }
+// =================================================================
+// VALE DO TREINO (arquivo 112, pedido do dono em 16/11/2026): região da Aventura com 6 estações de treino. Cada estação
+// é um minijogo rápido aqui no site; a nota (0 a 100) vai para o servidor (vale_terminar), que confere o tempo e dá a XP.
+// O exercício é sorteado pela "semente" que o servidor manda. Nada de chance na tela: só a nota e a XP.
+// =================================================================
+const VALE_EST = {
+  pista: { ic: "🏃", jogo: "ritmo", cor: ["#2E5E2A", "#9BD06A"], txt: "Acerte o ritmo da corrida: aperte quando a marca passar pela faixa verde. Quanto mais no meio, melhor.", ctrl: "Espaço, Enter ou toque na tela" },
+  saco: { ic: "🥊", jogo: "combo", cor: ["#4A2A14", "#D9A066"], txt: "Repita a sequência de golpes antes do tempo acabar. Errou uma seta, a rodada acaba.", ctrl: "Setas do teclado ou os botões" },
+  templo: { ic: "🧘", jogo: "memoria", cor: ["#241A3E", "#A98BE0"], txt: "Os cristais acendem numa ordem. Repita a ordem certinha. A cada rodada, um a mais.", ctrl: "Setas do teclado ou toque nos cristais" },
+  lago: { ic: "🏊", jogo: "desvio", cor: ["#0E3550", "#5FB4E0"], txt: "Nade desviando das pedras e pegue as bolhas. Três batidas e o treino acaba.", ctrl: "← → ou toque nos lados da tela" },
+  paredao: { ic: "🧗", jogo: "reflexo", cor: ["#3A2E22", "#B39270"], txt: "Toque rápido na pedra que brilhar para subir o paredão. Quanto mais rápido, mais alto.", ctrl: "Clique ou toque; no teclado, Q W E / A S D / Z X C" },
+  fogueira: { ic: "🔥", jogo: "folego", cor: ["#2A1208", "#F08A3A"], txt: "Segure para soprar a fogueira e solte para descansar: deixe a chama dentro da faixa o tempo todo.", ctrl: "Segure Espaço, o mouse ou o dedo" }
+};
+const VALE_NPC = { nome: "Mestra Yuna", ch: { class: "clerigo", outfit: {} }, fala: ["Bem-vinda, bem-vindo ao Vale do Treino!", "Aqui os Pokémon ficam fortes treinando, sem precisar lutar no mato.", "Cada estação combina com alguns tipos (⭐). Treine cada Pokémon no lugar certo e ele rende mais.", "Você tem um número de treinos por dia. Capriche em cada um!"] };
+const valeTipos = k => (S.vale?.estacoes?.[k]?.tipos || []);
+const valeCombina = (sp, k) => { const p = S.pokeById?.[sp]; return !!p && valeTipos(k).some(t => t === p.g1_type1 || t === p.g1_type2); };
+function valePontos() {
+  const d = AV.dados?.pontos || {}, lead = pkTeam()[0]?.species_id, out = [];
+  for (const [k, pos] of Object.entries(d.estacoes || {})) { const E = VALE_EST[k]; if (!E) continue;
+    out.push({ em: [pos], ic: E.ic, nome: `${S.vale?.estacoes?.[k]?.nome || k}${lead && valeCombina(lead, k) ? " ⭐" : ""}`, vale: k, alto: k === "paredao" ? 4.6 : k === "lago" ? 1.4 : 1.5 }); }
+  if (d.placa) out.push({ em: [d.placa], ic: "🪧", nome: "Placa", fala: ["🥋 Vale do Treino", "Seis estações: Pista de Corrida, Saco de Pancada, Templo da Meditação, Lago das Correntes, Paredão de Escalada e Fogueira do Fôlego.",
+    "Chegue perto de uma estação e aperte E para treinar. A ⭐ no nome mostra onde o 1º Pokémon da sua equipe rende mais.", `Treinos por dia: ${S.vale?.treinos_dia ?? 8}. Quanto melhor a nota, mais experiência.`] });
+  return out;
+}
+async function valeEstado() { try { S.vale = await rpc("vale_estado"); } catch (e) { S.vale = null; if (isMissingFn(e)) toast("O Vale do Treino precisa do arquivo 112_vale_fazenda.sql rodado no Supabase.", true); } return S.vale; }
+// enfeites vivos no mapa: a chama da fogueira e o brilho do chafariz
+function valeDesenha(g, tile, cx, cy, now, dpr) {
+  const d = AV.dados?.pontos; if (!d) return;
+  if (d.fogo) { const x = (d.fogo[0] + .5) * tile - cx, y = (d.fogo[1] + .75) * tile - cy, s = tile / 32;
+    const lz = g.createRadialGradient(x, y - 10 * s, 0, x, y - 10 * s, tile * 1.8); lz.addColorStop(0, "rgba(255,170,60,.35)"); lz.addColorStop(1, "rgba(255,170,60,0)"); g.fillStyle = lz; g.fillRect(x - tile * 2, y - tile * 2.2, tile * 4, tile * 4);
+    for (let k = 0; k < 3; k++) { const h = (16 + Math.sin(now / 120 + k * 2) * 4 + k * -3) * s, w = (10 - k * 2.5) * s;
+      g.fillStyle = ["#E8541C", "#F8A22C", "#FFE27A"][k]; g.beginPath(); g.moveTo(x - w, y); g.quadraticCurveTo(x - w * .8, y - h * .6, x + Math.sin(now / 90 + k) * 2 * s, y - h); g.quadraticCurveTo(x + w * .8, y - h * .6, x + w, y); g.fill(); } }
+  if (d.chafariz) { const x = (d.chafariz[0] + .5) * tile - cx, y = (d.chafariz[1] + .2) * tile - cy;
+    for (let k = 0; k < 6; k++) { const a = now / 400 + k, r = tile * (.25 + ((now / 900 + k / 6) % 1) * .6); g.fillStyle = `rgba(200,240,255,${.7 - ((now / 900 + k / 6) % 1) * .6})`; g.fillRect(x + Math.cos(a) * r - dpr, y + Math.sin(a) * r * .5 - dpr, 3 * dpr, 3 * dpr); } }
+}
+// ---------- a janela da estação: escolher o Pokémon e começar ----------
+const VJ = { on: false };
+async function valeAbrir(k) {
+  AV.keys.clear(); if (!S.vale) await valeEstado(); if (!S.vale) return;
+  if (!S.pk?.mons?.length) await guarded(loadPk);
+  const E = VALE_EST[k], st = S.vale, Ek = st.estacoes?.[k] || {}, lead = pkTeam()[0];
+  VJ.k = k; VJ.sel = VJ.sel && S.pk.mons.some(m => m.id === VJ.sel) ? VJ.sel : (lead?.id || S.pk.mons[0]?.id);
+  const mons = [...S.pk.mons].sort((a, b) => (valeCombina(b.species_id, k) - valeCombina(a.species_id, k)) || ((a.team_slot || 99) - (b.team_slot || 99)) || (b.level - a.level));
+  const resta = Math.max(0, st.treinos_dia - st.treinos), ultimo = (st.recentes || []).filter(r => r.estacao === k).slice(0, 3);
+  const html = `<div class="vale-box" style="--v1:${E.cor[0]};--v2:${E.cor[1]}">
+    <div class="vale-top"><span class="vale-ic">${E.ic}</span><div><h2>${esc(Ek.nome || k)}</h2><p>${esc(E.txt)}</p><p class="muted">🎮 ${esc(E.ctrl)}</p></div></div>
+    <p class="vale-comb">⭐ Combina com: ${valeTipos(k).map(typeChip).join("")} <small>(rende ${Math.round(((st.afinidade_mult ?? 1.5) - 1) * 100)}% a mais)</small></p>
+    <p class="vale-cont">Treinos hoje: <b>${st.treinos}/${st.treinos_dia}</b>${st.xp_hoje ? ` · ${st.xp_hoje} XP ganhos hoje` : ""}</p>
+    <h3>Quem vai treinar?</h3>
+    <div class="vale-mons">${mons.map(m => { const c = valeCombina(m.species_id, k); return `<button class="vale-mon ${m.id === VJ.sel ? "on" : ""}" data-vmon="${m.id}" ${m.level >= 100 ? "disabled" : ""}>
+      <img src="${SPRITE(m.species_id)}" alt="" loading="lazy"><span>${esc(pkName(m.species_id))}</span><small>Nv ${m.level}${m.team_slot ? " · equipe" : ""}</small>${c ? `<b class="vale-star" title="Combina com esta estação">⭐</b>` : ""}</button>`; }).join("")}</div>
+    ${ultimo.length ? `<p class="muted vale-ult">Últimos aqui: ${ultimo.map(r => `${pkName(r.especie)} nota ${r.nota} (+${r.xp} XP)`).join(" · ")}</p>` : ""}
+    <div class="act-btns"><button class="btn ghost" data-vfecha="1">Agora não</button><button class="btn big" data-vgo="1" ${resta && mons.length ? "" : "disabled"}>${resta ? "▶ Começar treino" : "Treinos de hoje acabaram"}</button></div>
+    <p class="muted vale-pe">Começou, contou como um treino do dia. Quanto melhor a nota, mais experiência.</p></div>`;
+  const m = openModal(html); m.querySelector(".modal").classList.add("modal-av", "modal-vale");
+  m.addEventListener("click", e => {
+    if (VJ.on) return;
+    if (e.target.closest("[data-vfecha]") || e.target === m) { closeModal(); return valeDepois(); }
+    const b = e.target.closest("[data-vmon]"); if (b) { VJ.sel = b.dataset.vmon; m.querySelectorAll("[data-vmon]").forEach(x => x.classList.toggle("on", x === b)); sfx("tick"); return; }
+    if (e.target.closest("[data-vgo]")) return valeComecar();
+  });
+}
+async function valeComecar() {
+  const mon = S.pk.mons.find(x => x.id === VJ.sel); if (!mon || VJ.on) return;
+  let r; try { r = await rpc("vale_comecar", { _estacao: VJ.k, _mon: mon.id }); } catch (e) { return toast(errMsg(e), true); }
+  S.vale.treinos = r.treinos; VJ.treino = r; VJ.mon = mon; VJ.on = true; VJ.t0 = Date.now();
+  const E = VALE_EST[VJ.k], box = $("#modal-root .modal"); if (!box) return;
+  box.innerHTML = `<div class="vale-box" style="--v1:${E.cor[0]};--v2:${E.cor[1]}"><div class="vale-hud"><b>${E.ic} ${esc(S.vale.estacoes?.[VJ.k]?.nome || "")}</b><span id="vj-info"></span><button class="btn ghost small" data-vsair="1">Sair</button></div>
+    <canvas id="vj-cv" width="640" height="360" aria-label="Minijogo de treino"></canvas><p class="muted vale-dica">${esc(E.ctrl)} · ${esc(pkName(mon.species_id))} Nv ${mon.level}${r.afinidade ? " · ⭐ combina!" : ""}</p></div>`;
+  box.querySelector("[data-vsair]").onclick = async () => { if (!VJ.on) return; VJ.pausa = true; if (await confirmModal("Sair do treino?", "Esse treino já contou e termina sem experiência.", "Sair")) { valeParar(); valeDepois(); } else { VJ.pausa = false; valeReabreJogo(); } };
+  valeJogo(E.jogo, r.semente);
+}
+// o confirmModal troca o conteúdo do modal: refaz a tela do jogo e continua
+function valeReabreJogo() {
+  const E = VALE_EST[VJ.k], m = openModal(`<div class="vale-box" style="--v1:${E.cor[0]};--v2:${E.cor[1]}"><div class="vale-hud"><b>${E.ic} ${esc(S.vale.estacoes?.[VJ.k]?.nome || "")}</b><span id="vj-info"></span><button class="btn ghost small" data-vsair="1">Sair</button></div><canvas id="vj-cv" width="640" height="360"></canvas><p class="muted vale-dica">${esc(E.ctrl)}</p></div>`);
+  m.querySelector(".modal").classList.add("modal-av", "modal-vale");
+  m.querySelector("[data-vsair]").onclick = async () => { VJ.pausa = true; if (await confirmModal("Sair do treino?", "Esse treino já contou e termina sem experiência.", "Sair")) { valeParar(); valeDepois(); } else { VJ.pausa = false; valeReabreJogo(); } };
+  valeLigaEntrada();
+}
+function valeParar() { VJ.on = false; VJ.pausa = false; cancelAnimationFrame(VJ.raf); valeSoltaEntrada(); closeModal(); }
+// ---------- o laço do minijogo ----------
+function valeJogo(tipo, semente) {
+  VJ.G = VALE_JOGOS[tipo](mulberry(semente >>> 0)); VJ.cont = 3000; VJ.last = performance.now(); VJ.fim = false; VJ.pausa = false;
+  valeLigaEntrada();
+  const passo = now => {
+    if (!VJ.on) return; VJ.raf = requestAnimationFrame(passo);
+    const dt = Math.min(50, now - VJ.last); VJ.last = now; if (VJ.pausa) return;
+    const cv = $("#vj-cv"); if (!cv) return; const g = cv.getContext("2d"), G = VJ.G;
+    if (VJ.cont > 0) { VJ.cont -= dt; } else if (!VJ.fim) { G.update(dt / 1000); if (G.acabou()) { VJ.fim = true; valeFim(); } }
+    valeFundo(g, cv.width, cv.height, now); G.draw(g, cv.width, cv.height, now, rpgArt(VJ.mon.species_id));
+    if (VJ.cont > 0) { g.fillStyle = "rgba(0,0,0,.45)"; g.fillRect(0, 0, cv.width, cv.height); g.font = "900 110px Inter, system-ui, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = "#FFE7A8"; g.fillText(String(Math.ceil(VJ.cont / 1000)), cv.width / 2, cv.height / 2); }
+    const inf = $("#vj-info"); if (inf) inf.textContent = G.info();
+  };
+  VJ.raf = requestAnimationFrame(passo);
+}
+function valeFundo(g, W, H, now) { const E = VALE_EST[VJ.k], gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, E.cor[0]); gr.addColorStop(1, rpgCor(E.cor[0], 40)); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
+// teclado e toque só valem para o jogo enquanto ele está aberto
+function valeTecla(e) {
+  if (!VJ.on || VJ.pausa || !$("#vj-cv")) return;
+  const k = e.key; if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "Enter", "q", "w", "e", "a", "s", "d", "z", "x", "c", "Q", "W", "E", "A", "S", "D", "Z", "X", "C", "Escape"].includes(k)) return;
+  e.preventDefault(); e.stopPropagation(); if (k === "Escape") return $("[data-vsair]")?.click();
+  if (e.repeat && e.type === "keydown" && VJ.G?.semRepetir) return;
+  if (VJ.cont <= 0 && !VJ.fim) VJ.G.key(k.length === 1 ? k.toLowerCase() : k, e.type === "keydown");
+}
+function valeToque(e) {
+  if (!VJ.on || VJ.pausa || VJ.cont > 0 || VJ.fim) return; const cv = $("#vj-cv"); if (!cv || (e.target !== cv && e.type === "pointerdown")) return;
+  const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * cv.width, y = (e.clientY - r.top) / r.height * cv.height;
+  if (e.type === "pointerdown") e.preventDefault();
+  VJ.G.tap(x, y, e.type === "pointerdown");
+}
+function valeLigaEntrada() { document.addEventListener("keydown", valeTecla, true); document.addEventListener("keyup", valeTecla, true); document.addEventListener("pointerdown", valeToque, true); document.addEventListener("pointerup", valeToque, true); }
+function valeSoltaEntrada() { document.removeEventListener("keydown", valeTecla, true); document.removeEventListener("keyup", valeTecla, true); document.removeEventListener("pointerdown", valeToque, true); document.removeEventListener("pointerup", valeToque, true); }
+// fim do minijogo: espera o tempo mínimo e manda a nota
+async function valeFim() {
+  const nota = Math.max(0, Math.min(100, Math.round(VJ.G.nota()))), min = (VJ.treino.duracao_min_seg ?? 12) * 1000, falta = min - (Date.now() - VJ.t0) + 400;
+  sfx(nota >= 70 ? "fanfarra" : nota >= 40 ? "acerto" : "erro");
+  const inf = $("#vj-info"); if (inf) inf.textContent = `Nota ${nota}`;
+  if (falta > 0) { const d = $(".vale-dica"); if (d) d.textContent = "Seu Pokémon está recuperando o fôlego…"; await sleep(falta); }
+  let r; try { r = await rpc("vale_terminar", { _id: VJ.treino.id, _nota: nota }); } catch (e) { VJ.on = false; valeSoltaEntrada(); return toast(errMsg(e), true); }
+  VJ.on = false; cancelAnimationFrame(VJ.raf); valeSoltaEntrada(); S.vale = r.estado || S.vale; VJ.events = r.events || [];
+  const E = VALE_EST[VJ.k], box = $("#modal-root .modal"); if (!box) return valeDepois();
+  const est = nota >= 90 ? ["⭐⭐⭐", "Excelente!"] : nota >= 70 ? ["⭐⭐", "Muito bom!"] : nota >= 40 ? ["⭐", "Bom treino!"] : ["", "Continue treinando!"];
+  box.innerHTML = `<div class="vale-box vale-res" style="--v1:${E.cor[0]};--v2:${E.cor[1]}"><img class="vale-res-im" src="${ART(VJ.mon.species_id)}" alt="">
+    <h2>${est[1]}</h2><p class="vale-nota">${est[0] ? `<span>${est[0]}</span>` : ""}Nota <b>${r.nota}</b></p>
+    <p class="vale-xp">${r.xp > 0 ? `+${r.xp} XP para ${esc(pkName(VJ.mon.species_id))}${r.afinidade ? " <small>(⭐ combina)</small>" : ""}` : "Sem experiência desta vez."}</p>
+    ${r.nivel_depois > r.nivel_antes ? `<p class="vale-up">⬆️ Nível ${r.nivel_antes} → ${r.nivel_depois}!</p>` : ""}
+    <p class="muted">Treinos hoje: ${S.vale.treinos}/${S.vale.treinos_dia}</p>
+    <div class="act-btns"><button class="btn ghost" data-vfim="fecha">Fechar</button>${S.vale.treinos < S.vale.treinos_dia ? `<button class="btn" data-vfim="denovo">🔁 Treinar de novo</button>` : ""}</div></div>`;
+  box.querySelectorAll("[data-vfim]").forEach(b => b.onclick = async e => { e.stopPropagation(); closeModal(); if (b.dataset.vfim === "denovo") { await guarded(loadPk); return valeAbrir(VJ.k); } valeDepois(); });
+}
+// depois de fechar: avisos de nível, ataque e evolução
+async function valeDepois() { const ev = VJ.events || []; VJ.events = []; await guarded(loadPk); if (ev.length) await monEventsFlow(ev); if (AV.open) rpgPerto(); }
+// ---------- os 6 minijogos (desenho nosso; o Pokémon é a imagem pronta da PokeAPI) ----------
+const vjTexto = (g, t, x, y, px, cor = "#FFF4D6", al = "center") => { g.font = `900 ${px}px Inter, system-ui, sans-serif`; g.textAlign = al; g.textBaseline = "middle"; g.lineWidth = Math.max(3, px / 7); g.strokeStyle = "rgba(10,12,20,.85)"; g.strokeText(t, x, y); g.fillStyle = cor; g.fillText(t, x, y); };
+const vjPoke = (g, im, x, y, s, vira) => { if (!im?.complete || !im.naturalWidth) return; g.save(); g.translate(x, y); if (vira) g.scale(-1, 1); g.drawImage(im, -s / 2, -s, s, s); g.restore(); };
+const vjAviso = (A, t, cor) => { A.aviso = { t, cor, ate: performance.now() + 700 }; };
+const vjDesAviso = (g, A, W, H) => { if (A.aviso && A.aviso.ate > performance.now()) vjTexto(g, A.aviso.t, W / 2, 56, 34, A.aviso.cor); };
+const VALE_JOGOS = {
+  // 1. Pista de Corrida: ritmo
+  ritmo(rnd) {
+    const N = 10, A = { r: 0, pts: 0, x: 0, dir: 1, vel: 300, zc: 320, zw: 92, espera: 0, t: 0, corre: 0, boost: 0 };
+    const nova = () => { A.zw = 96 - A.r * 5.5; A.zc = 110 + rnd() * 420; A.vel = 330 + A.r * 34; A.t = 0; A.x = rnd() < .5 ? 70 : 570; A.dir = A.x < 300 ? 1 : -1; };
+    nova();
+    const bater = () => { if (A.espera > 0 || A.r >= N) return; const d = Math.abs(A.x - A.zc), m = A.zw / 2;
+      if (d <= m) { const p = 10 - 6 * d / m; A.pts += p; A.boost = 1; vjAviso(A, p > 8.5 ? "Perfeito!" : "Bom!", p > 8.5 ? "#9CF29C" : "#FFE27A"); sfx("acerto"); } else { vjAviso(A, "Errou!", "#FF9A8A"); sfx("erro"); }
+      A.r++; A.espera = .55; };
+    return { semRepetir: true,
+      update(dt) { A.corre += dt * (1 + A.boost * 1.5); A.boost = Math.max(0, A.boost - dt * 1.4);
+        if (A.espera > 0) { A.espera -= dt; if (A.espera <= 0 && A.r < N) nova(); return; }
+        A.x += A.dir * A.vel * dt; if (A.x > 580) { A.x = 580; A.dir = -1; } if (A.x < 60) { A.x = 60; A.dir = 1; }
+        A.t += dt; if (A.t > 2.8) { vjAviso(A, "Atrasou!", "#FF9A8A"); A.r++; A.espera = .55; } },
+      acabou: () => A.r >= N && A.espera <= 0, nota: () => A.pts / N * 10,
+      info: () => `Volta ${Math.min(A.r + 1, N)} de ${N}`,
+      key(k, d) { if (d && (k === " " || k === "Enter" || k === "ArrowUp")) bater(); }, tap(x, y, d) { if (d) bater(); },
+      draw(g, W, H, now, im) {
+        g.fillStyle = "#7BC264"; g.fillRect(0, 150, W, 120); g.fillStyle = "#C9925A"; g.fillRect(0, 175, W, 70);
+        g.strokeStyle = "rgba(255,255,255,.75)"; g.lineWidth = 3; g.setLineDash([26, 22]); g.lineDashOffset = A.corre * 260; g.beginPath(); g.moveTo(0, 210); g.lineTo(W, 210); g.stroke(); g.setLineDash([]);
+        for (let i = 0; i < 6; i++) { const x = ((i * 140 - A.corre * 180) % (W + 140) + W + 140) % (W + 140) - 70; g.fillStyle = "#3E7A34"; g.beginPath(); g.arc(x, 140, 26, 0, 6.28); g.fill(); g.fillStyle = "#5A3A1E"; g.fillRect(x - 4, 140, 8, 18); }
+        vjPoke(g, im, 200, 236 - Math.abs(Math.sin(A.corre * 9)) * 10, 120, true);
+        if (A.boost > .1) { g.strokeStyle = `rgba(255,255,255,${A.boost})`; g.lineWidth = 3; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(120 - i * 8, 180 + i * 12); g.lineTo(60 - i * 14, 180 + i * 12); g.stroke(); } }
+        g.fillStyle = "rgba(10,14,24,.75)"; g.beginPath(); g.roundRect(50, 286, 540, 40, 12); g.fill();
+        g.fillStyle = "#54C46A"; g.fillRect(A.zc - A.zw / 2, 292, A.zw, 28); g.fillStyle = "#9CF29C"; g.fillRect(A.zc - 3, 292, 6, 28);
+        if (A.espera <= 0 && A.r < N) { g.fillStyle = "#FFF"; g.fillRect(A.x - 4, 284, 8, 44); }
+        vjDesAviso(g, A, W, H); }
+    };
+  },
+  // 2. Saco de Pancada: sequência de setas
+  combo(rnd) {
+    const LEN = [3, 4, 4, 5, 5, 6], SET = ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"], SIM = { ArrowUp: "▲", ArrowRight: "▶", ArrowDown: "▼", ArrowLeft: "◀" };
+    const A = { r: 0, pts: 0, seq: [], i: 0, lim: 0, t: 0, espera: 0, bate: 0 };
+    const nova = () => { const n = LEN[A.r]; A.seq = Array.from({ length: n }, () => SET[Math.floor(rnd() * 4)]); A.i = 0; A.lim = 2 + n * .5; A.t = 0; };
+    nova();
+    const fecha = ok => { const n = A.seq.length; A.pts += (A.i / n) * (ok ? .7 + .3 * Math.max(0, 1 - A.t / A.lim) : .8); vjAviso(A, ok ? (A.t < A.lim * .5 ? "Combo perfeito!" : "Combo!") : A.i ? "Quase!" : "Errou!", ok ? "#9CF29C" : "#FF9A8A"); sfx(ok ? "acerto" : "erro"); A.r++; A.espera = .6; };
+    const aperta = k => { if (A.espera > 0 || A.r >= LEN.length || !SET.includes(k)) return; if (k === A.seq[A.i]) { A.i++; A.bate = 1; sfx("tick"); if (A.i >= A.seq.length) fecha(true); } else fecha(false); };
+    const BT = [["ArrowLeft", 170], ["ArrowUp", 270], ["ArrowDown", 370], ["ArrowRight", 470]];
+    return { semRepetir: true,
+      update(dt) { A.bate = Math.max(0, A.bate - dt * 4); if (A.espera > 0) { A.espera -= dt; if (A.espera <= 0 && A.r < LEN.length) nova(); return; } A.t += dt; if (A.t >= A.lim) fecha(false); },
+      acabou: () => A.r >= LEN.length && A.espera <= 0, nota: () => A.pts / LEN.length * 100, info: () => `Rodada ${Math.min(A.r + 1, LEN.length)} de ${LEN.length}`,
+      key(k, d) { if (d) aperta(k); }, tap(x, y, d) { if (!d || y < 300) return; const b = BT.find(([, bx]) => Math.abs(x - bx - 40) < 46); if (b) aperta(b[0]); },
+      draw(g, W, H, now, im) {
+        g.fillStyle = "#8C5A32"; g.fillRect(0, 230, W, 130); for (let x = 0; x < W; x += 64) { g.fillStyle = "rgba(0,0,0,.12)"; g.fillRect(x, 230, 2, 130); }
+        const ang = Math.sin(now / 90) * A.bate * .35; g.save(); g.translate(470, 30); g.rotate(ang); g.strokeStyle = "#3A2A1A"; g.lineWidth = 4; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, 50); g.stroke();
+        g.fillStyle = "#B23A2E"; g.beginPath(); g.roundRect(-36, 50, 72, 150, 26); g.fill(); g.fillStyle = "#D9574A"; g.fillRect(-28, 60, 12, 120); g.fillStyle = "#5A1E16"; g.fillRect(-36, 90, 72, 8); g.fillRect(-36, 160, 72, 8); g.restore();
+        vjPoke(g, im, 300 + A.bate * 18, 250, 130, false);
+        if (A.r < LEN.length) { const n = A.seq.length, x0 = W / 2 - n * 34; A.seq.forEach((k, j) => { g.fillStyle = j < A.i ? "#54C46A" : "rgba(10,14,24,.8)"; g.beginPath(); g.roundRect(x0 + j * 68, 20, 60, 56, 10); g.fill(); vjTexto(g, SIM[k], x0 + j * 68 + 30, 49, 30, j < A.i ? "#0D2A12" : "#FFF4D6"); });
+          g.fillStyle = "rgba(10,14,24,.7)"; g.fillRect(W / 2 - 160, 86, 320, 10); g.fillStyle = A.t / A.lim > .7 ? "#E05A5A" : "#E5B92E"; g.fillRect(W / 2 - 160, 86, 320 * Math.max(0, 1 - A.t / A.lim), 10); }
+        for (const [k, bx] of BT) { g.fillStyle = "rgba(10,14,24,.75)"; g.beginPath(); g.roundRect(bx, 300, 80, 50, 12); g.fill(); vjTexto(g, SIM[k], bx + 40, 326, 26); }
+        vjDesAviso(g, A, W, H); }
+    };
+  },
+  // 3. Templo da Meditação: memória
+  memoria(rnd) {
+    const P = { ArrowUp: [320, 70], ArrowRight: [470, 175], ArrowDown: [320, 280], ArrowLeft: [170, 175] }, KS = Object.keys(P), COR = { ArrowUp: "#F2C140", ArrowRight: "#5FB4E0", ArrowDown: "#E05A8A", ArrowLeft: "#7AD07A" };
+    const MAXR = 7, A = { r: 0, seq: [], mostra: 0, idx: 0, fase: "mostra", t: 0, luz: null, pts: 0, erros: 0, fimT: 0 };
+    const total = Array.from({ length: MAXR }, (_, r) => 3 + r).reduce((a, b) => a + b, 0);
+    const nova = () => { A.seq = Array.from({ length: 3 + A.r }, () => KS[Math.floor(rnd() * 4)]); A.fase = "mostra"; A.mostra = 0; A.t = -.4; A.idx = 0; };
+    nova();
+    const vel = () => Math.max(.34, .52 - A.r * .025);
+    const erro = txt => { A.erros++; vjAviso(A, A.erros >= 2 ? "Acabou a concentração" : txt, "#FF9A8A"); sfx("erro"); A.t = 0; A.r++; A.fase = A.erros >= 2 || A.r >= MAXR ? "fim" : "pausa"; };
+    const aperta = k => { if (A.fase !== "vez" || !KS.includes(k)) return; A.luz = { k, ate: performance.now() + 220 };
+      if (k === A.seq[A.idx]) { A.pts++; A.idx++; A.t = 0; sfx("tick"); if (A.idx >= A.seq.length) { vjAviso(A, "Isso!", "#9CF29C"); sfx("acerto"); A.r++; A.fase = A.r >= MAXR ? "fim" : "pausa"; A.t = 0; } }
+      else erro("Errou a ordem!"); };
+    return { semRepetir: true,
+      update(dt) { A.t += dt;
+        if (A.fase === "mostra") { const v = vel(), i = Math.floor(A.t / v); if (A.t >= 0 && i < A.seq.length) { const on = A.t - i * v < v * .72; A.luz = on ? { k: A.seq[i], ate: performance.now() + 30 } : null; if (on && A.mostra !== i + 1) { A.mostra = i + 1; sfx("tick"); } } else if (i >= A.seq.length) { A.fase = "vez"; A.t = 0; A.luz = null; } }
+        else if (A.fase === "vez") { if (A.t > 2.2) erro("Demorou!"); }
+        else if (A.fase === "pausa") { if (A.t > .9) nova(); }
+        else if (A.fase === "fim") A.fimT += dt; },
+      acabou: () => A.fase === "fim" && A.fimT > .8, nota: () => A.pts / total * 100,
+      info: () => A.fase === "vez" ? `Sua vez: ${A.idx}/${A.seq.length}` : A.fase === "mostra" ? `Observe… (${A.seq.length} luzes)` : `Rodada ${Math.min(A.r + 1, MAXR)} de ${MAXR}`,
+      key(k, d) { if (d) aperta(k); }, tap(x, y, d) { if (!d) return; const k = KS.find(q => Math.hypot(P[q][0] - x, P[q][1] - y) < 60); if (k) aperta(k); },
+      draw(g, W, H, now, im) {
+        const hal = g.createRadialGradient(320, 190, 20, 320, 190, 200); hal.addColorStop(0, "rgba(200,170,255,.35)"); hal.addColorStop(1, "rgba(200,170,255,0)"); g.fillStyle = hal; g.fillRect(0, 0, W, H);
+        g.fillStyle = "#4B3A70"; g.beginPath(); g.ellipse(320, 250, 120, 26, 0, 0, 6.28); g.fill();
+        vjPoke(g, im, 320, 250 + Math.sin(now / 600) * 4, 110, false);
+        for (const k of KS) { const [x, y] = P[k], on = A.luz?.k === k && A.luz.ate > performance.now();
+          if (on) { const gl = g.createRadialGradient(x, y, 4, x, y, 70); gl.addColorStop(0, COR[k]); gl.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = gl; g.fillRect(x - 70, y - 70, 140, 140); }
+          g.fillStyle = on ? "#FFFFFF" : COR[k]; g.globalAlpha = on ? 1 : .55; g.beginPath(); g.moveTo(x, y - 40); g.lineTo(x + 26, y); g.lineTo(x, y + 40); g.lineTo(x - 26, y); g.closePath(); g.fill(); g.globalAlpha = 1;
+          g.strokeStyle = "#1A1230"; g.lineWidth = 3; g.stroke(); }
+        if (A.fase === "vez") vjTexto(g, "Sua vez!", 320, 340, 22, "#FFE7A8");
+        vjDesAviso(g, A, W, H); }
+    };
+  },
+  // 4. Lago das Correntes: desviar
+  desvio(rnd) {
+    const DUR = 24, LX = [200, 320, 440], A = { t: 0, faixa: 1, px: 320, obs: [], prox: .8, bate: 0, inv: 0, bolhas: 0, fimEm: null };
+    const mexe = d => { A.faixa = Math.max(0, Math.min(2, A.faixa + d)); sfx("tick"); };
+    return {
+      update(dt) { A.t += dt; A.px += (LX[A.faixa] - A.px) * Math.min(1, dt * 14); A.inv = Math.max(0, A.inv - dt);
+        const v = 190 + A.t * 9; A.prox -= dt;
+        if (A.prox <= 0 && A.t < DUR - 1.2) { const f = Math.floor(rnd() * 3); A.obs.push({ f, y: -30, tipo: rnd() < .22 ? "bolha" : "pedra" });
+          if (rnd() < Math.min(.45, A.t / 40)) A.obs.push({ f: (f + 1 + Math.floor(rnd() * 2)) % 3, y: -30, tipo: "pedra" }); A.prox = Math.max(.42, .85 - A.t * .018); }
+        for (const o of A.obs) { o.y += v * dt; if (!o.foi && Math.abs(o.y - 290) < 26 && Math.abs(LX[o.f] - A.px) < 40) {
+          if (o.tipo === "bolha") { o.foi = true; A.bolhas++; sfx("moeda"); } else if (A.inv <= 0) { o.foi = true; A.bate++; A.inv = 1; sfx("erro"); vjAviso(A, "Ai!", "#FF9A8A"); } } }
+        A.obs = A.obs.filter(o => o.y < 400 && !(o.tipo === "bolha" && o.foi));
+        if (A.bate >= 3 && A.fimEm == null) A.fimEm = A.t; },
+      acabou: () => A.t >= DUR || (A.fimEm != null && A.t - A.fimEm > .6),
+      nota: () => { const vivo = Math.min(DUR, A.fimEm ?? A.t) / DUR; return vivo * 76 + Math.min(24, A.bolhas * 4) - A.bate * 8; },
+      info: () => `⏱ ${Math.max(0, Math.ceil(DUR - A.t))} s · 🫧 ${A.bolhas} · ❤️ ${Math.max(0, 3 - A.bate)}`,
+      key(k, d) { if (!d) return; if (k === "ArrowLeft" || k === "a") mexe(-1); if (k === "ArrowRight" || k === "d") mexe(1); }, tap(x, y, d) { if (d) mexe(x < 320 ? -1 : 1); },
+      draw(g, W, H, now) {
+        g.fillStyle = "#2F87BE"; g.fillRect(130, 0, 380, H); g.fillStyle = "#7BC264"; g.fillRect(0, 0, 130, H); g.fillRect(510, 0, 130, H);
+        for (let i = 0; i < 14; i++) { const y = ((i * 60 + A.t * (190 + A.t * 9)) % 420) - 30; g.strokeStyle = "rgba(255,255,255,.25)"; g.lineWidth = 2; g.beginPath(); g.moveTo(150 + (i * 97) % 330, y); g.quadraticCurveTo(170 + (i * 97) % 330, y + 8, 190 + (i * 97) % 330, y); g.stroke(); }
+        for (const o of A.obs) { const x = LX[o.f];
+          if (o.tipo === "bolha") { g.strokeStyle = "#E8FBFF"; g.lineWidth = 3; g.beginPath(); g.arc(x, o.y, 15, 0, 6.28); g.stroke(); g.fillStyle = "rgba(232,251,255,.3)"; g.fill(); g.fillStyle = "#FFF"; g.fillRect(x - 6, o.y - 8, 4, 4); }
+          else { g.fillStyle = "#5E6670"; g.beginPath(); g.ellipse(x, o.y, 30, 22, 0, 0, 6.28); g.fill(); g.fillStyle = "#8A929C"; g.beginPath(); g.ellipse(x - 6, o.y - 6, 16, 10, 0, 0, 6.28); g.fill(); } }
+        if (!(A.inv > 0 && Math.floor(now / 80) % 2)) { g.fillStyle = "rgba(255,255,255,.35)"; g.beginPath(); g.ellipse(A.px, 300, 44, 12, 0, 0, 6.28); g.fill(); vjPoke(g, VJ.im || rpgArt(VJ.mon.species_id), A.px, 312, 96, false); }
+        vjDesAviso(g, A, W, H); }
+    };
+  },
+  // 5. Paredão de Escalada: reflexo
+  reflexo(rnd) {
+    const N = 16, TECLAS = ["q", "w", "e", "a", "s", "d", "z", "x", "c"], A = { i: 0, cel: -1, t: 0, jan: 1.3, pts: 0, espera: .3, sobe: 0 };
+    const cel = k => [200 + (k % 3) * 120, 70 + Math.floor(k / 3) * 105];
+    const nova = () => { let c; do { c = Math.floor(rnd() * 9); } while (c === A.cel); A.cel = c; A.t = 0; A.jan = Math.max(.6, 1.3 - A.i * .045); };
+    const acerta = k => { if (A.espera > 0 || A.i >= N) return;
+      if (k === A.cel) { const p = 100 / N * (.5 + .5 * Math.max(0, 1 - A.t / A.jan)); A.pts += p; A.sobe++; sfx("acerto"); vjAviso(A, A.t < A.jan * .4 ? "Rápido!" : "Boa!", "#9CF29C"); A.i++; A.espera = .25; A.cel = -1; }
+      else { A.pts = Math.max(0, A.pts - 2); sfx("erro"); } };
+    return { semRepetir: true,
+      update(dt) { if (A.espera > 0) { A.espera -= dt; if (A.espera <= 0 && A.i < N) nova(); return; } A.t += dt; if (A.t > A.jan) { vjAviso(A, "Escorregou!", "#FF9A8A"); sfx("erro"); A.i++; A.espera = .35; A.cel = -1; } },
+      acabou: () => A.i >= N && A.espera <= 0, nota: () => A.pts, info: () => `Pedra ${Math.min(A.i + 1, N)} de ${N}`,
+      key(k, d) { if (d && TECLAS.includes(k)) acerta(TECLAS.indexOf(k)); }, tap(x, y, d) { if (!d) return; for (let k = 0; k < 9; k++) { const [cx, cy] = cel(k); if (Math.abs(x - cx) < 52 && Math.abs(y - cy) < 46) return acerta(k); } },
+      draw(g, W, H, now, im) {
+        g.fillStyle = "#6E5A44"; g.fillRect(110, 0, 420, H); for (let i = 0; i < 40; i++) { const x = 110 + (i * 53) % 420, y = (i * 37) % H; g.fillStyle = "rgba(0,0,0,.12)"; g.fillRect(x, y, 30, 6); }
+        for (let k = 0; k < 9; k++) { const [x, y] = cel(k), on = k === A.cel;
+          g.fillStyle = on ? "#FFE27A" : "#8C7660"; g.beginPath(); g.ellipse(x, y, 30, 20, 0, 0, 6.28); g.fill(); g.strokeStyle = on ? "#FFFFFF" : "#4A3A2A"; g.lineWidth = on ? 4 : 2; g.stroke();
+          if (on) { g.fillStyle = "rgba(10,14,24,.75)"; g.fillRect(x - 40, y + 24, 80 * Math.max(0, 1 - A.t / A.jan), 6); }
+          vjTexto(g, TECLAS[k].toUpperCase(), x, y, 15, on ? "#2A1A08" : "#E8DCCB"); }
+        const prog = A.i / N; g.fillStyle = "rgba(10,14,24,.6)"; g.fillRect(560, 20, 16, 320); g.fillStyle = "#9CF29C"; g.fillRect(560, 340 - 320 * prog, 16, 320 * prog);
+        vjPoke(g, im, 595, 350 - 300 * prog, 64, false);
+        vjDesAviso(g, A, W, H); }
+    };
+  },
+  // 6. Fogueira do Fôlego: segurar e soltar
+  folego(rnd) {
+    const DUR = 20, A = { t: 0, f: .3, v: 0, seg: false, den: 0, ph: [rnd() * 6, rnd() * 6, rnd() * 6] };
+    const alvo = t => .52 + .22 * Math.sin(t * .55 + A.ph[0]) + .1 * Math.sin(t * 1.3 + A.ph[1]) * Math.min(1, t / 6);
+    const larg = t => Math.max(.14, .24 - t * .005);
+    return {
+      update(dt) { A.t += dt; A.v += (A.seg ? 1.9 : -1.5) * dt; A.v = Math.max(-1, Math.min(1, A.v)); A.f += A.v * dt; if (A.f < 0) { A.f = 0; A.v = 0; } if (A.f > 1) { A.f = 1; A.v = 0; }
+        if (Math.abs(A.f - alvo(A.t)) <= larg(A.t) / 2) A.den += dt; },
+      acabou: () => A.t >= DUR, nota: () => Math.min(100, A.den / DUR * 112), info: () => `⏱ ${Math.max(0, Math.ceil(DUR - A.t))} s · na faixa ${Math.round(A.den / Math.max(.1, A.t) * 100)}%`,
+      key(k, d) { if (k === " " || k === "Enter" || k === "ArrowUp") A.seg = d; }, tap(x, y, d) { A.seg = d; },
+      draw(g, W, H, now, im) {
+        g.fillStyle = "#3A2A1E"; g.fillRect(0, 290, W, 70);
+        const x = 280, y = 300, s = .6 + A.f * 1.4;
+        const lz = g.createRadialGradient(x, y - 60 * s, 10, x, y - 60 * s, 160 * s); lz.addColorStop(0, "rgba(255,170,60,.45)"); lz.addColorStop(1, "rgba(255,170,60,0)"); g.fillStyle = lz; g.fillRect(0, 0, W, H);
+        for (let k = 0; k < 3; k++) { const h = (90 + Math.sin(now / 110 + k * 2) * 10 - k * 18) * s, w = (40 - k * 10) * s;
+          g.fillStyle = ["#E8541C", "#F8A22C", "#FFE27A"][k]; g.beginPath(); g.moveTo(x - w, y); g.quadraticCurveTo(x - w * .9, y - h * .55, x + Math.sin(now / 90 + k) * 6, y - h); g.quadraticCurveTo(x + w * .9, y - h * .55, x + w, y); g.fill(); }
+        g.fillStyle = "#5A3A1E"; g.save(); g.translate(x, y + 4); for (const a of [-.35, .35]) { g.save(); g.rotate(a); g.fillRect(-60, -7, 120, 14); g.restore(); } g.restore();
+        vjPoke(g, im, 130, 300, 110, true);
+        const gx = 520, gy = 40, gh = 260, al = alvo(A.t), lw = larg(A.t);
+        g.fillStyle = "rgba(10,14,24,.8)"; g.beginPath(); g.roundRect(gx - 6, gy - 6, 44, gh + 12, 10); g.fill();
+        g.fillStyle = "#54C46A"; g.fillRect(gx, gy + gh * (1 - al - lw / 2), 32, gh * lw);
+        g.fillStyle = "#FFF"; g.fillRect(gx - 8, gy + gh * (1 - A.f) - 3, 48, 6);
+        vjTexto(g, A.seg ? "Soprando…" : "Segure para soprar", 280, 340, 18, "#FFE7A8"); }
+    };
+  }
+};
 // arquivo 106: o salão da Liga (arte nossa, por código): tapete vermelho até o palco, 4 pedestais da Elite e o trono do Campeão
 const ELITE_IC = ["❄️", "🥊", "👻", "🐉", "👑"];
 function rpgEliteInterior() {
@@ -11898,8 +12445,9 @@ const rpgZonaTxt = k => { const z = rpgZonaInfo(k); return z ? `${RPG_ZIC[k] || 
 const rpgFaixa = r => { const zs = Object.values(RPG_REG[r].z).map(rpgZonaInfo).filter(Boolean); return zs.length ? `Nv ${Math.min(...zs.map(z => z.min))}–${Math.max(...zs.map(z => z.max))}` : ""; };
 // saídas da vila (as das rotas vêm do arquivo de cada rota) e onde chega quem volta
 const RPG_VILA_SAIDAS = [{ em: [[0, 29]], para: "bosque" }, { em: [[40, 59], [41, 59]], para: "praia" }, { em: [[59, 48]], para: "deserto" }];
-const RPG_VILA_CHEGA = { bosque: [1, 29], praia: [40, 58], deserto: [58, 48], pedreira: [52, 7] };
+const RPG_VILA_CHEGA = { bosque: [1, 29], praia: [40, 58], deserto: [58, 48], pedreira: [52, 7], vale: [39, 5] };
 const RPG_NPC = {
+  vale: VALE_NPC,   // arquivo 112
   bosque: { nome: "Lenhador Davi", ch: { class: "guerreiro", outfit: {} }, fala: ["Este é o Bosque Sussurrante.", "Perto da entrada o mato é tranquilo. Lá no fundo, onde o chão fica escuro, os bichos são bem mais fortes.", "Do outro lado do bosque, a oeste, fica o Charco Sombrio. Só vá com a equipe treinada."] },
   praia: { nome: "Surfista Lu", ch: { class: "arqueiro", outfit: {} }, fala: ["Bem-vindo à Praia Coral!", "Nas dunas aparecem os de Água, Elétrico e Normal. Perto do mar, no costão, aparecem os mais fortes.", "Fugir de uma luta custa moedas, viu? Pense antes de entrar no mato."] },
   deserto: { nome: "Andarilha Sol", ch: { class: "mago", outfit: {} }, fala: ["O Deserto Rubro castiga quem chega despreparado.", "Fogo e Terra no capim seco. No oásis distante, Pedra e Luta também, e bem fortes."] },
@@ -11917,7 +12465,8 @@ const AV_PONTOS = [
   { em: [[11, 27], [12, 27]], ic: "📰", nome: "Mural do Jornal", win: "jornal" }, { em: [[51, 57]], ic: "💛", nome: "Fonte (Caixa da Obra)", win: "caixa" },
   { em: [[15, 28]], ic: "🏆", nome: "Estátua dos Campeões", win: "ranking" },
   { em: [[52, 6]], ic: "⛏️", nome: "Gruta da Pedreira", vai: "pedreira" },
-  { em: [[26, 29]], ic: "🪧", nome: "Placa", fala: ["← Feira e fazenda   ·   Casas ↑   ·   Cidade murada →", "Pokémon selvagens: capim alto ao norte da feira, pântano na beira do rio, grama escura a leste e pedras no alto do penhasco.", "Rotas: Bosque a oeste, Praia ao sul, Deserto a leste e a Gruta da Pedreira na caverna do penhasco. Toque em 🗺️ Rotas para ver os níveis."] }
+  { em: [[39, 4]], ic: "🥋", nome: "Vale do Treino", vai: "vale" },   // arquivo 112: a trilha no alto do penhasco
+  { em: [[26, 29]], ic: "🪧", nome: "Placa", fala: ["← Feira e fazenda   ·   Casas ↑   ·   Cidade murada →", "Pokémon selvagens: capim alto ao norte da feira, pântano na beira do rio, grama escura a leste e pedras no alto do penhasco.", "Rotas: Bosque a oeste, Praia ao sul, Deserto a leste e a Gruta da Pedreira na caverna do penhasco. Toque em 🗺️ Rotas para ver os níveis.", "🥋 O Vale do Treino fica na trilha ao norte, no alto do penhasco: lá os Pokémon treinam sem lutar."] }
 ];
 // moradores (arte nossa: os mesmos bonecos dos heróis), com dicas
 const AV_NPCS = [
@@ -11931,6 +12480,7 @@ const rpgAt = (x, y) => (AV.g?.[y] || "")[x] || "#";
 const rpgSolid = (x, y) => "#~".includes(rpgAt(x, y)) || minaFechada(x, y) || rpgGymFoot(x, y) || rpgNpcs().some(n => n.x === x && n.y === y) || (rpgChefeAqui() && (p => p && p[0] === x && p[1] === y)(rpgChefePos()));
 function rpgPontos() {
   if (AV.r === "vila") return AV_PONTOS;
+  if (RPG_REG[AV.r]?.vale) return valePontos();   // arquivo 112
   if (RPG_REG[AV.r]?.gym || RPG_REG[AV.r]?.elite || RPG_REG[AV.r]?.mina) return [];
   const pl = AV.dados?.pontos?.placa, R = RPG_REG[AV.r], gp = rpgGymPos(), L = rpgLider(AV.r);
   const porta = gp && L ? [{ em: [gp], ic: "🏟️", nome: `Ginásio · ${L.nome}`, vai: "gym_" + AV.r, alto: 5.1 }] : [];
@@ -11964,6 +12514,7 @@ async function rpgEntra(r) {
   if (!RPG_REG[r]) r = "vila";
   const d = await rpgCarregar(r);
   AV.r = r; AV.dados = d; AV.img = d.im; AV.g = d.g;
+  if (RPG_REG[r]?.vale && !S.vale) valeEstado();   // arquivo 112
   const t = $("#rpg-tit"), mb = $("#rpg-mini-box b"); if (t) t.textContent = `${RPG_REG[r].ic} ${RPG_REG[r].nome}`; if (mb) mb.textContent = RPG_REG[r].nome;
 }
 function rpgSeguidor() { const lado = [[-AV.face, 0], [AV.face, 0], [0, 1], [0, -1]].find(([dx, dy]) => !rpgSolid(AV.x + dx, AV.y + dy)) || [0, 0]; AV.ax = AV.x + lado[0]; AV.ay = AV.y + lado[1]; }
@@ -11984,13 +12535,13 @@ async function rpgViajar(para) {
   [AV.x, AV.y] = ch && !rpgSolid(ch[0], ch[1]) ? ch : (AV.dados.chegada || [28, 30]); AV.moving = null; AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();
   try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
   rpgNetLeave(); rpgNetJoin(); rpgPerto();
-  const h = $("#rpg-hint"); if (h) { h.hidden = false; clearTimeout(AV.dicaT); AV.dicaT = setTimeout(() => { h.hidden = true; }, 5000); } if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" || RPG_REG[para].gym || RPG_REG[para].elite ? "" : ` · ${rpgFaixa(para)}`}`;
+  const h = $("#rpg-hint"); if (h) { h.hidden = false; clearTimeout(AV.dicaT); AV.dicaT = setTimeout(() => { h.hidden = true; }, 5000); } if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" || RPG_REG[para].gym || RPG_REG[para].elite || RPG_REG[para].vale ? "" : ` · ${rpgFaixa(para)}`}`;
   if (fl) { await sleep(150); fl.classList.remove("on", "viagem"); }
   sfx("tick"); AV.busy = false;
 }
 // quadro com todas as rotas, os níveis e os tipos
-const RPG_MAPA_POS = { elite: [1, 0], estrada: [1, 1], pico: [1, 2], pedreira: [1, 3], charco: [0, 3], bosque: [0, 4], vila: [1, 4], deserto: [2, 4], vulcao: [3, 4], praia: [1, 5] };
-const RPG_MAPA_LIG = [["vila", "bosque"], ["bosque", "charco"], ["vila", "deserto"], ["deserto", "vulcao"], ["vila", "praia"], ["vila", "pedreira"], ["pedreira", "pico"], ["pico", "estrada"], ["estrada", "elite"]];
+const RPG_MAPA_POS = { elite: [1, 0], estrada: [1, 1], pico: [1, 2], pedreira: [1, 3], charco: [0, 3], bosque: [0, 4], vila: [1, 4], deserto: [2, 4], vulcao: [3, 4], praia: [1, 5], vale: [2, 3] };
+const RPG_MAPA_LIG = [["vila", "vale"], ["vila", "bosque"], ["bosque", "charco"], ["vila", "deserto"], ["deserto", "vulcao"], ["vila", "praia"], ["vila", "pedreira"], ["pedreira", "pico"], ["pico", "estrada"], ["estrada", "elite"]];
 async function rpgMapaDesenha() {
   const cv = $("#rpg-mapa"); if (!cv) return;
   const C = 190, G0 = 18, g = cv.getContext("2d"), NC = Math.max(...Object.values(RPG_MAPA_POS).map(p => p[0])) + 1, NL = Math.max(...Object.values(RPG_MAPA_POS).map(p => p[1])) + 1; cv.width = NC * C + (NC - 1) * G0; cv.height = NL * C + (NL - 1) * G0;
@@ -12011,7 +12562,7 @@ async function rpgMapaDesenha() {
     if (d?.im) g.drawImage(d.im, x, y, C, C); else { g.fillStyle = "#24324A"; g.fillRect(x, y, C, C); }
     g.fillStyle = "rgba(8,12,22,.78)"; g.fillRect(x, y + C - 48, C, 48);
     g.fillStyle = "#FFE7A8"; g.font = "800 15px Inter, system-ui, sans-serif"; g.textAlign = "left"; g.fillText(`${R.ic} ${R.nome}`, x + 8, y + C - 28, C - 16);
-    g.fillStyle = "#9FE0B4"; g.font = "700 13px Inter, system-ui, sans-serif"; g.fillText(R.elite ? `Elite 4 + Campeão${AV.st?.elite?.campeao ? " · 👑 você venceu!" : ""}` : `${rpgFaixa(r)}${rpgLider(r) ? ` · 🏟️ ${rpgInsig().includes(r) ? "✅" : rpgLider(r).nome}` : ""}`, x + 8, y + C - 10, C - 16);
+    g.fillStyle = "#9FE0B4"; g.font = "700 13px Inter, system-ui, sans-serif"; g.fillText(R.elite ? `Elite 4 + Campeão${AV.st?.elite?.campeao ? " · 👑 você venceu!" : ""}` : R.vale ? "🥋 6 estações de treino" : `${rpgFaixa(r)}${rpgLider(r) ? ` · 🏟️ ${rpgInsig().includes(r) ? "✅" : rpgLider(r).nome}` : ""}`, x + 8, y + C - 10, C - 16);
     // o prédio do Ginásio no mapa
     const gp = d && rpgLider(r) ? rpgGymPos(r) : null; if (gp) { const kx = C / d.g[0].length, ky = C / d.g.length; g.font = "18px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.fillText("🏟️", x + (gp[0] + .5) * kx, y + (gp[1] - 1) * ky); }
     g.restore();
@@ -12132,7 +12683,7 @@ function rpgPerto() {
   }
   if (!p && rpgChefeAqui()) { const cp = rpgChefePos(); if (cp && Math.abs(cp[0] - AV.x) + Math.abs(cp[1] - AV.y) <= 1) p = { chefe: true, ic: "👹", nome: `Chefe: ${pkName(AV.st.chefe.especie)}` }; }
   AV.perto = p;
-  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai || p.minaPorta ? "Entrar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym || p.npc?.elite ? "Desafiar" : p.npc?.minaEv ? (p.npc.ch ? "Falar com" : "Investigar") : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
+  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai || p.minaPorta ? "Entrar" : p.vale ? "Treinar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym || p.npc?.elite ? "Desafiar" : p.npc?.minaEv ? (p.npc.ch ? "Falar com" : "Investigar") : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
   const z = rpgZonaKey(rpgAt(AV.x, AV.y)), ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = rpgZonaTxt(z); }
   const mr = RPG_REG[AV.r]?.mina && S.exp?.est?.run; if (ze && mr) { ze.hidden = false; ze.textContent = `⚡ ${mr.recursos.energia} · 🔦 ${mr.recursos.luz} · Sala ${mr.etapa} de ${mr.etapas} · 🎒 ${minaMochilaN(mr)}`; }
   rpgTit();   // arquivo 101: sempre onde você está
@@ -12146,6 +12697,7 @@ function rpgUsar() {
   if (p.npc?.elite) return rpgEliteAbrir();
   if (p.npc?.minaEv) return minaEventoAbrir();   // arquivo 111
   if (p.minaPorta) return minaEntrar();
+  if (p.vale) return valeAbrir(p.vale);   // arquivo 112
   if (p.chefe) return rpgChefeAbrir();
   if (p.npc && rpgMissoesDe(AV.r).length) return rpgMissoesAbrir(AV.r, p.nome, p.fala);
   if (p.fala) { AV.fala = { nome: p.nome, linhas: p.fala, i: 0 }; return rpgFalaMostra(); }
@@ -12212,6 +12764,7 @@ function rpgPinta(now) {
   g.drawImage(AV.img, cx / k, cy / k, cv.width / k, cv.height / k, 0, 0, cv.width, cv.height);
   { const gpd = !RPG_REG[AV.r]?.gym && AV.r !== "vila" && rpgGymPos(); if (gpd) rpgDesenhaGinasio(g, gpd, tile, cx, cy, now, dpr); }   // arquivo 101
   if (RPG_REG[AV.r]?.mina) minaDesenha(g, tile, cx, cy, now, dpr);   // arquivo 111
+  if (RPG_REG[AV.r]?.vale) valeDesenha(g, tile, cx, cy, now, dpr);   // arquivo 112
   if (AV.st?.noite && !RPG_REG[AV.r]?.gym && !RPG_REG[AV.r]?.mina) {   // arquivo 99: noite, com a luz em volta de você
     const lx = (AV.fx + .5) * tile - cx, ly = (AV.fy + .5) * tile - cy, gr = g.createRadialGradient(lx, ly, tile * 1.3, lx, ly, tile * 6.5);
     gr.addColorStop(0, "rgba(10,14,48,.18)"); gr.addColorStop(1, "rgba(8,10,36,.66)"); g.fillStyle = gr; g.fillRect(0, 0, cv.width, cv.height);
@@ -14215,6 +14768,18 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "vale-2026-11-16", sql: "112", title: "🥋 Vale do Treino na Aventura", body: () => `Agora dá para evoluir os Pokémon sem lutar na grama: chegou o Vale do Treino, na trilha ao norte da Vila Aurora (Aventura).
+• São 6 estações: Pista de Corrida, Saco de Pancada, Templo da Meditação, Lago das Correntes, Paredão de Escalada e Fogueira do Fôlego.
+• Em cada uma o seu Pokémon faz um exercício rápido (uns 20 segundos): acertar o ritmo, repetir a sequência, lembrar das luzes, desviar das pedras, escalar rápido e segurar a chama.
+• Quanto melhor você joga, mais experiência o Pokémon ganha.
+• Cada estação combina com alguns tipos (⭐): treinar o Pokémon no lugar certo rende mais.
+• Tem um limite de treinos por dia. Os outros jogadores que estão no Vale aparecem andando por lá.` },
+  { id: "fazenda-2026-11-16", sql: "112", title: "🍓 Fazenda de Frutas e vila nova", body: () => `A Minha Vila ficou maior e mais bonita (no computador ela abre em tela grande), e ganhou uma Fazenda de Frutas.
+• Plante sementes nos canteiros (custam poucas moedas). As frutas crescem em algumas horas de verdade; depois é só colher.
+• Dê as frutas para os seus Pokémon: eles ganham experiência. Cada tipo de Pokémon tem a sua fruta preferida (❤️), que rende mais.
+• Visite a vila dos amigos e regue a horta deles: a planta cresce mais rápido e você ganha uma fruta igual.
+• Quem tem o Pomar na vila ganha canteiros a mais, e dá para comprar outros.
+• Os Pokémon comem um número de frutas por dia.` },
   { id: "expedicoes-2026-11-13", sql: "111", title: "⛏️ Expedições: a Mina Esquecida", body: () => `Chegou um minigame novo: as Expedições (menu Competir, ou pela entrada da mina na Gruta da Pedreira, na Aventura).
 • A primeira é a Mina Esquecida: um mapa para andar, com 5 salas. Em cada sala tem um morador ou um objeto esperando por você (chegue perto e aperte E). Resolveu, a passagem para a próxima sala se abre, até a câmara do guardião.
 • Cada escolha muda o que vem depois. Não existe resposta sempre certa: tem risco, recompensa e o que você já fez antes.
@@ -14720,6 +15285,7 @@ function afterRender() {
   const vc = $("#vila-cv");
   if (vc) vc.onclick = e => {
     const r = vc.getBoundingClientRect(), x = (e.clientX - r.left) * vc.width / r.width, y = (e.clientY - r.top) * vc.height / r.height;
+    const fz = (S.fzHits || []).find(h => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h); if (fz && vc.classList.contains("vn")) return fzTocar(fz.slot);   // arquivo 112
     const h = (S.vilaHits || []).find(h => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h);
     if (!h) return;
     S.vilaSel = h.k; if (S.cfg.war && VCAT_OF[h.k]) S.vilaCat = VCAT_OF[h.k]; render();
@@ -14730,6 +15296,8 @@ function afterRender() {
   if (S.win === "desafio") setupAutocomplete();
   if (S.win === "vila" && S.vila && $("#vila-cv")) {
     drawVila($("#vila-cv"), S.vila);
+    const bx = $(".vila-cv-box");   // arquivo 112: no celular a vila nova rola para os lados; guarda onde a pessoa deixou
+    if (bx && bx.scrollWidth > bx.clientWidth) { bx.scrollLeft = S.vilaScroll ?? (bx.scrollWidth - bx.clientWidth) / 2; bx.onscroll = () => { S.vilaScroll = bx.scrollLeft; }; }
     const vs = $("#vila-visit"); if (vs) vs.onchange = async () => { S.vilaUser = vs.value || null; await guarded(loadVila); render(); };
   }
   if (S.win === "duelos" && S.duel && S.duel.status === "aceito" && !S.duel.me.done) setupAutocomplete(new Set(S.duel.guesses.map(g => g.pokemon_id)), duelGuess);
