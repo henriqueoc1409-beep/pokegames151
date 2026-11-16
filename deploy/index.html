@@ -1398,6 +1398,13 @@ details.rk-card p{font-size:13px;color:var(--text-2);margin:8px 0 0}
 .bt-box .btn.ghost{background:#fff;color:#2A2236;border-color:#2A2236}
 .bt-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .bt-switch small{display:block;font-size:11px}
+.bt-gym-prazo{margin:6px 0 0;font-size:12.5px;color:var(--text-2);text-align:center}
+.gym-xp{margin:6px 0;padding-left:18px;text-align:left}.gym-xp li{margin:2px 0}
+.tc-card{margin-bottom:10px}.tc-quem{margin:0 0 8px}.tc-lados{display:flex;align-items:stretch;gap:10px;justify-content:center;flex-wrap:wrap}
+.tc-lados>div:not(.tc-seta){flex:1 1 200px}.tc-seta{align-self:center;font-size:26px}.tc-mon{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;
+background:var(--surface-2,rgba(127,127,127,.08));border-radius:12px;padding:8px}.tc-mon small{font-weight:700}.tc-moves{font-size:12px;color:var(--text-2)}
+.tc-coins{margin:6px 0 0;text-align:center}.tc-form{display:grid;gap:6px;max-width:560px}.tc-coins-in{display:flex;gap:10px;flex-wrap:wrap}.tc-coins-in label{flex:1 1 180px}
+.tc-tabs{margin:10px 0}
 .bt-ask{margin:0 0 6px;font-weight:700}
 .bt-wait p{margin:0 0 4px;font-weight:700}
 .bt-end h3{font-family:var(--serif);font-size:22px;margin:0 0 4px}
@@ -2348,8 +2355,8 @@ const MODES = {
   silhueta:  { nome: "Silhueta",  q: "De quem é esta silhueta?", dica: "Cada palpite afasta um pouco a câmera. Só o pedaço da tela chega ao seu aparelho." }
 };
 const HEROES = {
-  guerreiro: { nome: "Guerreiro", skill: "Investida", passiva: () => `Mais forte nos encontros: +${S.cfg.guerreiro_duel_bonus ?? 15}% de chance de vencer o duelo.`, efeito: v => `Anda +${v} casas hoje.` },
-  mago:      { nome: "Mago", skill: "Teleporte", passiva: () => `${S.cfg.mago_resist_pct ?? 30}% de chance de anular armadilhas, lamaçais e raios.`, efeito: v => `Salta até a próxima casa especial à frente, a no máximo ${v} casas.` },
+  guerreiro: { nome: "Guerreiro", skill: "Investida", passiva: () => `Mais forte nos encontros: vence o duelo com mais facilidade.`, efeito: v => `Anda +${v} casas hoje.` },
+  mago:      { nome: "Mago", skill: "Teleporte", passiva: () => `Às vezes anula armadilhas, lamaçais e raios.`, efeito: v => `Salta até a próxima casa especial à frente, a no máximo ${v} casas.` },
   arqueiro:  { nome: "Arqueiro", skill: "Tiro certeiro", passiva: () => `A roleta do movimento nunca tira menos que ${S.cfg.arqueiro_min_die ?? 2}.`, efeito: () => `A roleta do movimento vale o máximo (${S.cfg.roll_max ?? 3}) hoje.` },
   ladino:    { nome: "Ladino", skill: "Atalho", passiva: p => `Mão leve: pega até ${p} moedas de cada jogador que ultrapassa.`, efeito: v => `Desvia do próximo lamaçal ou armadilha e anda +${v} casas.` },
   clerigo:   { nome: "Clérigo", skill: "Bênção", passiva: () => "Cartas de azar fazem só metade do efeito.", efeito: v => `Nada te empurra para trás hoje${v ? ` e você anda +${v} casas` : ""}.` },
@@ -2366,12 +2373,12 @@ function heroPerk(k) {
   const h = heroCfg();
   return {
     guerreiro: `⚔️ +${h.guerreiro_dano_pct}% de dano em todas as batalhas Pokémon.`,
-    mago: `🔮 Ataques de status acertam +${h.mago_status_acc_pct}%; na Grama, aparece mais Pokémon forte.`,
-    arqueiro: `🏹 Pokémon ${h.arqueiro_vel_pct}% mais rápidos nas batalhas e +${h.arqueiro_captura_pct}% de chance de captura.`,
+    mago: `🔮 Ataques de status acertam mais nas batalhas.`,
+    arqueiro: `🏹 Pokémon ${h.arqueiro_vel_pct}% mais rápidos nas batalhas e captura mais fácil.`,
     ladino: `🗡️ Taxa de só ${h.ladino_taxa_pct}% no Leilão e no Mercado.`,
     clerigo: `✨ Centro Pokémon ${h.clerigo_centro_desc_pct}% mais barato e cura grátis em ${h.clerigo_cura_horas} horas.`,
     domador: `🐎 +${h.domador_grama_xp_pct}% de experiência na Aventura e Creche ${h.domador_creche_desc_pct}% mais barata.`,
-    pesquisador: `🔬 Acompanhante da Grama ganha ${h.pesq_comp_pct}% da experiência.`,
+    pesquisador: `🔬 O Pokémon de suporte da Aventura ganha ${h.pesq_comp_pct}% da experiência.`,
     mercador: `💰 Vende no Leilão ${h.merc_leilao_taxa_pct ? `com só ${h.merc_leilao_taxa_pct}% de taxa` : "sem taxa"}.`
   }[k] || "";
 }
@@ -2401,7 +2408,7 @@ const KIND = {
   cacada:     { nome: "Trilha da Caçada", desc: "Caminho temporário até o Pokémon misterioso. Some quando a Caçada acabar.", cor: "#7E57C2" },
   alvo:       { nome: "Pokémon misterioso", desc: "O primeiro a parar aqui tenta capturar com as 3 bolas. Dando certo ou não, volta para a casa onde estava antes da Caçada.", cor: "#3A2858" },
   treinador:  { nome: "Treinador", desc: "Um treinador do jogo te desafia para uma batalha Pokémon. Vencer dá moedas e XP.", cor: "#cf6a2a" },
-  castelo:    { nome: "Castelo da Liga", desc: "A chegada. O 1º que chegar encerra a corrida: quando a rodada daquele dia fecha, começa a Liga Pokémon.", cor: "#d6a548" }
+  castelo:    { nome: "Castelo da Liga", desc: "A chegada. O 1º que chegar encerra a corrida e a Liga Pokémon começa na hora.", cor: "#d6a548" }
 };
 function toast(msg, err = false) {
   const t = document.createElement("div");
@@ -4719,6 +4726,7 @@ const WINS = {
   centro: ["Centro Pokémon", () => viewCentro()],
   creche: ["Creche Pokémon", () => viewCreche()],
   leilao: ["Leilão de Pokémon", () => viewLeilao()],
+  trocas: ["Trocas de Pokémon", () => viewTrocas()],   // arquivo 114
   admin: ["Administração", () => viewAdmin()]
 };
 // Formulários com texto digitado não podem sumir quando a tela se atualiza sozinha (Jornal, chat, Arena…).
@@ -4738,7 +4746,7 @@ function renderWindow() {
   const fa = document.activeElement, keepFocus = fa && keepForms.some(f => f.contains(fa)) ? { el: fa, a: fa.selectionStart, b: fa.selectionEnd } : null;
   if (!S.win || !WINS[S.win] || (S.win === "admin" && !S.isAdmin)) { root.innerHTML = ""; root.dataset.tab = ""; return; }
   const prev = root.querySelector(".win-body"), keep = prev && root.dataset.tab === S.win ? prev.scrollTop : 0;
-  const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "treino", "centro", "creche", "leilao", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
+  const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "treino", "centro", "creche", "leilao", "trocas", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
   const pos = k => { const i = ORDER.indexOf(k); return i < 0 ? 99 : i; };
   const tabs = Object.entries(WINS).filter(([k]) => (k !== "admin" || S.isAdmin) && k !== "batalha").sort((a, b) => pos(a[0]) - pos(b[0]));
   const [title, view] = WINS[S.win];
@@ -5770,9 +5778,9 @@ const vbMax = k => S.cfg.war?.buildings?.[k]?.max || (k === "mina" ? 3 : 1);
 const VBON_TXT = [
   ["centro", "casas", "🗺️", "Centro da Vila", x => `+${x} ${x === 1 ? "casa" : "casas"} em toda andada`],
   ["estabulo", null, "🐎", "Estábulo", () => `1 casa de bônus a cada ${S.cfg.stable_days ?? 2} dias (colete na vila)`],
-  ["pomar", "captura_pct", "🍎", "Pomar", x => `+${x}% de chance de captura`],
+  ["pomar", "captura_pct", "🍎", "Pomar", x => `captura mais fácil`],
   ["taverna", "bolas", "🍺", "Taverna", x => `+${x} Poké Bola em cada encontro`],
-  ["vigia", "raro_pct", "🔭", "Torre de Vigia", x => `${x}% de chance de um Pokémon comum virar incomum ou mais raro`],
+  ["vigia", "raro_pct", "🔭", "Torre de Vigia", x => `às vezes um Pokémon comum vira incomum ou mais raro`],
   ["academia", "grama_xp_pct", "🎓", "Academia", x => `+${x}% de XP nas lutas da Aventura`],
   ["arena", "rpg_lutas", "🏟️", "Arena", x => `+${x} lutas por dia na Aventura`],
   ["centropk", "centro_desc_pct", "🏥", "Centro Pokémon de Guerra", (x, l) => `Centro Pokémon ${x}% mais barato e cura grátis ${vbVal(null, "centropk", "cura_rapida_pct", l)}% mais rápida`],
@@ -6098,7 +6106,7 @@ function vilaCard(b, v) {
   } else if (b.k === "muralha") action = `<span class="tag ${v.wall_ready ? "ok" : ""}">${v.wall_ready ? "Pronta para segurar a lama" : "Recarregando"}</span>`;
   else if (b.k === "poco") action = `<span class="tag ${v.well_ready ? "ok" : ""}">${v.well_ready ? "Giro extra disponível na roleta" : "Recarregando"}</span>`;
   else action = `<span class="tag ok">${b.upgrade ? "Nível máximo" : "Construída"}</span>`;
-  const dig = b.k === "mina" && lvl && v.mine && S.cfg.casas ? `<button class="btn ghost small" data-act="vila-dig" title="Uma vez por dia">⛏️ Cavar pedras (${(S.cfg.casas.dig_pct || [15, 25, 35])[Math.min(lvl, 3) - 1]}% de chance)</button>` : "";
+  const dig = b.k === "mina" && lvl && v.mine && S.cfg.casas ? `<button class="btn ghost small" data-act="vila-dig" title="Uma vez por dia">⛏️ Cavar pedras</button>` : "";
   return `<div class="panel lo vila-card ${S.vilaSel === b.k ? "sel" : ""} ${lvl ? "" : "empty"}" id="vc-${b.k}"><h4>${b.nome}${b.k === "mina" && lvl ? `<span class="vc-lv">${lvl}/3</span>` : ""}</h4><p>${b.desc(v)}</p>${vilaDmgHTML(b.k, v)}${action}${dig}</div>`;
 }
 function viewVila() {
@@ -6301,24 +6309,25 @@ function LIB() {
       <p><b>É aqui que se treina:</b> a Grama de Treino fechou, e a Aventura é o lugar de ganhar experiência e evoluir os Pokémon. Todos os Pokémon aparecem por aqui (menos os lendários), cada um nas áreas do seu tipo.</p>
       <p>📍 <b>Onde estou?</b> No alto da tela aparece sempre o nome do lugar e as coordenadas (coluna, linha). O botão <b>🗺️ Mapa</b> abre o mapa completo com todas as regiões, os nomes, os níveis, os Ginásios e você marcado.</p>
       <p><b>Rotas:</b> da Vila Aurora saem o Bosque Sussurrante (oeste), a Praia Coral (sul), o Deserto Rubro (leste) e a Gruta da Pedreira (pela caverna do penhasco). Mais longe ficam o Charco Sombrio (depois do Bosque), o Pico Gelado (depois da Pedreira), o 🌋 Vulcão Cinzento (depois do Deserto) e a 🏆 Estrada da Vitória (depois do Pico), as rotas mais fortes. Ande até a borda, na saída com a placa ➡️, para trocar de região.</p>
-      <p><b>Níveis:</b> cada área tem a sua faixa de nível, que aparece no alto da tela quando você pisa no mato e no botão <b>🗺️ Rotas</b>. Perto da vila os Pokémon são fracos; no fundo de cada rota (o mato com o chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Os evoluídos só aparecem nas áreas de nível alto. Quanto mais forte o selvagem, mais experiência ele dá.</p>
-      ${Object.values(RPG_REG).filter(R => !R.gym).map(R => `<p>${R.ic} <b>${R.nome}</b>: ${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${z.nome} (Nv ${z.min}–${z.max}: ${rpgTipos(z)})` : ""; }).filter(Boolean).join("; ")}.</p>`).join("")}
-      <p><b>A luta:</b> quem luta é o primeiro Pokémon da equipe que estiver com vida. Vencer dá experiência; a vida que ele perder continua perdida até se recuperar (ela volta aos poucos sozinha, ou na hora no Centro Pokémon). Não há captura na Aventura: a captura continua no tabuleiro.</p>
+      <p><b>Níveis:</b> cada área tem a sua faixa de nível, que aparece no alto da tela quando você pisa no mato e no botão <b>🗺️ Mapa</b>. Perto da vila os Pokémon são fracos; no fundo de cada rota (o mato com o chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Os evoluídos só aparecem nas áreas de nível alto. Quanto mais forte o selvagem, mais experiência ele dá.</p>
+      ${Object.values(RPG_REG).filter(R => !R.gym && Object.keys(R.z || {}).length).map(R => `<p>${R.ic} <b>${R.nome}</b>: ${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${z.nome} (Nv ${z.min}–${z.max}: ${rpgTipos(z)})` : ""; }).filter(Boolean).join("; ")}.</p>`).join("")}
+      <p><b>A luta:</b> quem luta é o primeiro Pokémon da equipe que estiver com vida. Vencer dá experiência; a vida que ele perder continua perdida até se recuperar (ela volta aos poucos sozinha, ou na hora no Centro Pokémon). No mato da Aventura não há captura: ela continua no tabuleiro (e às vezes nas Expedições).</p>
       <p><b>Fugir custa moedas:</b> ${S.cfg.rpg?.fuga_base ?? 10} moedas para fugir, mais ${S.cfg.rpg?.fuga_por_ataque ?? 10} por ataque que você já fez naquela luta. Sem moedas suficientes, não dá para fugir.</p>
       <p><b>Limite:</b> são ${S.cfg.rpg?.batalhas_dia ?? 20} lutas por dia na Aventura, para manter o equilíbrio com o tabuleiro.</p>
       <p>⚔️ <b>Encontrou, pode desafiar:</b> chegou perto de outro jogador (até ${S.cfg.rpg?.pvp?.distancia ?? 2} casas), aparece o botão ⚔️ Desafiar. Cada um desafia ${(S.cfg.rpg?.pvp?.desafia_dia ?? 1) === 1 ? "1 jogador" : `${S.cfg.rpg?.pvp?.desafia_dia} jogadores`} por dia. Quem foi desafiado escolhe: <b>lutar</b> ou <b>oferecer moedas para não lutar</b>. Quem desafiou decide: aceita as moedas (e não tem batalha) ou recusa (as moedas voltam e a batalha acontece). Sem resposta em ${S.cfg.rpg?.pvp?.prazo_horas ?? 24} horas, o desafio some. A batalha é por turnos, com os 3 primeiros da equipe de cada um, sem apostar moedas, só a experiência das batalhas e com o teto de nível. Cada um é desafiado até ${S.cfg.rpg?.pvp?.recebe_dia ?? 3} vezes por dia.</p>
-      <p>🛡️ <b>Equipamentos (do +0 ao +9):</b> botão 🛡️ Equipamentos na Aventura. São 5 peças: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús do tabuleiro), 🧤 Luvas (captura mais fácil no tabuleiro), 👖 Calça (+experiência nas vitórias da Aventura), 🥋 Peitoral (−dano nas lutas da Aventura, não vale contra jogadores) e 👢 Botas (Pokémon raros aparecem mais no mato da Aventura). O bônus fica mais forte a cada +. Para subir, use o 🍬 Doce de Forja: quanto mais alto o +, mais difícil; até o +4, falhar só gasta o doce, e do +5 para cima a peça volta 1 nível. O doce cai às vezes ao vencer selvagens (mais nos Ginásios e no Chefe); as peças são raríssimas nos bichos ou custam ${S.cfg.equip?.preco ?? 5000} moedas na loja. Peças e doces podem ser vendidos na Feira de Equipamentos. Quem refina muito ganha brilho no herói (todas as peças +9: dourado com estrelas).</p>
+      <p>🛡️ <b>Equipamentos (do +0 ao +9):</b> botão 🛡️ Equipar na Aventura. São 5 peças: 🪖 Capacete (+moedas no Dia de Pagamento e nos baús do tabuleiro), 🧤 Luvas (captura mais fácil no tabuleiro), 👖 Calça (+experiência nas vitórias da Aventura), 🥋 Peitoral (−dano nas lutas da Aventura, não vale contra jogadores) e 👢 Botas (Pokémon raros aparecem mais no mato da Aventura). O bônus fica mais forte a cada +. Para subir, use o 🍬 Doce de Forja: quanto mais alto o +, mais difícil; até o +4, falhar só gasta o doce, e do +5 para cima a peça volta 1 nível. O doce cai às vezes ao vencer selvagens (mais nos Ginásios e no Chefe); as peças são raríssimas nos bichos ou custam ${S.cfg.equip?.preco ?? 5000} moedas na loja. Peças e doces podem ser vendidos na Feira de Equipamentos. Quem refina muito ganha brilho no herói (todas as peças +9: dourado com estrelas).</p>
       <p>🧍 <b>O seu boneco na Aventura</b> mostra o que você está vestindo, e todos veem: sem a peça, a roupa na cor do seu herói; com ela, a peça muda com o "+": couro (do +0 ao +2), malha (do +3 ao +5), aço (do +6 ao +8) e <b>ouro no +9</b>. O boneco anda nas 4 direções. No tabuleiro, o boneco continua o de sempre.</p>
       <p>🐾 <b>Minha equipe:</b> no botão 🐾 Equipe (na Aventura) ou no menu Pokémon. Toque num Pokémon e depois em outro para trocar de lugar (no computador, arraste). Tudo salva na hora. Ali você também escolhe o suporte, o mascote do tabuleiro e se o 1º da equipe anda atrás de você na Aventura.</p>
-      <p>🎒 <b>Pokémon de suporte:</b> no botão 🎒 Suporte, escolha um Pokémon seu para ir na bolsa. A cada vitória na Aventura (selvagens, Ginásios e Chefe) ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de quem lutou (com o herói Pesquisador, mais). Ele precisa estar com vida.</p>
+      <p>🎒 <b>Pokémon de suporte:</b> em <b>🐾 Minha equipe</b>, toque num Pokémon e escolha "🎒 Suporte na Aventura" para ele ir na bolsa. A cada vitória na Aventura (selvagens, Ginásios, Chefe e Desafio do Planalto; nas Expedições, não) ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência de quem lutou (com o herói Pesquisador, mais). Ele precisa estar com vida.</p>
       <p>🏰 <b>A vila ajuda:</b> a Arena da vila dá lutas a mais por dia na Aventura, e a Academia dá experiência a mais nas lutas.</p>
-      <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota fica o prédio do Ginásio; entre pela porta e fale com o Líder no fundo do salão. O time dele é segredo: você só sabe quantos Pokémon ele usa, e a ordem é sorteada a cada tentativa. Antes de lutar, escolha a mesma quantidade de Pokémon seus, na ordem em que vão entrar; quem cai sai e entra o próximo, e a vida perdida continua perdida. Se perder e tentar de novo, os Pokémon do Líder voltam com a vida cheia. Vença os 4 para ganhar a <b>insígnia</b> da rota e um prêmio. Quem juntar as 6 insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio, e desistir encerra a tentativa.</p>
+      <p>🏟️ <b>Ginásios e insígnias:</b> no fundo de cada rota fica o prédio do Ginásio; entre pela porta e fale com o Líder no fundo do salão. O time dele é segredo: você só sabe quantos Pokémon ele usa, e a ordem é sorteada a cada tentativa. Antes de lutar, escolha a mesma quantidade de Pokémon seus e a ordem em que vão entrar. É <b>uma batalha só</b>, como na Red/Blue: a cada turno você ataca, troca de Pokémon (gasta o turno, e o Líder ataca quem entrou) ou usa um item (até ${S.cfg.itens?.per_battle ?? 2} na batalha inteira). Quando um Pokémon seu desmaia, <b>você escolhe quem entra</b>; o Revive traz de volta quem desmaiou com metade da vida. O Líder segue a ordem dele e só troca quando o Pokémon dele cai. A experiência de cada Pokémon do Líder derrotado é dividida entre os seus que lutaram contra ele (o suporte ganha a parte dele), e a vida perdida continua perdida depois da batalha. Durante a batalha, os escolhidos ficam travados: não vão ao Centro, à Creche, ao Leilão nem saem da equipe. Saiu da tela? Volte e continue de onde parou, mas a batalha vale ${S.cfg.rpg?.ginasios?.expira_min ?? 30} minutos: depois disso, conta como derrota. Vença todos para ganhar a <b>insígnia</b> da rota e um prêmio; quem juntar as ${Object.keys(AV.st?.lideres || {}).length || 8} insígnias ganha um prêmio especial. São ${S.cfg.rpg?.ginasios?.tentativas_dia ?? 3} tentativas por dia em cada Ginásio: perder, desistir ou deixar o tempo acabar gasta uma. Se tentar de novo, os Pokémon do Líder voltam com a vida cheia, numa ordem nova.</p>
+      <p>🤖 <b>Os Pokémon do jogo lutam direito:</b> os dos Líderes, os selvagens, o Chefe e a Equipe Rocket têm ataques de tipos diferentes e escolhem os que acertam você, preferindo os super efetivos. Nada de ficar só rosnando contra quem é imune.</p>
       <p>📜 <b>Missões:</b> os moradores dão ${S.cfg.rpg?.missoes?.por_dia ?? 3} missões por dia (vencer Pokémon numa rota, de um tipo, ou um selvagem forte). Volte a falar com quem deu a missão para pegar o prêmio. O botão 📜 Missões mostra todas.</p>
-      <p>🌙 <b>Noite:</b> das ${S.cfg.rpg?.noite?.inicio ?? 19}h às ${S.cfg.rpg?.noite?.fim ?? 5}h a Aventura escurece, e Pokémon Fantasma e Sombrio aparecem em todas as áreas.</p>
-      <p>🏛️ <b>A Liga (Elite 4 e o Campeão):</b> no fim da Estrada da Vitória fica o Planalto da Liga, e só entra quem tem as ${S.cfg.rpg?.elite?.insignias_min ?? 8} insígnias. Lá você enfrenta a Elite 4 e depois o Campeão, um atrás do outro, Pokémon por Pokémon, como no Ginásio. Antes de entrar, escolha até ${S.cfg.rpg?.elite?.time_max ?? 6} Pokémon: <b>a vida deles nunca volta durante a Liga</b> (nem com o tempo, nem no Centro Pokémon). Começou, tem que terminar: ou vence o Campeão, ou cai com a equipe toda; fugir de uma luta é desistir. Dá para entrar ${(S.cfg.rpg?.elite?.tentativas_dia ?? 1) === 1 ? "uma vez" : `${S.cfg.rpg?.elite?.tentativas_dia} vezes`} por dia. Quem vence entra para o 👑 Hall da Fama, ganha um prêmio grande na primeira vez (e menor nas outras) e uma coroa em cima do boneco, que todos veem.</p>
-      <p>👹 <b>Chefe da rota:</b> uma vez por semana um Pokémon gigante (nível ${S.cfg.rpg?.chefe?.nivel ?? 75}) aparece numa rota por ${S.cfg.rpg?.chefe?.horas ?? 48} horas. Todos lutam contra ele, e cada golpe tira da mesma barra de vida. Se a turma derrubar o chefe, todos que lutaram ganham prêmio, e os 3 que mais bateram ganham mais. Cada um luta ${S.cfg.rpg?.chefe?.tentativas_dia ?? 3} vezes por dia.</p>` },
+      <p>🌙 <b>Noite:</b> das ${S.cfg.rpg?.noite?.inicio ?? 19}h às ${S.cfg.rpg?.noite?.fim ?? 5}h a Aventura escurece, e Pokémon ${(S.cfg.rpg?.noite?.tipos || ["FANTASMA", "SOMBRIO"]).filter(t => genOn() || t !== "SOMBRIO").map(t => PK_TYPES[t]?.[0] || t).join(" e ")} aparecem em todas as áreas.</p>
+      <p>🏛️ <b>Desafio do Planalto (Elite 4 e o Campeão):</b> no fim da Estrada da Vitória fica o Planalto, e só entra quem tem as ${S.cfg.rpg?.elite?.insignias_min ?? 8} insígnias. (Não confunda com a Liga Pokémon do tabuleiro, que fecha a temporada.) Lá você enfrenta a Elite 4 e depois o Campeão, um atrás do outro, um Pokémon de cada vez. Antes de entrar, escolha até ${S.cfg.rpg?.elite?.time_max ?? 6} Pokémon: <b>a vida deles nunca volta durante o Desafio</b> (nem com o tempo, nem no Centro Pokémon). Começou, vai até o fim: ou vence o Campeão, ou cai com a equipe toda, ou desiste (fugir de uma luta também é desistir). Dá para entrar ${(S.cfg.rpg?.elite?.tentativas_dia ?? 1) === 1 ? "uma vez" : `${S.cfg.rpg?.elite?.tentativas_dia} vezes`} por dia. Quem vence entra para o 👑 Hall da Fama, ganha um prêmio grande na primeira vez (e menor nas outras) e uma coroa em cima do boneco, que todos veem.</p>
+      <p>👹 <b>Chefe da rota:</b> ${(d => `${d === 0 || d === 6 ? "todo" : "toda"} ${["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"][d] || "sábado"}`)(S.cfg.rpg?.chefe?.dia_semana ?? 6)}, às ${S.cfg.rpg?.chefe?.hora ?? 10}h, um Pokémon gigante (nível ${S.cfg.rpg?.chefe?.nivel ?? 75}) aparece numa rota por ${S.cfg.rpg?.chefe?.horas ?? 48} horas. Todos lutam contra ele, e cada golpe tira da mesma barra de vida. Se a turma derrubar o chefe, todos que lutaram ganham prêmio, e os 3 que mais bateram ganham mais. Cada um luta ${S.cfg.rpg?.chefe?.tentativas_dia ?? 3} vezes por dia.</p>` },
     { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
-      <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, Grama de Treino e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
+      <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, ${S.cfg.treino?.on === false ? "Aventura (a porta da antiga Grama de Treino)" : "Grama de Treino"} e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
       <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
     { id: "vale", ic: "🥋", t: "Vale do Treino", h: `<p>O <b>Vale do Treino</b> fica na Aventura, na trilha ao norte da Vila Aurora (no alto do penhasco). Lá os Pokémon ganham experiência <b>treinando</b>, sem lutar no mato.</p>
       <p>São <b>6 estações</b>. Chegue perto de uma e aperte <b>E</b>, escolha o Pokémon e faça o exercício (uns 20 segundos):</p>
@@ -6346,12 +6355,12 @@ function LIB() {
       <p>🤖 <b>Treino:</b> contra o computador, só por diversão.</p>
       <p>⚔️ <b>Entre jogadores (valendo ranking):</b> na aba ⚔️ Desafiar, escolha o jogador e o seu Pokémon. Quem foi desafiado recebe o aviso na hora (precisa estar com o jogo aberto no computador) e tem ${Math.round((S.cfg.pokebound?.pvp?.convite_seg ?? 120) / 60)} minutos para aceitar. A partida é ao vivo, ${S.cfg.pokebound?.turno_seg ?? 45} segundos por turno; quem perde a vez ${S.cfg.pokebound?.pvp?.pulos_max ?? 3} vezes seguidas perde a partida. Os tiros são calculados no servidor, iguais para os dois. Até ${S.cfg.pokebound?.pvp?.partidas_dia ?? 10} partidas por dia (${S.cfg.pokebound?.pvp?.mesmo_par_dia ?? 3} contra a mesma pessoa).</p>
       <p>🏆 <b>Ranking:</b> todo mundo começa com ${S.cfg.pokebound?.pvp?.pontos_inicio ?? 1000} pontos. Quem vence ganha os pontos que o outro perde, e ganhar de quem está acima vale mais. Divisões: 🥉 Bronze, 🥈 Prata (1000), 🥇 Ouro (1100), 💎 Diamante (1200) e 👑 Mestre (1300). Não vale moedas.</p>` },
-    { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b> (${S.cfg.cartas?.brilhante_pct ?? 1}% das cartas): dourada e um pouco mais forte.</p>
-      <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
+    { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b>, raríssima: dourada e um pouco mais forte.</p>
+      <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns ou melhores, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
       <p><b>Duelo:</b> monte um deck de ${S.cfg.cartas?.deck ?? 10} cartas (no máximo ${S.cfg.cartas?.max_iguais ?? 2} iguais). Você começa com 1 em campo e 3 na mão. Cada turno dá +1 ⚡ (até ${S.cfg.cartas?.energia_max ?? 5}); o ataque fraco custa ${S.cfg.cartas?.custo_fraco ?? 1} ⚡, o forte ${S.cfg.cartas?.custo_forte ?? 3} ⚡, e trocar o Pokémon em campo custa ${S.cfg.cartas?.custo_trocar ?? 1} ⚡. Fraqueza dá dano ×2 e resistência ×½, pela tabela de tipos das batalhas. Quando um Pokémon cai, entra o de mais vida da mão. Vence quem derrubar ${S.cfg.cartas?.nocautes ?? 3}. Contra outro jogador vale moedas (de ${S.cfg.cartas?.aposta_min ?? 10} a ${S.cfg.cartas?.aposta_max ?? 100}); contra o computador é só treino, sem prêmio.</p>` },
-    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p><b>🏁 Quadro da corrida:</b> no canto do mapa aparece quem está em 1º e quantas casas cada um está atrás dele (a sua linha fica destacada). Toque num nome para ver o jogador no mapa, e em "Ver todos" para o ranking da temporada. Toque no título para fechar e deixar só uma linha.</p><p><b>Botão da equipe:</b> mostra o primeiro Pokémon da equipe e uma bolinha de vida para cada um (verde, amarela ou vermelha). Toque para ver todos.</p><p><b>Tela nova no computador:</b> o mapa ocupa a tela toda, com o menu em ícones na lateral (o botão » abre o menu completo e « recolhe). No alto ficam o mapinha, a sua barra (nível, EXP e a <b>Missão diária</b>, que é o próximo passo de hoje: clique nela) e, à direita, a temporada, a casa onde você está, a região e os botões 🎒 Mochila, Meus Pokémon, Pokédex, Ranking, Biblioteca e som. Embaixo fica o <b>chat fixo</b> com as abas Chat, Jornal e Missões (a setinha recolhe). A <b>🎒 Mochila</b> mostra em quadradinhos os seus itens, bolas e visuais, a equipe e as moedas. A Grama de Treino ganhou o mesmo visual, com mapinha e chat.</p><p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
+    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p><b>🏁 Quadro da corrida:</b> no canto do mapa aparece quem está em 1º e quantas casas cada um está atrás dele (a sua linha fica destacada). Toque num nome para ver o jogador no mapa, e em "Ver todos" para o ranking da temporada. Toque no título para fechar e deixar só uma linha.</p><p><b>Botão da equipe:</b> mostra o primeiro Pokémon da equipe e uma bolinha de vida para cada um (verde, amarela ou vermelha). Toque para ver todos.</p><p><b>Tela nova no computador:</b> o mapa ocupa a tela toda, com o menu em ícones na lateral (o botão » abre o menu completo e « recolhe). No alto ficam o mapinha, a sua barra (nível, EXP e a <b>Missão diária</b>, que é o próximo passo de hoje: clique nela) e, à direita, a temporada, a casa onde você está, a região e os botões 🧭 Aventura, ⛲ Praça, 🎒 Mochila, Meus Pokémon, Pokédex, Ranking, Biblioteca e som. Embaixo fica o <b>chat fixo</b> com as abas Chat, Jornal, Acontecimentos e Missões (a setinha recolhe). A <b>🎒 Mochila</b> mostra em quadradinhos os seus itens, bolas e visuais, a equipe e as moedas.</p><p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, propostas de 🔁 troca de Pokémon, 🃏 Cartas, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
       <p>Quando chega algo novo com o jogo aberto, aparece um aviso na tela com som. Abrir o Mercado, o Leilão ou o Chat marca como visto (ou toque em "Marcar como vistos").</p>
-      <p>O botão <b>Meus Pokémon 🐾</b> (canto do mapa) mostra a sua equipe com vida e XP, avisa quem pode evoluir ou está ferido e tem atalhos para montar a equipe, a Pokédex, a Grama, o Centro, a Creche, as batalhas, o Leilão e a Loja Pokémon.</p>` },
+      <p>O botão <b>Meus Pokémon 🐾</b> (canto do mapa) mostra a sua equipe com vida e XP, avisa quem pode evoluir ou está ferido e tem atalhos para montar a equipe, a Pokédex, ${S.cfg.treino?.on === false ? "a Aventura" : "a Grama"}, o Centro, a Creche, as batalhas, o Leilão e a Loja Pokémon.</p>` },
     { id: "comecar", ic: "🚀", t: "Começando", h: `<p>Todo dia você faz três coisas:</p><ol>
       <li><b>Roleta da sorte</b>: uma vez por dia e de graça. Pode dar moedas, ajudas e outros prêmios.</li>
       <li><b>Desafio do dia</b>: adivinhe o Pokémon de hoje em 4 modos (Clássico, Cartão, Descrição e Silhueta).</li>
@@ -6373,26 +6382,32 @@ function LIB() {
     { id: "hm", ic: "🌳", t: "HMs e atalhos no mapa", h: `<p>Algumas casas do tabuleiro têm um obstáculo grande desenhado em cima:</p><ul>
       <li>🌳 <b>Árvore</b>: passa quem tiver um Pokémon que saiba <b>Cut</b>.</li><li>🌊 <b>Água</b>: passa quem tiver <b>Surf</b>.</li>
       <li>💪 <b>Pedra</b>: passa quem tiver <b>Strength</b>.</li><li>💡 <b>Caverna escura</b>: passa quem tiver <b>Flash</b>.</li></ul>
-      <p>Passando por um obstáculo com um Pokémon da <b>equipe</b> que saiba o ataque, você pega um atalho de <b>+${ic.hm.bonus?.CUT ?? 1} casa</b>, no máximo ${ic.hm.max_per_move ?? 1} atalho por dia. Com <b>Fly</b>, seu Pokémon voa +${ic.hm.fly_bonus} casas uma vez por temporada.</p>
+      <p>Passando por um obstáculo com um Pokémon da <b>equipe</b> que saiba o ataque, você pega um atalho de <b>+${ic.hm.bonus?.CUT ?? 1} casa</b>, no máximo ${ic.hm.max_per_move ?? 1} atalho por andada. Com <b>Fly</b>, seu Pokémon voa +${ic.hm.fly_bonus} casas uma vez por temporada.</p>
       <p>Quem não tem a HM passa normalmente e <b>não perde nada</b>, só recebe uma dica.</p>
-      <p><b>As HMs são raras:</b> não vendem. Aparecem em 1 de cada ${Math.round(100 / (ic.hm_bau_pct || 1))} baús ou em 1 de cada ${Math.round(100 / (ic.hm_npc_pct || 2))} vitórias contra os treinadores do mapa. Cada HM sai uma vez só para cada jogador e nunca acaba.</p>` },
+      <p><b>As HMs são raríssimas:</b> não vendem. Às vezes saem de um baú ou de uma vitória contra um treinador do mapa (só para quem para na casa dele). Cada HM sai uma vez só para cada jogador e nunca acaba.</p>` },
     { id: "herois", ic: "🛡️", t: "Heróis", h: `<p>Cada herói tem uma <b>passiva</b>, que funciona sempre, e uma <b>habilidade</b> que você ativa uma vez por dia, antes de andar. As duas ficam mais fortes nos níveis ${(c.skill_levels || [1, 5, 10, 15, 20]).join(", ")}. Trocar de herói custa ${libN(c.class_change_price, 300)} moedas.</p>
-      <p><b>Heróis em tudo:</b> cada herói também ganha um bônus pequeno fora do tabuleiro (batalhas, Grama, Centro, Creche, Leilão e lojas). Veja na lista abaixo, em "Em tudo".</p>
+      <p><b>Heróis em tudo:</b> cada herói também ganha um bônus pequeno fora do tabuleiro (batalhas, Aventura, Centro, Creche, Leilão e lojas). Veja na lista abaixo, em "Em tudo".</p>
       <ul class="hero-list">${Object.entries(HEROES).map(([k, h]) => { const x = heroStats(k, 1); return `<li><strong>${h.nome}.</strong> ${h.passiva(x.pv)} <strong>${h.skill}:</strong> ${h.efeito(x.sv)} <em>Em tudo:</em> ${heroPerk(k)}</li>`; }).join("")}</ul>` },
     { id: "pokemon", ic: "🐾", t: "Pokémon: captura e coleção", h: `<p>Depois de cada andada aparece um <b>Pokémon selvagem</b> na casa onde você parou. Você tem <b>3 bolas</b> para tentar capturar. A Poké Bola é grátis; a Great Ball (${balls.great?.price ?? 40} moedas) e a Ultra Ball (${balls.ultra?.price ?? 90}) aumentam a chance. Pokémon raros são mais difíceis, e cada região tem os seus tipos preferidos. Os Pokémon selvagens sempre aparecem fracos, entre os <b>níveis 1 e 5</b>, em qualquer parte do tabuleiro: para ficarem fortes, é preciso treinar.</p>
       <p><b>Equipe:</b> até 6 Pokémon. A equipe ganha XP toda vez que você anda, dividido entre eles, e também nas batalhas.</p>
-      <p><b>Evolução:</b> por nível ou por pedra (${pk.stones?.price ?? 250} moedas), como na Red/Blue. O nível em que cada um evolui é segredo: o jogo avisa quando o seu Pokémon já pode evoluir, e você escolhe a hora.</p>
+      <p><b>Evolução:</b> por nível ou por pedra (${pk.stones?.price ?? 250} moedas), como na Red/Blue. O nível em que cada um evolui é segredo: o jogo avisa quando o seu Pokémon já pode evoluir, e você escolhe a hora. Kadabra, Machoke, Graveler e Haunter evoluem por troca: quando são trocados com outro jogador (🔁 Trocas) ou com o Cabo Link da loja.</p>
       <p><b>Mascote:</b> um Pokémon que anda com você no mapa. <b>Roupas:</b> só visual, não mudam nada na batalha.</p>${genOn() ? `<p><b>2ª geração ligada:</b> os Pokémon 152 a 251 também aparecem.</p>` : ""}` },
-    { id: "treino", ic: "🌿", t: "Grama de Treino", h: `<p>A <b>Grama de Treino</b> é uma área fora do tabuleiro (menu Pokémon), como a Safari Zone. Escolha quem vai treinar e quanto tempo quer ficar: <b>${(S.treino?.st?.opcoes || [5, 10]).join(" ou ")} minutos</b>.</p>
+    { id: "treino", ic: "🌿", t: S.cfg.treino?.on === false ? "Vida dos Pokémon e Centro" : "Grama de Treino", h: `${S.cfg.treino?.on === false ? `<p>🌿 A <b>Grama de Treino fechou</b>: o treino agora é na <b>🧭 Aventura</b> (selvagens, Ginásios, Chefe e Expedições), no <b>🥋 Vale do Treino</b> e na <b>🍓 Fazenda</b> da vila.</p>` : `<p>A <b>Grama de Treino</b> é uma área fora do tabuleiro (menu Pokémon), como a Safari Zone. Escolha quem vai treinar e quanto tempo quer ficar: <b>${(S.treino?.st?.opcoes || [5, 10]).join(" ou ")} minutos</b>.</p>
       <p>Lá dentro, ande com o seu personagem (<b>WASD ou as setas</b> no computador; botões na tela no celular). Na <b>grama alta</b> aparecem Pokémon selvagens do nível do seu, e <b>você comanda a batalha</b>: ataques, itens da bolsa ou fugir. Vencendo, ganha experiência; perdendo, não ganha nada.</p>
       <p>⏱️ São <b>${S.treino?.st?.minutos_dia ?? 30} minutos por dia</b>. Entrou, o tempo conta: corre o tempo todo lá dentro, inclusive nas batalhas, e <b>se sair antes, o que sobrou da visita é perdido</b>. Se o tempo acabar no meio de uma luta, você termina a luta. O relógio zera à meia-noite.</p>
       <p>🐦 Pokémon selvagens passeiam pela grama só de enfeite, e quem estiver na grama ao mesmo tempo que você aparece andando por lá.</p>
       <p>🎒 <b>Acompanhante:</b> antes de entrar, escolha outro Pokémon seu, com vida, para ir na bolsa. A cada vitória, ele ganha ${S.cfg.treino?.acompanhante_pct ?? 50}% da experiência. Ótimo para quem não tem ataque de dano, como o Magikarp.</p>
       <p>⚠️ Muito raramente sai da grama um <b>Pokémon lendário</b>. Não tem batalha: ele acaba com o seu Pokémon na hora, que desmaia.</p>
-      <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>
-      <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não treina até se recuperar. Essa vida só vale na Grama de Treino: nas outras batalhas ele começa com a vida cheia.</p>
+      <p>⚡ Às vezes, por sorte, aparece um <b>Pokémon forte</b>, acima do nível do seu. Vencer dá mais experiência, mas o risco de desmaiar é grande.</p>`}
+      <p>❤️ <b>A vida conta:</b> seu Pokémon sai de cada luta com a vida que sobrou e entra assim na próxima. Se a vida zerar, ele <b>desmaia</b> e não luta até se recuperar. Essa vida vale nas lutas da Aventura (selvagens, Ginásios, Chefe, Desafio do Planalto e Expedições); nas batalhas entre jogadores e na Liga Pokémon ele começa com a vida cheia.</p>
       <p>🏥 <b>Centro Pokémon</b> (menu Pokémon): cura na hora pagando moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${trGradual() ? `O preço é só da vida que falta. Ou espere: <b>a vida volta sozinha, de graça, um pouco a cada hora</b> (de desmaiado a inteiro em ${S.treino?.st?.gratis_horas ?? 72} horas). Desmaiado fica <b>${S.cfg.treino?.desmaio_espera_horas ?? 24} horas</b> parado, e a vida volta aos poucos no resto do tempo (no total, ${S.treino?.st?.gratis_horas ?? 72} horas).` : `O preço cai com o tempo de espera. Ou espere: <b>${S.treino?.st?.gratis_horas ?? 72} horas</b> depois do último ferimento ele volta inteiro, de graça.`}</p>
-      <p>O treino não gasta o limite de batalhas do dia, e quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
+      <p>${S.cfg.treino?.on === false ? "" : "O treino não gasta o limite de batalhas do dia, e "}Quando o Pokémon sobe de nível, aprende ataques ou pode evoluir, o jogo avisa como sempre.</p>` },
+    { id: "trocas", ic: "🔁", t: "Trocas de Pokémon", h: `<p>No menu Pokémon → <b>🔁 Trocas</b>, troque <b>1 Pokémon por 1 Pokémon</b> com outro jogador. Dá para pôr moedas a mais de um lado ou do outro, se quiserem.</p>
+      <p>Quem propõe vê um resumo antes de enviar, e quem recebe vê o mesmo resumo antes de aceitar: o Pokémon, o nível, os ataques e as moedas de cada lado. A proposta vale <b>${S.cfg.troca?.expira_horas ?? 24} horas</b>; as moedas que você oferece ficam guardadas e voltam se ninguém aceitar.</p>
+      <p>O Pokémon vai inteiro: nível, experiência, ataques e roupas. Não dá para trocar Pokémon que está na Creche, num esquadrão de guerra, como suporte da Aventura, no Leilão ou numa batalha de Ginásio ou do Desafio do Planalto.</p>
+      <p>São até <b>${S.cfg.troca?.semana_max ?? 3} trocas por semana</b> (de segunda a domingo). Quem chega por troca só pode ser trocado de novo depois de <b>${S.cfg.troca?.trava_dias ?? 7} dias</b>.</p>
+      <p>💰 <b>Taxa:</b> ${S.cfg.troca?.taxa_pct ?? 5}% sobre as moedas que você recebe (Ladino ${S.cfg.troca?.ladino_taxa_pct ?? 2}%, Mercador ${S.cfg.troca?.mercador_taxa_pct ?? 0}%). Troca sem moedas não tem taxa.</p>
+      <p>✨ Como na Red/Blue, <b>Kadabra, Machoke, Graveler e Haunter evoluem</b> quando chegam por troca. Toda troca aparece nos Acontecimentos.</p>` },
     { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
       <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
       <p>No fim, o Pokémon vai sozinho para quem deu o maior lance, e quem vendeu recebe as moedas, menos ${S.leilao?.st?.cfg?.taxa_pct ?? 5}% de taxa. Sem lance, nada muda.</p>` },
@@ -6410,12 +6425,12 @@ function LIB() {
       <li><b>Poções e curas</b>: Potion, Super Potion, Hyper Potion, Max Potion, Full Restore, Antidote, Parlyz Heal, Awakening, Burn Heal, Ice Heal, Full Heal e Revive.</li>
       <li><b>Itens X</b>: sobem um atributo do Pokémon em campo durante a batalha.</li>
       <li><b>TMs</b>: ensinam um ataque e acabam. Nem todo Pokémon aprende todas, igual à Red/Blue. Cada TM pede um nível mínimo pela força do ataque: fraca (até 60 de poder, ou sem dano) a partir do nível ${S.cfg.tm_nivel?.fraca_nivel ?? 10}, média (até 90) a partir do ${S.cfg.tm_nivel?.media_nivel ?? 25} e forte (acima de 90) a partir do ${S.cfg.tm_nivel?.forte_nivel ?? 40}. Quem ensinou antes dessa regra fica com o ataque, mas ele aparece com 🔒 e só entra na batalha quando o Pokémon chega ao nível (nas batalhas com limite de nível, conta o nível da batalha). As HMs continuam livres.</li>
-      <li><b>Cabo Link</b>: faz evoluir quem, na Red/Blue, só evolui por troca (Kadabra, Machoke, Graveler e Haunter). Acaba ao usar.</li>
+      <li><b>Cabo Link</b>: faz evoluir quem, na Red/Blue, só evolui por troca (Kadabra, Machoke, Graveler e Haunter). Acaba ao usar. Trocar o Pokémon com outro jogador também faz ele evoluir.</li>
       <li><b>HMs</b>: raras, nunca acabam e abrem atalhos no mapa (veja "HMs e atalhos").</li></ul>
       <p>Para ensinar, abra o Pokémon na coleção e toque em <b>📀 Ensinar TM/HM</b>. Na batalha, toque em <b>🎒 Bolsa</b>: ela abre com tudo o que você tem, separado em bolsos (Curas, Estados, Reviver, Itens X e Outros), com a quantidade de cada um e a descrição do item escolhido. O que não faria efeito agora fica apagado. No computador dá para usar as setas, o Enter e o Esc.</p>
-      <p>Às vezes um baú (${ic.bau_pct}%) ou a Fonte das Bolas (${ic.fonte_pct}%) também dá um item.</p>` },
+      <p>Às vezes um baú ou a Fonte das Bolas também dá um item.</p>` },
     { id: "treinadores", ic: "🧢", t: "Treinadores e casas novas", h: `<p><b>Treinadores são obrigatórios:</b> passou pela casa de um Treinador (parando nela ou não), tem que batalhar. Vencendo, ganha moedas e XP; perdendo, não perde nada.</p>
-      <p>🔴 <b>Red, o treinador lendário</b>, fica no caminho perto do Castelo, com 6 Pokémon dos níveis 73 a 81. Todo mundo enfrenta… quem vencer ganha ${c.casas?.red_premio ?? 1000} moedas.</p><p><b>Treinadores do mapa:</b> ficam em pé em algumas casas. Quem parar ali enfrenta uma batalha automática contra 3 Pokémon do tipo dele, no nível da sua equipe. Vencendo, ganha moedas e XP (e, com muita sorte, uma HM). Perdendo, não perde nada.</p>
+      <p>🔴 <b>Red, o treinador lendário</b>, fica no caminho perto do Castelo, com 6 Pokémon dos níveis 73 a 81. Todo mundo enfrenta… quem vencer ganha ${c.casas?.red_premio ?? 1000} moedas.</p><p><b>Treinadores do mapa:</b> ficam em pé em algumas casas. Quem parar ali${S.cfg.casas?.passar_luta === false ? "" : " ou passar por ali"} enfrenta uma batalha automática contra 3 Pokémon do tipo dele, no nível da sua equipe. Vencendo, ganha moedas e XP (e, com muita sorte, quem parou na casa ganha uma HM). Perdendo, não perde nada.</p>
       <p><b>Mina de pedras</b>: chance de achar uma pedra de evolução. <b>Casa do Desafio</b>: quem acertou os 4 modos do dia ganha moedas e anda mais; quem não acertou volta casas. <b>Ladrão de estrada</b>: leva uma parte das suas moedas. <b>Fonte das Bolas</b>: dá uma Great Ball ou uma Ultra Ball.</p>
       <p>Na sua vila, a <b>Mina</b> também deixa cavar pedras uma vez por dia.</p>` },
     { id: "liga", ic: "🏆", t: "Temporada e Liga Pokémon", h: `<p>O <b>1º jogador que chega ao Castelo encerra a corrida na hora</b> e puxa todo mundo para a Liga. Os prêmios do Castelo vão pela posição: primeiro quem chegou, depois quem estava mais perto do Castelo.</p>
@@ -6442,7 +6457,7 @@ function LIB() {
     { id: "vila", ic: "🏰", t: "Vila e Guerras", h: `<p><b>Minha Vila</b> tem construções que produzem moedas e outras vantagens. Melhore as construções com moedas e colete a produção.</p>
       <p>🏡 No computador a vila abre em <b>tela grande</b>, com cada construção no seu terreno (o terreno vazio tem as estacas e o 🔨). Toque numa construção para ir até o cartão dela. A <b>🍓 Fazenda de Frutas</b> fica no cercado da vila (veja o assunto Fazenda de Frutas).</p>
       <p>O Snorlax da Rodada acorda com a vila <b>enlameada</b>: a produção para até limpar.</p>
-      <p>🏰 <b>A vila ajuda em tudo:</b> cada construção dá um bônus no resto do jogo. Centro da Vila: casas a mais em toda andada (a partir do nível 3). Estábulo: casa de bônus a cada ${S.cfg.stable_days ?? 2} dias. Pomar: mais chance de captura. Taverna: +1 Poké Bola por encontro. Torre de Vigia: mais Pokémon raros. Academia: mais XP na Grama. Arena: mais minutos na Grama. Centro Pokémon de Guerra: Centro Pokémon mais barato e cura grátis mais rápida. Poço: Creche mais barata. Torre de Defesa: mais dano na Equipe Rocket. Muralha: limpar a lama mais barato. Mina: salário maior. Cofre: taxa menor no Mercado e no Leilão. Na Minha Vila aparece o que a sua vila te dá agora. Construção danificada para de dar o bônus até ser consertada.</p>
+      <p>🏰 <b>A vila ajuda em tudo:</b> cada construção dá um bônus no resto do jogo. Centro da Vila: casas a mais em toda andada (a partir do nível 3). Estábulo: casa de bônus a cada ${S.cfg.stable_days ?? 2} dias. Pomar: mais chance de captura. Taverna: +1 Poké Bola por encontro. Torre de Vigia: mais Pokémon raros. Academia: mais XP nas lutas da Aventura. Arena: lutas a mais por dia na Aventura. Centro Pokémon de Guerra: Centro Pokémon mais barato e cura grátis mais rápida. Poço: Creche mais barata. Torre de Defesa: mais dano na Equipe Rocket. Muralha: limpar a lama mais barato. Mina: salário maior. Cofre: taxa menor no Mercado e no Leilão. Na Minha Vila aparece o que a sua vila te dá agora. Construção danificada para de dar o bônus até ser consertada.</p>
       <p><b>Guerras (opcionais):</b> monte esquadrões de ataque e defesa com 3 Pokémon cada e ataque outras vilas parecidas com a sua. A luta é automática. Quem vence leva uma parte das moedas (o Cofre protege), e as construções atingidas precisam de conserto. Os Pokémon feridos se curam no Centro Pokémon ou sozinhos com o tempo.</p>
       <p>🪖 <b>Quartel Pokémon:</b> é ele que coloca você na guerra, mas também dá vantagens todo dia: <b>soldo</b> em moedas (coletado na vila), <b>batalhas extras com XP</b>, <b>XP diário</b> para os Pokémon dos seus esquadrões e mais moedas protegidas no saque. Quartel novo vem com alguns dias de escudo.</p>` },
     { id: "lojas", ic: "🛍️", t: "Lojas, Caixa e ajuda", h: `<p><b>Loja do herói:</b> visuais, ajudas e armadilhas. <b>Loja Pokémon:</b> bolas, pedras, itens, TMs e roupas para Pokémon. <b>Bandeira da vila:</b> compre e hasteie na sua vila.</p>
@@ -6701,6 +6716,7 @@ const ACTIONS = {
     if (v === "treino" || v === "centro") return treinoOpen(v);
     if (v === "creche") return crecheOpen();
     if (v === "leilao") return leilaoOpen();
+    if (v === "trocas") return trocasOpen();   // arquivo 114
     if (v === "cartas") return cartasOpen();
     if (v === "pokebound") return pbOpen();
     if (v === "praca") return pzOpen();
@@ -7117,6 +7133,7 @@ function menuHTML() {
     leilao: S.leilao?.missing ? null : S.av.cobertos.length + S.av.novos.length ? `<b class="mb red" title="Leilão novo ou lance coberto">${S.av.cobertos.length + S.av.novos.length}</b>` : S.leilao?.st?.abertos?.length ? `<b class="mb live">${S.leilao.st.abertos.length}</b>` : "",
     creche: S.creche?.missing ? null : S.creche?.st?.treino ? `<b class="mb live">⏳ ${S.creche.st.treino.entregues}/${S.creche.st.treino.niveis}</b>` : S.creche?.st?.restante ? `<b class="mb">${S.creche.st.restante} nív.</b>` : "",
     mercado: S.av.market.length ? `<b class="mb red" title="Itens novos no Mercado">${S.av.market.length}</b>` : "",
+    trocas: S.trocas?.missing ? null : S.av.trocas ? `<b class="mb red" title="Propostas de troca para você">${S.av.trocas}</b>` : "",   // arquivo 114
     cartas: S.tcgRes ? (S.tcgRes.novas || S.tcgRes.convites || S.tcgRes.vez ? `<b class="mb red">${(S.tcgRes.novas ? 1 : 0) + S.tcgRes.convites + S.tcgRes.vez}</b>` : S.tcgRes.pacotes ? `<b class="mb">🎁 ${S.tcgRes.pacotes}</b>` : "") : "",
     pokebound: pbNoComputador() && (S.isAdmin || S.cfg.pokebound?.on !== false) ? (S.cfg.pokebound?.on === false ? `<b class="mb">DESLIGADO</b>` : `<b class="mb live">NOVO</b>`) : null,   // para todos no computador; o admin desliga em Ajustes do jogo
     aventura: S.isAdmin || S.cfg.rpg?.on !== false ? (S.cfg.rpg?.on === false ? `<b class="mb">FECHADA</b>` : `<b class="mb live">NOVO</b>`) : null,
@@ -7139,14 +7156,14 @@ function menuHTML() {
 // símbolo e nome de cada janela (menu, atalhos e abas das janelas usam os mesmos)
 const MENU = {
   desafio: ["🎯", "Desafio do dia"], pokedex: ["📕", "Pokédex & Coleção"], equipe: ["🐾", "Minha equipe"], treino: ["🌿", "Grama de Treino"],
-  centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
+  centro: ["🏥", "Centro Pokémon"], creche: ["🏡", "Creche Pokémon"], leilao: ["🔨", "Leilão de Pokémon"], trocas: ["🔁", "Trocas de Pokémon"], batalhas: ["⚔️", "Batalhas Pokémon"], arena: ["🏟️", "Arena Pokémon"], rocket: ["🚀", "Equipe Rocket"],
   pkloja: ["🛒", "Loja Pokémon"], cartas: ["🃏", "Cartas Pokegames"], pokebound: ["💥", "PokeBound"], expedicao: ["⛏️", "Expedições"], vila: ["🏰", "Minha Vila"], guerras: ["🛡️", "Guerras entre vilas"], loja: ["👕", "Loja & Visuais"],
   mercado: ["🤝", "Mercado"], ranking: ["🏆", "Ranking & Pódios"], liga: ["👑", "Liga Pokémon"], duelos: ["🤺", "Duelos & Bolão"],
   presence: ["✅", "Quem já jogou hoje"], chat: ["💬", "Chat, Jornal & Mural"], praca: ["⛲", "Praça Central"], aventura: ["🧭", "Aventura (RPG)"], correio: ["📬", "Correio (presentes)"], caixa: ["💛", "Caixa da Obra & Apoio"],
   regras: ["📚", "Biblioteca"], sac: ["🎧", "SAC: fale com a gente"], admin: ["⚙️", "Administração"], batalha: ["⚔️", "Batalha"]
 };
 const MENU_GROUPS = [
-  ["pk", "🐾 Pokémon", ["arena", "batalhas", "cartas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "pkloja", "pokedex"]],
+  ["pk", "🐾 Pokémon", ["arena", "batalhas", "cartas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "trocas", "pkloja", "pokedex"]],
   ["vila", "🏰 Vila e lojas", ["guerras", "loja", "mercado", "vila"]],
   ["comp", "🏆 Competir", ["aventura", "duelos", "expedicao", "liga", "pokebound", "presence", "ranking"]],
   ["com", "💬 Comunidade", ["caixa", "chat", "correio", "praca"]],
@@ -7785,7 +7802,7 @@ Object.assign(ACTIONS, {
   "tm-por": v => tmMover(v, tmTime().length),
   "tm-tirar": v => { const t = tmTime().map(m => m.id).filter(x => x !== v); tmSalvar(t); },
   "tm-x": () => { S.tm.sel = null; tmPinta(); },
-  "tm-sup": v => { try { if (rpgSupId() === v) localStorage.removeItem(rpgSupKey()); else localStorage.setItem(rpgSupKey(), v); } catch {} S.tm.sel = null; toast(rpgSupId() === v ? "🎒 Agora ele é o suporte na Aventura." : "🎒 Sem suporte."); tmPinta(); if (AV.open) rpgHud(); },
+  "tm-sup": v => { try { if (rpgSupId() === v) localStorage.removeItem(rpgSupKey()); else localStorage.setItem(rpgSupKey(), v); } catch {} rpgSupSalva(); S.tm.sel = null; toast(rpgSupId() === v ? "🎒 Agora ele é o suporte na Aventura." : "🎒 Sem suporte."); tmPinta(); if (AV.open) rpgHud(); },
   "tm-masc": v => guarded(async () => { const tira = S.me?.mascot?.id === v; await rpc("mon_set_mascot", { _id: tira ? null : v }); await Promise.all([refreshMe(), loadWorld()]); toast(tira ? "Mascote tirado." : "⭐ Mascote escolhido! Ele anda com você no tabuleiro."); S.tm.sel = null; tmPinta(); }),
   "tm-dex": v => { closeModal(); if (AV.open) { rpgClose(false); AV.volta = true; } S.pk.sel = v; S.pk.tab = "colecao"; ACTIONS.go("pokedex"); },
 });
@@ -8040,7 +8057,7 @@ function viewBattle() {
     controls = `<div class="bt-moves">${locked ? `<button class="btn big" data-act="bt-move" data-v="0">${mm.fl?.recharge ? "Recarregar" : "Continuar o ataque"}</button>`
       : noPP ? `<button class="btn big" data-act="bt-move" data-v="-1">Struggle (sem PP)</button>`
       : mm.moves.map((x, i) => { const mv = moveOf(x.id); return `<button class="mvbtn" style="--tc:${PK_TYPES[mv?.type]?.[1] || "#888"}" data-act="bt-move" data-v="${i}" ${x.pp <= 0 ? "disabled" : ""}><b>${esc(mv?.name)}</b><small>${PK_TYPES[mv?.type]?.[0] || ""} · PP ${x.pp}/${x.max}</small></button>`; }).join("")}</div>
-      <div class="act-btns bt-sub"><button class="btn ghost small" data-act="bt-panel" data-v="switch" ${locked ? "disabled" : ""}>Trocar Pokémon</button>${S.pk.items && b.mode !== "guerra" ? `<button class="btn ghost small" data-act="bt-panel" data-v="bag" ${locked ? "disabled" : ""}>🎒 Bolsa <small>${Math.max(0, itemsCfg().per_battle - (M.items || 0))}/${itemsCfg().per_battle}</small></button>` : ""}<button class="btn ghost small danger-txt" data-act="bt-forfeit" data-v="${b.id}">${b.mode === "treino" ? "🏃 Fugir" : "Desistir"}</button></div>`;
+      <div class="act-btns bt-sub"><button class="btn ghost small" data-act="bt-panel" data-v="switch" ${locked ? "disabled" : ""}>Trocar Pokémon</button>${S.pk.items && b.mode !== "guerra" ? `<button class="btn ghost small" data-act="bt-panel" data-v="bag" ${locked ? "disabled" : ""}>🎒 Bolsa <small>${Math.max(0, itemsCfg().per_battle - (M.items || 0))}/${itemsCfg().per_battle}</small></button>` : ""}<button class="btn ghost small danger-txt" data-act="bt-forfeit" data-v="${b.id}">${b.mode === "treino" ? (b.state?.treino?.multi ? "🏳️ Desistir" : "🏃 Fugir") : "Desistir"}</button></div>`;
   }
   const hist = b.log.slice(0, bt.shown).slice(-8).reverse().map(t => `<li><b>Turno ${t.turn}</b> ${t.lines.map(l => esc(l.txt)).join(" ")}</li>`).join("");
   const isLg = b.mode === "liga", Lg = S.league || null, lm = isLg && Lg?.matches?.find(m => m.battle_id === b.id);
@@ -8052,9 +8069,16 @@ function viewBattle() {
       <div class="bt-side op" data-side="${op}">${btHp(om, false)}${party(O)}<div class="bt-sprite ${om.hp <= 0 ? "faint" : ""}">${monCv(om.species, om.outfit, 192)}</div><span class="trainer">${esc(O.name)}</span></div>
       <div class="bt-side me" data-side="${me}"><div class="bt-sprite ${mm.hp <= 0 ? "faint" : ""}">${monCv(mm.species, {}, 192, true)}</div>${btHp(mm, !spec)}${party(M)}<span class="trainer">${spec ? esc(M.name) : "Você"}</span></div>
     </div>
-    <div class="bt-box${bt.panel === "bag" && !bt.bagLoading ? " com-bolsa" : ""}"><div class="bt-msg" aria-live="polite">${(bt.lines || []).slice(-3).map(esc).join("<br>") || `O que ${esc(mm.name)} vai fazer?`}</div><div class="bt-ctl">${controls}</div></div>
+    ${btGymPrazo(b)}<div class="bt-box${bt.panel === "bag" && !bt.bagLoading ? " com-bolsa" : ""}"><div class="bt-msg" aria-live="polite">${(bt.lines || []).slice(-3).map(esc).join("<br>") || `O que ${esc(mm.name)} vai fazer?`}</div><div class="bt-ctl">${controls}</div></div>
     <details class="bt-hist"><summary>Histórico da batalha (turno ${b.turn})</summary><ul>${hist}</ul></details>
     ${arCheerPanel(b, v)}</div>`;
+}
+
+// arquivo 113: Ginásio em uma batalha só. Mostra o placar e até quando a batalha vale (depois conta como derrota)
+function btGymPrazo(b) {
+  const tr = b?.state?.treino; if (!tr?.multi || b.status !== "ativa") return "";
+  const L = b.state.sides[1].mons, caidos = L.filter(m => m.hp <= 0).length, ate = new Date(new Date(b.started_at || b.created_at).getTime() + (rpgCfg().ginasios?.expira_min ?? 30) * 60000);
+  return `<p class="bt-gym-prazo">🏟️ ${esc(b.state.sides[1].name)}: <b>${caidos} de ${L.length}</b> Pokémon derrotados · ⏳ termine até <b>${ate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</b>, senão conta como derrota.</p>`;
 }
 
 // ---------- janelas, menu e ações ----------
@@ -8176,7 +8200,8 @@ Object.assign(ACTIONS, {
   "bt-forfeit": async v => {
     if (S.pk.bt?.data?.mode === "treino") {
       const tr = S.pk.bt.data.state?.treino || {}, rc = rpgCfg(), custo = tr.rpg ? Math.max(0, (rc.fuga_base ?? 10) + (rc.fuga_por_ataque ?? 10) * (tr.ataques || 0)) : 0;
-      if (tr.elite) { if (await confirmModal("Fugir da Liga?", "Fugir na Liga é desistir: a sua tentativa de hoje acaba e conta como derrota.", "Desistir da Liga")) await btAct("forfeit", null); return; }
+      if (tr.elite) { if (await confirmModal("Fugir do Desafio do Planalto?", "Fugir no Desafio do Planalto é desistir: a sua tentativa de hoje acaba e conta como derrota.", "Desistir")) await btAct("forfeit", null); return; }
+      if (tr.multi) { if (await confirmModal("Desistir do Ginásio?", "A batalha acaba e conta como uma das tentativas de hoje. A vida que os seus Pokémon perderam continua perdida.", "Desistir")) await btAct("forfeit", null); return; }   // arquivo 113
       if (custo > (S.me?.coins ?? 0)) return toast(`Fugir agora custa ${custo} moedas e você tem ${S.me?.coins ?? 0}. Continue lutando!`, true);
       if (await confirmModal("Fugir da luta?", `${custo ? `Fugir agora custa ${custo} moedas (${rc.fuga_base ?? 10} + ${rc.fuga_por_ataque ?? 10} por ataque que você já fez). ` : ""}Você volta sem ganhar experiência. A vida que o Pokémon perdeu continua perdida.`, custo ? `Fugir por ${custo}` : "Fugir")) { await btAct("forfeit", null); if (custo) refreshMe().catch(() => {}); }
       return; }
@@ -8816,7 +8841,7 @@ function viewLiga() {
     <li>Classificação da corrida: primeiro quem chegou ao Castelo (pela ordem), depois quem estava mais perto. Os prêmios do Castelo (${(S.cfg.castle_prizes || [500, 300, 150]).join(", ")} moedas) vão por essa posição.</li>
     <li>Mata-mata em batalhas Pokémon turno a turno: o 1º da corrida enfrenta o último, o 2º o penúltimo, e assim por diante. Se o número for ímpar, os dois últimos fazem uma repescagem antes.</li>
     <li>Sem espera: acabou uma fase, começa a próxima. A vida dos Pokémon começa cheia em toda luta. Quem não tem Pokémon perde por W.O.; empate, passa quem chegou antes ao Castelo.</li>
-    <li>O campeão ganha a Aura do Campeão, um castelo na vila e a estátua no mapa, e entra na hora na caverna de um lendário. Ele tem uma única tentativa de captura, com ${S.cfg.league_capture_pct ?? 5}% de chance.</li>
+    <li>O campeão ganha a Aura do Campeão, um castelo na vila e a estátua no mapa, e entra na hora na caverna de um lendário. Ele tem uma única tentativa de captura, e é bem difícil.</li>
     <li>Acabou a caverna, todos voltam à largada sem perder nada e já começa uma nova corrida. Nos primeiros ${S.cfg.temporada?.troca_heroi_dias ?? 3} dias da temporada nova, cada um pode trocar de herói de graça, uma vez.</li>
     <li>Durante a Liga, todos os treinadores ficam no 🏟️ Estádio da Liga, ao lado do Castelo. Toque nele para ver o chaveamento.</li></ul></details>`;
   const hall = S.leagueHall.length ? `<section class="panel lo"><h3>🏛️ Hall da Fama</h3><ul class="war-hist">${S.leagueHall.map(h => `<li class="won"><span>🏆 <b>${esc(h.champion_name)}</b>: campeão da ${esc(h.name)}${h.cave_result ? ` · ${h.cave_result === "capturou" ? `capturou o ${esc(pkName(h.legend_id))}` : `o ${esc(pkName(h.legend_id))} escapou`}` : ""}</span><small class="muted">${h.ended_at ? chatWhen(h.ended_at) : "caverna aberta"}</small></li>`).join("")}</ul></section>` : "";
@@ -8947,7 +8972,7 @@ Object.assign(ACTIONS, {
     await rpc("league_cave_vote", { _side: side }); L.votes = L.votes.filter(x => x.user_id !== me); if (side) L.votes.push({ user_id: me, side }); render(); }),
   "cave-try": async () => {
     const lg = S.league?.lg; if (!lg) return;
-    if (!(await confirmModal("Tentar capturar?", `É a sua única tentativa. A chance de capturar o ${pkName(lg.legend_id)} é de ${S.cfg.league_capture_pct ?? 5}%. Boa sorte!`, "🎯 Lançar a bola"))) return;
+    if (!(await confirmModal("Tentar capturar?", `É a sua única tentativa de capturar o ${pkName(lg.legend_id)}, e é bem difícil. Boa sorte!`, "🎯 Lançar a bola"))) return;
     let r; try { r = await rpc("league_cave_try"); } catch (e) { return toast(errMsg(e), true); }
     sfx(r.caught ? "acerto" : "erro");
     await Promise.all([loadLeague(), loadPk().catch(() => {})]); render();
@@ -9339,7 +9364,7 @@ function viewCentro() {
       <p>• <b>Curar agora:</b> paga em moedas. Quanto maior o nível e mais ferido, mais caro; desmaiado custa o dobro. ${st.cura_gradual ? `O preço é só da vida que falta: quanto mais ele já se recuperou, mais barato.<br>
          • <b>De graça:</b> a vida volta sozinha, <b>um pouco a cada hora</b>. De desmaiado até a vida cheia são <b>${st.gratis_horas} horas</b>; quem está pouco ferido fica bom antes. <b>Desmaiado fica ${S.cfg.treino?.desmaio_espera_horas ?? 24} horas parado</b>, e a vida volta aos poucos no resto do tempo (as ${st.gratis_horas} horas são o total).` : `<b>O preço cai com o tempo:</b> logo depois do ferimento é o preço cheio, na metade da espera é a metade, e no fim não custa nada.<br>
          • <b>De graça:</b> espere <b>${st.gratis_horas} horas</b> depois do último ferimento e ele volta inteiro sozinho.`}</p>
-      <p style="font-size:13px">A vida do treino só vale na Grama de Treino. Nas outras batalhas, seus Pokémon começam sempre com a vida cheia.</p></div>
+      <p style="font-size:13px">A vida do treino vale nas lutas da Aventura (selvagens, Ginásios, Chefe, Desafio do Planalto e Expedições). Nas batalhas entre jogadores, seus Pokémon começam sempre com a vida cheia.</p></div>
     ${list.length ? `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px"><span>Você tem <b>${coins} moedas</b>.</span>
         <button class="btn" data-act="ce-cure" data-v="" ${coins >= total ? "" : "disabled"}>❤️ Curar todos (${total} moedas)</button></div>
       <div class="ce-list">${list.map(f => `<div class="ce-row">${monCv(f.m.species_id, f.m.outfit, 64)}
@@ -9347,7 +9372,7 @@ function viewCentro() {
           ${f.tr_hp <= 0 ? `<span class="ko-tag">💤 Desmaiado</span>` : `${trHpBar(f.tr_hp)} <span>${f.tr_hp}% da vida</span>`}<br>
           <span class="muted" style="font-size:13px">${st.cura_gradual ? "Vida cheia de graça em" : "De graça em"} ${hoursLeft(f.gratis_em)}</span></div>
         <button class="btn small" data-act="ce-cure" data-v="${f.id}" ${coins >= f.preco ? "" : "disabled"}>Curar agora (${f.preco} moedas)</button>${f.preco_cheio && f.preco < f.preco_cheio ? `<small class="muted">preço cheio: ${f.preco_cheio}</small>` : ""}</div>`).join("")}</div>`
-      : `<div class="pk-empty"><p><strong>Todos os seus Pokémon estão com a vida cheia. 💚</strong></p><p class="muted">Quando algum se ferir na Grama de Treino, ele aparece aqui.</p>
+      : `<div class="pk-empty"><p><strong>Todos os seus Pokémon estão com a vida cheia. 💚</strong></p><p class="muted">Quando algum se ferir na Aventura, ele aparece aqui.</p>
           <button class="btn" data-act="go" data-v="treino">🌿 Ir para a Grama de Treino</button></div>`}
   </div>`;
 }
@@ -9733,11 +9758,12 @@ async function grAfterBattle(b) {
 }
 function grEndHTML(b) {
   const r = b.state?.treino?.res || {}, V = S.treino.st?.visita, tr = b.state?.treino || {}, pos = tr.pos || {}, aventura = tr.rpg || tr.gym || tr.chefe || tr.elite, expd = tr.exp;
+  if (r.multi) return grGymEndHTML(b, r, pos);   // arquivo 113: Ginásio em uma batalha só
   const msg = r.fugiu ? "Você fugiu da luta." : r.won ? `🏆 Vitória! ${esc(pkName(r.species))} ganhou <b>${r.xp} de experiência</b>${r.level_to > r.level_from ? ` e <b>subiu para o nível ${r.level_to}</b>! 🎉` : "."}`
-    : tr.gym ? "O Pokémon do Líder venceu esta." : tr.elite ? "O Pokémon da Liga venceu esta." : tr.chefe ? "O chefe venceu desta vez." : "O selvagem venceu. Não ganhou experiência.";
-  const extra = tr.elite ? (pos.status === "venceu" ? `<p class="rpg-fim ok">👑 <b>VOCÊ VENCEU A LIGA!</b> Derrotou a Elite 4 e o Campeão e entrou para o Hall da Fama. O prêmio já está com você!</p>`
-      : pos.status === "perdeu" ? `<p class="rpg-fim">A sua equipe caiu na Liga. A tentativa acabou: treine e volte outro dia.</p>`
-      : `<p class="rpg-fim">🏛️ Liga: <b>${esc(pos.membro || "")}</b> (${(pos.etapa ?? 0) + 1}º de ${pos.n_etapas || 5}), <b>${pos.idx} de ${pos.total}</b> Pokémon dele derrotados. A vida dos seus não volta: continue!</p>`)
+    : tr.gym ? "O Pokémon do Líder venceu esta." : tr.elite ? "O Pokémon do Desafio do Planalto venceu esta." : tr.chefe ? "O chefe venceu desta vez." : "O selvagem venceu. Não ganhou experiência.";
+  const extra = tr.elite ? (pos.status === "venceu" ? `<p class="rpg-fim ok">👑 <b>VOCÊ VENCEU O DESAFIO DO PLANALTO!</b> Derrotou a Elite 4 e o Campeão e entrou para o Hall da Fama. O prêmio já está com você!</p>`
+      : pos.status === "perdeu" ? `<p class="rpg-fim">A sua equipe caiu no Desafio do Planalto. A tentativa acabou: treine e volte outro dia.</p>`
+      : `<p class="rpg-fim">🏛️ Desafio do Planalto: <b>${esc(pos.membro || "")}</b> (${(pos.etapa ?? 0) + 1}º de ${pos.n_etapas || 5}), <b>${pos.idx} de ${pos.total}</b> Pokémon dele derrotados. A vida dos seus não volta: continue!</p>`)
     : tr.gym ? (pos.status === "venceu" ? `<p class="rpg-fim ok">🏅 Você venceu ${esc(pos.lider || "o Líder")} e ganhou a <b>insígnia</b>! O prêmio já está com você.</p>`
       : pos.status === "perdeu" ? `<p class="rpg-fim">A tentativa no Ginásio acabou. Cure a equipe e tente de novo.</p>` : `<p class="rpg-fim">🏟️ Ginásio: <b>${pos.idx} de ${pos.total}</b> Pokémon do Líder derrotados. Continue!</p>`)
     : tr.chefe ? `<p class="rpg-fim">👹 Você causou <b>${pos.dano ?? 0}</b> de dano no chefe. ${pos.status === "vencido" ? "🎉 <b>O chefe caiu!</b> Todos que lutaram ganharam o prêmio." : `A vida dele está em <b>${Math.max(0, Math.round(100 - (pos.total_dano || 0) * 100 / Math.max(1, pos.hp_total || 1)))}%</b>.`}</p>`
@@ -9747,7 +9773,7 @@ function grEndHTML(b) {
   const comp = r.comp_xp ? ` 🎒 ${esc(pkName(r.comp_species))} (acompanhante) ganhou <b>${r.comp_xp}</b>.` : "";
   return `<div class="bt-end ${r.won ? "won" : "lost"}"><h3>${r.forte ? "⚡ " : ""}${r.won ? "Você venceu!" : r.fugiu ? "Fugiu!" : "Não foi dessa vez!"}</h3>
     <p>${msg}${comp} ${r.desmaiou ? `<b>${esc(pkName(r.species))} desmaiou!</b> ${trGradual() ? "Leve ao Centro Pokémon ou espere a vida voltar aos poucos." : `Leve ao Centro Pokémon ou espere ${S.treino.st?.gratis_horas ?? 72} horas.`}` : r.hp != null ? `Ficou com <b>${r.hp}% da vida</b>.` : ""}</p>
-    ${extra}${achou}<div class="act-btns">${tr.gym && pos.status === "andando" ? `<button class="btn" data-act="rpg-gym-next" data-v="${tr.gym}">▶ Continuar o Ginásio</button>` : ""}${tr.elite && pos.status === "andando" ? `<button class="btn" data-act="rpg-elite-next">▶ Próxima luta da Liga</button>` : ""}${expd ? `<button class="btn" data-act="exp-volta">⛏️ Voltar para a expedição</button>` : ""}${expd ? "" : aventura ? `<button class="btn ${(tr.gym || tr.elite) && pos.status === "andando" ? "ghost" : ""}" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
+    ${extra}${achou}<div class="act-btns">${tr.gym && pos.status === "andando" ? `<button class="btn" data-act="rpg-gym-next" data-v="${tr.gym}">▶ Continuar o Ginásio</button>` : ""}${tr.elite && pos.status === "andando" ? `<button class="btn" data-act="rpg-elite-next">▶ Próxima luta do Desafio</button>` : ""}${expd ? `<button class="btn" data-act="exp-volta">⛏️ Voltar para a expedição</button>` : ""}${expd ? "" : aventura ? `<button class="btn ${(tr.gym || tr.elite) && pos.status === "andando" ? "ghost" : ""}" data-act="rpg-back">🧭 Voltar para a Aventura</button>` : V ? `<button class="btn" data-act="gr-back">🌿 Voltar para a grama</button>` : `<button class="btn" data-act="gr-back">Voltar</button>`}${r.desmaiou ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
 }
 
 // =================================================================
@@ -9756,9 +9782,14 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["vale", "🥋 Vale do Treino"], ["fazenda", "🍓 Fazenda de Frutas"], ["exp", "⛏️ Expedições"], ["equip", "🛡️ Equipamentos"], ["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["rpg", "🧭 Aventura (RPG)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["ia", "🤖 Ataques dos Pokémon do jogo"], ["troca", "🔁 Trocas de Pokémon"], ["vale", "🥋 Vale do Treino"], ["fazenda", "🍓 Fazenda de Frutas"], ["exp", "⛏️ Expedições"], ["equip", "🛡️ Equipamentos"], ["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["rpg", "🧭 Aventura (RPG)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
+  ia: { on: "Escolha nova de ataques ligada (Líderes, selvagens, Chefe e Rocket)", lider_melhor_pct: "Líderes e Rocket: % das vezes em que usam o ataque mais forte",
+    status_cada: "No máximo 1 ataque de status a cada N turnos", status_max: "Quantas vezes cada Pokémon repete o mesmo ataque de status" },
+  troca: { on: "Trocas abertas", taxa_pct: "Taxa sobre as moedas recebidas (%)", ladino_taxa_pct: "Taxa do Ladino (%)", mercador_taxa_pct: "Taxa do Mercador (%)",
+    semana_max: "Trocas por semana (cada jogador)", trava_dias: "Dias até quem chegou por troca poder ser trocado de novo", expira_horas: "Horas até a proposta vencer",
+    pendentes_max: "Propostas esperando resposta (cada jogador)", moedas_max: "Moedas no máximo de cada lado" },
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
   liga: { comeca_na_chegada: "A Liga começa quando o 1º chega ao Castelo", mapa_parado: "Durante a Liga ninguém anda no mapa", fase_por_dia: "Uma fase da Liga por dia (desligado: sem espera)",
     caverna_horas: "Horas até a caverna abrir (0 = na hora)", caverna_prazo_horas: "Horas para o campeão tentar antes do lendário fugir", temporada_na_hora: "Temporada nova começa assim que a Liga acaba" },
@@ -9781,7 +9812,7 @@ const AJ_LABELS = {
   rpg: { on: "Aventura aberta para os jogadores", batalhas_dia: "Lutas contra selvagens por dia (por jogador)", chance_pct: "% de chance de encontro a cada passo no mato", espera_seg: "Segundos de espera entre encontros",
     envio_seg: "Segundos entre avisos de posição", fuga_base: "Fugir de luta: preço básico (moedas)", fuga_por_ataque: "Fugir de luta: + moedas por ataque já feito",
     nivel_pedra: "Evoluídos por pedra aparecem a partir do nível", nivel_troca: "Evoluídos por troca aparecem a partir do nível", folga: "A forma anterior some quantos níveis depois de poder evoluir",
-    lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "noite": "🌙 Noite", "noite.on": "Noite ligada", "noite.inicio": "Noite começa (hora)", "noite.fim": "Noite termina (hora)", "noite.tipos": "Tipos que aparecem de noite em todas as áreas", "missoes": "📜 Missões dos moradores", "missoes.on": "Missões ligadas", "missoes.por_dia": "Missões por dia", "missoes.moedas_min": "Prêmio: moedas (mínimo)", "missoes.moedas_max": "Prêmio: moedas (máximo)", "missoes.itens": "Itens sorteados de prêmio", "ginasios": "🏟️ Ginásios", "ginasios.on": "Ginásios abertos", "ginasios.tentativas_dia": "Tentativas por dia em cada Ginásio", "ginasios.moedas": "Prêmio da insígnia: moedas", "ginasios.itens": "Prêmio da insígnia: itens", "ginasios.todas_moedas": "Prêmio de todas as insígnias: moedas", "ginasios.todas_itens": "Prêmio de todas as insígnias: itens", "ginasios.lideres": "Líderes (nome, herói, tipo e time [espécie, nível])", "elite": "🏛️ Liga (Elite 4 e Campeão)", "elite.on": "Liga aberta", "elite.insignias_min": "Insígnias para entrar", "elite.tentativas_dia": "Tentativas por dia", "elite.time_max": "Pokémon que cada um leva (até 6)", "elite.moedas": "Prêmio da 1ª vitória (moedas)", "elite.itens": "Itens da 1ª vitória", "elite.doces": "Doces de Forja da 1ª vitória", "elite.repetir_moedas": "Prêmio das outras vitórias (moedas)", "elite.repetir_doces": "Doces de Forja das outras vitórias",
+    lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "noite": "🌙 Noite", "noite.on": "Noite ligada", "noite.inicio": "Noite começa (hora)", "noite.fim": "Noite termina (hora)", "noite.tipos": "Tipos que aparecem de noite em todas as áreas", "missoes": "📜 Missões dos moradores", "missoes.on": "Missões ligadas", "missoes.por_dia": "Missões por dia", "missoes.moedas_min": "Prêmio: moedas (mínimo)", "missoes.moedas_max": "Prêmio: moedas (máximo)", "missoes.itens": "Itens sorteados de prêmio", "ginasios": "🏟️ Ginásios", "ginasios.on": "Ginásios abertos", "ginasios.tentativas_dia": "Tentativas por dia em cada Ginásio", "ginasios.moedas": "Prêmio da insígnia: moedas", "ginasios.itens": "Prêmio da insígnia: itens", "ginasios.todas_moedas": "Prêmio de todas as insígnias: moedas", "ginasios.expira_min": "Minutos até a batalha do Ginásio virar derrota (0 = sem prazo)", "ginasios.todas_itens": "Prêmio de todas as insígnias: itens", "ginasios.lideres": "Líderes (nome, herói, tipo e time [espécie, nível])", "elite": "🏛️ Desafio do Planalto (Elite 4 e Campeão)", "elite.on": "Desafio do Planalto aberto", "elite.insignias_min": "Insígnias para entrar", "elite.tentativas_dia": "Tentativas por dia", "elite.time_max": "Pokémon que cada um leva (até 6)", "elite.moedas": "Prêmio da 1ª vitória (moedas)", "elite.itens": "Itens da 1ª vitória", "elite.doces": "Doces de Forja da 1ª vitória", "elite.repetir_moedas": "Prêmio das outras vitórias (moedas)", "elite.repetir_doces": "Doces de Forja das outras vitórias",
     "pvp": "⚔️ Batalha entre jogadores", "pvp.on": "Desafios na Aventura ligados", "pvp.distancia": "Distância para desafiar (casas)", "pvp.desafia_dia": "Desafios que cada um pode fazer por dia", "pvp.recebe_dia": "Vezes que cada um pode ser desafiado por dia", "pvp.prazo_horas": "Horas para responder o desafio (depois some)", "pvp.oferta_min": "Oferta mínima para não lutar (moedas)", "pvp.teto": "Usar o teto de nível das batalhas", "chefe": "👹 Chefe da rota", "chefe.on": "Chefe automático ligado", "chefe.dia_semana": "Dia da semana (0 = domingo, 6 = sábado)", "chefe.hora": "Hora em que aparece", "chefe.horas": "Quantas horas fica", "chefe.nivel": "Nível do chefe", "chefe.vidas": "Tamanho da barra (vezes a vida dele)", "chefe.turnos": "Turnos por luta", "chefe.tentativas_dia": "Lutas por dia de cada jogador", "chefe.especies": "Espécies sorteadas (números da Pokédex)", "chefe.moedas": "Prêmio para quem lutou: moedas", "chefe.itens": "Prêmio para quem lutou: itens", "chefe.top_moedas": "Extra para o 1º, 2º e 3º que mais bateram", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem", "zonas.vulcao": "Área: Vulcão: encosta", "zonas.vulcao.nome": "Nome que aparece", "zonas.vulcao.regiao": "Região (não mude)", "zonas.vulcao.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao.min": "Nível mínimo do selvagem", "zonas.vulcao.max": "Nível máximo do selvagem", "zonas.vulcao_fundo": "Área: Vulcão: cratera", "zonas.vulcao_fundo.nome": "Nome que aparece", "zonas.vulcao_fundo.regiao": "Região (não mude)", "zonas.vulcao_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao_fundo.min": "Nível mínimo do selvagem", "zonas.vulcao_fundo.max": "Nível máximo do selvagem", "zonas.estrada": "Área: Estrada da Vitória: trilha", "zonas.estrada.nome": "Nome que aparece", "zonas.estrada.regiao": "Região (não mude)", "zonas.estrada.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada.min": "Nível mínimo do selvagem", "zonas.estrada.max": "Nível máximo do selvagem", "zonas.estrada_fundo": "Área: Estrada da Vitória: desfiladeiro", "zonas.estrada_fundo.nome": "Nome que aparece", "zonas.estrada_fundo.regiao": "Região (não mude)", "zonas.estrada_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada_fundo.min": "Nível mínimo do selvagem", "zonas.estrada_fundo.max": "Nível máximo do selvagem" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
   visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)", vila_nova: "Minha Vila nova (desenho grande com a Fazenda; desligado = desenho antigo)" },
@@ -9912,6 +9943,126 @@ document.addEventListener("submit", e => {
 // lances reservam as moedas e quem é coberto recebe de volta; no fim o servidor entrega o Pokémon e paga o vendedor.
 // =================================================================
 S.leilao = { st: null, missing: false, tab: "abertos", timer: 0 };
+// ---------- TROCAS DE POKÉMON (arquivo 114) ----------
+// 1 Pokémon por 1 Pokémon, com moedas opcionais dos dois lados; os dois confirmam vendo o resumo; vale 24 h. O servidor confere tudo
+// (Creche, esquadrão, suporte, Leilão, Ginásio, Desafio do Planalto, trava de 7 dias, 3 por semana, taxa) e faz a troca de uma vez.
+S.trocas = { st: null, tab: "recebidas", col: {}, nova: { para: "", mon_de: "", mon_para: "", moedas_de: 0, moedas_para: 0 } };
+async function loadTrocas() {
+  try { S.trocas.st = await rpc("troca_minhas"); S.trocas.missing = false; } catch (e) { if (isMissingFn(e)) S.trocas.missing = true; else throw e; }
+}
+async function trocasCol(uid) {
+  if (!uid) return [];
+  try { S.trocas.col[uid] = await rpc("troca_colecao", { _user: uid }); } catch (e) { toast(errMsg(e), true); S.trocas.col[uid] = []; }
+  return S.trocas.col[uid];
+}
+async function trocasOpen(tab) {
+  S.win = "trocas"; if (tab) S.trocas.tab = tab; render();
+  try { if (S.pk.on !== false) { await loadPkStatic(); await loadPk(); } await loadTrocas(); await trocasCol(pkMe()); } catch (e) { toast(errMsg(e), true); }
+  if (S.trocas.st && !S.trocas.st.propostas.some(p => p.para === pkMe()) && S.trocas.tab === "recebidas" && !tab) S.trocas.tab = "nova";
+  render();
+}
+const trRecebidas = () => (S.trocas.st?.propostas || []).filter(p => p.para === pkMe());
+function trMonHTML(m, titulo) {
+  if (!m) return `<div class="tc-mon"><p class="muted">—</p></div>`;
+  const ataques = (m.moves || []).map(id => esc(moveOf(id)?.name || id)).join(", ");
+  return `<div class="tc-mon"><small>${titulo}</small>${monCv(m.species, m.outfit || {}, 88)}<b>${esc(pkName(m.species))}</b><span class="muted">nível ${m.level}</span>
+    <span class="tc-moves">${ataques ? `Ataques: ${ataques}` : ""}</span></div>`;
+}
+const trMoedas = (n, quem) => n ? `<p class="tc-coins">💰 ${quem} <b>${n} moedas</b></p>` : "";
+function trCard(p) {
+  const souPara = p.para === pkMe(), eu = souPara ? p.mon_para : p.mon_de, ele = souPara ? p.mon_de : p.mon_para;
+  const dou = souPara ? p.moedas_para : p.moedas_de, recebo = souPara ? p.moedas_de : p.moedas_para, outro = souPara ? p.de_nome : p.para_nome;
+  const tx = recebo ? Math.floor(recebo * (S.trocas.st?.taxa_pct ?? 5) / 100) : 0;
+  return `<article class="panel lo tc-card"><p class="tc-quem">${souPara ? `🔁 <b>${esc(p.de_nome)}</b> quer trocar com você` : `Você propôs a <b>${esc(p.para_nome)}</b>`} · vale até <b>${chatWhen(p.expira_em)}</b></p>
+    <div class="tc-lados"><div>${trMonHTML(ele, `Você recebe (de ${esc(outro)})`)}${trMoedas(recebo, "e mais")}</div><div class="tc-seta">⇄</div><div>${trMonHTML(eu, "Você dá")}${trMoedas(dou, "e mais")}</div></div>
+    ${recebo ? `<p class="muted">Taxa sobre as moedas que você recebe: ${S.trocas.st?.taxa_pct ?? 5}%${tx ? ` (você fica com ${recebo - tx})` : ""}.</p>` : ""}
+    <div class="act-btns">${souPara ? `<button class="btn" data-act="tc-aceitar" data-v="${p.id}">✅ Aceitar a troca</button><button class="btn ghost" data-act="tc-recusar" data-v="${p.id}">Recusar</button>`
+      : `<button class="btn ghost" data-act="tc-cancelar" data-v="${p.id}">Cancelar a proposta</button>${p.moedas_de ? `<span class="muted">As suas ${p.moedas_de} moedas estão guardadas; voltam se não aceitarem.</span>` : ""}`}</div></article>`;
+}
+function trNovaHTML() {
+  const N = S.trocas.nova, me = pkMe(), st = S.trocas.st;
+  const jogadores = (S.chars || []).filter(c => c.user_id !== me).sort((a, b) => a.name.localeCompare(b.name));
+  const minha = S.trocas.col[me] || [], dele = N.para ? S.trocas.col[N.para] : null;
+  const opt = (lst, sel) => lst.map(m => `<option value="${m.id}" ${m.id === sel ? "selected" : ""} ${m.motivo ? "disabled" : ""}>${esc(pkName(m.species))} · Nv ${m.level}${m.motivo ? ` — ${esc(m.motivo.replace(/^Esse Pokémon /, ""))}` : ""}</option>`).join("");
+  if (st && st.semana >= st.semana_max) return `<p class="muted">Você já fez as ${st.semana_max} trocas desta semana. Volte na segunda!</p>`;
+  return `<form id="tcform" class="tc-form">
+    <label for="tc-para">Trocar com</label><select id="tc-para"><option value="">Escolha um jogador…</option>${jogadores.map(c => `<option value="${c.user_id}" ${c.user_id === N.para ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select>
+    <label for="tc-de">O seu Pokémon</label><select id="tc-de"><option value="">Escolha…</option>${opt(minha, N.mon_de)}</select>
+    <label for="tc-mp">O Pokémon dele que você quer</label><select id="tc-mp" ${dele ? "" : "disabled"}><option value="">${N.para ? (dele ? "Escolha…" : "Carregando…") : "Escolha o jogador primeiro"}</option>${dele ? opt(dele, N.mon_para) : ""}</select>
+    <div class="tc-coins-in"><label>Você dá mais (moedas) <input id="tc-cd" type="number" min="0" step="1" value="${N.moedas_de || 0}"></label>
+      <label>Você pede mais (moedas) <input id="tc-cp" type="number" min="0" step="1" value="${N.moedas_para || 0}"></label></div>
+    <button class="btn">👀 Revisar a proposta</button>
+    <p class="muted">Pokémon com motivo ao lado não podem ser trocados agora (Creche, esquadrão de guerra, suporte da Aventura, Leilão, batalha em andamento ou que chegou por troca há menos de ${st?.trava_dias ?? 7} dias).</p></form>`;
+}
+function viewTrocas() {
+  const T = S.trocas;
+  if (T.missing) return `<p class="muted rk-state">As trocas precisam do arquivo <code>114_troca_pokemon.sql</code> rodado no Supabase.</p>`;
+  if (!T.st) return `<p class="muted rk-state">Abrindo as trocas…</p>`;
+  const st = T.st, me = pkMe();
+  if (!st.on && !S.isAdmin) return `<div class="pk-empty"><p><strong>As trocas estão fechadas no momento.</strong></p></div>`;
+  const rec = st.propostas.filter(p => p.para === me), env = st.propostas.filter(p => p.de === me);
+  const abas = [["recebidas", `📥 Recebidas${rec.length ? ` (${rec.length})` : ""}`], ["enviadas", `📤 Enviadas${env.length ? ` (${env.length})` : ""}`], ["nova", "➕ Nova proposta"], ["historico", "📜 Histórico"]];
+  const corpo = T.tab === "recebidas" ? (rec.length ? rec.map(trCard).join("") : `<div class="pk-empty"><p><strong>Nenhuma proposta para você agora.</strong></p></div>`)
+    : T.tab === "enviadas" ? (env.length ? env.map(trCard).join("") : `<div class="pk-empty"><p><strong>Você não tem propostas esperando resposta.</strong></p></div>`)
+    : T.tab === "nova" ? `<section class="panel lo">${trNovaHTML()}</section>`
+    : (st.historico.length ? `<ul class="tr-hist">${st.historico.map(h => { const eu = h.de === me; const fim = { aceita: "✅", recusada: "❌ recusada", cancelada: "↩️ cancelada", expirou: "⌛ venceu" }[h.status] || h.status;
+        return `<li>${h.status === "aceita" ? "✅" : ""} ${esc(h.de_nome)}: ${esc(pkName(h.mon_de?.species))} (Nv ${h.mon_de?.level}) ⇄ ${esc(h.para_nome)}: ${esc(pkName(h.mon_para?.species))} (Nv ${h.mon_para?.level})
+          ${h.moedas_de ? ` · +${h.moedas_de} moedas de ${esc(h.de_nome)}` : ""}${h.moedas_para ? ` · +${h.moedas_para} moedas de ${esc(h.para_nome)}` : ""}${h.evoluiu ? " · ✨ evoluiu!" : ""}
+          ${h.status === "aceita" ? "" : ` · ${fim}`}${eu && h.taxa_de ? ` · taxa ${h.taxa_de}` : !eu && h.taxa_para ? ` · taxa ${h.taxa_para}` : ""}<time style="margin-left:auto" class="muted">${ago(h.fim)}</time></li>`; }).join("")}</ul>`
+      : `<div class="pk-empty"><p><strong>Nenhuma troca ainda.</strong></p></div>`);
+  return `<div class="trocas">
+    <div class="ce-head" style="background:linear-gradient(180deg,#E6F2FF,#CFE3F7);border-color:#6D9BD1;color:#13304F"><p><b>🔁 Trocas de Pokémon</b></p>
+      <p>Troque <b>1 Pokémon por 1 Pokémon</b> com outro jogador, com moedas a mais de um lado ou do outro, se quiserem. O Pokémon vai inteiro: nível, experiência, ataques e roupas. A proposta vale <b>${st.expira_horas} horas</b>.</p>
+      <p>Até <b>${st.semana_max} trocas por semana</b> (você já fez ${st.semana}). Quem chega por troca só pode ser trocado de novo depois de ${st.trava_dias} dias. Taxa de <b>${st.taxa_pct}%</b> sobre as moedas que você recebe; sem moedas, sem taxa. Como na Red/Blue, Kadabra, Machoke, Graveler e Haunter <b>evoluem</b> quando são trocados!</p></div>
+    <div class="tabs tc-tabs">${abas.map(([k, t]) => `<button data-act="tc-tab" data-v="${k}" aria-current="${T.tab === k}">${t}</button>`).join("")}</div>
+    ${corpo}</div>`;
+}
+async function trConfirma(p, titulo, botao) {
+  const linhas = `<div class="tc-lados">${trMonHTML(p.recebe, "Você recebe")}<div class="tc-seta">⇄</div>${trMonHTML(p.da, "Você dá")}</div>
+    ${p.moedas_recebe ? `<p>💰 Você recebe mais <b>${p.moedas_recebe} moedas</b> (taxa de ${S.trocas.st?.taxa_pct ?? 5}%: fica com ${p.moedas_recebe - Math.floor(p.moedas_recebe * (S.trocas.st?.taxa_pct ?? 5) / 100)}).</p>` : ""}
+    ${p.moedas_da ? `<p>💰 Você dá mais <b>${p.moedas_da} moedas</b>.</p>` : ""}`;
+  return new Promise(res => {
+    const m = openModal(`<h2>${esc(titulo)}</h2>${linhas}<div class="actions"><button class="btn ghost" data-r="0">Voltar</button><button class="btn" data-r="1">${esc(botao)}</button></div>`);
+    m.addEventListener("click", e => { const b = e.target.closest("[data-r]"); if (b) { closeModal(); res(b.dataset.r === "1"); } });
+  });
+}
+Object.assign(ACTIONS, {
+  "tc-tab": v => { S.trocas.tab = v; render(); },
+  "tc-aceitar": async v => {
+    const p = (S.trocas.st?.propostas || []).find(x => x.id === +v); if (!p) return;
+    if (!(await trConfirma({ recebe: p.mon_de, da: p.mon_para, moedas_recebe: p.moedas_de, moedas_da: p.moedas_para }, `Trocar com ${p.de_nome}?`, "✅ Trocar"))) return;
+    await guarded(async () => {
+      const r = await rpc("troca_responder", { _id: p.id, _aceita: true }); sfx("acerto");
+      toast(r.evoluiu?.de ? `🔁 Troca feita! E o ${pkName(r.evoluiu.de.de)} evoluiu para ${pkName(r.evoluiu.de.para)}! ✨` : "🔁 Troca feita!");
+      await Promise.all([loadTrocas(), loadPk(), refreshMe()]); await trocasCol(pkMe()); render();
+    });
+  },
+  "tc-recusar": async v => { if (!(await confirmModal("Recusar a troca?", "As moedas de quem propôs voltam para ele.", "Recusar"))) return;
+    await guarded(async () => { await rpc("troca_responder", { _id: +v, _aceita: false }); toast("Proposta recusada."); await loadTrocas(); render(); }); },
+  "tc-cancelar": async v => { await guarded(async () => { await rpc("troca_cancelar", { _id: +v }); toast("Proposta cancelada. As moedas voltaram."); await Promise.all([loadTrocas(), refreshMe()]); await trocasCol(pkMe()); render(); }); }
+});
+document.addEventListener("change", async e => {
+  if (!e.target.closest("#tcform")) return;
+  const N = S.trocas.nova;
+  // o formulário é montado pelo estado (S.trocas.nova): marca como ação do jogador para o render não devolver o formulário antigo
+  if (e.target.id === "tc-para") { N.para = e.target.value; N.mon_para = ""; S.userActAt = Date.now(); render(); if (N.para) { await trocasCol(N.para); S.userActAt = Date.now(); render(); } }
+  else if (e.target.id === "tc-de") N.mon_de = e.target.value;
+  else if (e.target.id === "tc-mp") N.mon_para = e.target.value;
+});
+document.addEventListener("submit", async e => {
+  if (e.target.id !== "tcform") return; e.preventDefault();
+  const N = S.trocas.nova; N.moedas_de = Math.max(0, parseInt($("#tc-cd")?.value, 10) || 0); N.moedas_para = Math.max(0, parseInt($("#tc-cp")?.value, 10) || 0);
+  N.mon_de = $("#tc-de")?.value || N.mon_de; N.mon_para = $("#tc-mp")?.value || N.mon_para;
+  if (!N.para || !N.mon_de || !N.mon_para) return toast("Escolha o jogador, o seu Pokémon e o Pokémon dele.", true);
+  const meu = (S.trocas.col[pkMe()] || []).find(m => m.id === N.mon_de), dele = (S.trocas.col[N.para] || []).find(m => m.id === N.mon_para), nome = charName(N.para);
+  if (!(await trConfirma({ recebe: dele, da: meu, moedas_recebe: N.moedas_para, moedas_da: N.moedas_de }, `Propor a troca para ${nome}?`, "🔁 Enviar a proposta"))) return;
+  await guarded(async () => {
+    await rpc("troca_propor", { _para: N.para, _mon_de: N.mon_de, _mon_para: N.mon_para, _moedas_de: N.moedas_de, _moedas_para: N.moedas_para });
+    sfx("moeda"); toast(`Proposta enviada para ${nome}! Ela vale ${S.trocas.st?.expira_horas ?? 24} horas.`);
+    S.trocas.nova = { para: "", mon_de: "", mon_para: "", moedas_de: 0, moedas_para: 0 }; S.trocas.tab = "enviadas";
+    await Promise.all([loadTrocas(), refreshMe()]); await trocasCol(pkMe()); render();
+  });
+});
 async function loadLeilao() {
   try { S.leilao.st = await rpc("leilao_estado"); S.leilao.missing = false; S.leilao.skew = new Date(S.leilao.st.agora) - Date.now(); }
   catch (e) { if (isMissingFn(e)) S.leilao.missing = true; else throw e; }
@@ -10110,6 +10261,11 @@ async function avCheck() {
     }
   } catch (e) { console.warn("avisos", e); }
   try { S.tcgRes = await rpc("tcg_resumo"); } catch { S.tcgRes = null; }   // Cartas (arquivo 87): prêmios automáticos e avisos
+  try {   // arquivo 114: propostas de troca para você (e o suporte da Aventura guardado no servidor)
+    const r = await sb.from("trocas").select("id", { count: "exact", head: true }).eq("para", me).eq("status", "pendente").gt("expira_em", new Date().toISOString());
+    if (!r.error) { const antes = S.av.trocas || 0; S.av.trocas = r.count || 0; if (S.av.trocas > antes && S.av.loaded && antes >= 0 && S.av.trocasVisto) { sfx("moeda"); toast("🔁 Chegou uma proposta de troca de Pokémon para você!"); } S.av.trocasVisto = true; }
+    if (S.me && "rpg_suporte" in S.me && (rpgSupRaw() || null) !== (S.me.rpg_suporte || null)) { await rpc("rpg_suporte_set", { _mon: rpgSupRaw() }); S.me.rpg_suporte = rpgSupRaw(); }
+  } catch {}
   // minha vila (produção para coletar e lama), a cada 5 minutos no máximo
   if (!S.myVilaAt || Date.now() - S.myVilaAt > 300000) { try { S.myVila = await rpc("village_state", { _user: null }); S.myVilaAt = Date.now(); } catch {} }
   if ($("#game")) renderHUD();
@@ -10147,6 +10303,7 @@ function avItems() {
     S.av.cobertos.map(l => `${pkName(l.species)}: ${l.top_bid} moedas`).slice(0, 3).join(" · "));
   if (S.av.novos.length) add("🔨", S.av.novos.length === 1 ? `Leilão novo: ${pkName(S.av.novos[0].species)} nível ${S.av.novos[0].level}` : `${S.av.novos.length} leilões novos`, "go", "leilao", S.av.novos.length,
     S.av.novos.slice(0, 3).map(l => `${pkName(l.species)} nv ${l.level} (${charName(l.seller)})`).join(" · "));
+  if (S.av.trocas) add("🔁", S.av.trocas === 1 ? "Uma proposta de troca de Pokémon para você" : `${S.av.trocas} propostas de troca para você`, "go", "trocas", S.av.trocas, "Veja o resumo e aceite ou recuse");   // arquivo 114
   if (S.av.market.length) add("🤝", S.av.market.length === 1 ? "Item novo no Mercado" : `${S.av.market.length} itens novos no Mercado`, "go", "mercado", S.av.market.length,
     S.av.market.slice(0, 3).map(x => `${itemLabel(x.item_kind, x.item_id, x.qty)} (${x.price ? x.price + " moedas" : "troca"})`).join(" · "));
   add("🎧", "Resposta nova no SAC", "go", "sac", sacUnread());
@@ -11651,7 +11808,7 @@ const RPG_REG = {
   pico: { nome: "Pico Gelado", ic: "🏔️", arq: "rpg-pico.js", z: { m: "pico", e: "pico_fundo" }, como: "saída norte da Gruta da Pedreira" },
   vulcao: { nome: "Vulcão Cinzento", ic: "🌋", arq: "rpg-vulcao.js", z: { m: "vulcao", e: "vulcao_fundo" }, como: "saída leste do Deserto Rubro" },
   estrada: { nome: "Estrada da Vitória", ic: "🏆", arq: "rpg-estrada.js", z: { m: "estrada", e: "estrada_fundo" }, como: "saída norte do Pico Gelado" },
-  elite: { nome: "Planalto da Liga", ic: "🏛️", arq: null, z: {}, elite: true, como: "no fim da Estrada da Vitória (só com as 8 insígnias)" },
+  elite: { nome: "Planalto", ic: "🏛️", arq: null, z: {}, elite: true, como: "no fim da Estrada da Vitória (só com as 8 insígnias)" },
   mina: { nome: "Mina Esquecida", ic: "⛏️", arq: null, z: {}, mina: true, como: "a Expedição dentro da Gruta da Pedreira" },
   vale: { nome: "Vale do Treino", ic: "🥋", arq: "rpg-vale.js", z: {}, vale: true, como: "a trilha ao norte da Vila Aurora, no alto do penhasco" }   // arquivo 112
 };
@@ -12454,7 +12611,7 @@ const RPG_NPC = {
   pedreira: { nome: "Mineiro Zé", ch: { class: "domador", outfit: {} }, fala: ["Cuidado onde pisa na Gruta da Pedreira.", "Pedra, Terra, Luta e Metálico por aqui. Lá no fundo da gruta já viram até dragão!", "A saída norte leva ao Pico Gelado, e de lá até a Estrada da Vitória."] },
   charco: { nome: "Coveiro Ivo", ch: { class: "ladino", outfit: {} }, fala: ["Shhh… o Charco Sombrio não gosta de barulho.", "Fantasmas, Psíquicos e Venenosos moram neste brejo. No escuro do fundo, os mais fortes."] },
   vulcao: { nome: "Bombeira Rita", ch: { class: "guerreiro", outfit: {} }, fala: ["Cuidado com o chão quente do Vulcão Cinzento!", "Na encosta: Fogo, Pedra, Terra e Luta. Lá na cratera, longe da entrada, aparecem até dragões.", "O Ginásio daqui é do Líder Magma. Leve Pokémon de Água!"] },
-  estrada: { nome: "Veterano Bento", ch: { class: "mercador", outfit: {} }, fala: ["Esta é a Estrada da Vitória. Daqui para a frente, só os melhores.", "Na trilha e no desfiladeiro moram os Pokémon mais fortes de toda a Aventura.", "Lá no alto, ao norte, fica o Planalto da Liga. Só entra quem tem as 8 insígnias.", "Lá dentro a vida dos seus Pokémon não volta entre as lutas. Começou, tem que ir até o fim!"] },
+  estrada: { nome: "Veterano Bento", ch: { class: "mercador", outfit: {} }, fala: ["Esta é a Estrada da Vitória. Daqui para a frente, só os melhores.", "Na trilha e no desfiladeiro moram os Pokémon mais fortes de toda a Aventura.", "Lá no alto, ao norte, fica o Planalto: é o Desafio do Planalto. Só entra quem tem as 8 insígnias.", "Lá dentro a vida dos seus Pokémon não volta entre as lutas. Começou, tem que ir até o fim!"] },
   pico: { nome: "Monge Kai", ch: { class: "clerigo", outfit: {} }, fala: ["Você chegou ao Pico Gelado. Poucos chegam.", "Na encosta: Gelo, Água, Psíquico, Voador e Elétrico. No cume, os mais fortes de todos, até dragões.", "Se a sua equipe cair, o Centro Pokémon fica lá na Vila Aurora."] }
 };
 // lugares para interagir: células onde o jogador fica, símbolo, nome e o que acontece
@@ -12523,7 +12680,7 @@ async function rpgViajar(para) {
   if (AV.busy || !RPG_REG[para]) return;
   if (RPG_REG[para].elite) {   // arquivo 106
     const min = AV.st?.elite?.insignias_min ?? 8;
-    if (rpgInsig().length < min && !S.isAdmin) { [AV.x, AV.y] = [AV.ax, AV.ay]; AV.fx = AV.x; AV.fy = AV.y; rpgPerto(); sfx("erro"); return toast(`🏛️ O Planalto da Liga só recebe quem tem as ${min} insígnias. Você tem ${rpgInsig().length}.`, true); }
+    if (rpgInsig().length < min && !S.isAdmin) { [AV.x, AV.y] = [AV.ax, AV.ay]; AV.fx = AV.x; AV.fy = AV.y; rpgPerto(); sfx("erro"); return toast(`🏛️ O Desafio do Planalto só recebe quem tem as ${min} insígnias. Você tem ${rpgInsig().length}.`, true); }
     rpgEliteCarregar().then(() => rpgPerto());
   }
   AV.busy = true; AV.keys.clear(); const de = AV.r;
@@ -13102,6 +13259,8 @@ function rpgSup() {   // o suporte escolhido, se ainda vale (seu, com vida e dif
   return m && treinoHpOf(m) > 0 && m.id !== f?.id ? m : null;
 }
 const rpgSupId = () => rpgSup()?.id || null;
+const rpgSupRaw = () => { try { return localStorage.getItem(rpgSupKey()) || null; } catch { return null; } };
+function rpgSupSalva() { const id = rpgSupRaw(); rpc("rpg_suporte_set", { _mon: id }).then(() => { if (S.me) S.me.rpg_suporte = id; }).catch(() => {}); }   // arquivo 114: a trava da troca
 function rpgSupHTML() {
   const f = rpgLutador(), cur = rpgSupId(), pct = AV.st?.acompanhante_pct ?? S.cfg.treino?.acompanhante_pct ?? 50;
   const mons = (S.pk?.mons || []).filter(x => x.id !== f?.id).sort((a, b) => (a.team_slot ?? 9) - (b.team_slot ?? 9) || a.level - b.level);
@@ -13118,6 +13277,7 @@ function rpgSupAbrir() {
     if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
     const b = e.target.closest("[data-sup]"); if (!b) return;
     try { if (b.dataset.sup) localStorage.setItem(rpgSupKey(), b.dataset.sup); else localStorage.removeItem(rpgSupKey()); } catch {}
+    rpgSupSalva();   // arquivo 114
     sfx("tick"); rpgHud(); const box = $("#modal-root .modal"); if (box) box.innerHTML = rpgSupHTML();
   });
 }
@@ -13178,6 +13338,21 @@ function rpgMissoesAbrir(r, quem, fala) {
   });
 }
 // abrir uma luta da Aventura (Ginásio ou Chefe)
+// arquivo 113: o fim da batalha do Ginásio (XP de cada um que lutou, vida que ficou, insígnia)
+function grGymEndHTML(b, r, pos) {
+  const titulo = r.won ? "🏅 Você venceu o Ginásio!" : r.tempo ? "⌛ O tempo acabou" : r.fugiu ? "Você desistiu" : "Não foi dessa vez!";
+  const msg = r.won ? `Você derrotou os ${r.total} Pokémon de ${esc(pos.lider || "o Líder")}${pos.status === "venceu" ? " e ganhou a <b>insígnia</b>! O prêmio já está com você." : "."}`
+    : r.tempo ? `A batalha passou do prazo e contou como derrota. Você derrotou ${r.derrotados} de ${r.total}.`
+    : r.fugiu ? `A tentativa acabou. Você derrotou ${r.derrotados} de ${r.total}.` : `${esc(pos.lider || "O Líder")} venceu. Você derrotou ${r.derrotados} de ${r.total} Pokémon dele.`;
+  const lista = (r.mons || []).map(m => `<li><b>${esc(pkName(m.species))}</b>: ${m.xp ? `+${m.xp} XP${m.level_to > m.level_from ? ` e subiu para o nível ${m.level_to}! 🎉` : ""}` : "sem XP"} · ${m.desmaiou ? "💤 desmaiou" : `${m.hp}% da vida`}</li>`).join("");
+  const comp = r.comp_xp ? `<p>🎒 ${esc(pkName(r.comp_species))} (suporte) ganhou <b>${r.comp_xp}</b> de experiência.</p>` : "";
+  const achou = pos.drop ? `<p class="rpg-fim ok">${pos.drop.doces ? `🍬 +${pos.drop.doces} Doce${pos.drop.doces > 1 ? "s" : ""} de Forja! ` : ""}${pos.drop.peca ? `🛡️ <b>Você achou uma peça rara: ${EQ_SLOTS[pos.drop.peca]?.[1]} +0!</b>` : ""}</p>` : "";
+  const caiu = (r.mons || []).some(m => m.desmaiou);
+  return `<div class="bt-end ${r.won ? "won" : "lost"}"><h3>${titulo}</h3><p>${msg}</p>
+    <ul class="gym-xp">${lista}</ul>${comp}${achou}
+    ${r.won ? "" : `<p class="muted">A experiência de cada Pokémon do Líder derrotado foi dividida entre os seus que lutaram contra ele. A vida perdida continua perdida.</p>`}
+    <div class="act-btns"><button class="btn" data-act="rpg-back">🧭 Voltar para a Aventura</button>${caiu ? `<button class="btn ghost" data-act="go" data-v="centro">🏥 Centro Pokémon</button>` : ""}</div></div>`;
+}
 async function rpgLutaAbre(bid) {
   sfx("tick"); const fl = $("#rpg-flash");
   if (fl && !reduceMotion()) { fl.classList.add("on"); await sleep(700); fl.classList.remove("on"); }
@@ -13190,25 +13365,27 @@ async function rpgGinasioLutar(r, meus) {
   await rpgLutaAbre(res.battle);
 }
 function rpgGymHTML(r, G, sel, adm) {
-  const L = G.lider, t = G.tentativa, n = L.n, vivos = (S.pk?.mons || []).filter(x => treinoHpOf(x) > 0).sort((a, b) => b.level - a.level);
+  const L = G.lider, n = L.n, vivos = (S.pk?.mons || []).filter(x => treinoHpOf(x) > 0).sort((a, b) => b.level - a.level);
   const card = (x, extra = "") => `${monCv(x.species_id ?? x.species, x.outfit, 64)}<span class="mc-name">${esc(pkName(x.species_id ?? x.species))}</span><span class="mc-lv">Nv ${x.level}</span>${extra}`;
   let corpo;
+  const bat = G.batalha, ate = bat ? new Date(bat.fim).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "";
   if (G.insignia) corpo = `<p class="rpg-fim ok">✅ <b>Você já tem a insígnia deste Ginásio!</b></p>`;
-  else if (t) corpo = `<p>Tentativa em andamento: <b>${t.idx} de ${t.total}</b> Pokémon do Líder derrotados. Os seus, na ordem em que entram:</p>
-      <div class="tr-pick">${t.meus.map((x, k) => `<div class="mon-card ${x.tr_hp <= 0 ? "ko" : ""}"><i class="gym-ord">${k + 1}</i>${card(x, x.tr_hp <= 0 ? `<span class="ko-tag">💤 caiu</span>` : x.tr_hp < 100 ? trHpBar(x.tr_hp) : "")}</div>`).join("")}</div>
-      <button class="btn" data-gym="1" style="margin-top:10px">▶ Continuar a luta</button>`;
-  else corpo = `<p><b>Escolha ${n} Pokémon seus</b>, na ordem em que vão entrar (${sel.length}/${n}). Quem cai sai e entra o próximo; a vida perdida continua perdida.</p>
+  else if (bat) corpo = `<p class="rpg-fim">⚔️ <b>Você tem uma batalha de Ginásio em andamento</b>${bat.regiao && bat.regiao !== r ? ` (no Ginásio de ${esc(RPG_REG[bat.regiao]?.nome || bat.regiao)})` : ""}. Ela continua de onde parou e vale até <b>${ate}</b>; depois disso, conta como derrota.</p>
+      <button class="btn" data-gym="1" style="margin-top:10px">▶ Voltar para a batalha</button>`;
+  else corpo = `<p><b>Escolha ${n} Pokémon seus</b>, na ordem em que vão entrar (${sel.length}/${n}). É <b>uma batalha só</b>, como na Red/Blue: a cada turno você ataca, troca de Pokémon (gasta o turno) ou usa um item (até ${G.itens_batalha ?? 2} na batalha inteira). Quando um desmaia, você escolhe quem entra. A vida perdida continua perdida.</p>
+      <p class="muted">Durante a batalha, os escolhidos ficam travados: não vão ao Centro, à Creche, ao Leilão nem saem da equipe. Termine em até ${G.expira_min ?? 30} minutos, senão conta como derrota.</p>
       <div class="tr-pick">${vivos.map(x => { const k = sel.indexOf(x.id); return `<button class="mon-card ${k >= 0 ? "sel" : ""}" data-gsel="${x.id}">${k >= 0 ? `<i class="gym-ord">${k + 1}</i>` : ""}${card(x, treinoHpOf(x) < 100 ? trHpBar(treinoHpOf(x)) : "")}</button>`; }).join("") || `<p class="muted">Nenhum Pokémon com vida. Cure no Centro Pokémon.</p>`}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-gym="1" ${sel.length === n ? "" : "disabled"}>⚔️ Desafiar com estes ${n}</button>${sel.length ? `<button class="btn ghost small" data-glimpa="1">Limpar</button>` : ""}</div>`;
   return `<div class="rpg-rotas"><div class="av-head"><h2>🏟️ ${esc(RPG_REG[r].nome.replace(/^/, "Ginásio · "))}</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
     <div class="gym-lider">${(() => { try { return avatarSVG({ class: L.classe, outfit: {} }, 1.6); } catch { return ""; } })()}<div><p><b>${esc(L.nome)}</b> · especialista em ${esc(L.tipo || "")}</p>
-      <p>Usa <b>${n} Pokémon</b>, sempre os mesmos, mas numa <b>ordem secreta sorteada</b> a cada tentativa. Quais são? Só lutando para descobrir!</p></div></div>
+      <p>Usa <b>${n} Pokémon</b>, sempre os mesmos, mas numa <b>ordem secreta sorteada</b> a cada tentativa, e só troca quando o dele cai. Quais são? Só lutando para descobrir!</p></div></div>
     ${G.insignia ? "" : `<p class="muted">Prêmio: a <b>insígnia</b>, ${G.moedas} moedas e ${esc(Object.entries(G.itens || {}).map(([k, q]) => `${q}× ${rpgItemNome(k)}`).join(" e "))}. Tentativas hoje: <b>${G.tentativas}/${G.tentativas_dia}</b>. Se perder e tentar de novo, os Pokémon do Líder voltam com a vida cheia.</p>`}
     ${corpo}
     ${S.isAdmin ? (adm ? `<form class="gym-adm" data-gform="1"><h3>🛠️ Editar o Líder (só admin)</h3><label>Nome <input name="nome" value="${esc(adm.nome)}"></label><label>Tipo (texto) <input name="tipo" value="${esc(adm.tipo)}"></label>
         <label>Herói (guerreiro, mago, arqueiro, ladino, clerigo, domador, pesquisador, mercador) <input name="classe" value="${esc(adm.classe)}"></label>
-        <label>Time: número da Pokédex : nível, separados por vírgula <input name="time" value="${esc(adm.time.map(t => `${t[0]}:${t[1]}`).join(", "))}"></label>
-        <small class="muted">${esc(adm.time.map(t => `${pkName(t[0])} ${t[1]}`).join(" · "))}</small><button class="btn small">Salvar o Líder</button></form>`
+        <label>Time: número da Pokédex : nível : ataques (opcional, números separados por /), separados por vírgula <input name="time" value="${esc(adm.time.map(t => `${t[0]}:${t[1]}${t[2]?.length ? ":" + t[2].join("/") : ""}`).join(", "))}"></label>
+        <small class="muted">${adm.time.map(t => `${esc(pkName(t[0]))} ${t[1]}${t[2]?.length ? ` (${t[2].map(id => esc(moveOf(id)?.name || id)).join(", ")})` : ""}`).join(" · ")}</small>
+        <small class="muted">Sem ataques, o jogo escolhe 4 com cobertura: pelo menos 2 de dano de tipos diferentes.</small><button class="btn small">Salvar o Líder</button></form>`
       : `<p style="margin-top:10px"><button class="btn ghost small" data-gadm="1">🛠️ Admin: ver e editar o Líder</button></p>`) : ""}</div>`;
 }
 async function rpgGinasioAbrir(r) {
@@ -13220,13 +13397,13 @@ async function rpgGinasioAbrir(r) {
     const gs = e.target.closest("[data-gsel]");
     if (gs) { const id = gs.dataset.gsel, k = sel.indexOf(id); if (k >= 0) sel.splice(k, 1); else if (sel.length < G.lider.n) sel.push(id); sfx("tick"); return pinta(); }
     if (e.target.closest("[data-glimpa]")) { sel.length = 0; return pinta(); }
-    if (e.target.closest("[data-gym]")) return rpgGinasioLutar(r, G.tentativa ? null : sel.slice());
+    if (e.target.closest("[data-gym]")) return rpgGinasioLutar(r, G.batalha ? null : sel.slice());
     if (e.target.closest("[data-gadm]")) { try { adm = (await rpc("admin_rpg_lideres"))[r]; pinta(); } catch (er) { toast(errMsg(er), true); } }
   });
   m.addEventListener("submit", async e => {
     if (!e.target.matches("[data-gform]")) return; e.preventDefault(); const f = new FormData(e.target);
-    const time = String(f.get("time") || "").split(",").map(p => p.trim()).filter(Boolean).map(p => p.split(":").map(v => parseInt(v, 10)));
-    if (!time.length || time.some(t => t.length !== 2 || t.some(v => !(v > 0)))) return toast("Escreva o time assim: 3:35, 6:40 (número da Pokédex : nível).", true);
+    const time = String(f.get("time") || "").split(",").map(p => p.trim()).filter(Boolean).map(p => { const [sp, lv, mv] = p.split(":"); const t = [parseInt(sp, 10), parseInt(lv, 10)]; if (mv) t.push(mv.split("/").map(v => parseInt(v, 10)).filter(v => v > 0)); return t; });
+    if (!time.length || time.some(t => !(t[0] > 0) || !(t[1] > 0) || (t[2] && (!t[2].length || t[2].length > 4)))) return toast("Escreva o time assim: 3:35, 6:40 (número da Pokédex : nível). Para escolher os ataques: 6:40:53/17/163/83 (até 4).", true);
     try { const all = await rpc("admin_rpg_lider_salvar", { _regiao: r, _nome: f.get("nome"), _classe: f.get("classe"), _tipo: f.get("tipo"), _time: time }); adm = all[r]; toast("Líder salvo!"); await rpgEstado(); G = await rpc("rpg_ginasio", { _regiao: r }); pinta(); }
     catch (er) { toast(errMsg(er), true); }
   });
@@ -13240,26 +13417,26 @@ function rpgEliteHTML(E, sel, adm) {
   const fila = `<ol class="elite-fila">${ms.map((m, k) => `<li class="${t && k < etapa ? "ok" : t && k === etapa ? "agora" : ""}"><b>${ELITE_IC[k] || "⭐"} ${esc(m.nome)}</b><small>${esc(m.tipo || "")} · ${m.n} Pokémon${t && k < etapa ? " · ✅ vencido" : t && k === etapa ? " · ⚔️ agora" : ""}</small></li>`).join("")}</ol>`;
   let corpo;
   if (E.insignias < E.insignias_min) corpo = `<p class="rpg-fim">🏅 Você tem <b>${E.insignias} de ${E.insignias_min}</b> insígnias. Volte quando tiver todas.</p>`;
-  else if (t) corpo = `<p>Tentativa em andamento: <b>${esc(ms[etapa]?.nome || "")}</b> (${etapa + 1}º de ${ms.length}), <b>${t.idx} de ${t.total}</b> Pokémon dele derrotados. A sua equipe da Liga, na ordem:</p>
+  else if (t) corpo = `<p>Tentativa em andamento: <b>${esc(ms[etapa]?.nome || "")}</b> (${etapa + 1}º de ${ms.length}), <b>${t.idx} de ${t.total}</b> Pokémon dele derrotados. A sua equipe no Desafio, na ordem:</p>
       <div class="tr-pick">${t.meus.map((x, k) => `<div class="mon-card ${x.vida <= 0 ? "ko" : ""}"><i class="gym-ord">${k + 1}</i>${card(x, x.vida <= 0 ? `<span class="ko-tag">💤 caiu</span>` : trHpBar(x.vida))}</div>`).join("")}</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-elite="1">▶ Continuar a Liga</button><button class="btn ghost small" data-edesiste="1">🏳️ Desistir</button></div>`;
-  else if (E.tentativas >= E.tentativas_dia) corpo = `<p class="rpg-fim">Você já entrou na Liga hoje. Volte amanhã!</p>`;
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-elite="1">▶ Continuar o Desafio</button><button class="btn ghost small" data-edesiste="1">🏳️ Desistir</button></div>`;
+  else if (E.tentativas >= E.tentativas_dia) corpo = `<p class="rpg-fim">Você já entrou no Desafio do Planalto hoje. Volte amanhã!</p>`;
   else corpo = `<p><b>Escolha até ${E.time_max} Pokémon</b>, na ordem em que vão entrar (${sel.length}/${E.time_max}). Quem cai sai e entra o próximo.</p>
       <div class="tr-pick">${vivos.map(x => { const k = sel.indexOf(x.id); return `<button class="mon-card ${k >= 0 ? "sel" : ""}" data-esel="${x.id}">${k >= 0 ? `<i class="gym-ord">${k + 1}</i>` : ""}${card(x, treinoHpOf(x) < 100 ? trHpBar(treinoHpOf(x)) : "")}</button>`; }).join("") || `<p class="muted">Nenhum Pokémon com vida. Cure no Centro Pokémon.</p>`}</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-elite="1" ${sel.length ? "" : "disabled"}>🏛️ Entrar na Liga com ${sel.length || "estes"} Pokémon</button>${sel.length ? `<button class="btn ghost small" data-elimpa="1">Limpar</button>` : ""}</div>`;
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-elite="1" ${sel.length ? "" : "disabled"}>🏛️ Entrar no Desafio com ${sel.length || "estes"} Pokémon</button>${sel.length ? `<button class="btn ghost small" data-elimpa="1">Limpar</button>` : ""}</div>`;
   const hall = E.hall?.length ? `<h3 style="margin-top:14px">👑 Hall da Fama</h3><ol class="rpg-rank">${E.hall.map(h => `<li><b>${esc(h.name)}</b> <span>${h.vezes > 1 ? `${h.vezes}×` : "1ª vez"} · ${new Date(h.em).toLocaleDateString("pt-BR")}</span><small style="display:block">${(h.time || []).map(m => `${esc(pkName(m.species))} ${m.level}`).join(" · ")}</small></li>`).join("")}</ol>`
-    : `<p class="muted" style="margin-top:10px">👑 Hall da Fama: ninguém venceu a Liga ainda. Seja o primeiro!</p>`;
-  const adm1 = adm ? `<form class="gym-adm" data-eform="1"><h3>🛠️ Editar a Liga (só admin)</h3><label>Quem <select name="ordem">${adm.map(m => `<option value="${m.ordem}">${m.ordem}. ${esc(m.nome)}</option>`).join("")}</select></label>
+    : `<p class="muted" style="margin-top:10px">👑 Hall da Fama: ninguém venceu o Desafio do Planalto ainda. Seja o primeiro!</p>`;
+  const adm1 = adm ? `<form class="gym-adm" data-eform="1"><h3>🛠️ Editar o Desafio do Planalto (só admin)</h3><label>Quem <select name="ordem">${adm.map(m => `<option value="${m.ordem}">${m.ordem}. ${esc(m.nome)}</option>`).join("")}</select></label>
       ${adm.map(m => `<div data-eadm="${m.ordem}" ${m.ordem === 1 ? "" : "hidden"}><label>Nome <input name="nome${m.ordem}" value="${esc(m.nome)}"></label><label>Tipo (texto) <input name="tipo${m.ordem}" value="${esc(m.tipo)}"></label>
         <label>Herói <input name="classe${m.ordem}" value="${esc(m.classe)}"></label><label>Time: número da Pokédex : nível, separados por vírgula <input name="time${m.ordem}" value="${esc(m.time.map(t => `${t[0]}:${t[1]}`).join(", "))}"></label>
         <small class="muted">${esc(m.time.map(t => `${pkName(t[0])} ${t[1]}`).join(" · "))}</small></div>`).join("")}<button class="btn small">Salvar</button></form>` : "";
-  return `<div class="rpg-rotas"><div class="av-head"><h2>🏛️ Planalto da Liga</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+  return `<div class="rpg-rotas"><div class="av-head"><h2>🏛️ Desafio do Planalto</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
     <p>A Elite 4 e o Campeão te esperam, <b>um depois do outro</b>. Cada um usa sempre os mesmos Pokémon, e só lutando para descobrir quais são.</p>
-    <p class="rpg-fim"><b>⚠️ A vida dos seus Pokémon NUNCA volta durante a Liga</b>: nem com o tempo, nem no Centro Pokémon. Começou, tem que terminar: ou você vence o Campeão, ou cai com a equipe toda. Fugir de uma luta é desistir da Liga. Só dá para entrar <b>${E.tentativas_dia === 1 ? "uma vez" : `${E.tentativas_dia} vezes`} por dia</b>.</p>
+    <p class="rpg-fim"><b>⚠️ A vida dos seus Pokémon NUNCA volta durante o Desafio</b>: nem com o tempo, nem no Centro Pokémon. Começou, tem que terminar: ou você vence o Campeão, ou cai com a equipe toda. Fugir de uma luta é desistir do Desafio. Só dá para entrar <b>${E.tentativas_dia === 1 ? "uma vez" : `${E.tentativas_dia} vezes`} por dia</b>.</p>
     ${fila}
     <p class="muted">Prêmio de quem vence o Campeão: entra no <b>Hall da Fama</b>, ganha a 👑 no boneco${E.campeao ? "" : `, ${E.moedas} moedas, ${esc(Object.entries(E.itens || {}).map(([k, q]) => `${q}× ${rpgItemNome(k)}`).join(" e "))} e ${E.doces} Doces de Forja`}${E.campeao ? ` e ${E.repetir_moedas} moedas (você já venceu ${E.campeao}×)` : ""}.</p>
     ${corpo}${hall}
-    ${S.isAdmin ? (adm1 || `<p style="margin-top:10px"><button class="btn ghost small" data-eadmin="1">🛠️ Admin: ver e editar a Liga</button></p>`) : ""}</div>`;
+    ${S.isAdmin ? (adm1 || `<p style="margin-top:10px"><button class="btn ghost small" data-eadmin="1">🛠️ Admin: ver e editar o Desafio</button></p>`) : ""}</div>`;
 }
 async function rpgEliteLutar(meus) {
   let res; try { res = await rpc("rpg_elite_lutar", { _comp: rpgSupId(), _meus: meus || null }); } catch (e) { return toast(errMsg(e), true); }
@@ -13267,7 +13444,7 @@ async function rpgEliteLutar(meus) {
   await rpgLutaAbre(res.battle);
 }
 async function rpgEliteAbrir() {
-  const m = openModal(`<p class="muted">Abrindo a Liga…</p>`); m.querySelector(".modal").classList.add("modal-av");
+  const m = openModal(`<p class="muted">Abrindo o Desafio do Planalto…</p>`); m.querySelector(".modal").classList.add("modal-av");
   let E, adm = null; const sel = [];
   const pinta = () => { const box = $("#modal-root .modal"); if (box && E) box.innerHTML = rpgEliteHTML(E, sel, adm); };
   m.addEventListener("click", async e => {
@@ -13276,12 +13453,12 @@ async function rpgEliteAbrir() {
     if (es) { const id = es.dataset.esel, k = sel.indexOf(id); if (k >= 0) sel.splice(k, 1); else if (sel.length < (E.time_max || 6)) sel.push(id); sfx("tick"); return pinta(); }
     if (e.target.closest("[data-elimpa]")) { sel.length = 0; return pinta(); }
     if (e.target.closest("[data-elite]")) {
-      if (!E.tentativa && !await confirmModal("Entrar na Liga?", `Você vai enfrentar os ${E.membros.length} em sequência com ${sel.length} Pokémon. A vida deles não volta até o fim. Começou, tem que terminar (ou desistir, e perde a tentativa de hoje).`, "Entrar")) return;
+      if (!E.tentativa && !await confirmModal("Entrar no Desafio do Planalto?", `Você vai enfrentar os ${E.membros.length} em sequência com ${sel.length} Pokémon. A vida deles não volta até o fim. Começou, tem que terminar (ou desistir, e perde a tentativa de hoje).`, "Entrar")) return;
       return rpgEliteLutar(E.tentativa ? null : sel.slice());
     }
     if (e.target.closest("[data-edesiste]")) {
-      if (!await confirmModal("Desistir da Liga?", "A tentativa acaba e conta como derrota.", "Desistir")) return;
-      try { await rpc("rpg_elite_desistir"); toast("Você desistiu da Liga."); E = await rpgEliteCarregar(); rpgPerto(); pinta(); } catch (er) { toast(errMsg(er), true); } return;
+      if (!await confirmModal("Desistir do Desafio do Planalto?", "A tentativa acaba e conta como derrota.", "Desistir")) return;
+      try { await rpc("rpg_elite_desistir"); toast("Você desistiu do Desafio do Planalto."); E = await rpgEliteCarregar(); rpgPerto(); pinta(); } catch (er) { toast(errMsg(er), true); } return;
     }
     if (e.target.closest("[data-eadmin]")) { try { adm = await rpc("admin_rpg_elite"); pinta(); } catch (er) { toast(errMsg(er), true); } }
   });
@@ -13290,10 +13467,10 @@ async function rpgEliteAbrir() {
     if (!e.target.matches("[data-eform]")) return; e.preventDefault(); const f = new FormData(e.target), o = +f.get("ordem");
     const time = String(f.get("time" + o) || "").split(",").map(p => p.trim()).filter(Boolean).map(p => p.split(":").map(v => parseInt(v, 10)));
     if (!time.length || time.some(t => t.length !== 2 || t.some(v => !(v > 0)))) return toast("Escreva o time assim: 3:35, 6:40 (número da Pokédex : nível).", true);
-    try { adm = await rpc("admin_rpg_elite_salvar", { _ordem: o, _nome: f.get("nome" + o), _classe: f.get("classe" + o), _tipo: f.get("tipo" + o), _time: time }); toast("Liga salva!"); E = await rpgEliteCarregar(); pinta(); }
+    try { adm = await rpc("admin_rpg_elite_salvar", { _ordem: o, _nome: f.get("nome" + o), _classe: f.get("classe" + o), _tipo: f.get("tipo" + o), _time: time }); toast("Desafio do Planalto salvo!"); E = await rpgEliteCarregar(); pinta(); }
     catch (er) { toast(errMsg(er), true); }
   });
-  E = await rpgEliteCarregar(); if (!E) { closeModal(); return toast("Não consegui abrir a Liga. Tente de novo.", true); }
+  E = await rpgEliteCarregar(); if (!E) { closeModal(); return toast("Não consegui abrir o Desafio do Planalto. Tente de novo.", true); }
   pinta();
 }
 ACTIONS["rpg-elite-next"] = async () => { await guarded(async () => { await Promise.all([loadPk(), loadTreino()]); }); await rpgEliteLutar(); };
@@ -14768,6 +14945,25 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "ginasio-2026-11-16", sql: "113", title: "🏟️ Ginásio em uma batalha só, como na Red/Blue", body: () => `Os Ginásios da Aventura mudaram, a pedido da turma:
+• Antes de começar, escolha a mesma quantidade de Pokémon que o Líder usa e a ordem em que entram. O primeiro começa em campo.
+• Agora é UMA batalha só. A cada turno você ataca, troca de Pokémon (gasta o turno, e o Líder ataca quem entrou) ou usa um item.
+• Quando um Pokémon seu desmaia, VOCÊ escolhe quem entra. O Revive funciona em quem desmaiou e ele volta com metade da vida.
+• São até 2 itens na batalha inteira. O Líder segue a ordem dele e só troca quando o Pokémon dele cai.
+• A experiência de cada Pokémon do Líder derrotado é dividida entre os seus que lutaram contra ele, como na Red/Blue.
+• Durante a batalha, os escalados ficam travados: não vão ao Centro, à Creche, ao Leilão nem saem da equipe. Saiu da tela? Volte e continue de onde parou.
+• A batalha tem prazo: se não terminar a tempo, conta como derrota.
+• Os Pokémon dos Líderes, os selvagens, o Chefe da rota e a Equipe Rocket também ficaram mais espertos: escolhem ataques que acertam você.
+• E a Liga da Aventura (Elite 4 e Campeão) agora se chama Desafio do Planalto, para não confundir com a Liga Pokémon do tabuleiro.` },
+  { id: "trocas-2026-11-16", sql: "114", title: "🔁 Troca de Pokémon entre jogadores", body: () => `Agora dá para trocar Pokémon com os amigos (menu Pokémon → 🔁 Trocas):
+• Escolha um Pokémon seu e um Pokémon de outro jogador. Se quiser, coloque moedas de um lado ou do outro.
+• Os dois confirmam numa tela com o resumo: Pokémon, nível, ataques e moedas de cada lado. A proposta vale 24 horas.
+• O Pokémon vai inteiro: nível, experiência, ataques e roupas.
+• Não dá para trocar Pokémon que está na Creche, num esquadrão de guerra, como suporte da Aventura, no Leilão ou numa batalha de Ginásio ou do Desafio do Planalto.
+• São até 3 trocas por semana. Quem chega por troca só pode ser trocado de novo depois de 7 dias.
+• Taxa de 5% sobre as moedas que você recebe (Ladino paga 2% e Mercador não paga). Troca sem moedas não tem taxa.
+• Como na Red/Blue: Kadabra, Machoke, Graveler e Haunter evoluem quando são trocados! (O Cabo Link continua na loja.)
+• Toda troca aparece nos Acontecimentos.` },
   { id: "vale-2026-11-16", sql: "112", title: "🥋 Vale do Treino na Aventura", body: () => `Agora dá para evoluir os Pokémon sem lutar na grama: chegou o Vale do Treino, na trilha ao norte da Vila Aurora (Aventura).
 • São 6 estações: Pista de Corrida, Saco de Pancada, Templo da Meditação, Lago das Correntes, Paredão de Escalada e Fogueira do Fôlego.
 • Em cada uma o seu Pokémon faz um exercício rápido (uns 20 segundos): acertar o ritmo, repetir a sequência, lembrar das luzes, desviar das pedras, escalar rápido e segurar a chama.

@@ -53,6 +53,8 @@ const niv = Object.fromEntries((await sys(`select id, public.rpg_nivel_min(id) a
 check("nível mínimo pela evolução: Charmeleon 16, Charizard 36, Gengar (troca) 36, Dragonite 55, Raichu (pedra) 28", niv[5] === 16 && niv[6] === 36 && niv[94] === 36 && niv[149] === 55 && niv[26] === 28 && niv[4] === 1, JSON.stringify(niv));
 
 console.log("\nEncontros");
+// a noite (arquivo 99) põe Fantasma e Sombrio em todas as áreas: este teste é de antes dela, então roda sempre de "dia"
+await sys(`update game_config set config = jsonb_set(config, '{rpg,noite}', coalesce(config->'rpg'->'noite', '{}'::jsonb) || '{"on": false}'::jsonb) where active and config ? 'rpg'`);
 let okNivel = true, okTipo = true, okEvo = true, vistos = new Set(), erro = null;
 const Z = cfg.rpg.zonas;
 for (const zona of ["mato", "bosque_fundo", "pico_fundo"]) for (let i = 0; i < 12; i++) {

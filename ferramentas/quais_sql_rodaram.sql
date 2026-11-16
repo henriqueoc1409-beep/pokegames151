@@ -90,6 +90,8 @@ from (values
   ('110_pokebound_ranqueado', to_regclass('public.pb_partidas') is not null),
   ('111_expedicoes', to_regclass('public.exp_runs') is not null),
   ('112_vale_fazenda', to_regclass('public.fazenda_canteiros') is not null),
+  ('113_ginasio_batalha_unica', to_regclass('public.rpg_gin_ocultos') is not null),
+  ('114_troca_pokemon', to_regclass('public.trocas') is not null),
   ('51_quiz_premio_automatico',  exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quizzes' and column_name = 'prize_given_at')),
   ('50_premios_temporada',       to_regclass('public.season_awards') is not null),
   ('49_painel_uso',              to_regclass('public.publicacoes') is not null),
