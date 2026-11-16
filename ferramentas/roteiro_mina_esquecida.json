@@ -1,0 +1,236 @@
+{
+  "id": "mina", "nome": "Mina Esquecida", "regiao": "pedreira", "local": "Gruta da Pedreira (Aventura)", "dificuldade": "Média", "ic": "⛏️",
+  "historia": "Há muitos anos, mineradores da Pedreira acharam uma passagem subterrânea cheia de cristais raros. Depois de barulhos estranhos, luzes que se mexiam sozinhas e um sumiço que ninguém explica, a mina foi fechada às pressas. Dizem que algo enorme protege um tesouro lá no fundo.",
+  "premios_txt": ["Moedas", "Itens da bolsa", "Doces de Forja", "Peças de equipamento (raro)", "Relíquias para o Diário", "Pokémon especiais para capturar"],
+  "recursos": {"energia": 5, "luz": 3},
+  "etapas": 5,
+  "reliquias": {
+    "lampiao": {"nome": "Lampião do Capataz", "desc": "Ainda tem um resto de querosene. Alguém saiu daqui com muita pressa."},
+    "selo": {"nome": "Selo da Porta Antiga", "desc": "Um disco de pedra com três símbolos gastos: fogo, água e folha."},
+    "cristal_estelar": {"nome": "Cristal Estelar", "desc": "Brilha mesmo no escuro total. Parece pulsar devagar."},
+    "picareta": {"nome": "Picareta de Prata", "desc": "Gravado no cabo: 'para o próximo que tiver coragem'."},
+    "coracao": {"nome": "Coração da Montanha", "desc": "Uma pedra quente que o guardião protegia. Dá para sentir um batimento."},
+    "diario_mineiro": {"nome": "Diário do Minerador", "desc": "A última página diz: 'não acenda a luz perto do veio azul'."}
+  },
+  "segredos": {
+    "veio_azul": {"nome": "O veio azul que canta"},
+    "trilho_secreto": {"nome": "O trilho que leva ao fundo"},
+    "sala_selada": {"nome": "A sala atrás da porta dos símbolos"},
+    "minerador_salvo": {"nome": "O minerador que voltou para casa"},
+    "guardiao_calmo": {"nome": "O guardião que não precisou lutar"}
+  },
+  "conquistas": [
+    {"id": "primeira_descida", "nome": "Primeira descida", "desc": "Termine a Mina Esquecida pela primeira vez.", "cond": {"tipo": "concluidas", "min": 1}, "premio": {"moedas": 100}},
+    {"id": "tres_caminhos", "nome": "Conhece todas as entradas", "desc": "Entre na mina pelos 3 caminhos diferentes.", "cond": {"tipo": "caminhos", "min": 3}, "premio": {"moedas": 150, "doces": 1}},
+    {"id": "colecionador", "nome": "Colecionador de relíquias", "desc": "Encontre 4 relíquias diferentes.", "cond": {"tipo": "reliquias", "min": 4}, "premio": {"moedas": 200, "doces": 2}, "titulo": "Arqueólogo da Pedreira"},
+    {"id": "guardiao", "nome": "Venceu o Guardião", "desc": "Derrote o guardião da câmara final.", "cond": {"tipo": "chefes", "min": 1}, "premio": {"moedas": 250, "doces": 2}, "titulo": "Domador da Montanha"},
+    {"id": "todos_segredos", "nome": "A mina não tem mais segredos", "desc": "Descubra os 5 segredos da Mina Esquecida.", "cond": {"tipo": "segredos", "min": 5}, "premio": {"moedas": 500, "doces": 3, "peca": true}, "titulo": "Lenda da Mina Esquecida"}
+  ],
+  "eventos": [
+    {"id": "entrada", "etapa": [1], "peso": 1, "cena": "entrada", "titulo": "A boca da mina",
+     "texto": "Atrás das tábuas podres, o ar é frio e cheira a ferrugem. Três caminhos se abrem na escuridão: um túnel com trilhos, uma fenda que brilha em azul e um poço fundo com uma corda velha.",
+     "opcoes": [
+       {"id": "tunel", "txt": "🚃 Túnel abandonado: parece mais seguro, e tem pegadas de Pokémon.", "resultados": [{"peso": 1, "txt": "Você segue os trilhos enferrujados. O túnel é largo e silencioso… quase demais.", "efeitos": {"tags": ["tunel"], "caminho": "tunel"}}]},
+       {"id": "cristais", "txt": "💎 Passagem dos cristais: misteriosa, cheia de brilho e de coisas para achar.", "custo": {"luz": 1}, "resultados": [{"peso": 1, "txt": "Você se espreme pela fenda. As paredes refletem a sua luz em mil pontinhos azuis.", "efeitos": {"tags": ["cristais"], "caminho": "cristais"}}]},
+       {"id": "poco", "txt": "🕳️ Poço profundo: perigoso, mas dizem que esconde salas secretas.", "custo": {"energia": 1}, "resultados": [{"peso": 1, "txt": "Você desce pela corda até o fundo do poço. Lá em cima, a luz do dia vira um pontinho.", "efeitos": {"tags": ["poco"], "caminho": "poco"}}]}
+     ]},
+
+    {"id": "carrinho", "etapa": [2], "tags_req": ["tunel"], "peso": 10, "cena": "carrinho", "titulo": "O carrinho tombado",
+     "texto": "Um carrinho de minério está caído sobre o trilho, bloqueando metade do túnel. Tem alguma coisa brilhando lá dentro.",
+     "opcoes": [
+       {"id": "empurrar", "txt": "Empurrar o carrinho de volta para o trilho", "custo": {"energia": 1}, "resultados": [
+         {"peso": 6, "txt": "Com um rangido, o carrinho volta para o trilho. Mais à frente, você vê que o trilho desce para o fundo da mina…", "efeitos": {"flags": ["trilho_livre"], "segredo": "trilho_secreto"}},
+         {"peso": 4, "ruim": true, "txt": "O carrinho escapa e desce o túnel batendo em tudo. O barulho ecoa pela mina inteira.", "efeitos": {"flags": ["barulho"]}}]},
+       {"id": "revistar", "txt": "Revistar o carrinho", "resultados": [
+         {"peso": 5, "txt": "No meio do minério, um saquinho esquecido de moedas.", "efeitos": {"moedas": [25, 60]}},
+         {"peso": 3, "txt": "Era um Geodude dormindo no minério, e ele não gostou de ser acordado!", "efeitos": {"batalha": {"especies": [74], "delta": [-2, 1], "se_venceu": {"moedas": [20, 40]}, "se_perdeu": {"energia": -1}}}},
+         {"peso": 2, "txt": "Embaixo do carrinho, um lampião antigo ainda funciona.", "efeitos": {"luz": 1, "reliquia": "lampiao"}}]},
+       {"id": "seguir", "txt": "Passar pelo cantinho sem mexer em nada", "resultados": [
+         {"peso": 1, "txt": "Você passa espremido e segue em silêncio. Nada acontece, e isso já é alguma coisa.", "efeitos": {"flags": ["cauteloso"]}}]}
+     ]},
+    {"id": "pegadas", "etapa": [2, 3], "tags_req": ["tunel"], "peso": 8, "cena": "tunel", "titulo": "Pegadas no pó",
+     "texto": "Marcas grandes e redondas no chão de pó. Algo pesado passou por aqui há pouco tempo.",
+     "opcoes": [
+       {"id": "seguir", "txt": "Seguir as pegadas", "resultados": [
+         {"peso": 6, "txt": "As pegadas terminam num Pokémon selvagem que vigia o túnel!", "efeitos": {"batalha": {"especies": [95, 66, 111, 27], "delta": [-1, 2], "captura": true, "se_venceu": {"moedas": [15, 35]}, "se_perdeu": {"energia": -1}}}},
+         {"peso": 2, "txt": "As pegadas levam a um ninho vazio, com uma relíquia no meio.", "efeitos": {"reliquia": "picareta"}}]},
+       {"id": "apagar", "txt": "Apagar os seus rastros e andar em silêncio", "custo": {"energia": 1}, "resultados": [
+         {"peso": 1, "txt": "Você anda devagar, pisando nas pedras. Se algo morar lá no fundo, não vai te ouvir chegar.", "efeitos": {"flags": ["furtivo"]}}]},
+       {"id": "ignorar", "txt": "Ignorar e seguir o trilho", "resultados": [
+         {"peso": 1, "txt": "Melhor não procurar briga. O trilho continua.", "efeitos": {}}]}
+     ]},
+    {"id": "cristais_azuis", "etapa": [2], "tags_req": ["cristais"], "peso": 10, "cena": "cristais", "titulo": "Os cristais azuis",
+     "texto": "A passagem se abre numa galeria coberta de cristais azuis. Eles brilham sozinhos, e a luz parece vir de algum lugar mais fundo.",
+     "opcoes": [
+       {"id": "coletar", "txt": "Coletar os cristais", "custo": {"energia": 1}, "resultados": [
+         {"peso": 6, "txt": "Você enche a mochila de lascas de cristal. Vão valer umas boas moedas.", "efeitos": {"moedas": [40, 80], "flags": ["cristal"]}},
+         {"peso": 4, "ruim": true, "txt": "Um cristal racha com um estalo alto. A galeria inteira vibra… e algo lá no fundo acorda.", "efeitos": {"moedas": [20, 40], "flags": ["barulho", "cristal"]}}]},
+       {"id": "investigar", "txt": "Investigar de onde vem a luz", "custo": {"luz": 1}, "resultados": [
+         {"peso": 7, "txt": "Seguindo o brilho, você acha um veio de cristal que parece cantar baixinho. Ninguém chegou aqui antes.", "efeitos": {"flags": ["veio"], "segredo": "veio_azul"}},
+         {"peso": 3, "txt": "A luz vinha de um Pokémon escondido entre os cristais!", "efeitos": {"batalha": {"especies": [81, 100, 120], "delta": [-1, 1], "captura": true, "se_venceu": {"flags": ["veio"]}, "se_perdeu": {"luz": -1}}}}]},
+       {"id": "respeitar", "txt": "Passar sem tocar em nada", "resultados": [
+         {"peso": 1, "txt": "Você passa devagar e não toca em nenhum cristal. Por um instante, eles parecem brilhar mais forte, como se agradecessem.", "efeitos": {"flags": ["respeito"]}}]}
+     ]},
+    {"id": "minerador", "etapa": [2, 3], "tags_req": ["cristais"], "peso": 7, "cena": "minerador", "titulo": "O minerador perdido",
+     "texto": "Encostado na parede, um minerador idoso, com o capacete torto. 'Faz dias que não acho a saída', ele diz, com a voz fraca.",
+     "opcoes": [
+       {"id": "ajudar", "txt": "Dividir a sua comida e ensinar o caminho de volta", "custo": {"energia": 1}, "resultados": [
+         {"peso": 1, "txt": "Ele se levanta, agradece e, antes de ir, desenha um mapa no seu braço com carvão: 'a câmara tem uma entrada pelos fundos'.", "efeitos": {"flags": ["aliado"], "segredo": "minerador_salvo", "reliquia": "diario_mineiro"}}]},
+       {"id": "perguntar", "txt": "Perguntar o que ele sabe da mina", "resultados": [
+         {"peso": 6, "txt": "'O guardião não gosta de barulho', ele sussurra. 'E adora cristais.'", "efeitos": {"flags": ["dica"]}},
+         {"peso": 4, "txt": "Ele fala coisas sem sentido sobre luzes que andam. Mas te dá umas moedas pela companhia.", "efeitos": {"moedas": [15, 30]}}]},
+       {"id": "deixar", "txt": "Seguir em frente (alguém vai achar ele)", "resultados": [
+         {"peso": 1, "txt": "Você segue. A voz dele vai ficando para trás até sumir.", "efeitos": {"flags": ["frio"]}}]}
+     ]},
+    {"id": "corda", "etapa": [2], "tags_req": ["poco"], "peso": 10, "cena": "poco", "titulo": "A corda podre",
+     "texto": "No fundo do poço há um segundo poço, ainda mais fundo. A corda que desce nele está cheia de fiapos.",
+     "opcoes": [
+       {"id": "descer", "txt": "Descer assim mesmo", "resultados": [
+         {"peso": 6, "txt": "A corda aguenta. Lá embaixo, uma porta antiga coberta de símbolos.", "efeitos": {"flags": ["fundo"]}},
+         {"peso": 4, "ruim": true, "txt": "A corda arrebenta no meio do caminho! Você cai, se machuca, mas chega ao fundo.", "efeitos": {"energia": -2, "flags": ["fundo"]}}]},
+       {"id": "amarrar", "txt": "Reforçar a corda antes", "custo": {"luz": 1}, "resultados": [
+         {"peso": 1, "txt": "Demora, e a sua luz gasta um bom tanto, mas você desce com segurança.", "efeitos": {"flags": ["fundo", "cauteloso"]}}]},
+       {"id": "golpe_forca", "txt": "💪 Usar Força para descer pelas pedras", "req": {"golpe": 70}, "resultados": [
+         {"peso": 1, "txt": "Seu Pokémon abre caminho entre as pedras. Rápido, seguro e ainda sobra energia.", "efeitos": {"flags": ["fundo"], "energia": 1}}]}
+     ]},
+    {"id": "bau", "etapa": [2, 3], "tags_req": ["poco"], "peso": 8, "cena": "bau", "titulo": "O baú com cadeado",
+     "texto": "Um baú de ferro, trancado com um cadeado enorme e enferrujado.",
+     "opcoes": [
+       {"id": "arrombar", "txt": "Arrombar o cadeado", "custo": {"energia": 1}, "resultados": [
+         {"peso": 5, "txt": "O cadeado cede! Dentro, itens que alguém guardou com carinho.", "efeitos": {"itens": {"super_pocao": 1, "reviver": 1}}},
+         {"peso": 3, "ruim": true, "txt": "Era uma armadilha: uma nuvem de pó apaga a sua luz.", "efeitos": {"luz": -1}},
+         {"peso": 2, "txt": "Lá dentro, um Doce de Forja ainda embrulhado!", "efeitos": {"doces": 1}}]},
+       {"id": "chave", "txt": "Procurar a chave por perto", "custo": {"luz": 1}, "resultados": [
+         {"peso": 6, "txt": "A chave estava pendurada num prego, e ainda tem outra presa no mesmo chaveiro…", "efeitos": {"itens": {"super_pocao": 1}, "flags": ["chave"]}},
+         {"peso": 4, "txt": "Nada da chave. Mas você acha umas moedas no chão.", "efeitos": {"moedas": [15, 35]}}]},
+       {"id": "deixar", "txt": "Deixar o baú para lá", "resultados": [{"peso": 1, "txt": "Nem todo baú vale o risco.", "efeitos": {"flags": ["cauteloso"]}}]}
+     ]},
+    {"id": "bloqueio", "etapa": [2, 3], "peso": 5, "cena": "rochas", "titulo": "Passagem bloqueada",
+     "texto": "Um desmoronamento fechou a passagem. Dá para ver um vão estreito no alto.",
+     "opcoes": [
+       {"id": "cavar", "txt": "Tirar as pedras com as mãos", "custo": {"energia": 1}, "resultados": [
+         {"peso": 7, "txt": "Pedra por pedra, você abre caminho. Embaixo das pedras, algumas moedas antigas.", "efeitos": {"moedas": [20, 45]}},
+         {"peso": 3, "ruim": true, "txt": "Mais pedras caem do teto. Você escapa por pouco, cansado.", "efeitos": {"energia": -1}}]},
+       {"id": "forca", "txt": "💪 Pedir para um Pokémon usar Força", "req": {"golpe": 70}, "resultados": [
+         {"peso": 1, "txt": "As pedras rolam para o lado como se fossem de papel.", "efeitos": {"flags": ["forte"]}}]},
+       {"id": "vao", "txt": "Escalar até o vão no alto", "resultados": [
+         {"peso": 5, "txt": "Você passa pelo vão e encontra um caminho que ninguém usa há anos.", "efeitos": {"flags": ["atalho_alto"]}},
+         {"peso": 5, "ruim": true, "txt": "Você escorrega e machuca o braço, mas passa.", "efeitos": {"energia": -1}}]}
+     ]},
+    {"id": "escuro", "etapa": [2, 3, 4], "peso": 6, "cena": "tunel", "titulo": "A escuridão completa",
+     "texto": "Um sopro de vento apaga a chama por um instante. No escuro, você ouve asas batendo.",
+     "opcoes": [
+       {"id": "flash", "txt": "✨ Usar Flash", "req": {"golpe": 148}, "resultados": [
+         {"peso": 1, "txt": "A luz do Flash enche o túnel. Os Zubat fogem, e você enxerga uma passagem escondida.", "efeitos": {"luz": 2, "flags": ["atalho_alto"]}}]},
+       {"id": "acender", "txt": "Reacender a tocha", "custo": {"luz": 1}, "resultados": [
+         {"peso": 6, "txt": "A luz volta, e uma revoada de Zubat passa por cima de você e some.", "efeitos": {}},
+         {"peso": 4, "txt": "A luz acorda um Pokémon que estava no teto!", "efeitos": {"batalha": {"especies": [41, 42, 92], "delta": [-1, 2], "se_venceu": {"moedas": [15, 30]}, "se_perdeu": {"energia": -1}}}}]},
+       {"id": "esperar", "txt": "Ficar parado no escuro e esperar", "resultados": [
+         {"peso": 5, "txt": "As asas passam e somem. Você acende a tocha de novo, com calma.", "efeitos": {}},
+         {"peso": 5, "ruim": true, "txt": "Algo esbarra em você no escuro e leva parte da sua mochila!", "efeitos": {"perde_moedas": 0.3, "flags": ["roubado"]}}]}
+     ]},
+
+    {"id": "porta", "etapa": [3, 4], "peso": 9, "cena": "porta", "titulo": "A porta dos símbolos",
+     "texto": "Uma porta de pedra enorme, com três símbolos: uma chama, uma gota e uma folha. Embaixo está escrito: 'abre para quem escolhe o que vence quem vence o fogo'.",
+     "opcoes": [
+       {"id": "fogo", "txt": "🔥 Tocar na chama", "resultados": [{"peso": 1, "ruim": true, "txt": "A pedra esquenta e solta um jato de vapor. A porta não se mexe.", "efeitos": {"energia": -1}}]},
+       {"id": "agua", "txt": "💧 Tocar na gota", "resultados": [{"peso": 1, "ruim": true, "txt": "Um estalo, e o chão treme. A porta continua fechada… e o barulho ecoa longe.", "efeitos": {"flags": ["barulho"]}}]},
+       {"id": "folha", "txt": "🌿 Tocar na folha", "resultados": [{"peso": 1, "txt": "A água vence o fogo, e a folha vence a água. A porta range e se abre devagar.", "efeitos": {"flags": ["porta_aberta"], "reliquia": "selo"}}]},
+       {"id": "chave", "txt": "🗝️ Usar a chave do baú", "req": {"flag": "chave"}, "resultados": [{"peso": 1, "txt": "A chave encaixa numa fechadura escondida embaixo dos símbolos. A porta se abre sem esforço.", "efeitos": {"flags": ["porta_aberta"], "reliquia": "selo"}}]}
+     ]},
+    {"id": "vagonete", "etapa": [3], "peso": 7, "cena": "trilhos", "titulo": "Vagonete desgovernado",
+     "texto": "Um barulho de ferro raspando: um vagonete solto vem descendo o trilho na sua direção, muito rápido!",
+     "opcoes": [
+       {"id": "pular", "txt": "Pular para o lado", "resultados": [
+         {"peso": 7, "txt": "Você pula a tempo. O vagonete passa e bate lá embaixo, abrindo um buraco na parede.", "efeitos": {"flags": ["parede_aberta"]}},
+         {"peso": 3, "ruim": true, "txt": "Você pula, mas bate o joelho na pedra.", "efeitos": {"energia": -1}}]},
+       {"id": "subir", "txt": "Subir no vagonete!", "resultados": [
+         {"peso": 5, "txt": "Que viagem! O vagonete te leva direto para as profundezas.", "efeitos": {"flags": ["atalho_alto"], "energia": 1}},
+         {"peso": 5, "ruim": true, "txt": "O vagonete descarrila e você sai rolando. Perdeu umas moedas no caminho.", "efeitos": {"perde_moedas": 0.4, "energia": -1}}]},
+       {"id": "nicho", "txt": "Se esconder num nicho da parede", "custo": {"luz": 1}, "resultados": [
+         {"peso": 1, "txt": "Apertado, mas seguro. Dentro do nicho, alguém esqueceu um item.", "efeitos": {"itens": {"pocao": 2}}}]}
+     ]},
+    {"id": "ponte", "etapa": [3, 4], "peso": 7, "cena": "ponte", "titulo": "A ponte sobre o abismo",
+     "texto": "Uma ponte de madeira atravessa um abismo sem fundo. Metade das tábuas sumiu.",
+     "opcoes": [
+       {"id": "correr", "txt": "Atravessar correndo", "resultados": [
+         {"peso": 6, "txt": "Tábua, buraco, tábua… você chega do outro lado com o coração na boca.", "efeitos": {}},
+         {"peso": 4, "ruim": true, "txt": "Uma tábua cede e você se segura com as mãos. Chega do outro lado, mas exausto.", "efeitos": {"energia": -2}}]},
+       {"id": "reforcar", "txt": "Usar as tábuas do carrinho para reforçar", "req": {"flag": "trilho_livre"}, "resultados": [
+         {"peso": 1, "txt": "Com as tábuas do carrinho, a ponte fica firme. Do outro lado, um baú pendurado na rocha!", "efeitos": {"moedas": [30, 70], "doces": 1}}]},
+       {"id": "contornar", "txt": "Procurar outro caminho pela borda", "custo": {"luz": 1}, "resultados": [
+         {"peso": 6, "txt": "Pela borda, devagar. Demora, mas você passa.", "efeitos": {}},
+         {"peso": 4, "txt": "Pela borda você encontra uma caverninha com um Pokémon raro!", "efeitos": {"avistou": 147, "batalha": {"especies": [147, 138, 140], "delta": [-2, 0], "captura": true, "especial": true, "se_venceu": {}, "se_perdeu": {"energia": -1}}}}]}
+     ]},
+    {"id": "mercadora", "etapa": [3, 4], "peso": 4, "cena": "misterio", "titulo": "A mercadora encapuzada",
+     "texto": "Uma figura encapuzada está sentada num caixote, com uma lanterna roxa. 'Troco coisas, viajante. Tudo tem um preço aqui embaixo.'",
+     "opcoes": [
+       {"id": "trocar_energia", "txt": "Trocar energia por luz", "custo": {"energia": 1}, "resultados": [{"peso": 1, "txt": "'Negócio fechado.' Ela te entrega duas tochas novas.", "efeitos": {"luz": 2}}]},
+       {"id": "trocar_cristal", "txt": "Oferecer os cristais da mochila", "req": {"flag": "cristal"}, "resultados": [{"peso": 1, "txt": "Os olhos dela brilham. Em troca dos cristais, uma relíquia que ela jura ser verdadeira.", "efeitos": {"reliquia": "cristal_estelar", "tira_flag": "cristal"}}]},
+       {"id": "recusar", "txt": "Recusar e seguir", "resultados": [{"peso": 1, "txt": "'Volte quando tiver algo interessante', ela ri, e some no escuro.", "efeitos": {}}]}
+     ]},
+
+    {"id": "sala_secreta", "etapa": [4], "flags_algum": ["porta_aberta", "fundo"], "peso": 30, "cena": "sala", "titulo": "A sala selada",
+     "texto": "Atrás da passagem, uma sala que ninguém abre há décadas: estantes, caixotes e um brilho dourado no fundo.",
+     "opcoes": [
+       {"id": "tudo", "txt": "Pegar tudo o que der", "custo": {"energia": 1}, "resultados": [
+         {"peso": 6, "txt": "A mochila fica pesada de tanta coisa boa.", "efeitos": {"moedas": [60, 120], "itens": {"hiper_pocao": 1}, "segredo": "sala_selada"}},
+         {"peso": 4, "txt": "No fundo de um caixote, uma peça de equipamento brilhando!", "efeitos": {"peca": true, "segredo": "sala_selada"}}]},
+       {"id": "escolher", "txt": "Examinar com calma e escolher só uma coisa", "custo": {"luz": 1}, "resultados": [
+         {"peso": 1, "txt": "Entre tudo, você escolhe o que parece mais antigo: uma relíquia e dois Doces de Forja.", "efeitos": {"reliquia": "picareta", "doces": 2, "segredo": "sala_selada"}}]},
+       {"id": "deixar", "txt": "Fechar a porta e não mexer", "resultados": [
+         {"peso": 1, "txt": "Alguns segredos é melhor deixar quietos. Você sente que o fundo da mina está mais calmo.", "efeitos": {"flags": ["respeito"], "segredo": "sala_selada"}}]}
+     ]},
+    {"id": "atalho_trilhos", "etapa": [4], "flags_algum": ["trilho_livre", "atalho_alto", "parede_aberta"], "peso": 20, "cena": "trilhos", "titulo": "O caminho escondido",
+     "texto": "O caminho que você abriu leva por dentro da rocha, direto para perto da câmara final. Dá para chegar descansado… ou explorar os túneis do lado.",
+     "opcoes": [
+       {"id": "descansar", "txt": "Ir direto e chegar descansado", "resultados": [{"peso": 1, "txt": "Você chega perto da câmara sem pressa e recupera o fôlego.", "efeitos": {"energia": 2, "flags": ["surpresa"]}}]},
+       {"id": "explorar", "txt": "Explorar os túneis do lado", "custo": {"energia": 1}, "resultados": [
+         {"peso": 6, "txt": "Os túneis do lado estão cheios de minério esquecido.", "efeitos": {"moedas": [40, 90]}},
+         {"peso": 4, "txt": "Um Pokémon raro mora nesses túneis!", "efeitos": {"batalha": {"especies": [142, 139, 141], "delta": [-2, 0], "captura": true, "especial": true, "se_venceu": {"moedas": [20, 40]}, "se_perdeu": {"energia": -1}}}}]}
+     ]},
+    {"id": "despertou", "etapa": [4], "flags_req": ["barulho"], "peso": 25, "cena": "camara", "titulo": "Algo despertou",
+     "texto": "O barulho que você fez antes acordou alguma coisa. Um Pokémon enorme bloqueia o caminho, furioso.",
+     "opcoes": [
+       {"id": "lutar", "txt": "Enfrentar", "resultados": [{"peso": 1, "txt": "Não tem como fugir dessa!", "efeitos": {"batalha": {"especies": [95, 76, 112], "delta": [1, 3], "captura": true, "se_venceu": {"moedas": [40, 80], "tira_flag": "barulho"}, "se_perdeu": {"energia": -2}}}}]},
+       {"id": "fugir", "txt": "Correr de volta e dar a volta", "custo": {"energia": 2}, "resultados": [{"peso": 1, "txt": "Você foge e dá uma volta enorme. Chega na câmara, mas o guardião já está acordado.", "efeitos": {}}]}
+     ]},
+    {"id": "minerador_volta", "etapa": [4], "flags_req": ["aliado"], "peso": 25, "cena": "minerador", "titulo": "Um velho conhecido",
+     "texto": "O minerador que você ajudou aparece com uma lanterna e um sorriso. 'Voltei para te ajudar, não ia te deixar sozinho aqui!'",
+     "opcoes": [
+       {"id": "aceitar", "txt": "Aceitar a ajuda dele", "resultados": [{"peso": 1, "txt": "Ele te dá suprimentos e mostra a entrada pelos fundos da câmara.", "efeitos": {"energia": 2, "luz": 1, "flags": ["surpresa"], "itens": {"super_pocao": 1}}}]},
+       {"id": "presente", "txt": "Pedir só um presente de lembrança", "resultados": [{"peso": 1, "txt": "Ele tira do bolso o Lampião do Capataz. 'Era do meu chefe. Fica com você.'", "efeitos": {"reliquia": "lampiao", "moedas": [20, 40]}}]}
+     ]},
+    {"id": "veio_cristal", "etapa": [4], "flags_req": ["veio"], "peso": 25, "cena": "cristais", "titulo": "O coração do veio",
+     "texto": "O canto do veio azul está mais forte. No centro, um cristal maior que os outros pulsa como um coração.",
+     "opcoes": [
+       {"id": "pegar", "txt": "Arrancar o cristal grande", "custo": {"energia": 1}, "resultados": [
+         {"peso": 5, "txt": "O cristal se solta na sua mão, quente e brilhante.", "efeitos": {"reliquia": "cristal_estelar", "flags": ["cristal"]}},
+         {"peso": 5, "ruim": true, "txt": "O cristal se solta, mas o veio para de cantar… e a mina inteira treme.", "efeitos": {"reliquia": "cristal_estelar", "flags": ["cristal", "barulho"]}}]},
+       {"id": "ouvir", "txt": "Ficar ouvindo o canto", "resultados": [{"peso": 1, "txt": "O canto te acalma. Você descansa, e quando segue, está com outra energia.", "efeitos": {"energia": 2, "flags": ["respeito"]}}]}
+     ]},
+    {"id": "galeria", "etapa": [4], "peso": 3, "cena": "galeria", "titulo": "A galeria silenciosa",
+     "texto": "Uma galeria grande e vazia, com picaretas largadas e uma fogueira apagada. Parece um acampamento abandonado às pressas.",
+     "opcoes": [
+       {"id": "descansar", "txt": "Descansar na fogueira", "resultados": [{"peso": 1, "txt": "Você reacende a fogueira e descansa um pouco.", "efeitos": {"energia": 1, "luz": 1}}]},
+       {"id": "vasculhar", "txt": "Vasculhar o acampamento", "custo": {"energia": 1}, "resultados": [
+         {"peso": 6, "txt": "Moedas e um item esquecido numa mochila velha.", "efeitos": {"moedas": [30, 60], "itens": {"pocao": 1}}},
+         {"peso": 4, "txt": "Um diário rasgado dos mineradores!", "efeitos": {"reliquia": "diario_mineiro"}}]}
+     ]},
+
+    {"id": "camara", "etapa": [5], "peso": 1, "cena": "camara", "titulo": "A câmara do guardião",
+     "texto": "Uma caverna enorme, com o teto cheio de cristais. No centro, sobre um monte de tesouros, um Onix gigante abre os olhos devagar.",
+     "opcoes": [
+       {"id": "enfrentar", "txt": "⚔️ Enfrentar o guardião", "resultados": [
+         {"peso": 1, "txt": "O guardião ruge e vem para cima de você!", "efeitos": {"batalha": {"especies": [95], "delta": [3, 5], "chefe": true, "se_venceu": {"moedas": [120, 220], "doces": 2, "reliquia": "coracao", "chefe": "guardiao_onix", "fim": true}, "se_perdeu": {"fim": true}}}}]},
+       {"id": "furtivo", "txt": "🤫 Pegar o tesouro sem acordar o guardião", "resultados": [
+         {"peso": 4, "mod": [{"flag": "furtivo", "peso": 8}, {"flag": "surpresa", "peso": 6}, {"heroi": "ladino", "peso": 6}, {"flag": "barulho", "peso": -4}], "txt": "Pé ante pé, você pega um punhado do tesouro e sai sem ninguém ver.", "efeitos": {"moedas": [80, 160], "doces": 1, "fim": true}},
+         {"peso": 6, "ruim": true, "txt": "Uma moeda cai e tilinta no chão. O guardião acorda furioso!", "efeitos": {"batalha": {"especies": [95], "delta": [4, 6], "chefe": true, "se_venceu": {"moedas": [120, 220], "doces": 2, "reliquia": "coracao", "chefe": "guardiao_onix", "fim": true}, "se_perdeu": {"perde_moedas": 0.3, "fim": true}}}}]},
+       {"id": "oferecer", "txt": "💎 Oferecer um cristal ao guardião", "req": {"flag": "cristal"}, "resultados": [
+         {"peso": 3, "mod": [{"flag": "respeito", "peso": 10}, {"flag": "barulho", "peso": -2}], "txt": "O guardião cheira o cristal, abaixa a cabeça e se afasta do tesouro. Você pode pegar o que quiser.", "efeitos": {"moedas": [100, 180], "reliquia": "coracao", "segredo": "guardiao_calmo", "peca": true, "fim": true}},
+         {"peso": 3, "ruim": true, "txt": "O guardião engole o cristal… e continua com fome. De você.", "efeitos": {"batalha": {"especies": [95], "delta": [3, 5], "chefe": true, "se_venceu": {"moedas": [120, 220], "doces": 2, "reliquia": "coracao", "chefe": "guardiao_onix", "fim": true}, "se_perdeu": {"fim": true}}}}]},
+       {"id": "recuar", "txt": "🚪 Sair da mina com o que já tem", "resultados": [
+         {"peso": 1, "txt": "Às vezes, voltar inteiro é a melhor vitória. Você sai com a mochila cheia.", "efeitos": {"fim": true}}]}
+     ]}
+  ]
+}
