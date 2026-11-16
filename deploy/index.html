@@ -5287,7 +5287,19 @@ function displayName(c, id) {
 // prêmios da temporada (arquivo 50): as mesmas 12 categorias do season_award_cats()
 const SEASON_CATS = { casas: ["🥾", "Andarilho da Temporada"], capturas: ["🎯", "Rei das Capturas"], rodadas: ["🧠", "Mestre do Desafio"], batalhas: ["⚔️", "Campeão das Batalhas"],
   duelos: ["🤺", "Duelista da Temporada"], rocket: ["🚀", "Terror da Rocket"], quiz: ["❓", "Gênio do Quiz"], treinadores: ["🧢", "Caçador de Treinadores"],
-  moedas: ["💰", "Magnata"], primeira: ["👁️", "Olho de Águia"], pokedex: ["📖", "Pesquisador Pokémon"], cacadas: ["🔍", "Caçador de Lendas"] };
+  moedas: ["💰", "Magnata"], primeira: ["👁️", "Olho de Águia"], pokedex: ["📖", "Pesquisador Pokémon"], cacadas: ["🔍", "Caçador de Lendas"],
+  // arquivo 120: categorias novas
+  evolucoes: ["✨", "Mestre das Evoluções"], insignias: ["🏅", "Colecionador de Insígnias"], ataques: ["🏹", "Conquistador"], defesas: ["🛡️", "Muralha Viva"],
+  cartas: ["🃏", "Rei das Cartas"], pokebound: ["💥", "Rei do PokeBound"], missoes: ["📜", "Aventureiro Dedicado"], chefe: ["👹", "Matador de Chefes"],
+  negociante: ["🤝", "Maior Negociante"], azarado: ["🍀", "Azarado da Temporada"] };
+// arquivo 121: títulos de campeão da Liga (para sempre no cartão)
+async function loadLigaTitulos() {
+  if (S.ligaTit === false) return;
+  const { data, error } = await sb.from("liga_titulos").select("user_id,season_id,league_id").order("league_id");
+  if (error) { S.ligaTit = false; return; }
+  const by = {}; for (const t of data) (by[t.user_id] ||= []).push(t);
+  S.ligaTit = { by, ultimo: data.length ? data[data.length - 1].user_id : null };
+}
 // medalhas da última temporada premiada (valem até a próxima entrega)
 async function loadMedals() {
   if (S.medals === false) return;
@@ -5295,8 +5307,9 @@ async function loadMedals() {
   if (top.error) { S.medals = false; return; }
   if (!top.data.length) { S.medals = { season: null, by: {} }; return; }
   const season = top.data[0].season_id;
-  const { data, error } = await sb.from("season_awards").select("category,user_id,value").eq("season_id", season);
+  const { data, error } = await sb.from("season_awards").select("category,user_id,value,coins").eq("season_id", season);
   if (error) { S.medals = false; return; }
+  loadLigaTitulos();
   const by = {}; for (const a of data) (by[a.user_id] ||= []).push(a);
   S.medals = { season, by, list: data };
 }
@@ -5310,7 +5323,7 @@ function rkAwardsView() {
   const M = S.medals, last = M && M.season ? `<section class="panel lo"><h3>🏅 Campeões da Temporada ${M.season}</h3><div class="aw-last">${Object.entries(SEASON_CATS).map(([k, [ic, tt]]) => {
       const w = (M.list || []).filter(a => a.category === k); return w.length ? `<span class="ttl">${ic} ${esc(tt)}:&nbsp;<b>${w.map(a => esc(charName(a.user_id))).join(" e ")}</b></span>` : ""; }).join("")}</div></section>` : "";
   return `<div class="aw">${last}<section class="panel lo"><h3>🏅 Prêmios da Temporada ${A.season}</h3>
-    <p class="muted">Quando a temporada fechar, o 1º lugar de cada categoria ganha <b>${A.coins} moedas</b>, uma medalha no cartão e um presente no Correio. Empatou? Todos os empatados ganham. Contando até ${A.until ? fmtDM(A.until) : "ontem"}: o dia de hoje só entra amanhã, para ninguém descobrir a jogada dos outros.</p>
+    <p class="muted">Quando a temporada fechar, o 1º lugar de cada categoria ganha <b>${A.coins} moedas</b>, uma medalha no cartão e um presente no Correio. Empatou? Todos os empatados ganham a medalha e as ${A.coins} moedas são divididas entre eles. Contando até ${A.until ? fmtDM(A.until) : "ontem"}: o dia de hoje só entra amanhã, para ninguém descobrir a jogada dos outros.</p>
     <div class="aw-grid">${cards}</div></section></div>`;
 }
 function titleChips(id) {
@@ -5318,6 +5331,7 @@ function titleChips(id) {
   if (isBrabo(id)) out.push(`<span class="ttl gold" title="Está em 1º no mapa">👑 O Brabo</span>`);
   if (isSnorlax(id)) out.push(`<span class="ttl mud" title="Último lugar na rodada de ontem. Recebe 10% a menos no Dia de pagamento.">💤 Snorlax da Rodada</span>`);
   for (const [k, [nome, desc]] of Object.entries(TITLES)) if (t[k] === id) out.push(`<span class="ttl" title="${esc(desc)}">${nome}</span>`);
+  for (const t of (S.ligaTit?.by?.[id] || [])) out.push(`<span class="ttl gold" title="Venceu a Liga Pokémon da Temporada ${t.season_id}${S.ligaTit.ultimo === id ? ". Até a próxima Liga: +XP na Aventura e +salário" : ""}">👑 Campeão da Temporada ${t.season_id}</span>`);   // arquivo 121
   for (const a of (S.medals?.by?.[id] || [])) { const [ic, tt] = SEASON_CATS[a.category] || ["🏅", a.category]; out.push(`<span class="ttl gold" title="Medalha da Temporada ${S.medals.season}">${ic} ${esc(tt)}</span>`); }
   return out.length ? `<div class="ttls">${out.join("")}</div>` : "";
 }
@@ -6150,9 +6164,10 @@ function heroBox(me) {
     <button class="btn ghost small" data-act="hero-change">${S.trocaGratis?.pode ? "🎁 Trocar de herói (grátis nesta temporada)" : `Trocar de herói (${S.cfg.class_change_price ?? 300} moedas)`}</button></div>`;
 }
 async function loadMarket() { S.market = await rpc("market_refresh"); }
-const itemLabel = (kind, id, qty) => kind === "item" ? (S.shopById[id]?.name || id) : kind === "dica" ? `${qty} Dica${qty > 1 ? "s" : ""}` : `${qty} Tente outra vez`;
+const itemLabel = (kind, id, qty) => kind === "item" ? (S.shopById[id]?.name || id) : kind === "bolsa" ? `${qty}× ${bagName(id)}` : kind === "dica" ? `${qty} Dica${qty > 1 ? "s" : ""}` : `${qty} Tente outra vez`;
 function itemThumb(kind, id) {
   if (kind === "item" && S.shopById[id]?.slot === "vila_bandeira") return flagImg(id, 40);
+  if (kind === "bolsa") return `<span class="mk-ic" style="display:grid;place-items:center;font-size:28px">${id.startsWith("pedra_") ? "💎" : id.endsWith("_ball") ? "⚪" : S.pk.items?.[id]?.kind === "tm" ? "📀" : "🧪"}</span>`;   // arquivo 119
   return kind === "item" ? avatarSVG({ class: S.me.class, outfit: { [S.shopById[id]?.slot]: id } }, 2.2) : iconSVG(kind === "dica" ? "carta" : "troca", "mk-ic", "#E8ECF3");
 }
 function hoursLeft(ts) { const h = Math.max(0, Math.round((new Date(ts) - Date.now()) / 3600000)); return h >= 1 ? `Termina em ${h} h` : "Termina em menos de 1 h"; }
@@ -6171,35 +6186,38 @@ function viewMarket() {
     const s = who(l.seller_id), sale = l.price != null;
     const owns = l.item_kind === "item" && me.owned_items.includes(l.item_id);
     const can = !owns && (sale ? me.coins >= l.price : canPayTrade(l));
-    return `<div class="mk-card"><div class="mk-thumb">${itemThumb(l.item_kind, l.item_id)}</div>
-      <div class="mk-main"><h4>${esc(itemLabel(l.item_kind, l.item_id, l.qty))}</h4>
+    return `<div class="mk-card"><div class="mk-thumb">${itemThumb(l.item_kind, l.bolsa || l.item_id)}</div>
+      <div class="mk-main"><h4>${esc(itemLabel(l.item_kind, l.bolsa || l.item_id, l.qty))}</h4>
         <p class="muted">${s ? `${esc(s.name)}, Nv ${s.level}` : "Jogador"}. ${hoursLeft(l.expires_at)}.</p>
         <p>${sale ? `<span class="coins">${l.price} moedas</span>` : `Troca por <strong>${esc(itemLabel(l.want_kind, l.want_item, l.want_qty))}</strong>`}</p></div>
       <button class="btn small" data-act="mkt-buy" data-v="${l.id}" ${can ? "" : "disabled"}>${owns ? "Você já tem" : sale ? "Comprar" : "Trocar"}</button></div>`;
   };
   const opts = [...me.owned_items.map(id => `<option value="item:${id}">${esc(S.shopById[id]?.name || id)}${Object.values(me.outfit || {}).includes(id) ? " (em uso)" : ""}</option>`),
-    me.hints ? `<option value="dica">Dicas (você tem ${me.hints})</option>` : "", me.retries ? `<option value="retry">Tente outra vez (você tem ${me.retries})</option>` : ""].join("");
+    me.hints ? `<option value="dica">Dicas (você tem ${me.hints})</option>` : "", me.retries ? `<option value="retry">Tente outra vez (você tem ${me.retries})</option>` : "",
+    // arquivo 119: pedras, TMs, Pokébolas e curas da bolsa (só por moedas; HMs e a Poké Ball grátis não)
+    ...Object.entries(S.pk.bag || {}).filter(([k, q]) => q > 0 && k !== "poke_ball" && (PK_STONES[k] || k.endsWith("_ball") || (S.pk.items?.[k] && S.pk.items[k].kind !== "hm")))
+      .map(([k, q]) => `<option value="bolsa:${k}">🎒 ${esc(bagName(k))} (você tem ${q})</option>`)].join("");
   const wants = [...S.shop.filter(i => !i.exclusive).map(i => `<option value="item:${i.id}">${esc(i.name)}</option>`), `<option value="dica">Dicas</option>`, `<option value="retry">Tente outra vez</option>`].join("");
   return `<div class="market">
     <section class="panel lo">
       <h3>Anunciar</h3>
       ${opts ? `<form id="mkform">
         <label for="mk-what">O que você quer anunciar</label><select id="mk-what">${opts}</select>
-        <label for="mk-qty">Quantidade (para dicas e tente outra vez)</label><input id="mk-qty" type="number" min="1" max="20" value="1">
+        <label for="mk-qty">Quantidade (para dicas, tente outra vez e itens da bolsa)</label><input id="mk-qty" type="number" min="1" max="20" value="1">
         <label for="mk-mode">Como</label><select id="mk-mode"><option value="venda">Vender por moedas</option><option value="troca">Trocar por outro item</option></select>
         <div id="mk-venda"><label for="mk-price">Preço em moedas</label><input id="mk-price" type="number" min="1" value="50"></div>
         <div id="mk-troca" class="hidden"><label for="mk-want">Item que você quer em troca</label><select id="mk-want">${wants}</select>
           <label for="mk-wqty">Quantidade pedida (para dicas e tente outra vez)</label><input id="mk-wqty" type="number" min="1" max="20" value="1"></div>
         <div style="margin-top:16px"><button class="btn">Anunciar</button></div>
-      </form>` : `<p class="muted">Você ainda não tem itens para anunciar. Compre visuais na loja ou ganhe ajudas na roleta.</p>`}
-      <p class="muted mk-note">O item fica reservado enquanto o anúncio estiver aberto, por até ${S.cfg.market_hours ?? 72} horas. Se ninguém comprar, ele volta para você. Vendas pagam taxa de ${S.cfg.market_fee_pct ?? 5}%. Até ${S.cfg.market_max_open ?? 5} anúncios abertos por vez.</p>
+      </form>` : `<p class="muted">Você ainda não tem itens para anunciar. Compre visuais na loja, ganhe ajudas na roleta ou junte itens na bolsa.</p>`}
+      <p class="muted mk-note">O item fica reservado enquanto o anúncio estiver aberto, por até ${S.cfg.market_hours ?? 72} horas. Se ninguém comprar, ele volta para você. Itens da bolsa (pedras, TMs que você ainda não usou, Pokébolas e curas) só são vendidos por moedas; HMs não vão para o Mercado. Vendas pagam taxa de ${S.cfg.market_fee_pct ?? 5}%. Até ${S.cfg.market_max_open ?? 5} anúncios abertos por vez.</p>
     </section>
     <section>
       <h3>À venda e para troca</h3>
       ${open.length ? `<div class="mk-list">${open.map(card).join("")}</div>` : `<p class="muted">Nenhum anúncio aberto agora.</p>`}
       <h3 style="margin-top:24px">Seus anúncios</h3>
-      ${mine.length ? `<div class="mk-list">${mine.map(l => `<div class="mk-card"><div class="mk-thumb">${itemThumb(l.item_kind, l.item_id)}</div>
-        <div class="mk-main"><h4>${esc(itemLabel(l.item_kind, l.item_id, l.qty))}</h4>
+      ${mine.length ? `<div class="mk-list">${mine.map(l => `<div class="mk-card"><div class="mk-thumb">${itemThumb(l.item_kind, l.bolsa || l.item_id)}</div>
+        <div class="mk-main"><h4>${esc(itemLabel(l.item_kind, l.bolsa || l.item_id, l.qty))}</h4>
         <p class="muted">${l.price != null ? `${l.price} moedas` : `Troca por ${esc(itemLabel(l.want_kind, l.want_item, l.want_qty))}`}. ${l.status === "aberto" ? hoursLeft(l.expires_at) + "." : st[l.status]}${l.buyer_id && who(l.buyer_id) ? `, com ${esc(who(l.buyer_id).name)}` : ""}</p></div>
         ${l.status === "aberto" ? `<button class="btn ghost small" data-act="mkt-cancel" data-v="${l.id}">Cancelar</button>` : ""}</div>`).join("")}</div>` : `<p class="muted">Você não tem anúncios.</p>`}
     </section></div>`;
@@ -6419,7 +6437,7 @@ function LIB() {
     { id: "leilao", ic: "🔨", t: "Leilão de Pokémon", h: `<p>No <b>Leilão</b> (menu Pokémon), cada jogador pode pôr 1 Pokémon a cada ${S.leilao?.st?.cfg?.intervalo_dias ?? 3} dias, por ${S.leilao?.st?.cfg?.horas ?? 24} horas, com um lance mínimo.</p>
       <p>Qualquer jogador cobre a qualquer momento. O seu lance fica reservado; se alguém cobrir, as moedas voltam na hora. Lance nos últimos minutos estica o leilão.</p>
       <p>No fim, o Pokémon vai sozinho para quem deu o maior lance, e quem vendeu recebe as moedas, menos ${S.leilao?.st?.cfg?.taxa_pct ?? 5}% de taxa. Sem lance, nada muda.</p>` },
-    { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon sobe de nível pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${S.creche?.st?.horas_por_nivel ?? 12} horas</b>, e um Pokémon por vez. Cancelando, as moedas dos níveis que ainda não chegaram voltam. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 5} moedas até o nível ${S.creche?.st?.nivel_alto ?? 30} e × ${S.creche?.st?.preco_por_nivel_alto ?? 10} acima dele.</p>
+    { id: "creche", ic: "🏡", t: "Creche Pokémon", h: `<p>Na <b>Creche Pokémon</b> (menu Pokémon), o seu Pokémon sobe de nível pagando em moedas. Você paga na hora, mas os níveis chegam <b>aos poucos: 1 a cada ${S.creche?.st?.horas_por_nivel ?? 12} horas</b>. Você tem <b>1 vaga, mais 1 para cada nível do Poço dos Desejos</b> da vila: dá para treinar vários Pokémon ao mesmo tempo, um em cada vaga. Cancelando, as moedas dos níveis que ainda não chegaram voltam. Cada nível custa o nível que ele vai alcançar × ${S.creche?.st?.preco_por_nivel ?? 5} moedas até o nível ${S.creche?.st?.nivel_alto ?? 30} e × ${S.creche?.st?.preco_por_nivel_alto ?? 10} acima dele.</p>
       <p>Limite: ${S.creche?.st?.niveis_semana ?? 10} níveis por semana até o nível ${S.creche?.st?.nivel_alto ?? 30} e ${S.creche?.st?.niveis_semana_alto ?? 5} acima dele, somando todos os seus Pokémon, e só até o nível ${S.creche?.st?.nivel_max ?? 40}. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p>` },
     { id: "batalha", ic: "⚔️", t: "Batalhas Pokémon e Arena", h: `<p>Precisa de 3 Pokémon capturados. Entram os <b>3 primeiros da equipe</b>. Os dois escolhem a ação do turno em segredo (atacar, trocar ou usar um item) e o servidor resolve.</p>
       <p>📏 <b>Teto de nível:</b> nas batalhas valendo moedas, quem desafia escolhe o teto (${(S.cfg.teto?.opcoes || [5, 10, 15, 20, 25, 30, 40, 0]).map(t => t === 0 ? "sem teto" : t).join(", ")}); sem escolher, vale o da temporada, nível ${S.teto?.nivel ?? 20}. Quem desafia vê a aposta e o teto antes de aceitar. Na Aventura, o desafio é sempre com teto 20. Quem está acima luta com a força do nível ${S.teto?.nivel ?? 20} (vida, ataque, defesa, velocidade e especial), o XP também sai por esse nível, e na batalha aparece "Nv ${S.teto?.nivel ?? 20} (nível real)". Ataques e evolução não mudam, e depois da batalha o Pokémon segue no nível dele. Na Liga Pokémon não há teto.</p>
@@ -6444,15 +6462,20 @@ function LIB() {
     { id: "liga", ic: "🏆", t: "Temporada e Liga Pokémon", h: `<p>O <b>1º jogador que chega ao Castelo encerra a corrida na hora</b> e puxa todo mundo para a Liga. Os prêmios do Castelo vão pela posição: primeiro quem chegou, depois quem estava mais perto do Castelo.</p>
       <p>A <b>Liga Pokémon</b> tem todos os jogadores ativos: um mata-mata de batalhas com vida cheia (o 1º da corrida enfrenta o último). Quem não tem Pokémon perde por W.O. <b>Não tem espera</b>: acabou uma fase (ou a repescagem), começa a próxima.</p>
       <p>Durante a Liga o <b>mapa fica parado</b>: os desafios do dia continuam valendo moedas, XP, a rodada do dia e o Pokémon selvagem, só ninguém anda.</p>
-      <p>O <b>campeão</b> ganha a Aura do Campeão, uma estátua no mapa e vai na hora à <b>caverna do lendário</b>: uma única tentativa de capturar um lendário.</p>
+      <p>O <b>campeão</b> ganha a Aura do Campeão, uma estátua no mapa e vai na hora à <b>caverna do lendário</b>: uma única tentativa de capturar um lendário. Se o lendário escapar, o campeão leva ${c.liga?.caverna_consolo_bolas ?? 3} Ultra Balls e ${c.liga?.caverna_consolo_moedas ?? 200} moedas de consolo.</p>
+      <p><b>🏆 Pódio da Liga</b> (além dos prêmios do Castelo): campeão ${c.liga?.premio_campeao ?? 500} moedas, vice ${c.liga?.premio_vice ?? 300} e 3º lugar ${c.liga?.premio_terceiro ?? 150} (o 3º é quem perdeu na semifinal com a melhor colocação). O campeão também ganha <b>+${c.liga?.campeao_xp_pct ?? 10}% de XP na Aventura e +${c.liga?.campeao_salario_pct ?? 10}% de salário</b> até a próxima Liga, e o título <b>👑 Campeão da Temporada</b> no cartão, para sempre.</p>
       <p>Acabou a caverna, a temporada nova começa <b>na hora</b>: todos voltam à largada, <b>mantendo</b> nível, moedas, Pokémon e itens.</p>
-      <p><b>🏅 Prêmios da temporada:</b> quando ela fecha, o 1º lugar de cada uma das 12 categorias ganha ${c.season_awards?.coins ?? 150} moedas, uma medalha no cartão e um presente no Correio (empatados ganham todos): mais casas andadas, mais Pokémon capturados, mais vitórias na rodada do dia, mais batalhas Pokémon vencidas, mais duelos vencidos, mais dano na Equipe Rocket, mais vitórias no Quiz, mais treinadores vencidos, mais moedas ganhas andando, mais acertos de primeira, mais espécies novas na Pokédex e mais Caçadas vencidas. Acompanhe em <b>Ranking → 🏅 Prêmios</b>.</p>` },
+      <p><b>🏅 Prêmios da temporada:</b> quando ela fecha, o 1º lugar de cada uma das 22 categorias ganha ${c.season_awards?.coins ?? 150} moedas, uma medalha no cartão e um presente no Correio. No empate, todos ganham a medalha e as moedas são divididas entre eles. As categorias: mais casas andadas, mais Pokémon capturados, mais vitórias na rodada do dia, mais batalhas Pokémon vencidas, mais duelos vencidos, mais ondas vencidas contra a Rocket, mais vitórias no Quiz, mais treinadores vencidos, mais moedas ganhas andando, mais acertos de primeira, mais espécies novas na Pokédex, mais Caçadas vencidas, mais evoluções, mais insígnias (a 1ª vitória em cada Ginásio), mais ataques vencidos e mais defesas vencidas nas guerras, Rei das cartas (duelos de cartas, sem contar treino), Rei do PokeBound (partidas contra jogadores), mais missões da Aventura, maior dano no Chefe, maior negociante (compras e vendas no Mercado e no Leilão, mais trocas) e o Azarado da Temporada (quem mais perdeu casas no Lamaçal, no Raio, na Armadilha e no Duelo). Acompanhe em <b>Ranking → 🏅 Prêmios</b>.</p>` },
     { id: "rocket", ic: "🚀", t: "Equipe Rocket", h: `<p>A Equipe Rocket invade o jogo de tempos em tempos (normalmente terça, sexta e domingo às 8h) e fica 24 horas.</p>
-      <p>Ela tem uma <b>barra de vida coletiva</b>: cada jogador cede 1 Pokémon e luta turno a turno; todo o dano que você tira vai para a barra.</p>
-      <p><b>Se a turma zerar a barra</b>, cada participante ganha ${c.rocket?.reward ?? 100} moedas. <b>Se não zerar</b>, a Rocket sorteia 1 participante e rouba para sempre o Pokémon que ele cedeu. Pense bem em quem você vai ceder!</p>` },
+      <p><b>Luta em ondas:</b> cada jogador cede 1 Pokémon (uma tentativa por invasão) e enfrenta uma fila sem fim de Pokémon da Rocket, até o seu desmaiar ou você desistir. A 1ª onda vem ${c.rocket?.onda_menos ?? 5} níveis abaixo do seu Pokémon (no mínimo nível ${c.rocket?.onda_min ?? 5}) e cada onda seguinte vem ${c.rocket?.onda_mais ?? 3} níveis acima. Vida e itens como nas batalhas (até 2 itens).</p>
+      <p>Ela tem uma <b>barra de vida coletiva</b>: todo o dano que você tira sai da barra. O tamanho da barra acompanha o grupo: a média de dano por participante das últimas invasões × os jogadores ativos × o <b>multiplicador</b> (sobe um pouco a cada vitória do grupo e cai a cada derrota). O <b>ranking</b> conta as ondas vencidas (empate: menos turnos, depois mais dano).</p>
+      <p><b>Se a turma zerar a barra</b>, cada participante ganha ${c.rocket?.reward ?? 100} moedas, e os 3 com mais ondas ganham +${(c.rocket?.top_bonus || [50, 30, 20]).join("/+")}. Bater o seu recorde de ondas da temporada dá +${c.rocket?.superacao ?? 20} moedas de <b>Superação</b> (a 1ª luta da temporada só marca o recorde). Todo mundo que lutou ganha XP no Pokémon cedido, mesmo na derrota.</p>
+      <p><b>Se não zerar</b> e o grupo terminar abaixo de ${c.rocket?.roubo_pct ?? 80}% da barra, a Rocket sorteia 1 participante e leva o Pokémon que ele cedeu para um <b>esconderijo</b> por ${c.rocket?.resgate_dias ?? 7} dias. O esconderijo aparece em Guerras → bases da Rocket, com o nome do dono: quem tem Quartel pode atacar, e vencendo o Pokémon volta para o dono e quem resgatou ganha +${c.rocket?.resgate_bonus ?? 50} moedas. Sem resgate a tempo, o Pokémon se perde.</p>
+      <p><b>🕴️ Giovanni:</b> a cada ${c.rocket?.giovanni_cada ?? 5} vitórias do grupo, quem aparece é o Giovanni, com o time dele e prêmios em dobro. Se ele vencer, leva um dos Pokémon cedidos. Na revanche, o Pokémon levado aparece numa das ondas, a barra fica um pouco menor e o dano do dono vale mais. Vencendo o Giovanni, todos os Pokémon que ele levou voltam, com +${c.rocket?.giovanni_devolve_bonus ?? 50} moedas para cada dono. Perdendo 2 revanches seguidas, o mais antigo se perde. Depois de uma derrota, ele volta na invasão seguinte a uma vitória do grupo.</p>` },
     { id: "cacada", ic: "🎯", t: "Caçada", h: `<p>Às vezes o admin solta um <b>Pokémon misterioso</b> no mapa: aparece a silhueta dele e um caminho novo saindo de uma casa.</p>
       <p>Antes de andar, o jogo pergunta: <b>ir atrás do Pokémon</b> ou <b>continuar o jogo</b>. Vale para todo mundo, até para quem já está na frente.</p>
       <p>Quem vai anda pelo caminho da Caçada. O <b>primeiro</b> a parar na casa do Pokémon tenta capturar com 3 bolas. <b>Pegando ou não, você volta para a casa onde estava antes</b>: não perde posição, mas não avança na corrida enquanto caça. Dá para desistir no meio e voltar; cada um vai atrás uma vez só.</p>
+      <p>Antes de decidir, aparece <b>quantas casas faltam até o Pokémon</b> e <b>até quando a Caçada vale</b>. A andada gasta <b>só as casas até o Pokémon</b>: o que sobrar fica guardado e você anda com essas casas a partir da sua casa quando voltar. Quem foi e <b>não capturou</b> ganha, na próxima andada, metade das casas gastas no caminho (arredondado para cima).</p>
       <p>A Caçada tem prazo: se ninguém chegar, o Pokémon foge e todos voltam.</p>` },
     { id: "quiz", ic: "❓", t: "Quiz surpresa", h: `<p>🎲 <b>Quiz automático:</b> ${S.cfg.quiz_auto?.on === false ? "às vezes o admin abre um quiz." : `aparece sozinho ${(S.cfg.quiz_auto?.dias || [1, 3, 5]).length} vezes por semana, num horário surpresa entre ${S.cfg.quiz_auto?.hora_min ?? 18}h e ${S.cfg.quiz_auto?.hora_max ?? 22}h.`} As perguntas são absurdas, do mundo Pokémon (tipo "quantos kg de sushi o Snorlax come em uma hora?"), e a resposta oficial é segredo: quem chutar mais perto ganha um prêmio sorteado.</p><p>De vez em quando aparece um <b>quiz</b> valendo prêmio. Você vê o aviso e o prêmio, conta 3, 2, 1 e responde um número antes do tempo acabar.</p>
       <p>Vale uma tentativa só. Vence quem chegar <b>mais perto</b> da resposta; no empate, quem respondeu <b>mais rápido</b> depois que a pergunta apareceu na tela. Dá para responder pelo aviso no mapa ou pelo Jornal.</p>
@@ -6460,7 +6483,7 @@ function LIB() {
     { id: "social", ic: "🤝", t: "Duelos, bolão, times e mercado", h: `<p><b>Duelos:</b> desafie um amigo valendo moedas, no quiz (adivinhar um Pokémon: menos tentativas vence; empate, quem foi mais rápido) ou na sorte.</p>
       <p><b>Bolão:</b> aposte em quem vai vencer a rodada do dia.</p>
       <p><b>Times:</b> junte-se a um time; o melhor time da semana ganha prêmio.</p>
-      <p><b>Mercado:</b> venda ou troque visuais e ajudas com outros jogadores. O anúncio dura ${libN(c.market_hours, 72)} horas e cada venda paga ${libN(c.market_fee_pct, 5)}% de taxa.</p>
+      <p><b>Mercado:</b> venda ou troque visuais e ajudas com outros jogadores. Também dá para vender, por moedas e com preço livre, itens da bolsa: pedras de evolução, TMs que você ainda não usou, Pokébolas e poções/curas (HMs não). O anúncio dura ${libN(c.market_hours, 72)} horas e cada venda paga ${libN(c.market_fee_pct, 5)}% de taxa.</p>
       <p><b>Reações:</b> toque num jogador no mapa para mandar uma reação.</p>` },
     { id: "vila", ic: "🏰", t: "Vila e Guerras", h: `<p><b>Minha Vila</b> tem construções que produzem moedas e outras vantagens. Melhore as construções com moedas e colete a produção.</p>
       <p>🏡 No computador a vila abre em <b>tela grande</b>, com cada construção no seu terreno (o terreno vazio tem as estacas e o 🔨). Toque numa construção para ir até o cartão dela. A <b>🍓 Fazenda de Frutas</b> fica no cercado da vila (veja o assunto Fazenda de Frutas).</p>
@@ -6576,7 +6599,7 @@ function viewAdmin() {
       <p class="muted">Começar uma nova temporada agora manda todos de volta à largada e desarma as armadilhas. Nível, moedas, visual e ajudas continuam.</p>
       <button class="btn danger" data-act="adm-season">Começar nova temporada agora</button>
       <h3 style="margin-top:20px">🏅 Prêmios da temporada</h3>
-      <p class="muted">Saem sozinhos quando a temporada fecha pela Liga (depois da caverna do lendário). Se a temporada fechar de outro jeito (por exemplo, pelo botão acima), use este botão depois: ele entrega os prêmios da última temporada encerrada, uma vez só.</p>
+      <p class="muted">São 22 categorias; no empate as moedas da categoria são divididas. Saem sozinhos quando a temporada fecha pela Liga (depois da caverna do lendário). Se a temporada fechar de outro jeito (por exemplo, pelo botão acima), use este botão depois: ele entrega os prêmios da última temporada encerrada, uma vez só.</p>
       <button class="btn ghost" data-act="adm-awards">Entregar os prêmios da última temporada</button>
       <h3 style="margin-top:20px">🔄 Recomeçar a rodada de hoje</h3>
       <p class="muted">Sorteia Pokémon novos para os 4 desafios de hoje e todo mundo joga do zero (quem já tinha jogado também). As Dicas e os "Tente outra vez" usados hoje voltam para os jogadores, e o Jornal avisa. Só funciona se ninguém andou hoje: quem já andou, use antes "Desfazer andada" em Jogadores.</p>
@@ -6909,11 +6932,11 @@ const ACTIONS = {
   },
   "mkt-buy": async v => {
     const l = S.market.find(x => x.id === v); if (!l) return;
-    const txt = l.price != null ? `Pagar ${l.price} moedas por ${itemLabel(l.item_kind, l.item_id, l.qty)}?` : `Dar ${itemLabel(l.want_kind, l.want_item, l.want_qty)} e receber ${itemLabel(l.item_kind, l.item_id, l.qty)}?`;
+    const txt = l.price != null ? `Pagar ${l.price} moedas por ${itemLabel(l.item_kind, l.bolsa || l.item_id, l.qty)}?` : `Dar ${itemLabel(l.want_kind, l.want_item, l.want_qty)} e receber ${itemLabel(l.item_kind, l.bolsa || l.item_id, l.qty)}?`;
     if (!(await confirmModal(l.price != null ? "Comprar" : "Trocar", txt, "Confirmar"))) return;
-    await guarded(async () => { S.me = await rpc("market_buy", { _id: v }); await Promise.all([loadMarket(), refreshMe(), loadWorld()]); sfx("moeda"); toast("Negócio fechado!"); render(); });
+    await guarded(async () => { S.me = await rpc("market_buy", { _id: v }); await Promise.all([loadMarket(), refreshMe(), loadWorld(), loadPk()]); sfx("moeda"); toast("Negócio fechado!"); render(); });
   },
-  "mkt-cancel": async v => guarded(async () => { await rpc("market_cancel", { _id: v }); await Promise.all([loadMarket(), refreshMe()]); toast("Anúncio cancelado. O item voltou para você."); render(); }),
+  "mkt-cancel": async v => guarded(async () => { await rpc("market_cancel", { _id: v }); await Promise.all([loadMarket(), refreshMe(), loadPk()]); toast("Anúncio cancelado. O item voltou para você."); render(); }),
 
   trapstart: () => { S.trapMode = true; S.win = null; S.tip = null; render(); toast("Toque numa casa do mapa."); },
   trapcancel: () => { S.trapMode = false; render(); },
@@ -7012,7 +7035,7 @@ document.addEventListener("submit", async e => {
     await guarded(async () => {
       await rpc("market_create", { _kind: kind, _item: item, _qty: +$("#mk-qty").value || 1, _price: sale ? +$("#mk-price").value : null,
         _want_kind: wk, _want_item: wi, _want_qty: sale ? null : (+$("#mk-wqty").value || 1) });
-      toast("Anúncio publicado."); await Promise.all([loadMarket(), refreshMe()]); render();
+      toast("Anúncio publicado."); await Promise.all([loadMarket(), refreshMe(), kind === "bolsa" ? loadPk() : null]); render();
     });
     return;
   }
@@ -7972,7 +7995,7 @@ async function btAnimate() {
     bt.lines = [];
     for (const l of turn.lines) {
       bt.lines.push(l.txt);
-      if (l.switch != null) { const sd = bt.view.sides[l.side]; sd.active = l.switch; if (sd.mons[l.switch]?.known === false) sd.mons[l.switch] = JSON.parse(JSON.stringify(bt.data.state.sides[l.side].mons[l.switch])); }
+      if (l.switch != null) { const sd = bt.view.sides[l.side]; sd.active = l.switch; if (!sd.mons[l.switch] || sd.mons[l.switch].known === false) sd.mons[l.switch] = JSON.parse(JSON.stringify(bt.data.state.sides[l.side].mons[l.switch])); }
       if (l.hp != null && l.side != null) { const sd = bt.view.sides[l.side]; sd.mons[sd.active].hp = l.hp; }
       if (l.status !== undefined && l.side != null) { const sd = bt.view.sides[l.side]; sd.mons[sd.active].status = l.status; }
       if (S.win === "batalha") { render(); if (l.dmg) { const el = document.querySelector(`.bt-side[data-side="${l.side}"] .bt-sprite`); el?.classList.add("hit"); } if (l.move) sfx("tick"); }
@@ -8046,7 +8069,8 @@ function viewBattle() {
   const b = bt.data, spec = bt.spectator, me = spec ? 0 : btMySide(b), op = 1 - me, v = bt.view;
   if (!v) return `<div class="rk-state"><p>${b.status === "convite" ? "Aguardando o adversário aceitar o desafio." : "Esta batalha não começou."}</p><button class="btn ghost" data-act="go" data-v="batalhas">Voltar</button></div>`;
   const M = v.sides[me], O = v.sides[op], mm = M.mons[M.active], om = O.mons[O.active];
-  const party = sd => `<div class="party">${sd.mons.map(m => `<i class="${m.out || m.hp <= 0 ? "out" : ""}" title="${m.known === false ? "Ainda não entrou" : esc(m.name)}"></i>`).join("")}</div>`;
+  const party = sd => b.mode === "rocket" && sd.npc && b.state?.rk ? `<div class="party"><small>🌊 Onda ${(b.state.rk.onda ?? 1)}</small></div>`   // arquivo 122: fila de ondas
+    : `<div class="party">${sd.mons.map(m => `<i class="${m.out || m.hp <= 0 ? "out" : ""}" title="${m.known === false ? "Ainda não entrou" : esc(m.name)}"></i>`).join("")}</div>`;
   let controls;
   if (bt.busy) controls = `<p class="muted">…</p>`;
   else if (spec) {
@@ -8057,9 +8081,9 @@ function viewBattle() {
   }
   else if (b.status === "encerrada" && b.mode === "treino") controls = grEndHTML(b);
   else if (b.status === "encerrada" && b.mode === "rocket") {
-    const dmg = S.rocket?.me?.damage;
+    const dmg = S.rocket?.me?.damage, ondas = b.state?.rk?.ondas;
     controls = `<div class="bt-end ${b.winner ? "won" : ""}"><h3>${b.winner ? "Você derrotou a equipe da Rocket!" : "Sua parte na luta acabou!"}</h3>
-      <p class="muted">${dmg != null ? `Você tirou <b>${dmg}</b> de vida da Equipe Rocket. ` : ""}Agora é torcer para a turma zerar a barra antes do fim da invasão.</p>
+      <p class="muted">${ondas != null ? `🌊 <b>${ondas} onda${ondas === 1 ? "" : "s"}</b> vencida${ondas === 1 ? "" : "s"}. ` : ""}${dmg != null ? `Você tirou <b>${dmg}</b> de vida ${S.rocket?.giovanni ? "do Giovanni" : "da Equipe Rocket"}. ` : ""}Agora é torcer para a turma zerar a barra antes do fim da invasão.</p>
       <div class="act-btns"><button class="btn" data-act="go" data-v="rocket">Voltar à invasão</button></div></div>`;
   }
   else if (b.status === "encerrada") {
@@ -8581,9 +8605,10 @@ function warRbHTML(vivos) {
   const RB = S.war.rb; if (!RB?.on) return "";
   const left = RB.ataques_dia - RB.feitos;
   return `<section class="panel lo"><h3>🚀 Bases da Equipe Rocket <small class="muted">sua força de ataque: ${RB.minha_forca} · ataques hoje: ${RB.feitos}/${RB.ataques_dia}</small></h3>
-    <p class="muted">Escolha a base que quer atacar com o seu esquadrão de ataque. Quanto mais forte a base, maior o prêmio em moedas e experiência, e às vezes vem um Doce de Forja. Se perder, seus Pokémon só voltam feridos.</p>
-    <div class="war-ts">${RB.bases.map(b => `<article class="war-t"><div class="war-th"><span class="rb-ic">${b.tipo === "resgate" ? "🆘" : "🚀"}</span><div><b>${esc(b.nome)}</b><small>nível ~${b.nivel} · ${b.n} Pokémon${b.vitorias ? ` · ✅ venceu ${b.vitorias}×` : ""}</small></div>
-      <div class="war-pw"><b>${b.forca}</b><small>força</small></div></div><p class="muted" style="margin:6px 0">Prêmio: <b>${b.moedas} moedas</b> + experiência</p>
+    <p class="muted">Escolha a base que quer atacar com o seu esquadrão de ataque. Quanto mais forte a base, maior o prêmio em moedas e experiência, e às vezes vem um Doce de Forja. Se perder, seus Pokémon só voltam feridos.
+      Os esconderijos 🆘 guardam um Pokémon que a Rocket levou de alguém: vencendo, ele volta para o dono e você ganha +${S.cfg.rocket?.resgate_bonus ?? 50} moedas.</p>
+    <div class="war-ts">${RB.bases.map(b => `<article class="war-t"><div class="war-th"><span class="rb-ic">${b.tipo === "resgate" ? "🆘" : "🚀"}</span><div><b>${esc(b.nome)}</b><small>nível ~${b.nivel} · ${b.n} Pokémon${b.vitorias ? ` · ✅ venceu ${b.vitorias}×` : ""}</small>${b.tipo === "resgate" && b.mon ? `<small>🆘 ${b.meu ? "O seu" : "O"} <b>${esc(b.mon.mon)}</b> (Nv ${b.mon.level}) de <b>${esc(b.mon.dono_nome)}</b> · some em ${chatWhen(b.prazo)}</small>` : ""}</div>
+      <div class="war-pw"><b>${b.forca}</b><small>força</small></div></div><p class="muted" style="margin:6px 0">Prêmio: <b>${b.moedas + (b.tipo === "resgate" ? (S.cfg.rocket?.resgate_bonus ?? 50) : 0)} moedas</b> + experiência${b.tipo === "resgate" ? " + o Pokémon volta para o dono" : ""}</p>
       <div class="ar-btns"><button class="btn small" data-act="rb-atacar" data-v="${b.id}" ${left <= 0 || !vivos ? `disabled title="${left <= 0 ? "Ataques de hoje acabaram" : "Ataque desmaiado: cure ou espere"}"` : ""}>⚔️ Atacar</button></div></article>`).join("")}</div>
     ${RB.ultimos.length ? `<ul class="war-hist">${RB.ultimos.map(u => `<li class="${u.venceu ? "won" : "lost"}"><span>${u.venceu ? "✅" : "❌"} ${esc(u.base || "")}${u.venceu ? ` · +${u.moedas} moedas${u.doce ? " · 🍬 Doce de Forja" : ""}` : " · seus Pokémon voltaram feridos"} <small class="muted">${chatWhen(u.em)}</small></span></li>`).join("")}</ul>` : ""}</section>`;
 }
@@ -8709,11 +8734,11 @@ Object.assign(ACTIONS, {
   }),
   "rb-atacar": async v => {   // arquivo 115: base da Equipe Rocket
     const b = S.war.rb?.bases?.find(x => x.id === +v); if (!b) return;
-    if (!(await confirmModal(`Atacar a ${b.nome}?`, `A luta é automática, com o seu esquadrão de ataque (força ${S.war.rb.minha_forca} contra ${b.forca}). Vencendo, ganha ${b.moedas} moedas e experiência. Perdendo, seus Pokémon voltam feridos. É ${S.war.rb.ataques_dia === 1 ? "1 ataque" : `${S.war.rb.ataques_dia} ataques`} por dia.`, "⚔️ Atacar"))) return;
+    if (!(await confirmModal(`Atacar a ${b.nome}?`, `A luta é automática, com o seu esquadrão de ataque (força ${S.war.rb.minha_forca} contra ${b.forca}). Vencendo, ganha ${b.moedas + (b.tipo === "resgate" ? (S.cfg.rocket?.resgate_bonus ?? 50) : 0)} moedas e experiência${b.tipo === "resgate" && b.mon ? ` e devolve o ${b.mon.mon} para ${b.mon.dono_nome}` : ""}. Perdendo, seus Pokémon voltam feridos. É ${S.war.rb.ataques_dia === 1 ? "1 ataque" : `${S.war.rb.ataques_dia} ataques`} por dia.`, "⚔️ Atacar"))) return;
     let r; try { r = await rpc("rocket_base_atacar", { _base: b.id }); } catch (e) { return toast(errMsg(e), true); }
     sfx(r.venceu ? "acerto" : "erro");
     const linhas = (r.log || []).flatMap(t => t.lines.map(l => l.txt)).slice(0, 80);
-    openModal(`<h2>${r.venceu ? "🚀 Base derrotada!" : "A base resistiu"}</h2><p>${esc(r.msg)}</p>
+    openModal(`<h2>${r.venceu ? (b.tipo === "resgate" ? "🦸 Resgate feito!" : "🚀 Base derrotada!") : "A base resistiu"}</h2><p>${esc(r.msg)}</p>
       <details><summary>Ver a luta</summary><ul class="events">${linhas.map(t => `<li>${esc(t)}</li>`).join("")}</ul></details><div class="actions"><button class="btn" onclick="closeModal()">OK</button></div>`);
     await guarded(async () => { await Promise.all([loadPk(), loadWar(), refreshMe()]); }); render();
   },
@@ -9029,8 +9054,8 @@ Object.assign(ACTIONS, {
     if (!(await confirmModal("Tentar capturar?", `É a sua única tentativa de capturar o ${pkName(lg.legend_id)}, e é bem difícil. Boa sorte!`, "🎯 Lançar a bola"))) return;
     let r; try { r = await rpc("league_cave_try"); } catch (e) { return toast(errMsg(e), true); }
     sfx(r.caught ? "acerto" : "erro");
-    await Promise.all([loadLeague(), loadPk().catch(() => {})]); render();
-    const m = openModal(`<h2>${r.caught ? "🎉 Capturou!" : "💨 Escapou..."}</h2><p>${r.caught ? `O ${esc(pkName(r.pokemon))} nível ${r.level} agora é seu!` : `O ${esc(pkName(r.pokemon))} fugiu para o fundo da caverna. Fica para a próxima Liga!`}</p><div class="actions"><button class="btn" data-r="1">OK</button></div>`);
+    await Promise.all([loadLeague(), loadPk().catch(() => {}), refreshMe()]); render();
+    const m = openModal(`<h2>${r.caught ? "🎉 Capturou!" : "💨 Escapou..."}</h2><p>${r.caught ? `O ${esc(pkName(r.pokemon))} nível ${r.level} agora é seu!` : `O ${esc(pkName(r.pokemon))} fugiu para o fundo da caverna. Fica para a próxima Liga!${r.consolo ? ` De consolo, você ganhou ${r.consolo.bolas} Ultra Balls e ${r.consolo.moedas} moedas.` : ""}`}</p><div class="actions"><button class="btn" data-r="1">OK</button></div>`);
     m.addEventListener("click", e => { if (e.target.closest("[data-r]")) closeModal(); });
   },
   "lg-start": async () => { if (!(await confirmModal("Começar a Liga agora?", "Ela já começa sozinha quando o 1º chega ao Castelo. Começando agora, entram todos os jogadores ativos pela posição de agora: primeiro quem chegou ao Castelo, depois quem está mais perto. Quem ainda não andou hoje não sobe mais.", "Começar"))) return;
@@ -9851,7 +9876,10 @@ const AJ_LABELS = {
     pendentes_max: "Propostas esperando resposta (cada jogador)", moedas_max: "Moedas no máximo de cada lado" },
   pausa: { on: "Jogo pausado (só o admin entra)", texto: "Aviso que os jogadores veem" },
   liga: { comeca_na_chegada: "A Liga começa quando o 1º chega ao Castelo", mapa_parado: "Durante a Liga ninguém anda no mapa", fase_por_dia: "Uma fase da Liga por dia (desligado: sem espera)",
-    caverna_horas: "Horas até a caverna abrir (0 = na hora)", caverna_prazo_horas: "Horas para o campeão tentar antes do lendário fugir", temporada_na_hora: "Temporada nova começa assim que a Liga acaba" },
+    caverna_horas: "Horas até a caverna abrir (0 = na hora)", caverna_prazo_horas: "Horas para o campeão tentar antes do lendário fugir", temporada_na_hora: "Temporada nova começa assim que a Liga acaba",
+    premio_campeao: "Pódio: moedas do campeão", premio_vice: "Pódio: moedas do vice", premio_terceiro: "Pódio: moedas do 3º lugar",
+    campeao_xp_pct: "Campeão: % a mais de XP na Aventura (até a próxima Liga)", campeao_salario_pct: "Campeão: % a mais de salário (até a próxima Liga)",
+    caverna_consolo_bolas: "Caverna sem captura: Ultra Balls de consolo", caverna_consolo_moedas: "Caverna sem captura: moedas de consolo" },
   temporada: { troca_heroi_gratis: "Troca de herói grátis na temporada nova", troca_heroi_dias: "Dias para trocar de graça" },
   casas: { passar_luta: "Quem passa pela casa do Treinador também batalha", red_premio: "Prêmio de quem vencer o Red (moedas)" },
   herois: { guerreiro_dano_pct: "Guerreiro: % a mais de dano", mago_status_acc_pct: "Mago: % a mais de acerto em ataques de status", mago_forte_pct: "Mago: pontos a mais de chance de Pokémon forte na Grama",
@@ -9911,7 +9939,16 @@ const AJ_LABELS = {
     lutas_guardadas: "Lutas guardadas no histórico de cada um", centro_coef: "Centro Pokémon: preço (nível × parte da vida que falta × este número)",
     centro_desmaiado: "Centro Pokémon: multiplicador do preço se desmaiado", gratis_horas: "Horas para curar de graça (de desmaiado a vida cheia, já contando a espera)", cura_gradual: "A vida volta aos poucos (desligado: só no fim da espera)", desmaio_espera_horas: "Desmaiado: horas parado antes de a vida começar a voltar" },
   rocket: { days: "Dias da invasão (0 = domingo … 6 = sábado)", hour: "Hora em que começa", hours: "Duração (horas)", reward: "Prêmio por participante se vencer (moedas)",
-    hp_factor: "Vida da barra (multiplicador)", max_turns: "Turnos máximos por luta", level_bonus: "Níveis a mais da equipe da Rocket" },
+    hp_factor: "(antigo, não usado)", max_turns: "Turnos máximos por luta", level_bonus: "(antigo, não usado)",
+    onda_menos: "1ª onda: níveis abaixo do Pokémon cedido", onda_mais: "Níveis a mais a cada onda", onda_min: "Nível mínimo da 1ª onda",
+    media_padrao: "Barra: dano médio por participante enquanto não houver histórico", media_invasoes: "Barra: quantas invasões entram na média",
+    mult_inicio: "Multiplicador inicial da barra", mult_vitoria: "Multiplicador: sobe a cada vitória", mult_derrota: "Multiplicador: cai a cada derrota", mult_min: "Multiplicador mínimo", mult_max: "Multiplicador máximo",
+    top_bonus: "Moedas extras do 1º, 2º e 3º em ondas", superacao: "Moedas de Superação (bater o recorde da temporada)", xp_por_nivel: "XP de participação por nível do Pokémon cedido",
+    roubo_pct: "Rouba só se o grupo terminar abaixo deste % da barra", resgate_dias: "Dias do esconderijo de resgate", resgate_bonus: "Moedas para quem resgata",
+    giovanni_cada: "Giovanni aparece a cada N vitórias do grupo", giovanni_fator: "Fator inicial da barra do Giovanni", giovanni_vitoria: "Fator do Giovanni: sobe a cada vitória sobre ele",
+    giovanni_derrota: "Fator do Giovanni: cai a cada derrota", giovanni_min: "Fator do Giovanni: mínimo", giovanni_max: "Fator do Giovanni: máximo", giovanni_alivio: "Revanche: quanto o fator cai enquanto ele tem um roubado",
+    giovanni_dono_peso: "Revanche: peso do dano do dono do roubado na barra", giovanni_premio_mult: "Prêmios do Giovanni multiplicados por", giovanni_devolve_bonus: "Moedas para cada dono quando o Giovanni devolve",
+    giovanni_chances: "Revanches perdidas seguidas até o roubado se perder" },
   pk: { "encounter.level_min": "Encontro: nível mínimo dos selvagens", "encounter.level_span": "Encontro: níveis a mais até o Castelo", "encounter.level_spread": "Encontro: sorteio de níveis a mais",
     "encounter.legendaries": "Encontro: lendários podem aparecer", "encounter.region_bonus": "Encontro: peso a mais para tipos da região", "capture.throws": "Bolas por encontro",
     "stones.price": "Preço das pedras de evolução", "xp.move_base": "XP por andada (base)", "xp.per_step": "XP por casa dos acertos", "xp.per_mode": "XP por modo acertado",
@@ -10267,16 +10304,18 @@ function viewCreche() {
       ${st.desconto_pct ? `<p>💸 Desconto (Domador e Poço da vila): você paga ${st.desconto_pct}% a menos.</p>` : ""}<p>Limite: <b>${st.niveis_semana} níveis por semana${st.nivel_alto ? ` até o nível ${st.nivel_alto} e ${st.niveis_semana_alto} acima dele` : ""}</b> (somando todos os seus Pokémon) e só até o <b>nível ${st.nivel_max}</b>. Se ele chegar no nível de evoluir, você escolhe a hora, como sempre.</p></div>
     <div class="tr-clock" style="margin-bottom:10px"><b>📅 Esta semana</b><span class="tr-bar" aria-hidden="true"><i style="width:${used}%"></i></span>
       <span>${st.usados} de ${st.niveis_semana} níveis usados${st.nivel_alto ? ` até o ${st.nivel_alto} · ${st.usados_alto} de ${st.niveis_semana_alto} acima` : ""} · renova em ${chatWhen(st.renova)}</span></div>
-    ${st.treino ? (() => { const t = st.treino, tm = S.pk.mons.find(x => x.id === t.mon_id);
-      return `<section class="panel lo cr-now"><h3>⏳ Treinando agora</h3>
-        <div class="cr-mon">${monCv(t.species, tm?.outfit || {}, 72)}<div><b>${esc(pkName(t.species))}</b> <span class="muted">do nível ${t.level_from} ao ${t.level_from + t.niveis}</span><br>
+    ${(() => { const ts = st.treinos || (st.treino ? [st.treino] : []), vagas = st.vagas || 1;   // arquivo 119: várias vagas
+      return `<section class="panel lo cr-now"><h3>🏡 Vagas da Creche: ${ts.length} de ${vagas} ocupadas</h3>
+        <p class="muted" style="margin:0 0 6px">Você tem 1 vaga, mais 1 para cada nível do Poço dos Desejos da sua vila.</p>
+        ${ts.map(t => { const tm = S.pk.mons.find(x => x.id === t.mon_id);
+          return `<div class="cr-mon">${monCv(t.species, tm?.outfit || {}, 72)}<div><b>${esc(pkName(t.species))}</b> <span class="muted">do nível ${t.level_from} ao ${t.level_from + t.niveis}</span><br>
           <b>${t.entregues} de ${t.niveis}</b> níveis entregues · próximo em <b>${chatWhen(t.proximo_em)}</b> · termina em ${chatWhen(t.termina_em)}</div></div>
-        <span class="tr-bar" aria-hidden="true" style="display:block;margin:8px 0"><i style="width:${Math.round(t.entregues / t.niveis * 100)}%"></i></span>
-        <button class="btn ghost small" data-act="cr-cancel">Cancelar o treino (devolve ${t.devolve} moedas)</button>
-        <p class="muted" style="margin:6px 0 0">A Creche treina um Pokémon por vez. Quando este terminar, você pode começar outro.</p></section>`; })() : ""}
+          <span class="tr-bar" aria-hidden="true" style="display:block;margin:8px 0"><i style="width:${Math.round(t.entregues / t.niveis * 100)}%"></i></span>
+          <button class="btn ghost small" data-act="cr-cancel" data-v="${t.id ?? ""}">Cancelar este treino (devolve ${t.devolve} moedas)</button>`; }).join(`<hr style="border:0;border-top:1px dashed #C9A05A;margin:10px 0">`)}</section>`; })()}
     <section class="panel lo cr-box">
       <div class="cr-mon">${monCv(m.species_id, m.outfit, 96)}<div><b>${esc(pkName(m.species_id))}</b><br><span class="muted">Nível ${m.level}</span></div></div>
-      ${st.treino ? `<p class="muted">Espere o treino de agora terminar (ou cancele) para começar outro.</p>` : maxN ? `<div class="cr-ctl"><label for="cr-n">Quantos níveis?</label>
+      ${(st.treinos || (st.treino ? [st.treino] : [])).some(t => t.mon_id === m.id) ? `<p class="muted">Esse Pokémon já está treinando na Creche.</p>`
+        : (st.treinos || (st.treino ? [st.treino] : [])).length >= (st.vagas || 1) ? `<p class="muted">Todas as vagas estão ocupadas. Espere um treino terminar (ou cancele) para começar outro.</p>` : maxN ? `<div class="cr-ctl"><label for="cr-n">Quantos níveis?</label>
           <div class="cr-n">${Array.from({ length: maxN }, (_, i) => i + 1).map(k => `<button class="btn ${k === n ? "" : "ghost"} small" data-act="cr-n" data-v="${k}">+${k}</button>`).join("")}</div>
           <p>Nível ${m.level} → <b>${m.level + n}</b> · custa <b>${custo} moedas</b> (você tem ${coins}) · fica pronto em <b>${n * (st.horas_por_nivel ?? 12)} horas</b>.${evo ? ` <br>✨ Vai chegar ao nível de evoluir para <b>${esc(pkName(evo.to_id))}</b>!` : ""}</p>
           <button class="btn big" data-act="cr-go" ${coins >= custo ? "" : "disabled"}>🏡 Treinar na Creche (${custo} moedas)</button></div>`
@@ -10288,10 +10327,10 @@ function viewCreche() {
     ${st.historico?.length ? `<h3 style="margin-top:14px">Últimos treinos</h3><ul class="tr-hist">${st.historico.map(h => `<li>🏡 ${esc(pkName(h.species))} do nível ${h.level_from} ao ${h.level_to} · ${h.custo} moedas<time style="margin-left:auto" class="muted">${ago(h.created_at)}</time></li>`).join("")}</ul>` : ""}
   </div>`;
 }
-ACTIONS["cr-cancel"] = async () => {
-  const t = S.creche.st?.treino; if (!t) return;
+ACTIONS["cr-cancel"] = async v => {
+  const st = S.creche.st, t = (st?.treinos || []).find(x => String(x.id) === String(v)) || st?.treino; if (!t) return;
   if (!await confirmModal("Cancelar o treino?", `Os níveis que já chegaram ficam. Os ${t.niveis - t.entregues} que faltam não chegam, e você recebe ${t.devolve} moedas de volta.`, "Cancelar o treino")) return;
-  guarded(async () => { const r = await rpc("creche_cancelar"); toast(`🏡 Treino cancelado: ${r.devolvido} moedas de volta.`); await Promise.all([refreshMe(), loadPk(), loadCreche()]); render(); if ($("#game")) renderHUD(); });
+  guarded(async () => { const r = await rpc("creche_cancelar", t.id ? { _id: t.id } : {}); toast(`🏡 Treino cancelado: ${r.devolvido} moedas de volta.`); await Promise.all([refreshMe(), loadPk(), loadCreche()]); render(); if ($("#game")) renderHUD(); });
 };
 ACTIONS["cr-sel"] = v => { S.creche.sel = v; S.creche.n = 1; render(); };
 ACTIONS["cr-n"] = v => { S.creche.n = +v; render(); };
@@ -13911,20 +13950,23 @@ function huntAlert() {
   const r = S.nodeById?.[h.fork_node]?.region || "";
   return `<button class="news-alert" data-act="hunt-see" style="border-color:#7E57C2">🎯 Caçada: um Pokémon misterioso apareceu${r ? ` perto de ${esc(r)}` : ""}! ${h.status === "tentando" ? `${esc(h.hunter_name)} chegou primeiro…` : `Termina em ${huntLeft(h)}`} <b>Ver</b></button>`;
 }
+// arquivo 118: prazo com dia e hora, e a regra das casas que sobram
+function huntPrazo(h) { const d = new Date(h.ends_at); return `${d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })} às ${d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`; }
+const HUNT_REGRA = "A andada gasta só as casas até o Pokémon: o que sobrar, você anda a partir da sua casa quando voltar. Se não capturar, ganha metade das casas gastas no caminho na próxima andada.";
 // arquivo 48: cada jogador escolhe se vai atrás do Pokémon; quem vai volta depois para a casa onde estava
 function huntChoiceBanner() {
   const h = S.hunt; if (!h || S.me.arrived_rank) return "";
   const mine = S.huntMine, i = h.node_ids.indexOf(S.me.node);
   if (i >= 0) return `<div class="hud-card banner hunt-card"><div class="fc-title">🎯 Você está na Caçada: ${i === h.node_ids.length - 1 ? "você chegou no Pokémon!" : `faltam ${h.node_ids.length - 1 - i} casas até o Pokémon`}</div>
-    <small class="muted">Pegando ou não, você volta para a casa onde estava antes. ${h.status === "tentando" && h.hunter !== S.me.user_id ? `${esc(h.hunter_name)} já chegou primeiro…` : `Termina em ${huntLeft(h)}.`}</small>
+    <small class="muted">Pegando ou não, você volta para a casa onde estava antes${mine?.sobra ? ` e anda as ${mine.sobra} casas guardadas` : ""}. ${h.status === "tentando" && h.hunter !== S.me.user_id ? `${esc(h.hunter_name)} já chegou primeiro…` : `Vale até ${huntPrazo(h)} (${huntLeft(h)}).`}</small>
     <div class="act-btns"><button class="btn ghost small" data-act="hunt-choose" data-v="0">Desistir e voltar</button></div></div>`;
   if (mine?.go && !mine.done) return `<div class="hud-card banner hunt-card"><div class="fc-title">🎯 Na sua próxima andada você vai atrás do Pokémon misterioso</div>
-    <small class="muted">Você anda pelo caminho da Caçada (${h.node_ids.length} casas). Depois volta para a casa onde está agora.</small>
+    <small class="muted">O Pokémon está a ${h.node_ids.length} casas da entrada da Caçada. Vale até ${huntPrazo(h)}. ${HUNT_REGRA}</small>
     <div class="act-btns"><button class="btn ghost small" data-act="hunt-choose" data-v="0">Mudei de ideia: continuar o jogo</button></div></div>`;
   if (h.status !== "ativa" || mine?.done) return "";
   if (mine && !mine.go) return `<div class="hud-card banner hunt-card hunt-mini"><span>🎯 Caçada aberta · você escolheu continuar o jogo.</span><button class="btn ghost small" data-act="hunt-choose" data-v="1">Ir atrás do Pokémon</button></div>`;
   return `<div class="hud-card banner hunt-card"><div class="fc-title">🎯 Caçada aberta! Quer ir atrás do Pokémon misterioso?</div>
-    <small class="muted">O primeiro a chegar tenta capturar com 3 bolas. Pegando ou não, você volta para a casa onde está agora. Termina em ${huntLeft(h)}.</small>
+    <small class="muted">O primeiro a chegar tenta capturar com 3 bolas. Pegando ou não, você volta para a casa onde está agora. Vale até ${huntPrazo(h)} (${huntLeft(h)}). ${HUNT_REGRA}</small>
     <div class="fork"><button class="route risky" data-act="hunt-choose" data-v="1"><strong>Ir atrás do Pokémon</strong><span>${h.node_ids.length} casas pelo caminho da Caçada</span></button>
       <button class="route" data-act="hunt-choose" data-v="0"><strong>Continuar o jogo</strong><span>Anda normalmente na corrida</span></button></div></div>`;
 }
@@ -13934,8 +13976,10 @@ function huntPrompt() {
   return new Promise(res => {
     const m = openModal(`<div class="hunt-pop"><h2>🎯 Caçada aberta!</h2>
       <img class="hunt-sil" src="${SPRITE(h.species)}" alt="Silhueta do Pokémon misterioso">
-      <p>Um <b>Pokémon misterioso</b> apareceu${r ? ` perto de <b>${esc(r)}</b>` : ""}. Termina em ${huntLeft(h)}. Quer ir atrás dele?</p>
-      <ul><li>Indo, esta andada e as próximas são pelo caminho da Caçada (${h.node_ids.length} casas). <b>O primeiro a chegar</b> tenta capturar com 3 bolas.</li>
+      <p>Um <b>Pokémon misterioso</b> apareceu${r ? ` perto de <b>${esc(r)}</b>` : ""}. <b>Distância: ${h.node_ids.length} casas</b> da entrada da Caçada. <b>Vale até ${huntPrazo(h)}</b> (${huntLeft(h)}). Quer ir atrás dele?</p>
+      <ul><li>Indo, esta andada e as próximas são pelo caminho da Caçada. <b>O primeiro a chegar</b> tenta capturar com 3 bolas.</li>
+        <li>A andada gasta só as casas até o Pokémon. <b>O que sobrar você anda a partir da sua casa</b> quando voltar.</li>
+        <li>Se não capturar, ganha <b>metade das casas gastas</b> no caminho na próxima andada.</li>
         <li><b>Pegando ou não o Pokémon, você volta para a casa onde está agora.</b> Não perde posição, mas também não avança na corrida enquanto caça.</li>
         <li>Dá para desistir no meio e voltar. Cada um vai atrás uma vez só.</li></ul>
       <div class="actions"><button class="btn ghost" data-r="0">Continuar o jogo</button><button class="btn" data-r="1">🎯 Ir atrás do Pokémon</button></div></div>`);
@@ -14082,7 +14126,8 @@ const rkSeen = (id, k) => { try { return localStorage.getItem(rkKey(id, k)) === 
 const rkMark = (id, k) => { try { localStorage.setItem(rkKey(id, k), "1"); } catch {} };
 async function loadRocket() {
   if (S.rocket === false) return;
-  try { S.rocket = await rpc("rocket_current"); } catch (e) { if (isMissingFn(e)) S.rocket = false; else console.warn(e); }
+  try { const r = await rpc("rocket_current"); if (r?.vazio) { S.rocketMeta = r; S.rocket = null; } else { S.rocket = r; if (r) S.rocketMeta = r; } }   // arquivo 122: sem invasão vem o resumo
+  catch (e) { if (isMissingFn(e)) S.rocket = false; else console.warn(e); }
 }
 function rocketAlert() {
   const r = S.rocket; if (!r) return "";
@@ -14096,38 +14141,54 @@ async function rocketOpen() {
   render();
   const r = S.rocket; if (r && r.status !== "ativa" && !rkSeen(r.id, "fim")) await rocketResult(r);
 }
+// arquivo 122: luta em ondas, multiplicador da barra, Giovanni e os Pokémon que ele levou
+const rkNome = r => r?.giovanni ? "o Giovanni" : "a Equipe Rocket";
+function rkRoubadosHTML(list) {
+  if (!list?.length) return "";
+  return `<section class="panel lo"><h3>🕴️ Pokémon com o Giovanni</h3><p class="muted" style="margin-top:0">Vencer o Giovanni traz todos de volta, com moedas para cada dono. Se o grupo perder 2 revanches seguidas, o mais antigo se perde.</p>
+    <div class="rk-rank">${list.map(x => `<div class="${x.meu ? "me" : ""}"><span></span><img src="${SPRITE(x.species)}" alt=""><span><b>${esc(x.mon)}</b> <small class="muted">Nv ${x.level} · de ${esc(x.nome)}</small></span><small>${x.revanches ? `${x.revanches} revanche${x.revanches > 1 ? "s" : ""} perdida${x.revanches > 1 ? "s" : ""}` : ""}</small></div>`).join("")}</div></section>`;
+}
 function viewRocket() {
-  const r = S.rocket;
+  const r = S.rocket, M = S.rocketMeta || {}, cf = S.cfg.rocket || {};
   if (r === false) return `<p>Precisa do arquivo <code>44_equipe_rocket.sql</code> rodado no Supabase.</p>`;
-  if (r === null) return `<div class="rk"><div class="rk-hero"><h2>🚀 Equipe Rocket</h2><p>Nenhuma invasão agora. Eles costumam aparecer às <b>terças, sextas e domingos às 8h</b>. Fique de olho!</p></div>${rocketAdmin()}</div>`;
-  const me = S.session.user.id, ativa = r.status === "ativa";
-  const team = `<div class="rk-team">${r.team.map(t => `<div><img src="${SPRITE(t.species)}" alt=""><b>${esc(t.name)}</b><small>Nv ${r.level}</small></div>`).join("")}</div>`;
-  const head = `<div class="rk-hero"><h2>🚀 ${ativa ? "A Equipe Rocket invadiu!" : r.status === "vitoria" ? "A Equipe Rocket foi expulsa!" : "A Equipe Rocket venceu…"}</h2>
-    <p>${ativa ? `Cedam 1 Pokémon e lutem juntos para zerar a barra antes do fim. Termina em <b>${rkLeft(r)}</b>.` : r.status === "vitoria" ? "A turma zerou a barra a tempo! Cada participante ganhou as moedas." : r.stolen_user ? `Ela roubou o <b>${esc(r.stolen_mon)}</b> (Nv ${r.stolen_level}) de <b>${esc(r.stolen_name)}</b>.` : "Ninguém enfrentou a Rocket, e ela foi embora sem levar nada."}</p>
+  if (r === null) return `<div class="rk"><div class="rk-hero"><h2>🚀 Equipe Rocket</h2><p>Nenhuma invasão agora. Eles costumam aparecer às <b>terças, sextas e domingos às 8h</b>. Fique de olho!</p>
+    ${M.proxima_giovanni ? `<p>🕴️ <b>Da próxima vez quem vem é o Giovanni!</b></p>` : ""}${M.recorde != null ? `<p class="muted">Seu recorde nesta temporada: <b>${M.recorde} ondas</b>.</p>` : ""}</div>${rkRoubadosHTML(M.roubados)}${rocketAdmin()}</div>`;
+  const me = S.session.user.id, ativa = r.status === "ativa", g = !!r.giovanni, k = g ? (cf.giovanni_premio_mult ?? 2) : 1;
+  const team = `<div class="rk-team">${r.team.map(t => `<div><img src="${SPRITE(t.species)}" alt=""><b>${esc(t.name)}</b></div>`).join("")}</div>`;
+  const stolenTxt = r.stolen_user ? (g ? `Giovanni levou o <b>${esc(r.stolen_mon)}</b> (Nv ${r.stolen_level}) de <b>${esc(r.stolen_name)}</b>. Vença o Giovanni na próxima vez para trazê-lo de volta.`
+      : `A Rocket levou o <b>${esc(r.stolen_mon)}</b> (Nv ${r.stolen_level}) de <b>${esc(r.stolen_name)}</b> para um esconderijo. Quem tem Quartel pode resgatá-lo em Guerras → bases da Rocket.`)
+    : (r.status === "derrota" ? (r.joined ? "O grupo lutou bem e a Rocket foi embora sem levar nenhum Pokémon." : "Ninguém enfrentou a Rocket, e ela foi embora sem levar nada.") : "");
+  const quem = g ? "Giovanni" : "A Equipe Rocket";
+  const head = `<div class="rk-hero${g ? " rk-giovanni" : ""}"><h2>${g ? "🕴️" : "🚀"} ${ativa ? (g ? "GIOVANNI chegou com a Equipe Rocket!" : "A Equipe Rocket invadiu!") : r.status === "vitoria" ? `${quem} foi expuls${g ? "o" : "a"}!` : `${quem} venceu…`}</h2>
+    <p>${ativa ? `Cada um cede 1 Pokémon e enfrenta uma fila de Pokémon ${g ? "do Giovanni" : "da Rocket"}, onda após onda, até o seu desmaiar. Todo dano sai da barra de todos. Termina em <b>${rkLeft(r)}</b>.${g ? " <b>Prêmios em dobro!</b>" : ""}`
+      : r.status === "vitoria" ? "A turma zerou a barra a tempo! Cada participante ganhou as moedas." : stolenTxt}</p>
     <div class="rk-bar"><i style="width:${rkPct(r)}%"></i></div>
-    <div class="rk-bar-txt"><span>Vida da Rocket: <b>${r.hp_left}</b> de ${r.hp_total}</span><span><b>${r.joined}</b> de ${r.players} treinadores lutaram</span></div>
+    <div class="rk-bar-txt"><span>Vida ${g ? "do Giovanni" : "da Rocket"}: <b>${r.hp_left}</b> de ${r.hp_total}</span><span>Dano total: <b>${r.dano_total ?? (r.hp_total - r.hp_left)}</b></span><span>${g ? "Fator do Giovanni" : "Multiplicador da barra"}: <b>×${(+(r.mult ?? 1)).toFixed(2).replace(".", ",")}</b></span><span><b>${r.joined}</b> de ${r.players} treinadores lutaram</span></div>
     ${team}</div>`;
   let mine = "";
   if (ativa && !r.me) {
     const mons = [...(S.pk.mons || [])].sort((a, b) => b.level - a.level);
     mine = mons.length ? `<section class="panel lo rk-me"><h3>Ceder 1 Pokémon e lutar</h3>
-      <div class="rk-warn">⚠️ Atenção: se a barra não zerar até o fim, a Rocket sorteia <b>um</b> dos participantes (cada um tem uma chance só) e <b>rouba para sempre</b> o Pokémon que ele cedeu. Vencendo, cada participante ganha <b>${S.cfg.rocket?.reward ?? 100} moedas</b>.</div>
+      <div class="rk-warn">⚠️ Uma tentativa por invasão. A 1ª onda vem ${cf.onda_menos ?? 5} níveis abaixo do seu Pokémon e cada onda seguinte vem ${cf.onda_mais ?? 3} níveis acima. Vencendo, cada participante ganha <b>${(cf.reward ?? 100) * k} moedas</b>, e os 3 com mais ondas ganham um extra.
+        ${g ? `Se o Giovanni vencer, ele <b>leva um dos Pokémon cedidos</b> com ele.` : `Se o grupo perder e terminar abaixo de ${cf.roubo_pct ?? 80}% da barra, a Rocket leva o Pokémon de um participante sorteado para um esconderijo (dá para resgatar em ${cf.resgate_dias ?? 7} dias).`}</div>
       <form id="rocketform" class="rk-me"><label for="rk-mon">Quem vai lutar</label><select id="rk-mon">${mons.map(m => `<option value="${m.id}">${esc(pkName(m.species_id))} (Nv ${m.level})${m.team_slot ? " · equipe" : ""}</option>`).join("")}</select>
         <div><button class="btn">Ceder e lutar</button></div></form>
-      <p class="muted" style="margin:0">Você luta turno a turno, escolhendo os ataques, e todo dano que tirar sai da barra de todos. Sem pressa: dá para sair e voltar.</p></section>`
+      <p class="muted" style="margin:0">Você luta turno a turno, escolhendo os ataques e usando até 2 itens. Bater o seu recorde da temporada (${r.recorde != null ? `<b>${r.recorde} ondas</b>` : "a 1ª luta marca o recorde"}) dá moedas de Superação. Seu Pokémon ganha XP mesmo se o grupo perder.</p></section>`
       : `<section class="panel lo"><p class="muted">Você ainda não tem Pokémon para ceder. Capture alguns andando pelo mapa!</p></section>`;
   } else if (r.me) {
-    mine = `<section class="panel lo rk-me"><h3>Sua parte</h3><p><img src="${SPRITE(r.me.species)}" alt="" style="width:48px;height:48px;image-rendering:pixelated;vertical-align:middle"> Você cedeu o <b>${esc(r.me.mon)}</b> e tirou <b>${r.me.damage}</b> de vida da Rocket.</p>
+    mine = `<section class="panel lo rk-me"><h3>Sua parte</h3><p><img src="${SPRITE(r.me.species)}" alt="" style="width:48px;height:48px;image-rendering:pixelated;vertical-align:middle"> Você cedeu o <b>${esc(r.me.mon)}</b>: <b>${r.me.ondas ?? 0} ondas</b> vencidas e <b>${r.me.damage}</b> de dano.${r.me.xp ? ` Ele ganhou ${r.me.xp} de XP.` : ""}${r.me.superou ? " 🌊 Novo recorde!" : ""}${r.me.bonus ? ` Você ganhou ${r.me.bonus} moedas.` : ""}</p>
       ${!r.me.done && ativa ? `<div><button class="btn" data-act="rk-fight" data-v="${r.me.battle_id}">Continuar a luta</button></div>` : `<p class="muted" style="margin:0">Sua luta já acabou.${ativa ? " Agora é torcer pela turma!" : ""}</p>`}
-      ${!ativa ? `<div><button class="btn ghost small" data-act="rk-result">${r.status === "vitoria" ? "Ver a comemoração" : "Ver o sorteio"}</button></div>` : ""}</section>`;
-  } else if (!ativa) mine = `<section class="panel lo"><button class="btn ghost small" data-act="rk-result">${r.status === "vitoria" ? "Ver a comemoração" : "Ver o sorteio"}</button></section>`;
-  const rank = r.ranking.length ? `<section class="panel lo"><h3>Quem mais tirou vida da Rocket</h3><div class="rk-rank">${r.ranking.map((x, i) => `<div class="${x.user_id === me ? "me" : ""}"><span>${i + 1}º</span><img src="${SPRITE(x.species)}" alt=""><span><b>${esc(x.name)}</b> <small class="muted">com ${esc(x.mon)}${x.done ? "" : " · lutando"}</small></span><b>${x.damage}</b></div>`).join("")}</div></section>` : "";
-  return `<div class="rk">${head}${mine}${rank}${rocketAdmin()}</div>`;
+      ${!ativa ? `<div><button class="btn ghost small" data-act="rk-result">${r.status === "vitoria" ? "Ver a comemoração" : "Ver o resultado"}</button></div>` : ""}</section>`;
+  } else if (!ativa) mine = `<section class="panel lo"><button class="btn ghost small" data-act="rk-result">${r.status === "vitoria" ? "Ver a comemoração" : "Ver o resultado"}</button></section>`;
+  const rank = r.ranking.length ? `<section class="panel lo"><h3>Quem venceu mais ondas</h3><div class="rk-rank">${r.ranking.map((x, i) => `<div class="${x.user_id === me ? "me" : ""}"><span>${i + 1}º</span><img src="${SPRITE(x.species)}" alt=""><span><b>${esc(x.name)}</b> <small class="muted">com ${esc(x.mon)} · ${x.damage} de dano${x.done ? "" : " · lutando"}${x.superou ? " · 🌊 recorde" : ""}</small></span><b>${x.ondas ?? 0} ondas</b></div>`).join("")}</div></section>` : "";
+  const prox = !g && ativa ? `<p class="muted" style="text-align:center">🕴️ O Giovanni aparece a cada ${cf.giovanni_cada ?? 5} vitórias do grupo.</p>` : "";
+  return `<div class="rk">${head}${mine}${rank}${rkRoubadosHTML(r.roubados)}${prox}${rocketAdmin()}</div>`;
 }
 function rocketAdmin() {
   if (!S.isAdmin || S.rocket?.status === "ativa") return "";
   return `<section class="panel lo"><h3>Admin: chamar a Equipe Rocket agora</h3><p class="muted" style="margin-top:0">Elas também chegam sozinhas às terças, sextas e domingos às 8h.</p>
-    <form id="rkadmform" class="bet-form"><label for="rk-hours">Duração (horas)</label><input id="rk-hours" type="number" min="1" max="72" value="24"><button class="btn danger small">Chamar a Rocket</button></form></section>`;
+    <form id="rkadmform" class="bet-form"><label for="rk-hours">Duração (horas)</label><input id="rk-hours" type="number" min="1" max="72" value="24"><button class="btn danger small">Chamar a Rocket</button></form>
+    <p style="margin:10px 0 0"><button class="btn ghost small" data-act="rk-giovanni">🕴️ A próxima invasão é do Giovanni</button></p></section>`;
 }
 async function rocketFight(bid) {
   await guarded(async () => { await loadBattles(); });
@@ -14137,18 +14198,22 @@ document.addEventListener("submit", e => {
   if (e.target.id === "rocketform") {
     e.preventDefault();
     const mon = $("#rk-mon").value, nm = $("#rk-mon").selectedOptions[0]?.text || "";
-    confirmModal("Ceder este Pokémon?", `${nm} vai lutar contra a Equipe Rocket. Se a turma perder e você for sorteado, ele é roubado para sempre.`, "Ceder e lutar").then(ok => ok && guarded(async () => {
+    confirmModal("Ceder este Pokémon?", `${nm} vai lutar contra ${rkNome(S.rocket)}. É uma tentativa só nesta invasão. Se a turma perder e você for sorteado, ${S.rocket?.giovanni ? "o Giovanni leva ele" : "a Rocket pode levar ele para um esconderijo"}.`, "Ceder e lutar").then(ok => ok && guarded(async () => {
       const bid = await rpc("rocket_join", { _mon: mon }); await loadRocket(); renderHUD(); await rocketFight(bid);
     }));
   }
   if (e.target.id === "rkadmform") {
     e.preventDefault();
     const h = +$("#rk-hours").value || 24;
-    confirmModal("Chamar a Equipe Rocket agora?", `Todos poderão lutar por ${h} horas. Se perderem, alguém perde um Pokémon.`, "Chamar").then(ok => ok && guarded(async () => {
+    confirmModal("Chamar a Equipe Rocket agora?", `Todos poderão lutar por ${h} horas. Se perderem feio, a Rocket leva o Pokémon de alguém.`, "Chamar").then(ok => ok && guarded(async () => {
       await rpc("admin_rocket_start", { _hours: h }); await loadRocket(); toast("🚀 A Equipe Rocket invadiu!"); render(); renderHUD();
     }));
   }
 });
+ACTIONS["rk-giovanni"] = async () => {
+  if (!await confirmModal("Chamar o Giovanni?", "A próxima invasão (a automática ou a que você chamar) vai ser do Giovanni, com time próprio e prêmios em dobro.", "Sim, o Giovanni")) return;
+  guarded(async () => { await rpc("admin_rocket_giovanni", { _on: true }); await loadRocket(); toast("🕴️ A próxima invasão é do Giovanni."); render(); });
+};
 // ao entrar: aviso da invasão (uma vez por invasão) ou o resultado (uma vez)
 async function rocketPopup() {
   const r = S.rocket; if (!r) return;
@@ -14156,10 +14221,11 @@ async function rocketPopup() {
   if (r.me || rkSeen(r.id, "aviso")) return;
   rkMark(r.id, "aviso");
   await new Promise(res => {
-    const m = openModal(`<div class="rk-modal"><div style="font-size:56px">🚀</div><h2 style="margin:6px 0;color:#FFD0C8">A Equipe Rocket invadiu!</h2>
-      <p>Eles querem roubar Pokémon! Ceda <b>1 Pokémon</b> e lute junto com todo mundo para zerar a barra de vida da Rocket em <b>${rkLeft(r)}</b>.</p>
+    const g = !!r.giovanni, k = g ? (S.cfg.rocket?.giovanni_premio_mult ?? 2) : 1;
+    const m = openModal(`<div class="rk-modal"><div style="font-size:56px">${g ? "🕴️" : "🚀"}</div><h2 style="margin:6px 0;color:#FFD0C8">${g ? "GIOVANNI chegou!" : "A Equipe Rocket invadiu!"}</h2>
+      <p>Ceda <b>1 Pokémon</b> e vença o máximo de ondas para zerar a barra ${g ? "do Giovanni" : "da Rocket"} em <b>${rkLeft(r)}</b>.</p>
       <div class="rk-bar"><i style="width:${rkPct(r)}%"></i></div>
-      <p class="muted">Vencendo, cada participante ganha ${S.cfg.rocket?.reward ?? 100} moedas. Perdendo, a Rocket sorteia um participante e rouba o Pokémon que ele cedeu.</p>
+      <p class="muted">Vencendo, cada participante ganha ${(S.cfg.rocket?.reward ?? 100) * k} moedas${g ? " (em dobro)" : ""}. ${g ? "Se o Giovanni vencer, ele leva um Pokémon cedido." : "Se o grupo perder feio, a Rocket leva o Pokémon de um participante para um esconderijo."}</p>
       <div class="actions" style="justify-content:center"><button class="btn ghost" data-r="0">Depois</button><button class="btn" data-r="1">Lutar agora</button></div></div>`);
     m.querySelector(".modal").classList.add("modal-rocket");
     m.addEventListener("click", ev => { const b = ev.target.closest("[data-r]"); if (!b) return; closeModal(); res(); if (b.dataset.r === "1") ACTIONS.go("rocket"); });
@@ -14171,7 +14237,7 @@ async function rocketResult(r) {
   if (r.status === "vitoria") {
     await new Promise(res => {
       const m = openModal(`<div><div style="font-size:56px">🎉</div><h2 style="color:#FFD0C8;margin:6px 0">A Equipe Rocket foi expulsa!</h2>
-        <p>Os ${r.joined} treinadores que lutaram ganharam <b>${S.cfg.rocket?.reward ?? 100} moedas</b> cada.${r.me ? " Inclusive você!" : ""}</p>
+        <p>Os ${r.joined} treinadores que lutaram ganharam <b>${(S.cfg.rocket?.reward ?? 100) * (r.giovanni ? (S.cfg.rocket?.giovanni_premio_mult ?? 2) : 1)} moedas</b> cada.${r.me ? " Inclusive você!" : ""}${r.giovanni ? " Os Pokémon que o Giovanni tinha levado voltaram para casa!" : ""}</p>
         <p class="muted">"A Equipe Rocket está decolando de novo!"</p><div class="actions" style="justify-content:center"><button class="btn" data-ok="1">Boa!</button></div></div>`);
       m.querySelector(".modal").classList.add("modal-rocket"); sfx("acerto");
       $("[data-ok]", m).onclick = () => { closeModal(); res(); };
@@ -14181,7 +14247,7 @@ async function rocketResult(r) {
   const names = r.ranking.map(x => x.name);
   await new Promise(async res => {
     const m = openModal(`<div><div style="font-size:48px">😱</div><h2 style="color:#FFD0C8;margin:6px 0">A Equipe Rocket venceu!</h2>
-      <p>${r.stolen_user ? "Eles vão roubar o Pokémon de um dos treinadores que lutaram. Sorteando…" : "Ninguém cedeu Pokémon, e a Rocket foi embora sem levar nada."}</p>
+      <p>${r.stolen_user ? "Eles vão levar o Pokémon de um dos treinadores que lutaram. Sorteando…" : r.joined ? "O grupo lutou bem: a Rocket foi embora sem levar nenhum Pokémon." : "Ninguém cedeu Pokémon, e a Rocket foi embora sem levar nada."}</p>
       <div class="rk-spin" id="rk-spin"></div><div id="rk-stolen"></div>
       <div class="actions" style="justify-content:center"><button class="btn" data-ok="1" id="rk-ok" ${r.stolen_user ? "disabled" : ""}>Fechar</button></div></div>`);
     m.querySelector(".modal").classList.add("modal-rocket");
@@ -14190,8 +14256,8 @@ async function rocketResult(r) {
     const spin = $("#rk-spin", m), total = reduceMotion() ? 3 : 26;
     for (let i = 0; i < total; i++) { spin.textContent = names[(i * 7 + 3) % names.length]; sfx("tick"); await sleep(55 + i * i * 0.45); }
     spin.textContent = r.stolen_name; spin.classList.add("done"); sfx("erro");
-    $("#rk-stolen", m).innerHTML = `<div class="rk-stolen"><img src="${SPRITE(r.stolen_species)}" alt=""><p>A Equipe Rocket roubou o <b>${esc(r.stolen_mon)}</b> (Nv ${r.stolen_level}) de <b>${esc(r.stolen_name)}</b>!</p>
-      ${r.stolen_user === S.session.user.id ? `<p class="muted">Sinto muito… o Pokémon era seu. Na próxima invasão, a vingança!</p>` : ""}</div>`;
+    $("#rk-stolen", m).innerHTML = `<div class="rk-stolen"><img src="${SPRITE(r.stolen_species)}" alt=""><p>${r.giovanni ? "Giovanni levou" : "A Equipe Rocket levou"} o <b>${esc(r.stolen_mon)}</b> (Nv ${r.stolen_level}) de <b>${esc(r.stolen_name)}</b>!</p>
+      <p class="muted">${r.giovanni ? "Para trazer de volta, é preciso vencer o Giovanni na próxima vez que ele aparecer." : `Ele está num esconderijo da Rocket por ${S.cfg.rocket?.resgate_dias ?? 7} dias. Quem tem Quartel pode resgatá-lo em Guerras → bases da Rocket.`}</p></div>`;
     const ok = $("#rk-ok", m); if (ok) ok.disabled = false;
   });
 }
@@ -15037,6 +15103,29 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "rocket-ondas-2026-11-17", sql: "122", title: "🚀 Equipe Rocket em ondas e a chegada do Giovanni", body: () => `A Equipe Rocket mudou:
+• Você cede 1 Pokémon e enfrenta uma fila de Pokémon da Rocket, onda após onda, até o seu desmaiar ou você desistir. Uma tentativa por invasão. Cada onda vem um pouco mais forte.
+• A barra conta o dano de todos. O ranking conta as ondas vencidas.
+• Vitória do grupo: 100 moedas para cada um e bônus para os 3 com mais ondas. Bater o seu recorde da temporada dá moedas de Superação. Todo mundo que lutou ganha XP no Pokémon cedido, mesmo na derrota.
+• A barra se ajusta ao grupo: quanto mais vitórias seguidas, mais forte a Rocket volta.
+• Se o grupo perder feio, a Rocket leva um Pokémon cedido para um esconderijo por 7 dias. Quem tem Quartel pode atacar o esconderijo (Guerras → bases da Rocket) e devolver o Pokémon ao dono, ganhando um bônus.
+• De tempos em tempos quem aparece é o GIOVANNI, com time próprio e prêmios em dobro. Se ele vencer, leva um Pokémon com ele: para trazer de volta, é preciso derrotá-lo na próxima vez.` },
+  { id: "liga-podio-2026-11-17", sql: "121", title: "🏆 Liga Pokémon com prêmio para o pódio", body: () => `A Liga Pokémon do tabuleiro agora paga o pódio, além dos prêmios do Castelo:
+• Campeão: 500 moedas, +10% de XP na Aventura e +10% de salário até a próxima Liga, e o título "Campeão da Temporada" no cartão.
+• Vice: 300 moedas.
+• 3º lugar (quem perdeu na semifinal com a melhor colocação): 150 moedas.
+• Na caverna, se o lendário escapar, o campeão leva 3 Ultra Balls e 200 moedas de consolo.` },
+  { id: "premios-22-2026-11-17", sql: "120", title: "🏅 Prêmios da temporada: 10 categorias novas", body: () => `Os prêmios da temporada ganharam 10 categorias: Mais evoluções, Mais insígnias, Mais ataques vencidos e Mais defesas vencidas (guerras), Rei das cartas, Rei do PokeBound, Mais missões da Aventura, Maior dano no Chefe, Maior negociante (compras e vendas no Mercado e no Leilão, mais trocas) e o Azarado da Temporada (quem mais perdeu casas no Lamaçal, no Raio, na Armadilha e no Duelo).
+"Mais dano na Equipe Rocket" virou "Mais ondas vencidas contra a Rocket".
+No empate, as 150 moedas da categoria agora são divididas entre os empatados; a medalha continua para todos.
+Acompanhe em Ranking → 🏅 Prêmios.` },
+  { id: "creche-mercado-2026-11-17", sql: "119", title: "🏡 Creche com mais vagas e 🛒 Mercado com itens da bolsa", body: () => `Duas mudanças:
+• Creche: agora ela treina mais de um Pokémon ao mesmo tempo. Você tem 1 vaga, mais 1 para cada nível do Poço dos Desejos da sua vila. O limite de níveis por semana continua o mesmo, somando todos.
+• Mercado: além de visuais, Dicas e Tente outra vez, dá para vender pedras de evolução, TMs que você ainda não usou, Pokébolas e poções/curas da bolsa. Preço livre, em moedas, com a taxa de sempre (5%). HMs não são vendidas.` },
+  { id: "cacada-casas-2026-11-17", sql: "118", title: "🎯 Caçada: casas que sobram e bônus para quem foi", body: () => `A Caçada ficou mais justa:
+• Antes de decidir, aparece quantas casas faltam até o Pokémon e até quando a Caçada vale.
+• A andada gasta só as casas necessárias para chegar ao Pokémon. O que sobrar fica guardado, e você anda com essas casas a partir da sua casa quando voltar da Caçada.
+• Quem foi e não capturou ganha, na próxima andada, metade das casas gastas no caminho.` },
   { id: "guerra-2026-11-17", sql: "115", title: "⚔️ Guerra: vilas sem Quartel, bases da Rocket e mais", body: () => `A Guerra entre vilas mudou, a pedido da turma:
 • Vilas SEM Quartel agora também podem ser atacadas, no máximo 1 vez por semana cada. Elas defendem com os 3 primeiros Pokémon da equipe do dono. Quem não tem Quartel continua sem poder atacar.
 • Defesa vitoriosa: quem atacou e perdeu paga ao defensor 5% das moedas dele (até 150).
