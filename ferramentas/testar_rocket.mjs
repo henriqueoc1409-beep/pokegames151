@@ -45,7 +45,8 @@ const act = async (u, id) => { const b = (await as(u, `select * from battles whe
   const mv = b.state.sides[0].mons[0].moves.findIndex(m => m.pp > 0); return (await as(u, `select * from public.battle_act($1, $2, 'move', $3)`, [id, b.turn, mv < 0 ? -1 : mv])).rows?.[0] || { error: 1 }; };
 let b1 = await act(A, bidA);
 check("cada turno: o servidor joga pela Rocket na hora", !b1.error && b1.turn > t, JSON.stringify(b1).slice(0, 160));
-const hp1 = (await cur(A)).hp_left;
+let hp1 = (await cur(A)).hp_left;
+for (let k = 0; k < 6 && hp1 === hp0 && b1.status === "ativa"; k++) { b1 = await act(A, bidA); hp1 = (await cur(A)).hp_left; }   // o 1º golpe pode errar
 check("o dano sai da barra coletiva", hp1 < hp0 && (await cur(B)).ranking[0].damage === hp0 - hp1, `${hp0} -> ${hp1}`);
 while (b1.status === "ativa" && guard++ < 60) b1 = await act(A, bidA);
 check("a luta termina (desmaio, Rocket derrotada ou fuga)", b1.status === "encerrada");
