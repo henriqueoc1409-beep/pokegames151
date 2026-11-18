@@ -15139,10 +15139,16 @@ function isoDesenhaPredio(g, P, pr, r, now, dpr, u) {
   }
 }
 function isoDesenhaProp(g, P, x, y, r, pal, now, dpr, u) {
-  const hsh = ((x * 2654435761) ^ (y * 2246822519)) >>> 0;
+  let hsh = ((x * 2654435761) ^ (y * 2246822519)) >>> 0;
+  hsh = Math.imul(hsh ^ (hsh >>> 15), 2246822519) >>> 0; hsh = (hsh ^ (hsh >>> 13)) >>> 0;   // embaralha: sem fileiras certinhas
   // Para não poluir bordas maciças de mata/pedra, desenha elementos 3D variados com espaçamento natural
   const bordaLivre = [".", "m", "e", "p", "r", "~"].some(c => [[-1, 0], [1, 0], [0, -1], [0, 1]].some(([dx, dy]) => (AV.g[y + dy] || "")[x + dx] === c));
-  if (!bordaLivre && ((x + y) % 2 !== 0 || (hsh & 3) !== 0)) return;
+  if (!bordaLivre && (hsh & 3) !== 0) return;
+  // Beira de rua: só 1 árvore a cada 3 (antes era uma em cada casa e elas escondiam as ruas e o herói)
+  const beiraRua = [[-1, 0], [1, 0], [0, -1], [0, 1]].some(([dx, dy]) => (AV.g[y + dy] || "")[x + dx] === ".");
+  if (beiraRua && pal.arvore !== "coluna" && (hsh % 3) !== 0) return;
+  // Beira de mato/água: metade, e sem fileira certinha (o sorteio usa a posição embaralhada)
+  if (!beiraRua && bordaLivre && pal.arvore !== "coluna" && ((hsh >>> 7) % 2) !== 0) return;
   const z0 = isoElev(r, AV.g, x, y), [cx, cy] = P(x + .5, y + .5, z0);
   const aguaPerto = [[-1, 0], [1, 0], [0, -1], [0, 1], [-2, 0], [2, 0], [0, -2], [0, 2]].some(([dx, dy]) => (AV.g[y + dy] || "")[x + dx] === "~");
   // Muros e colunas na cidade murada / santuários / salões
@@ -15633,13 +15639,13 @@ function rpgPintaIso(cv, now) {
   for (const pr of predios) {
     for (let py = pr.y0; py <= pr.y1; py++) for (let px = pr.x0; px <= pr.x1; px++) ocup.add(py * W + px);
     const [sx, sy] = P((pr.x0 + pr.x1 + 1) / 2, (pr.y0 + pr.y1 + 1) / 2, 0);
-    if (sx > -u * 3 && sy > -u * 2 && sx < cv.width + u * 3 && sy < cv.height + u * 4) fila.push({ d: pr.x1 + pr.y1 + .25, fn: () => isoDesenhaPredio(g, P, pr, AV.r, now, dpr, u) });
+    if (sx > -u * 3 && sy > -u * 2 && sx < cv.width + u * 3 && sy < cv.height + u * 4) fila.push({ d: pr.x1 + pr.y1 + .25, cobre: [pr.x0, pr.y0, pr.x1, pr.y1], fn: () => isoDesenhaPredio(g, P, pr, AV.r, now, dpr, u) });
   }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     if (AV.g[y][x] !== "#" || ocup.has(y * W + x)) continue;
     const [sx, sy] = P(x + .5, y + .5, isoElev(AV.r, AV.g, x, y));
     if (sx < -u * 1.4 || sy < -u * .8 || sx > cv.width + u * 1.4 || sy > cv.height + u * 2.2) continue;
-    fila.push({ d: x + y, fn: () => isoDesenhaProp(g, P, x, y, AV.r, pal, now, dpr, u) });
+    fila.push({ d: x + y, cobre: [x, y, x, y], fn: () => isoDesenhaProp(g, P, x, y, AV.r, pal, now, dpr, u) });
   }
   for (const dm of AV.decoMons || []) {
     const dz = isoElev(AV.r, AV.g, Math.round(dm.fx), Math.round(dm.fy)), [mx, my] = P(dm.fx + .5, dm.fy + .5, dz);
@@ -15714,7 +15720,19 @@ function rpgPintaIso(cv, now) {
     } });
   }
   fila.sort((a, b) => a.d - b.d);
-  for (const it of fila) it.fn();
+  // O que fica NA FRENTE do seu herói (mais perto da câmera e cobrindo ele na tela) aparece transparente,
+  // para você nunca sumir atrás de árvores, colunas ou prédios
+  const eu = todos.find(o => o.eu), frente = it => {
+    if (!eu || !it.cobre) return false;
+    const [x0, y0, x1, y1] = it.cobre, hd = eu.fx + eu.fy, hl = eu.fx - eu.fy;
+    if (x1 + y1 <= hd) return false;                          // atrás do herói
+    if (x0 + y0 > hd + 5) return false;                     // muito à frente: não alcança a altura dele
+    return x0 - y1 <= hl + 2.2 && x1 - y0 >= hl - 2.2;        // na mesma coluna da tela
+  };
+  for (const it of fila) {
+    if (frente(it)) { g.save(); g.globalAlpha = .32; it.fn(); g.restore(); }
+    else it.fn();
+  }
   // Plaquinhas nítidas dos lugares e saídas em 3D
   const placas = [...rpgPontos(), ...rpgSaidas().map(sd => {
     const [ex, ey] = sd.em[Math.floor((sd.em.length - 1) / 2)], R = RPG_REG[sd.para];
