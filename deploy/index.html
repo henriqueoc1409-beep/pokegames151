@@ -2326,6 +2326,171 @@ body.pb-on{overflow:hidden}
 .rpg-chatmin{all:unset;cursor:pointer;float:right;padding:0 6px;color:#FFE7A8}
 .rpg-chat.min .hx-chat-body,.rpg-chat.min form{display:none}.rpg-chat.min .rpg-chatmin{transform:rotate(180deg)}
 @media (max-width:760px){.rpg-ib{width:44px;height:42px;font-size:17px}.rpg-ib em{display:none}#aventura .pz-tit{font-size:12.5px;padding:6px 9px}}
+/* =====================================================================
+   TABULEIRO VIVO, INTERAÇÃO NO MAPA E TELAS COMPACTAS (arquivo 124)
+   ===================================================================== */
+#world.hoverable{cursor:pointer}
+/* cartão flutuante perto da casa ou jogador clicado */
+#board-pop{position:absolute;z-index:26;width:min(332px,calc(100vw - 24px));pointer-events:auto;
+  background:linear-gradient(165deg,rgba(20,29,44,.96),rgba(11,17,27,.98));border:1.5px solid rgba(217,180,106,.78);
+  border-radius:14px;padding:12px 14px;color:#E8ECF3;box-shadow:0 14px 36px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,235,180,.14);
+  backdrop-filter:blur(10px);animation:bp-in .16s cubic-bezier(.2,.9,.3,1) both}
+#board-pop:empty{display:none}
+@keyframes bp-in{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+.bp-head{display:flex;align-items:flex-start;gap:9px;padding-right:56px}
+.bp-dot{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;font-size:18px;
+  border:1.5px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 2px 6px rgba(0,0,0,.35)}
+.bp-tit{min-width:0;flex:1}
+.bp-tit strong{display:block;font:800 14.5px/1.2 var(--sans);color:#FFF4D6}
+.bp-tit small{display:block;font:600 12px/1.3 var(--sans);color:#9FB0C7;margin-top:1px}
+.bp-tools{position:absolute;top:8px;right:8px;display:flex;gap:4px}
+.bp-icbtn{all:unset;box-sizing:border-box;cursor:pointer;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#C9D4E3;font:700 14px/1 var(--sans)}
+.bp-icbtn:hover{background:rgba(245,197,66,.18);border-color:#F5C542;color:#FFE7A8}
+.bp-pills{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 6px}
+.bp-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font:700 11.5px/1.2 var(--sans);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#D5DFEE}
+.bp-pill.near{background:rgba(76,195,138,.16);border-color:rgba(76,195,138,.45);color:#8FE8B8}
+.bp-pill.gold{background:rgba(245,197,66,.16);border-color:rgba(245,197,66,.45);color:#FFE37A}
+.bp-desc{font-size:12.8px;line-height:1.42;color:#C9D4E3;margin:4px 0 0}
+.bp-here{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.09)}
+.bp-char{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:3px 8px 3px 4px;
+  border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(201,160,90,.4);font:700 11.5px/1 var(--sans);color:#F3DFA8}
+.bp-char:hover{border-color:#FFE37A;background:rgba(245,197,66,.14)}
+.bp-char svg{border-radius:50%;background:rgba(0,0,0,.25)}
+#board-pop .prop{margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);font-size:12.5px}
+#board-pop .tip-actions{margin-top:8px;flex-wrap:wrap}
+#board-pop .tip-actions .btn{flex:1 1 auto;min-height:32px;font-size:12.5px;padding:0 10px}
+#game.tb-pop #sec-top:has(#hud-banner:empty){display:none!important}
+#game.tb-pop #hud-tip{display:none!important}
+@media (max-width:760px){
+  #board-pop{left:8px!important;right:8px!important;top:auto!important;bottom:calc(114px + env(safe-area-inset-bottom,0px))!important;
+    width:auto;max-height:46vh;overflow-y:auto;z-index:35}
+}
+/* barra ao vivo durante a caminhada no tabuleiro */
+#walk-hud{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:28;
+  display:flex;align-items:center;gap:12px;padding:7px 9px 7px 16px;border-radius:999px;pointer-events:auto;
+  background:linear-gradient(180deg,rgba(22,32,48,.96),rgba(11,17,27,.97));border:2px solid #E0B44C;
+  box-shadow:0 10px 28px rgba(0,0,0,.58),0 0 18px rgba(224,180,76,.24);color:#FFF;white-space:nowrap}
+#walk-hud:empty{display:none}
+.wh-step{font:800 13.5px/1 var(--sans);color:#FFE7A8;display:flex;align-items:center;gap:7px}
+.wh-step b{font-family:var(--mono);font-size:14.5px;color:#FFF}
+.wh-bar{width:84px;height:7px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden}
+.wh-bar i{display:block;height:100%;background:linear-gradient(90deg,#4CC38A,#FFE37A);transition:width .16s ease}
+.wh-ev{font:700 12.5px/1 var(--sans);color:#9CF2B8;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.wh-skip{all:unset;cursor:pointer;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
+  font:700 12px/1 var(--sans);color:#E8ECF3}
+.wh-skip:hover{background:rgba(245,197,66,.22);border-color:#FFE37A;color:#FFE7A8}
+@media (max-width:760px){#walk-hud{top:calc(62px + env(safe-area-inset-top,0px));padding:6px 8px 6px 12px;gap:8px}.wh-bar{width:54px}.wh-ev{max-width:130px}}
+/* modal de rolagem e resumo pós-caminhada */
+.roll-v2{text-align:center}
+.rv-die-wrap{display:flex;justify-content:center;margin:12px 0}
+.rv-die{width:84px;height:84px;border-radius:18px;background:linear-gradient(145deg,#FFF9E8,#E6D2A2);border:3px solid #8A6421;
+  box-shadow:0 8px 20px rgba(0,0,0,.45),inset 0 2px 0 #FFF;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:11px}
+.rv-die i{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#3A2614,#160E06);place-self:center;visibility:hidden;box-shadow:0 1px 0 rgba(255,255,255,.5)}
+.rv-die i.on{visibility:visible}
+.rv-die.rolling{animation:rv-spin .14s infinite linear}
+@keyframes rv-spin{0%{transform:rotate(-10deg) scale(1.03)}50%{transform:rotate(10deg) scale(.97)}100%{transform:rotate(-10deg) scale(1.03)}}
+.rv-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:10px 0}
+.rv-chip{padding:5px 11px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(201,160,90,.38);font:600 13px/1.2 var(--sans);color:#C9D4E3}
+.rv-chip b{font-family:var(--mono);color:#FFE37A;margin-left:3px}
+.rv-tot{margin:10px auto 4px;display:inline-flex;align-items:baseline;gap:8px;padding:8px 20px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(224,180,76,.22),rgba(76,195,138,.14));border:1.5px solid #E0B44C}
+.rv-tot span{font:700 13px var(--sans);color:#E8ECF3;text-transform:uppercase;letter-spacing:.05em}
+.rv-tot b{font:800 28px/1 var(--mono);color:#FFE37A}
+.walk-sum-dest{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(201,160,90,.4);margin:10px 0}
+.walk-sum-dest b{color:#FFE7A8}
+.walk-sum-evs{list-style:none;padding:0;margin:10px 0;display:grid;gap:6px}
+.walk-sum-evs li{padding:8px 11px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);font-size:13.5px;line-height:1.4}
+.walk-sum-rews{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 2px}
+.walk-sum-rews span{padding:5px 12px;border-radius:999px;font:700 13px var(--mono);background:rgba(76,195,138,.14);border:1px solid rgba(76,195,138,.4);color:#8FE8B8}
+.walk-sum-rews span.coins{background:rgba(245,197,66,.15);border-color:rgba(245,197,66,.45);color:#FFE37A}
+/* controles de câmera unificados e coluna direita alinhada */
+#hud-cam{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:4px;padding:4px;border-radius:12px;
+  background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:1.5px solid rgba(201,160,90,.72);box-shadow:0 6px 18px rgba(0,0,0,.45)}
+#hud-cam .cam-btn{height:32px;min-width:34px;padding:0 9px;border-radius:8px;border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);color:#F3DFA8;font:700 14px/1 var(--sans);box-shadow:none}
+#hud-cam .cam-btn.wide{font-size:12px}
+#hud-cam .cam-btn:hover{background:rgba(245,197,66,.18);border-color:#F5C542;color:#FFF}
+@media (min-width:761px){
+  #pk-dock{bottom:calc(58px + env(safe-area-inset-bottom,0px))}
+  #race-dock{bottom:calc(114px + env(safe-area-inset-bottom,0px));width:228px}
+}
+@media (max-width:760px){#hud-cam{display:none}}
+.hx-moeda{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;color:#FFE37A;font:700 13px/1 var(--mono)}
+.hx-moeda:hover{filter:brightness(1.15)}
+.hx-rb{position:relative}
+.hx-rb .mb{position:absolute;top:-6px;right:-6px;min-width:17px;padding:2px 4px;font-size:10px}
+/* ---------- Telas e menu mais compactos e organizados (body.ui-comp) ---------- */
+.menu-search{position:relative;margin-bottom:4px}
+.menu-search input{min-height:34px;height:34px;padding:0 28px 0 10px;font-size:12.5px;border-radius:8px;background:rgba(10,15,24,.75);border:1px solid rgba(201,160,90,.4)}
+.menu-search button{all:unset;cursor:pointer;position:absolute;right:6px;top:50%;transform:translateY(-50%);width:20px;height:20px;text-align:center;color:#9FB0C7;font-size:15px}
+#game.dock-min .menu-search{display:none}
+.win-res{display:flex;align-items:center;gap:6px;margin-left:auto;margin-right:4px;flex-wrap:wrap}
+.win-res .pill{min-height:26px;padding:0 9px;font-size:12px;background:rgba(10,15,22,.72)}
+.wgrp-h{font:800 10.5px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:#C9A05A;padding:8px 8px 3px;opacity:.9}
+.wgrp-h:first-child{padding-top:2px}
+.wt-more{display:none}
+body.ui-comp #game{--dock:308px}
+body.ui-comp #game.dock-min{--dock:66px}
+@media (min-width:761px){
+  body.ui-comp #hud-player{margin:8px 0 2px;padding:9px 10px;gap:7px}
+  body.ui-comp .pc-av{width:50px;height:50px}
+  body.ui-comp .dock-sec{margin:7px 0 0;padding:9px 10px}
+  body.ui-comp .menu-sec{padding:9px!important}
+  body.ui-comp .menu-head{padding:0 2px 8px;margin-bottom:6px}
+  body.ui-comp .menu-title{font-size:14.5px}
+  body.ui-comp #hud-menu{gap:5px}
+  body.ui-comp .menu-fast{grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:2px}
+  body.ui-comp .mf-btn{min-height:46px;padding:4px 3px;font-size:11.5px;border-radius:8px}
+  body.ui-comp .mf-ic{font-size:18px}
+  body.ui-comp .mg-btn{margin:3px 0 0;padding:5px 3px;font-size:11px}
+  body.ui-comp .mg-list{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  body.ui-comp #game .mg-list .menu-btn{min-height:34px;padding:0 7px;gap:6px;font-size:12px;border-radius:7px}
+  body.ui-comp #game .mg-list .menu-btn span:not(.me){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.ui-comp #game .menu-btn .me{width:18px;font-size:14.5px}
+  body.ui-comp #game .mg-list .mb{min-width:18px;padding:2px 5px;font-size:9.5px}
+  body.ui-comp #game.dock-min .mg-list{grid-template-columns:1fr}
+  body.ui-comp #game.dock-min .pc-av{width:42px;height:42px}
+  body.ui-comp #hx-chat .hx-chat-body{height:112px;padding:6px 10px;font-size:13px}
+  body.ui-comp #hx-player{padding:5px 12px 5px 5px;gap:10px}
+  body.ui-comp .hx-av{width:46px;height:46px}
+  body.ui-comp .hx-rb{width:37px;height:37px;font-size:18px}
+  /* janelas compactas no computador */
+  body.ui-comp .win-bg{padding:14px}
+  body.ui-comp .win:not(.win-vila){width:min(1260px,96vw);height:min(92vh,900px);grid-template-columns:182px minmax(0,1fr)}
+  body.ui-comp .win-head{padding:8px 14px 8px 16px}
+  body.ui-comp .win-head h2{font-size:18.5px}
+  body.ui-comp .win-tabs{padding:8px 7px;gap:2px}
+  body.ui-comp .win-tabs button{display:flex;align-items:center;gap:6px;min-height:31px;padding:0 8px;font-size:12.5px;border-radius:7px}
+  body.ui-comp .win-tabs button .wt-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  body.ui-comp .win-tabs button .mb{min-width:17px;padding:2px 5px;font-size:9.5px}
+  body.ui-comp .win-body{padding:16px 18px}
+  body.ui-comp .panel{padding:14px 16px}
+  body.ui-comp .panel.lo{padding:12px 14px}
+  body.ui-comp .tabs{margin:10px 0;gap:6px}
+  body.ui-comp .tabs button{min-height:32px;padding:0 12px;font-size:13px}
+}
+@media (max-width:760px){
+  body.ui-comp .win-head{padding:calc(7px + env(safe-area-inset-top,0px)) 10px 7px 12px;gap:6px}
+  body.ui-comp .win-head h2{font-size:16.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.ui-comp .win-res .pill:not(.coins){display:none}
+  body.ui-comp .win-tabs{padding:5px 8px;gap:4px;align-items:center}
+  body.ui-comp .wgrp-h{display:none}
+  body.ui-comp .win-tabs:not(.wt-all) button.wt-other{display:none}
+  body.ui-comp .wt-more{display:inline-flex!important;align-items:center;gap:4px;min-height:32px!important;padding:0 10px!important;
+    border:1px solid rgba(201,160,90,.55)!important;border-radius:999px!important;background:rgba(255,255,255,.06)!important;color:#FFE7A8!important;font-size:12px!important}
+  body.ui-comp .win-tabs button{min-height:32px;padding:0 10px;font-size:12.5px;display:inline-flex;align-items:center;gap:5px}
+  body.ui-comp .win-body{padding:12px 10px calc(20px + env(safe-area-inset-bottom,0px))}
+  body.ui-comp .mg-list{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  body.ui-comp #game .mg-list .menu-btn{min-height:42px;padding:0 8px;font-size:13px;gap:6px}
+  body.ui-comp #game .mg-list .menu-btn span:not(.me){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.ui-comp #hud-action{bottom:calc(52px + env(safe-area-inset-bottom,0px));padding:6px 10px}
+  body.ui-comp .act-mini .btn{min-height:36px;font-size:13px}
+  .m-coin-chip{display:inline-flex;align-items:center;gap:4px;flex:none;min-height:34px;padding:0 9px;border-radius:999px;
+    border:1px solid rgba(245,197,66,.55);background:rgba(20,16,8,.7);color:#FFE37A;font:700 12px/1 var(--mono);cursor:pointer}
+}
+@media (min-width:761px){.m-coin-chip{display:none}}
 </style>
 </head>
 <body>
@@ -3907,40 +4072,51 @@ async function buildTileArt() {
   // pintura
   const cv = document.createElement("canvas"); cv.width = CW * T; cv.height = CH * T;
   const g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
-  const [gc, gr] = PIPO_OBJ.grama, novo = mapaNovoOn();
+  const [gc, gr] = PIPO_OBJ.grama, novo = mapaNovoOn(), vivo = tabVivoOn();
   if (novo) {
-    // CHÃO PINTADO (arquivo 92): em vez de quadradinhos repetidos, uma cor por célula (grama, grama escura, areia,
-    // terra) esticada com suavização, o que mistura as regiões sem degrau; por cima, manchas grandes e grão fino
-    // de luz e sombra, e detalhes soltos (tufos, flores, pedrinhas). Arte nossa, por código. A cor da grama é a
-    // média do tile de grama da Pipoya, para as bordas da água, das florestas e das montanhas casarem com o chão.
+    // CHÃO PINTADO (arquivo 92; enriquecido por bioma no 124): uma cor por célula misturada sem degrau,
+    // com paleta própria por região, sombra de relevo perto de matas/montanhas e luz quente nas vilas/castelo.
     const t1 = document.createElement("canvas"); t1.width = t1.height = 1;
     const tg = t1.getContext("2d"); tg.drawImage(obj, gc * T, gr * T, T, T, 0, 0, 1, 1);
     const gm = tg.getImageData(0, 0, 1, 1).data, grama = [gm[0], gm[1], gm[2]];
     const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
-    const escuraC = mix(grama, [34, 92, 44], .5), areiaC = [228, 208, 152], terraC = [146, 132, 94], gasta = mix(grama, [196, 192, 112], .3);
+    const escuraC = mix(grama, [30, 88, 42], .52), areiaC = vivo ? [236, 214, 158] : [228, 208, 152],
+      areiaMolhada = [196, 170, 118], terraC = [146, 132, 94], gasta = mix(grama, [204, 196, 118], .34);
+    const regTint = rn => {
+      if (!vivo) return grama;
+      if (/Bosque|Floresta/.test(rn)) return mix(grama, [42, 132, 62], .24);
+      if (/Montanha|Desfiladeiro|Trovão|Caverna|Ravina/.test(rn)) return mix(grama, [92, 122, 104], .25);
+      if (/Planalto|Jardins|Estrada|Castelo|Mosteiro|Ventos|Cidade/.test(rn)) return mix(grama, [144, 174, 74], .22);
+      if (/Pântano|Lamaçal|Sombras|Cratera/.test(rn)) return mix(grama, [68, 84, 50], .34);
+      return grama;
+    };
     const c1 = document.createElement("canvas"); c1.width = CW; c1.height = CH; const g1 = c1.getContext("2d");
-    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { const i = idx(x, y);
-      let c = sand[i] ? areiaC : dirt[i] ? terraC : dark[i] ? escuraC : grama;
-      if (!sand[i] && !dirt[i] && pd[i] <= 1) c = mix(c, gasta, .55);          // grama mais clara e pisada perto do caminho
-      g1.fillStyle = `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`; g1.fillRect(x, y, 1, 1); }
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) {
+      const i = idx(x, y), rn = regNames[reg[i]] || "";
+      const nearWater = vivo && ((x > 0 && water[i - 1]) || (x + 1 < CW && water[i + 1]) || (y > 0 && water[i - CW]) || (y + 1 < CH && water[i + CW]));
+      let c = sand[i] ? (nearWater ? areiaMolhada : areiaC) : dirt[i] ? terraC : dark[i] ? mix(regTint(rn), escuraC, .65) : regTint(rn);
+      if (!sand[i] && !dirt[i] && pd[i] <= 1) c = mix(c, gasta, .52);          // grama mais clara perto da estrada
+      if (vivo && (forest[i] || mount[i] || rocks[i])) c = mix(c, [24, 46, 28], .22);
+      g1.fillStyle = `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`; g1.fillRect(x, y, 1, 1);
+    }
     const K = 8, W2 = CW * K, H2 = CH * K, c2 = document.createElement("canvas"); c2.width = W2; c2.height = H2;
     const g2 = c2.getContext("2d"); g2.imageSmoothingEnabled = true; g2.imageSmoothingQuality = "high"; g2.drawImage(c1, 0, 0, W2, H2);
     const im = g2.getImageData(0, 0, W2, H2), px = im.data, grao = mulberry(9151);
     for (let y = 0, p = 0; y < H2; y++) for (let x = 0; x < W2; x++, p += 4) {
-      const f = 1 + (nA(x / 46, y / 46, 3) - .5) * .2 + (nC(x / 9, y / 9, 2) - .5) * .1 + (grao() - .5) * .05;
+      const f = 1 + (nA(x / 46, y / 46, 3) - .5) * .22 + (nC(x / 9, y / 9, 2) - .5) * .1 + (grao() - .5) * .045;
       px[p] = Math.min(255, px[p] * f); px[p + 1] = Math.min(255, px[p + 1] * f); px[p + 2] = Math.min(255, px[p + 2] * f);
     }
     g2.putImageData(im, 0, 0);
     g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high"; g.drawImage(c2, 0, 0, CW * T, CH * T); g.imageSmoothingEnabled = false;
-    // detalhes soltos
-    const det = mulberry(5521), flores = ["#F4F1EA", "#FFD23F", "#F28AB0", "#B58CF0"];
+    // detalhes soltos (tufos de capim, florzinhas, conchas e pedrinhas)
+    const det = mulberry(5521), flores = ["#F7F4EC", "#FFD23F", "#F48FB1", "#B39DDB", "#7FD8FF"];
     for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { const i = idx(x, y); if (water[i]) continue;
-      const n = sand[i] || dirt[i] ? 2 : 4;
+      const n = sand[i] || dirt[i] ? 2 : vivo ? 5 : 4;
       for (let k = 0; k < n; k++) { const fx = x * T + det() * T, fy = y * T + det() * T, r = det();
-        if (sand[i]) { g.fillStyle = r < .5 ? "rgba(150,120,70,.35)" : "rgba(255,250,225,.5)"; g.fillRect(fx, fy, 2, 2); }
+        if (sand[i]) { g.fillStyle = r < .45 ? "rgba(150,120,70,.35)" : r < .88 ? "rgba(255,250,225,.55)" : "rgba(244,164,146,.55)"; g.fillRect(fx, fy, 2, 2); }
         else if (dirt[i]) { g.fillStyle = r < .6 ? "rgba(60,50,30,.3)" : "rgba(200,190,150,.3)"; g.fillRect(fx, fy, 3, 2); }
-        else if (r < .06 && pd[i] > 0) { g.fillStyle = "rgba(30,70,30,.55)"; g.fillRect(fx, fy + 2, 1, 3); g.fillStyle = flores[(det() * 4) | 0]; g.fillRect(fx - 1, fy, 3, 3); }
-        else { g.fillStyle = r < .55 ? "rgba(20,70,30,.28)" : "rgba(210,240,150,.3)"; g.fillRect(fx, fy, 1, 4); g.fillRect(fx + 2, fy + 1, 1, 3); } }
+        else if (r < (vivo && pd[i] === 1 ? .13 : .065) && pd[i] > 0) { g.fillStyle = "rgba(30,70,30,.55)"; g.fillRect(fx, fy + 2, 1, 3); g.fillStyle = flores[(det() * flores.length) | 0]; g.fillRect(fx - 1, fy, 3, 3); if (vivo) { g.fillStyle = "#FFF8D6"; g.fillRect(fx, fy + 1, 1, 1); } }
+        else { g.fillStyle = r < .55 ? "rgba(20,70,30,.28)" : "rgba(210,240,150,.32)"; g.fillRect(fx, fy, 1, 4); g.fillRect(fx + 2, fy + 1, 1, 3); } }
     }
   } else for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) g.drawImage(obj, gc * T, gr * T, T, T, x * T, y * T, T, T);
   const auto = (mask, base, img = at, skip = null) => {
@@ -3972,55 +4148,128 @@ async function buildTileArt() {
   sprites.sort((a, b) => a.bottom - b.bottom);
   for (const s of sprites) {
     const [c, r, w, h] = PIPO_OBJ[s.key];
+    if (vivo) {
+      g.fillStyle = "rgba(12,24,14,.26)";
+      g.beginPath(); g.ellipse(s.x + w * T * s.s / 2, s.bottom - 2, w * T * s.s * .44, Math.max(4, h * 3 * s.s), 0, 0, Math.PI * 2); g.fill();
+    }
     g.drawImage(obj, c * T, r * T, w * T, h * T, s.x, s.y, w * T * s.s, h * T * s.s);
+    if (vivo && /castelo|vila|mansao|praca|torre|tenda|templo/.test(s.key)) {
+      const cx = s.x + w * T * s.s / 2, cy = s.y + h * T * s.s * .58, rad = Math.max(w, h) * T * s.s * .75;
+      const lg = g.createRadialGradient(cx, cy, 2, cx, cy, rad);
+      lg.addColorStop(0, "rgba(255,224,140,.22)"); lg.addColorStop(1, "rgba(255,224,140,0)");
+      g.fillStyle = lg; g.beginPath(); g.arc(cx, cy, rad, 0, Math.PI * 2); g.fill();
+    }
   }
   return cv;
 }
 // amplia a arte para o tamanho do mundo e desenha placas e casas por cima
-// ---------- acabamento do mapa (pedido do dono em 10/11/2026): trilha bem marcada ligando as casas, luz mais
-// suave nas bordas e moldura; o mar em volta é desenhado no drawWorld. Só desenho: o tabuleiro é o mesmo.
-// Liga/desliga em S.cfg.visual.mapa_novo (Ajustes do jogo).
+// ---------- acabamento do mapa (arquivo 92; renovado no 124): trilhas em curvas suaves, peças 3D e efeitos vivos ----------
 const mapaNovoOn = () => S.cfg?.visual?.mapa_novo !== false;
+const tabVivoOn = () => S.cfg?.visual?.tabuleiro_vivo !== false;
+const telasCompactasOn = () => S.cfg?.visual?.telas_compactas !== false;
+function buildPredMap() {
+  const pred = {};
+  for (const n of S.nodes) for (const t of [n.next_a, n.next_b]) if (t != null && pred[t] == null) pred[t] = n.id;
+  return pred;
+}
+function edgeCurvePts(a, b, pred, dy = 0) {
+  const p0 = (pred && S.nodeById[pred[a.id]]) || a, p3 = S.nodeById[b.next_a] || b;
+  return [a.x + (b.x - p0.x) / 6, a.y + dy + (b.y - p0.y) / 6, b.x - (p3.x - a.x) / 6, b.y + dy - (p3.y - a.y) / 6];
+}
+function evalEdgeCurve(a, b, pred, u) {
+  if (!tabVivoOn()) return { x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u };
+  const [c1x, c1y, c2x, c2y] = edgeCurvePts(a, b, pred, 0), v = 1 - u;
+  return {
+    x: v * v * v * a.x + 3 * v * v * u * c1x + 3 * v * u * u * c2x + u * u * u * b.x,
+    y: v * v * v * a.y + 3 * v * v * u * c1y + 3 * v * u * u * c2y + u * u * u * b.y
+  };
+}
 function mapaTrilha(g) {
-  const fora = k => k === "cacada" || k === "alvo";
-  const arestas = [];
-  for (const n of S.nodes) for (const t of [n.next_a, n.next_b]) { const m = t == null ? null : S.nodeById[t]; if (m && !fora(n.kind) && !fora(m.kind)) arestas.push([n, m, n.branch === "arriscado" || m.branch === "arriscado"]); }
+  const fora = k => k === "cacada" || k === "alvo", vivo = tabVivoOn(), pred = vivo ? buildPredMap() : null;
+  const arestas = [], cacadaArestas = [];
+  for (const n of S.nodes) for (const t of [n.next_a, n.next_b]) {
+    const m = t == null ? null : S.nodeById[t]; if (!m) continue;
+    if (fora(n.kind) || fora(m.kind)) cacadaArestas.push([n, m]);
+    else arestas.push([n, m, n.branch === "arriscado" || m.branch === "arriscado"]);
+  }
   g.save(); g.lineCap = "round"; g.lineJoin = "round";
-  const passa = (w, cor, corRisco, dash) => { for (const risco of [false, true]) { g.beginPath(); for (const [a, b, r] of arestas) if (r === risco) { g.moveTo(a.x, a.y + 2); g.lineTo(b.x, b.y + 2); } g.lineWidth = w; g.strokeStyle = risco ? corRisco : cor; g.setLineDash(dash || []); g.stroke(); } };
-  passa(19, "rgba(30,20,10,.35)", "rgba(30,14,10,.4)");      // sombra
-  passa(15, "#4A3418", "#3E2212");                             // contorno
-  passa(11, "#E6D09A", "#C98F62");                             // chão da trilha
-  passa(7, "#F3E3B8", "#D9A678");                              // miolo mais claro
-  passa(1.6, "rgba(110,80,40,.5)", "rgba(90,40,20,.55)", [2, 9]);   // pontilhado do meio
+  const traca = (a, b, dy) => {
+    g.moveTo(a.x, a.y + dy);
+    if (vivo) { const [c1x, c1y, c2x, c2y] = edgeCurvePts(a, b, pred, dy); g.bezierCurveTo(c1x, c1y, c2x, c2y, b.x, b.y + dy); }
+    else g.lineTo(b.x, b.y + dy);
+  };
+  const passa = (w, cor, corRisco, dash, dy = 2) => {
+    for (const risco of [false, true]) {
+      g.beginPath();
+      for (const [a, b, r] of arestas) if (r === risco) traca(a, b, dy);
+      g.lineWidth = w; g.strokeStyle = risco ? corRisco : cor; g.setLineDash(dash || []); g.stroke();
+    }
+  };
+  if (vivo) {
+    passa(23, "rgba(18,14,8,.36)", "rgba(28,10,8,.42)", null, 3.5);   // sombra macia
+    passa(17.5, "#3C2914", "#3A1C12", null, 2);                       // meio-fio escuro
+    passa(14.5, "#C7AA74", "#B26B47", null, 1.5);                     // ombro de pedra / terra queimada
+    passa(10.5, "#F2E2BA", "#D8956B", null, 1);                       // leito da estrada
+    passa(5.5, "rgba(255,250,235,.55)", "rgba(242,186,144,.38)", null, .5); // brilho central
+    passa(1.8, "rgba(116,82,38,.4)", "rgba(82,30,18,.48)", [3, 10], 1);
+    if (cacadaArestas.length) {
+      g.beginPath(); for (const [a, b] of cacadaArestas) traca(a, b, 1);
+      g.lineWidth = 11; g.strokeStyle = "rgba(94,53,177,.32)"; g.setLineDash([]); g.stroke();
+      g.lineWidth = 4; g.strokeStyle = "#CE93D8"; g.setLineDash([4, 8]); g.stroke();
+    }
+  } else {
+    passa(19, "rgba(30,20,10,.35)", "rgba(30,14,10,.4)");
+    passa(15, "#4A3418", "#3E2212");
+    passa(11, "#E6D09A", "#C98F62");
+    passa(7, "#F3E3B8", "#D9A678");
+    passa(1.6, "rgba(110,80,40,.5)", "rgba(90,40,20,.55)", [2, 9]);
+  }
   g.setLineDash([]); g.restore();
 }
 function mapaAcabamento(g) {
   if (!mapaNovoOn()) return;
-  // luz: centro normal, bordas um pouco mais escuras (dá profundidade)
-  const v = g.createRadialGradient(MAP_W / 2, MAP_H / 2, Math.min(MAP_W, MAP_H) * 0.35, MAP_W / 2, MAP_H / 2, Math.max(MAP_W, MAP_H) * 0.72);
-  v.addColorStop(0, "rgba(10,24,12,0)"); v.addColorStop(1, "rgba(10,24,12,.34)");
+  const vivo = tabVivoOn();
+  const v = g.createRadialGradient(MAP_W / 2, MAP_H / 2, Math.min(MAP_W, MAP_H) * (vivo ? 0.38 : 0.35), MAP_W / 2, MAP_H / 2, Math.max(MAP_W, MAP_H) * 0.74);
+  v.addColorStop(0, "rgba(10,24,12,0)"); v.addColorStop(1, vivo ? "rgba(8,20,14,.30)" : "rgba(10,24,12,.34)");
   g.fillStyle = v; g.fillRect(0, 0, MAP_W, MAP_H);
-  // um toque quente por cima de tudo, para as cores ficarem mais vivas
-  g.save(); g.globalCompositeOperation = "soft-light"; g.fillStyle = "rgba(255,214,140,.22)"; g.fillRect(0, 0, MAP_W, MAP_H); g.restore();
+  g.save(); g.globalCompositeOperation = "soft-light"; g.fillStyle = vivo ? "rgba(255,220,152,.24)" : "rgba(255,214,140,.22)"; g.fillRect(0, 0, MAP_W, MAP_H); g.restore();
   mapaTrilha(g);
 }
-// mar em volta do mapa (padrão de ondas, arte nossa) e moldura de areia
-function mapaMar(ctx) {
-  if (!W.marPat) { const c = document.createElement("canvas"); c.width = 96; c.height = 64; const g = c.getContext("2d");
-    const gr = g.createLinearGradient(0, 0, 0, 64); gr.addColorStop(0, "#2377B4"); gr.addColorStop(1, "#1C679F"); g.fillStyle = gr; g.fillRect(0, 0, 96, 64);
-    g.strokeStyle = "rgba(255,255,255,.16)"; g.lineWidth = 2; g.lineCap = "round";
-    for (const [x, y] of [[10, 16], [58, 34], [26, 52], [80, 8]]) { g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 7, y - 6, x + 14, y); g.quadraticCurveTo(x + 21, y + 6, x + 28, y); g.stroke(); }
-    W.marPat = ctx.createPattern(c, "repeat"); }
-  const z = W.cam.z;
-  ctx.fillStyle = W.marPat; ctx.fillRect(W.cam.x - 8, W.cam.y - 8, W.w / z + 16, W.h / z + 16);
-  // sombra do mapa na água, espuma e faixa de areia
-  ctx.fillStyle = "rgba(6,30,52,.35)"; ctx.fillRect(-10, -4, MAP_W + 30, MAP_H + 26);
-  ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 22; ctx.lineJoin = "round"; ctx.strokeRect(-2, -2, MAP_W + 4, MAP_H + 4);
-  ctx.strokeStyle = "#EAD9A6"; ctx.lineWidth = 12; ctx.strokeRect(-2, -2, MAP_W + 4, MAP_H + 4);
+// mar em volta do mapa (padrão de ondas vivo, espuma respirando e faixa de areia dourada)
+function mapaMar(ctx, t = 0) {
+  if (!W.marPat) {
+    const c = document.createElement("canvas"); c.width = 120; c.height = 80; const g = c.getContext("2d");
+    const gr = g.createLinearGradient(0, 0, 0, 80); gr.addColorStop(0, "#1E78B6"); gr.addColorStop(.5, "#196CA6"); gr.addColorStop(1, "#1E78B6");
+    g.fillStyle = gr; g.fillRect(0, 0, 120, 80);
+    g.strokeStyle = "rgba(255,255,255,.18)"; g.lineWidth = 2; g.lineCap = "round";
+    for (const [x, y] of [[10, 18], [66, 38], [28, 62], [90, 12]]) {
+      g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 8, y - 6, x + 16, y); g.quadraticCurveTo(x + 24, y + 6, x + 32, y); g.stroke();
+    }
+    g.fillStyle = "rgba(170,235,255,.14)";
+    for (const [x, y] of [[44, 24], [102, 54], [16, 44]]) { g.beginPath(); g.arc(x, y, 2.2, 0, Math.PI * 2); g.fill(); }
+    W.marPat = ctx.createPattern(c, "repeat");
+  }
+  const z = W.cam.z, vivo = tabVivoOn() && !reduceMotion();
+  const ox = vivo ? (t / 95) % 120 : 0, oy = vivo ? Math.sin(t / 1400) * 6 : 0;
+  ctx.save(); ctx.translate(ox, oy);
+  ctx.fillStyle = W.marPat; ctx.fillRect(W.cam.x - 140 - ox, W.cam.y - 100 - oy, W.w / z + 280, W.h / z + 200);
+  ctx.restore();
+  // água rasa turquesa, sombra costeira, espuma viva e faixa de areia
+  if (tabVivoOn()) {
+    const foam = vivo ? 24 + Math.sin(t / 720) * 3.5 : 24;
+    ctx.strokeStyle = "rgba(64,196,224,.34)"; ctx.lineWidth = 38; ctx.lineJoin = "round"; ctx.strokeRect(-6, -6, MAP_W + 12, MAP_H + 12);
+    ctx.fillStyle = "rgba(6,30,52,.32)"; ctx.fillRect(-10, -4, MAP_W + 30, MAP_H + 26);
+    ctx.strokeStyle = "rgba(255,255,255,.68)"; ctx.lineWidth = foam; ctx.lineJoin = "round"; ctx.strokeRect(-2, -2, MAP_W + 4, MAP_H + 4);
+    ctx.strokeStyle = "#EFE0B2"; ctx.lineWidth = 13; ctx.strokeRect(-2, -2, MAP_W + 4, MAP_H + 4);
+  } else {
+    ctx.fillStyle = "rgba(6,30,52,.35)"; ctx.fillRect(-10, -4, MAP_W + 30, MAP_H + 26);
+    ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 22; ctx.lineJoin = "round"; ctx.strokeRect(-2, -2, MAP_W + 4, MAP_H + 4);
+    ctx.strokeStyle = "#EAD9A6"; ctx.lineWidth = 12; ctx.strokeRect(-2, -2, MAP_W + 4, MAP_H + 4);
+  }
 }
 function mapaMoldura(ctx) {
-  ctx.strokeStyle = "#3A2410"; ctx.lineWidth = 3; ctx.lineJoin = "round"; ctx.strokeRect(-1.5, -1.5, MAP_W + 3, MAP_H + 3);
-  ctx.strokeStyle = "rgba(255,244,210,.6)"; ctx.lineWidth = 1.5; ctx.strokeRect(2, 2, MAP_W - 4, MAP_H - 4);
+  ctx.strokeStyle = "#3A2410"; ctx.lineWidth = 3.5; ctx.lineJoin = "round"; ctx.strokeRect(-1.5, -1.5, MAP_W + 3, MAP_H + 3);
+  ctx.strokeStyle = "rgba(255,244,210,.7)"; ctx.lineWidth = 1.5; ctx.strokeRect(2, 2, MAP_W - 4, MAP_H - 4);
 }
 function composeWorld(art) {
   const cv = document.createElement("canvas"); cv.width = MAP_W; cv.height = MAP_H;
@@ -4034,11 +4283,11 @@ function composeWorld(art) {
   return cv;
 }
 // a arte do mapa fica guardada no aparelho: só é desenhada de novo quando o tabuleiro ou esta versão mudam
-const MAP_ART_VERSION = "mapa-pintado-6";   // 2: casas novas (arquivos 42 e 43); 4: obstáculos das HMs (arquivo 47)
+const MAP_ART_VERSION = "mapa-pintado-7";   // 7: biomas ricos, trilhas curvas e peças em relevo (arquivo 124)
 function mapArtKey() {
   let h = 0;
   for (const n of S.nodes) h = (Math.imul(h, 31) + n.id * 7 + n.x * 13 + n.y * 17 + (n.next_a ?? -1) * 3 + (n.next_b ?? -1) * 5 + n.kind.length + n.region.length + (n.hm ? n.hm.length * 11 : 0)) | 0;
-  return `${MAP_ART_VERSION}|${S.nodes.length}|${h}|${JSON.stringify(S.cfg.map_meta || {})}`;
+  return `${MAP_ART_VERSION}|${tabVivoOn() ? 1 : 0}|${S.nodes.length}|${h}|${JSON.stringify(S.cfg.map_meta || {})}`;
 }
 function mapDB() {
   return new Promise((res, rej) => { const r = indexedDB.open("pokegames", 1); r.onupgradeneeded = () => r.result.createObjectStore("arte"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
@@ -4066,24 +4315,34 @@ async function buildWorld() {
   return composeWorld(art);
 }
 function mapRibbon(g, txt, x, y, size, sub, subCol) {
-  g.font = `800 ${size}px Inter, system-ui, sans-serif`;
-  const tw = g.measureText(txt).width, h = Math.round(size * 1.75), w = tw + size * 1.5, x0 = Math.round(x - w / 2), y0 = Math.round(y - h / 2), t = Math.round(h * .5);
-  g.lineJoin = "round"; g.lineWidth = 2.5; g.strokeStyle = "#3A2410";
+  const vivo = tabVivoOn(), big = size >= 18;
+  g.save();
+  g.font = vivo && big ? `800 ${size}px Cinzel, Georgia, serif` : `800 ${size}px Inter, system-ui, sans-serif`;
+  const tw = g.measureText(txt).width, h = Math.round(size * (vivo ? 1.82 : 1.75)), w = tw + size * (vivo ? 1.85 : 1.5),
+    x0 = Math.round(x - w / 2), y0 = Math.round(y - h / 2), t = Math.round(h * .52);
+  if (vivo) { g.fillStyle = "rgba(10,14,8,.34)"; roundRect(g, x0 - 4, y0 + 5, w + 8, h + 3, 6); g.fill(); }
+  g.lineJoin = "round"; g.lineWidth = 2.5; g.strokeStyle = "#34200E";
   for (const s of [-1, 1]) {
     const ex = s < 0 ? x0 + 4 : x0 + w - 4;
     g.beginPath(); g.moveTo(ex, y0 + 5); g.lineTo(ex + s * t, y0 + 5); g.lineTo(ex + s * t * .55, y0 + 5 + h / 2); g.lineTo(ex + s * t, y0 + h + 5); g.lineTo(ex, y0 + h + 5); g.closePath();
-    g.fillStyle = "#A8834A"; g.fill(); g.stroke();
+    g.fillStyle = vivo ? "#9C753A" : "#A8834A"; g.fill(); g.stroke();
   }
-  const gr = g.createLinearGradient(0, y0, 0, y0 + h); gr.addColorStop(0, "#F6E8C2"); gr.addColorStop(1, "#D8BE86");
-  roundRect(g, x0, y0, w, h, 4); g.fillStyle = gr; g.fill(); g.stroke();
-  g.strokeStyle = "rgba(255,255,255,.5)"; g.lineWidth = 1; roundRect(g, x0 + 3, y0 + 3, w - 6, h - 6, 2); g.stroke();
-  g.fillStyle = "#3A2410"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(txt, x, y0 + h / 2 + 1);
+  const gr = g.createLinearGradient(0, y0, 0, y0 + h);
+  gr.addColorStop(0, vivo ? "#FBF0D2" : "#F6E8C2"); gr.addColorStop(.55, "#EDD7A4"); gr.addColorStop(1, vivo ? "#CFAF72" : "#D8BE86");
+  roundRect(g, x0, y0, w, h, vivo ? 6 : 4); g.fillStyle = gr; g.fill(); g.stroke();
+  g.strokeStyle = vivo ? "rgba(120,84,32,.48)" : "rgba(255,255,255,.5)"; g.lineWidth = 1.2; roundRect(g, x0 + 3, y0 + 3, w - 6, h - 6, 3); g.stroke();
+  if (vivo) {
+    g.fillStyle = "#C99A3A";
+    for (const rx of [x0 + 8, x0 + w - 8]) { g.beginPath(); g.arc(rx, y0 + h / 2, 2.2, 0, Math.PI * 2); g.fill(); }
+  }
+  g.fillStyle = "#2E1B0B"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(txt, x, y0 + h / 2 + 1);
   if (sub) {
-    g.font = "700 11px Inter, system-ui, sans-serif"; const sw = g.measureText(sub).width + 14;
-    roundRect(g, Math.round(x - sw / 2), y0 + h + 3, sw, 17, 8); g.fillStyle = subCol; g.fill(); g.strokeStyle = "#1B1626"; g.lineWidth = 1.5; g.stroke();
-    g.fillStyle = "#fff"; g.fillText(sub, x, y0 + h + 12);
+    const label = vivo ? (subCol === "#2E7D4A" ? "🛡️ " + sub : "🔥 " + sub) : sub;
+    g.font = "700 11px Inter, system-ui, sans-serif"; const sw = g.measureText(label).width + 16;
+    roundRect(g, Math.round(x - sw / 2), y0 + h + 3, sw, 18, 9); g.fillStyle = subCol; g.fill(); g.strokeStyle = "#1B1626"; g.lineWidth = 1.6; g.stroke();
+    g.fillStyle = "#fff"; g.fillText(label, x, y0 + h + 12.5);
   }
-  g.textBaseline = "alphabetic";
+  g.restore();
 }
 function drawRegionLabels(g) {
   (S.cfg.map_meta?.labels || [["Floresta", 1216, 90], ["Praia", 1216, 640], ["Montanha", 1216, 1190], ["Planalto Real", 1216, 1740]]).forEach(([r, x, y]) => mapRibbon(g, r, x, y, 22));
@@ -4120,7 +4379,6 @@ function drawHmMarks(g) {
   for (const n of S.nodes) {
     const mk = n.hm && HM_MARK[n.hm]; if (!mk) continue;
     const sz = 4, w = 13 * sz, h = mk.rows.length * sz;
-    // escolhe o lado com mais espaço livre (longe das outras casas), para o desenho não ficar escondido
     const near = S.nodes.filter(o => o !== n && Math.abs(o.x - n.x) < 140 && Math.abs(o.y - n.y) < 140);
     let best = null, bs = -1;
     for (const [dx, dy] of [[0, -40], [36, -30], [-36, -30], [46, -4], [-46, -4], [30, 26], [-30, 26], [0, 34]]) {
@@ -4133,74 +4391,198 @@ function drawHmMarks(g) {
     drawSprite(g, { s: sz, rows: mk.rows, pal: mk.pal }, x0, y0);
   }
 }
+// ícones vetoriais nítidos para as peças especiais do tabuleiro (arquivo 124)
+function drawNodeIconHD(g, kind, x, y, r, angle) {
+  g.save(); g.translate(x, y); g.lineCap = "round"; g.lineJoin = "round";
+  const pass = (fn) => {
+    g.save(); g.translate(0, 1.4); g.strokeStyle = "rgba(18,12,24,.55)"; g.fillStyle = "rgba(18,12,24,.55)"; fn(true); g.restore();
+    g.strokeStyle = "#FFF9EA"; g.fillStyle = "#FFF9EA"; fn(false);
+  };
+  if (kind === "avanco" || kind === "recuo") {
+    g.rotate(angle || 0);
+    pass(() => {
+      g.lineWidth = 2.8;
+      for (const ox of [-3.5, 2.5]) { g.beginPath(); g.moveTo(ox - 3, -5.5); g.lineTo(ox + 3, 0); g.lineTo(ox - 3, 5.5); g.stroke(); }
+    });
+  } else if (kind === "bau") {
+    pass(sh => {
+      roundRect(g, -7.5, -5.5, 15, 11, 2.2); g.fill();
+      if (!sh) { g.fillStyle = "#8C5418"; g.fillRect(-7.5, -1, 15, 2.2); g.fillStyle = "#FFE066"; g.fillRect(-2, -2.2, 4, 4.2); }
+    });
+  } else if (kind === "xp") {
+    pass(() => {
+      g.beginPath();
+      for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? 3.8 : 8.5; i ? g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : g.moveTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+      g.closePath(); g.fill();
+    });
+  } else if (kind === "raio") {
+    pass(sh => {
+      if (!sh) g.fillStyle = "#FFE36E";
+      g.beginPath(); g.moveTo(2, -8.5); g.lineTo(-5.5, 1); g.lineTo(-.5, 1); g.lineTo(-2.5, 8.5); g.lineTo(5.5, -1); g.lineTo(.5, -1); g.closePath(); g.fill();
+    });
+  } else if (kind === "troca") {
+    pass(() => {
+      g.lineWidth = 2.5;
+      g.beginPath(); g.arc(0, 0, 6.5, -.3, Math.PI * .75); g.stroke();
+      g.beginPath(); g.arc(0, 0, 6.5, Math.PI - .3, Math.PI * 1.75); g.stroke();
+      g.beginPath(); g.arc(0, 0, 2.2, 0, Math.PI * 2); g.fill();
+    });
+  } else if (kind === "pagamento") {
+    pass(sh => {
+      if (!sh) g.fillStyle = "#FFF4B8";
+      g.beginPath(); g.arc(0, 0, 7.2, 0, Math.PI * 2); g.fill();
+      if (!sh) { g.fillStyle = "#2E6B3A"; g.font = "900 10.5px Inter, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("$", 0, .6); }
+    });
+  } else if (kind === "carta") {
+    pass(sh => {
+      g.save(); g.rotate(-.12); roundRect(g, -5.5, -7.5, 11, 15, 2); g.fill();
+      if (!sh) { g.fillStyle = "#B85020"; g.font = "900 10px Inter, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("?", 0, .5); }
+      g.restore();
+    });
+  } else if (kind === "mina") {
+    pass(sh => {
+      g.lineWidth = 2.5; g.beginPath(); g.moveTo(-5, 6); g.lineTo(4, -3); g.stroke();
+      g.beginPath(); g.moveTo(-1, -6.5); g.quadraticCurveTo(5, -5, 6.5, 1); g.stroke();
+      if (!sh) g.fillStyle = "#9CF2FF";
+      g.beginPath(); g.moveTo(-6, -1); g.lineTo(-3, -5); g.lineTo(0, -1); g.lineTo(-3, 2); g.closePath(); g.fill();
+    });
+  } else if (kind === "desafio") {
+    pass(sh => {
+      g.lineWidth = 2.2; g.beginPath(); g.arc(0, 0, 7, 0, Math.PI * 2); g.stroke();
+      if (!sh) g.fillStyle = "#FFE37A";
+      g.beginPath(); g.arc(0, 0, 2.8, 0, Math.PI * 2); g.fill();
+    });
+  } else if (kind === "ladrao") {
+    pass(sh => {
+      roundRect(g, -8, -4, 16, 8, 4); g.fill();
+      if (!sh) { g.fillStyle = "#241C30"; g.beginPath(); g.arc(-3.2, 0, 1.8, 0, Math.PI * 2); g.arc(3.2, 0, 1.8, 0, Math.PI * 2); g.fill(); }
+    });
+  } else if (kind === "fonte") {
+    pass(sh => {
+      g.beginPath(); g.arc(0, 0, 7, 0, Math.PI * 2); g.fill();
+      if (!sh) { g.fillStyle = "#1E78B6"; g.fillRect(-7, -1, 14, 2); g.beginPath(); g.arc(0, 0, 2.4, 0, Math.PI * 2); g.fill(); g.fillStyle = "#FFF"; g.beginPath(); g.arc(0, 0, 1.2, 0, Math.PI * 2); g.fill(); }
+    });
+  } else if (kind === "bifurcacao") {
+    pass(() => {
+      g.lineWidth = 2.8;
+      g.beginPath(); g.moveTo(0, 7); g.lineTo(0, 0); g.lineTo(-5.5, -5.5); g.moveTo(0, 0); g.lineTo(5.5, -5.5); g.stroke();
+      g.beginPath(); g.arc(-5.5, -5.5, 1.8, 0, Math.PI * 2); g.arc(5.5, -5.5, 1.8, 0, Math.PI * 2); g.fill();
+    });
+  } else if (kind === "inicio") {
+    pass(sh => {
+      g.lineWidth = 2.4; g.beginPath(); g.moveTo(-4.5, 7.5); g.lineTo(-4.5, -7); g.stroke();
+      if (!sh) g.fillStyle = "#FFF4D6";
+      g.beginPath(); g.moveTo(-4, -7); g.lineTo(6.5, -3.5); g.lineTo(-4, 0); g.closePath(); g.fill();
+    });
+  } else if (kind === "castelo") {
+    pass(sh => {
+      if (!sh) g.fillStyle = "#FFF6D6";
+      g.beginPath(); g.moveTo(-8, 7); g.lineTo(-8, -5); g.lineTo(-4.5, -2); g.lineTo(0, -7.5); g.lineTo(4.5, -2); g.lineTo(8, -5); g.lineTo(8, 7); g.closePath(); g.fill();
+      if (!sh) { g.fillStyle = "#C0392B"; g.beginPath(); g.arc(0, 2, 2, 0, Math.PI * 2); g.fill(); }
+    });
+  }
+  g.restore();
+}
 function drawBoardNodes(g) {
   drawHmMarks(g);
+  const vivo = tabVivoOn();
   const disc = (x, y, r, fill) => { g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fillStyle = fill; g.fill(); };
-  const bad = ["recuo", "raio", "ladrao"];
-  // casa anterior de cada casa (para o Lamaçal apontar para trás no sentido real do caminho)
-  const prev = {};
-  for (const n of S.nodes) for (const t of [n.next_a, n.next_b]) if (t != null && prev[t] == null) prev[t] = n.id;
+  const bad = ["recuo", "raio", "ladrao"], prev = buildPredMap();
+  if (vivo) g.imageSmoothingEnabled = true;
   for (const n of S.nodes) {
     const k = KIND[n.kind];
-    if (n.kind === "cacada" || n.kind === "alvo") {   // arquivo 46: trilha da Caçada (a silhueta é desenhada por cima, em drawHunt)
-      const r = n.kind === "alvo" ? 15 : 10;
-      g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.ellipse(n.x, n.y + 6, r + 1, 5, 0, 0, Math.PI * 2); g.fill();
-      disc(n.x, n.y + 2.5, r, "#2A1E44"); disc(n.x, n.y, r, "#7E57C2"); disc(n.x, n.y - .5, r - 3, n.kind === "alvo" ? "#1B1626" : "#D9C8F5");
+    if (n.kind === "cacada" || n.kind === "alvo") {
+      const r = n.kind === "alvo" ? 16 : 10.5;
+      g.fillStyle = "rgba(0,0,0,.34)"; g.beginPath(); g.ellipse(n.x, n.y + 6, r + 2, 5.5, 0, 0, Math.PI * 2); g.fill();
+      disc(n.x, n.y + 2.5, r, "#24163D"); disc(n.x, n.y, r, "#8E63D9"); disc(n.x, n.y - .5, r - 2.8, n.kind === "alvo" ? "#1B1626" : "#E6D9FC");
       continue;
     }
-    if (n.kind === "treinador") {   // arquivo 45: o treinador fica em pé aqui (drawNpcTrainers)
-      g.fillStyle = "rgba(0,0,0,.28)"; g.beginPath(); g.ellipse(n.x, n.y + 6, 13, 5, 0, 0, Math.PI * 2); g.fill();
-      disc(n.x, n.y + 2.5, 12, "#7A3A14"); disc(n.x, n.y, 12, "#CF6A2A"); disc(n.x, n.y - .5, 9, "#F2C48E");
+    if (n.kind === "treinador") {
+      g.fillStyle = "rgba(0,0,0,.32)"; g.beginPath(); g.ellipse(n.x, n.y + 6.5, 14, 5.5, 0, 0, Math.PI * 2); g.fill();
+      disc(n.x, n.y + 3, 13, "#4A220B"); disc(n.x, n.y, 13, "#D96B27"); disc(n.x, n.y - .5, 9.8, "#F8D29C");
+      g.strokeStyle = "rgba(255,255,255,.55)"; g.lineWidth = 1.3; g.beginPath(); g.arc(n.x, n.y - .5, 11.2, Math.PI * 1.1, Math.PI * 1.75); g.stroke();
       continue;
     }
     if (n.kind === "normal") {
-      g.fillStyle = "rgba(0,0,0,.28)"; g.beginPath(); g.ellipse(n.x, n.y + 6, 12, 4.5, 0, 0, Math.PI * 2); g.fill();
-      disc(n.x, n.y + 2.5, 11, "#5E4A30"); disc(n.x, n.y, 11, "#8C7650"); disc(n.x, n.y - .5, 9, "#E6D7AE");
-      g.fillStyle = "rgba(255,255,255,.55)"; g.fillRect(n.x - 5, n.y - 6, 4, 2); g.fillStyle = "rgba(90,70,40,.35)"; g.fillRect(n.x + 2, n.y + 2, 3, 2);
-      if (n.hm && HM_MARK[n.hm]) {   // arquivo 47: anel da cor da HM (o desenho grande vem antes, em drawHmMarks)
-        g.strokeStyle = "#1E150C"; g.lineWidth = 6; g.beginPath(); g.arc(n.x, n.y, 13, 0, Math.PI * 2); g.stroke();
-        g.strokeStyle = HM_MARK[n.hm].ring; g.lineWidth = 3.5; g.beginPath(); g.arc(n.x, n.y, 13, 0, Math.PI * 2); g.stroke();
+      g.fillStyle = "rgba(0,0,0,.28)"; g.beginPath(); g.ellipse(n.x, n.y + 6, 12.5, 4.8, 0, 0, Math.PI * 2); g.fill();
+      if (vivo) {
+        disc(n.x, n.y + 2.6, 11.4, "#4A3820");
+        const rg = g.createLinearGradient(n.x, n.y - 11, n.x, n.y + 11); rg.addColorStop(0, "#B89D6E"); rg.addColorStop(1, "#7A623E");
+        disc(n.x, n.y, 11.2, rg);
+        const fg = g.createRadialGradient(n.x - 3, n.y - 3.5, 1, n.x, n.y, 9.5); fg.addColorStop(0, "#FBF3DC"); fg.addColorStop(1, "#DEC99A");
+        disc(n.x, n.y - .5, 8.8, fg);
+        g.strokeStyle = "rgba(95,70,35,.28)"; g.lineWidth = 1; g.beginPath(); g.arc(n.x, n.y - .5, 6.2, 0, Math.PI * 2); g.stroke();
+      } else {
+        disc(n.x, n.y + 2.5, 11, "#5E4A30"); disc(n.x, n.y, 11, "#8C7650"); disc(n.x, n.y - .5, 9, "#E6D7AE");
+        g.fillStyle = "rgba(255,255,255,.55)"; g.fillRect(n.x - 5, n.y - 6, 4, 2); g.fillStyle = "rgba(90,70,40,.35)"; g.fillRect(n.x + 2, n.y + 2, 3, 2);
+      }
+      if (n.hm && HM_MARK[n.hm]) {
+        g.strokeStyle = "#1E150C"; g.lineWidth = 6; g.beginPath(); g.arc(n.x, n.y, 13.2, 0, Math.PI * 2); g.stroke();
+        g.strokeStyle = HM_MARK[n.hm].ring; g.lineWidth = 3.5; g.beginPath(); g.arc(n.x, n.y, 13.2, 0, Math.PI * 2); g.stroke();
       }
       continue;
     }
-    const r = n.kind === "bifurcacao" ? 19 : n.kind === "castelo" ? 21 : 16;
-    g.fillStyle = "rgba(0,0,0,.32)"; g.beginPath(); g.ellipse(n.x, n.y + r * .75, r + 4, 6, 0, 0, Math.PI * 2); g.fill();
-    disc(n.x, n.y + 4, r + 3, "#1E150C");
-    disc(n.x, n.y + 3, r + 2, darken(k.cor, .5));
-    disc(n.x, n.y, r + 3, "#1E150C");
-    disc(n.x, n.y, r + 1.5, bad.includes(n.kind) ? "#7A7480" : "#C9A05A");
-    g.strokeStyle = bad.includes(n.kind) ? "#B5B0BA" : "#F3DFA8"; g.lineWidth = 1.5; g.beginPath(); g.arc(n.x, n.y, r + .8, Math.PI * 1.05, Math.PI * 1.7); g.stroke();
+    const r = n.kind === "bifurcacao" ? 19.5 : n.kind === "castelo" ? 22 : 16.5;
+    g.fillStyle = "rgba(0,0,0,.36)"; g.beginPath(); g.ellipse(n.x, n.y + r * .78, r + 4.5, 6.5, 0, 0, Math.PI * 2); g.fill();
+    disc(n.x, n.y + 4.2, r + 3.2, "#1A120A");
+    disc(n.x, n.y + 3, r + 2.2, darken(k.cor, .52));
+    disc(n.x, n.y, r + 3, "#1A120A");
+    if (vivo) {
+      const rim = g.createLinearGradient(n.x - r, n.y - r, n.x + r, n.y + r);
+      if (bad.includes(n.kind)) { rim.addColorStop(0, "#DCE0EA"); rim.addColorStop(.5, "#838A9C"); rim.addColorStop(1, "#434857"); }
+      else { rim.addColorStop(0, "#FFF2BE"); rim.addColorStop(.5, "#D9A94E"); rim.addColorStop(1, "#7D581B"); }
+      disc(n.x, n.y, r + 1.8, rim);
+    } else {
+      disc(n.x, n.y, r + 1.5, bad.includes(n.kind) ? "#7A7480" : "#C9A05A");
+    }
     const gr = g.createRadialGradient(n.x - r * .35, n.y - r * .4, 1, n.x, n.y, r);
-    gr.addColorStop(0, mixWhite(k.cor, .38)); gr.addColorStop(1, darken(k.cor, .18));
+    gr.addColorStop(0, mixWhite(k.cor, vivo ? .42 : .38)); gr.addColorStop(.65, k.cor); gr.addColorStop(1, darken(k.cor, .24));
     disc(n.x, n.y, r - 1.5, gr);
-    g.strokeStyle = "rgba(0,0,0,.22)"; g.lineWidth = 1.5; g.beginPath(); g.arc(n.x, n.y, r - 4, 0, Math.PI * 2); g.stroke();
-    if (n.kind === "troca") { const gl = g.createRadialGradient(n.x, n.y, 2, n.x, n.y, r + 14); gl.addColorStop(0, "rgba(140,200,255,.0)"); gl.addColorStop(.6, "rgba(140,200,255,.0)"); gl.addColorStop(.8, "rgba(140,200,255,.45)"); gl.addColorStop(1, "rgba(140,200,255,0)"); disc(n.x, n.y, r + 14, gl); }
-    if (n.kind === "bifurcacao") drawSprite(g, { s: 3, rows: ["xxxxx.", "xxxxxx", "xxxxx.", "..b...", "..b...", "..b..."], pal: { x: "#B07A45", b: "#5A3A24" } }, n.x + 16, n.y - 36);
-    const ic = ICONS[n.kind];
-    // Vento a favor aponta para a próxima casa e Lamaçal para a anterior, seguindo o caminho (8 direções)
+    g.strokeStyle = "rgba(255,255,255,.38)"; g.lineWidth = 1.6; g.beginPath(); g.arc(n.x, n.y, r - 3.2, Math.PI * 1.08, Math.PI * 1.78); g.stroke();
+    g.strokeStyle = "rgba(0,0,0,.22)"; g.lineWidth = 1.3; g.beginPath(); g.arc(n.x, n.y, r - 1.6, 0, Math.PI * 2); g.stroke();
+    if (n.kind === "troca") { const gl = g.createRadialGradient(n.x, n.y, 2, n.x, n.y, r + 15); gl.addColorStop(0, "rgba(180,140,255,0)"); gl.addColorStop(.65, "rgba(180,140,255,0)"); gl.addColorStop(.82, "rgba(170,215,255,.5)"); gl.addColorStop(1, "rgba(140,200,255,0)"); disc(n.x, n.y, r + 15, gl); }
+    if (n.kind === "bifurcacao") drawSprite(g, { s: 3, rows: ["xxxxx.", "xxxxxx", "xxxxx.", "..b...", "..b...", "..b..."], pal: { x: "#B88148", b: "#5A3A24" } }, n.x + 17, n.y - 37);
     const to = n.kind === "avanco" ? S.nodeById?.[n.next_a] : n.kind === "recuo" ? S.nodeById?.[prev[n.id]] : null;
-    if (ic && to) {
-      const a = Math.round(Math.atan2(to.y - n.y, to.x - n.x) / (Math.PI / 4)) * (Math.PI / 4), arrow = ICONS.avanco;
-      const iw = Math.max(...arrow.map(r => r.length)), s = 3;
-      g.save(); g.translate(n.x, n.y); g.rotate(a);
-      drawSprite(g, { s, rows: arrow, pal: { x: "rgba(27,22,38,.55)" } }, -iw * s / 2 + 1, -arrow.length * s / 2 + 1);
-      drawSprite(g, { s, rows: arrow, pal: { x: "#FFF8E6" } }, -iw * s / 2, -arrow.length * s / 2);
-      g.restore();
-    } else if (ic) {
-      const iw = Math.max(...ic.map(r => r.length)), s = 3;
-      drawSprite(g, { s, rows: ic, pal: { x: "rgba(27,22,38,.55)", o: "rgba(0,0,0,0)", y: "rgba(0,0,0,0)" } }, n.x - iw * s / 2 + 1, n.y - ic.length * s / 2 + 1);
-      drawSprite(g, { s, rows: ic, pal: { x: "#FFF8E6", o: "rgba(18,26,43,.45)", y: "#1B1626" } }, n.x - iw * s / 2, n.y - ic.length * s / 2);
+    const ang = to ? Math.atan2(to.y - n.y, to.x - n.x) : 0;
+    if (vivo) {
+      drawNodeIconHD(g, n.kind, n.x, n.y, r, Math.round(ang / (Math.PI / 4)) * (Math.PI / 4));
+    } else {
+      const ic = ICONS[n.kind];
+      if (ic && to) {
+        const a = Math.round(ang / (Math.PI / 4)) * (Math.PI / 4), arrow = ICONS.avanco;
+        const iw = Math.max(...arrow.map(rw => rw.length)), s = 3;
+        g.save(); g.translate(n.x, n.y); g.rotate(a);
+        drawSprite(g, { s, rows: arrow, pal: { x: "rgba(27,22,38,.55)" } }, -iw * s / 2 + 1, -arrow.length * s / 2 + 1);
+        drawSprite(g, { s, rows: arrow, pal: { x: "#FFF8E6" } }, -iw * s / 2, -arrow.length * s / 2);
+        g.restore();
+      } else if (ic) {
+        const iw = Math.max(...ic.map(rw => rw.length)), s = 3;
+        drawSprite(g, { s, rows: ic, pal: { x: "rgba(27,22,38,.55)", o: "rgba(0,0,0,0)", y: "rgba(0,0,0,0)" } }, n.x - iw * s / 2 + 1, n.y - ic.length * s / 2 + 1);
+        drawSprite(g, { s, rows: ic, pal: { x: "#FFF8E6", o: "rgba(18,26,43,.45)", y: "#1B1626" } }, n.x - iw * s / 2, n.y - ic.length * s / 2);
+      }
     }
   }
-  // número de cada casa (pedido do dono em 09/11/2026), embaixo do medalhão
-  g.font = "800 11px Inter, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.lineJoin = "round";
+  // número de cada casa: pílula discreta integrada embaixo do medalhão
+  g.textAlign = "center"; g.textBaseline = "middle"; g.lineJoin = "round";
   for (const n of S.nodes) {
-    const r = n.kind === "normal" || n.kind === "treinador" ? 12 : n.kind === "cacada" ? 10 : n.kind === "alvo" ? 15 : n.kind === "bifurcacao" ? 21 : n.kind === "castelo" ? 23 : 18;
-    const y = n.y + r + 9;
-    g.lineWidth = 3.5; g.strokeStyle = "rgba(20,14,6,.85)"; g.strokeText(String(n.id), n.x, y);
-    g.fillStyle = "#FFF4D6"; g.fillText(String(n.id), n.x, y);
+    const spec = !["normal", "cacada"].includes(n.kind);
+    const r = n.kind === "normal" || n.kind === "treinador" ? 11.5 : n.kind === "cacada" ? 10 : n.kind === "alvo" ? 15.5 : n.kind === "bifurcacao" ? 20.5 : n.kind === "castelo" ? 23 : 17.5;
+    const txt = String(n.id);
+    if (vivo) {
+      g.font = `${spec ? 800 : 700} ${spec ? 10.5 : 9.8}px 'IBM Plex Mono', Inter, sans-serif`;
+      const pw = Math.max(18, g.measureText(txt).width + 8), ph = 13.5, y = n.y + r + 6.5;
+      roundRect(g, n.x - pw / 2, y - ph / 2, pw, ph, 6.5);
+      g.fillStyle = spec ? "rgba(22,16,10,.9)" : "rgba(20,16,12,.76)"; g.fill();
+      if (spec) { g.strokeStyle = "rgba(217,180,106,.55)"; g.lineWidth = 1; g.stroke(); }
+      g.fillStyle = spec ? "#FFE9B0" : "#F5EBD2"; g.fillText(txt, n.x, y + .5);
+    } else {
+      g.font = "800 11px Inter, sans-serif";
+      const y = n.y + r + 9;
+      g.lineWidth = 3.5; g.strokeStyle = "rgba(20,14,6,.85)"; g.strokeText(txt, n.x, y);
+      g.fillStyle = "#FFF4D6"; g.fillText(txt, n.x, y);
+    }
   }
-  g.textAlign = "left"; g.textBaseline = "alphabetic"
+  g.imageSmoothingEnabled = false; g.textAlign = "left"; g.textBaseline = "alphabetic";
 }
 function roundRect(g, x, y, w, h, r) {
   g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
@@ -4228,6 +4610,7 @@ function clampCam() {
   W.cam.y = vh >= MAP_H ? (MAP_H - vh) / 2 : Math.max(-PAD_Y, Math.min(MAP_H - vh + PAD_Y, W.cam.y));
 }
 function centerOn(x, y, smooth) {
+  W.vel = null;
   const tx = x - W.w / 2 / W.cam.z, ty = y - W.h / 2 / W.cam.z;
   if (smooth && !reduceMotion()) W.target = { x: tx, y: ty };
   else { W.target = null; W.cam.x = tx; W.cam.y = ty; clampCam(); }
@@ -4235,6 +4618,7 @@ function centerOn(x, y, smooth) {
 }
 function centerMe(smooth) {
   if (!S.me) return;
+  if (S.anim?.wx != null) { centerOn(S.anim.wx, S.anim.wy - 20, smooth); return; }
   const n = S.nodeById[S.anim ? S.anim.node : S.me.node]; if (!n) return;
   centerOn(n.x, n.y - 20, smooth);
 }
@@ -4243,6 +4627,10 @@ function zoomAt(sx, sy, nz) {
   W.cam.z = nz; clampCam();
   W.cam.x = p.x - sx / W.cam.z; W.cam.y = p.y - sy / W.cam.z; clampCam(); W.dirty = true;
 }
+function zoomSmooth(sx, sy, nz) {
+  if (reduceMotion() || !tabVivoOn()) return zoomAt(sx, sy, nz);
+  W.zAnim = { sx, sy, to: Math.max(zMin(), Math.min(3, nz)) }; W.dirty = true;
+}
 function worldResize() {
   if (!W.el) return;
   W.dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -4250,15 +4638,37 @@ function worldResize() {
   W.el.width = Math.round(W.w * W.dpr); W.el.height = Math.round(W.h * W.dpr);
   clampCam(); W.dirty = true;
 }
+function hitTestHover(sx, sy) {
+  if (S.huntDraw || S.win) return null;
+  for (let k = (W.forkHits || []).length - 1; k >= 0; k--) {
+    const h = W.forkHits[k];
+    if (sx >= h.x && sx <= h.x + h.w && sy >= h.y && sy <= h.y + h.h) return { type: "fork", forkId: h.forkId, choice: h.choice };
+  }
+  if (!S.trapMode) {
+    for (let k = W.hits.length - 1; k >= 0; k--) {
+      const h = W.hits[k];
+      if (sx >= h.x && sx <= h.x + h.w && sy >= h.y && sy <= h.y + h.h) {
+        if (h.npcNode != null) return { type: "node", id: h.npcNode };
+        if (h.goWin) return { type: "win", id: h.goWin };
+        return { type: "char", id: h.user_id };
+      }
+    }
+  }
+  const p = screenToWorld(sx, sy); let best = null, bd = 24 * 24;
+  for (const n of S.nodes) { const d = (n.x - p.x) ** 2 + (n.y - p.y) ** 2; if (d < bd) { bd = d; best = n; } }
+  return best ? { type: "node", id: best.id } : null;
+}
 function worldInit() {
   W.el = $("#world"); W.ctx = W.el.getContext("2d"); W.mini = $("#minimap");
+  W.fx = W.fx || []; W.forkHits = []; W.hover = null;
   applyMapMeta();
   W.cam.z = window.innerWidth < 760 ? 1.05 : 1.3;
   worldResize();
   W.el.addEventListener("pointerdown", e => {
     W.el.setPointerCapture(e.pointerId);
     W.ptrs.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
-    if (W.ptrs.size === 1) W.drag = { x: e.offsetX, y: e.offsetY, cx: W.cam.x, cy: W.cam.y, moved: false };
+    W.vel = null; W.zAnim = null;
+    if (W.ptrs.size === 1) W.drag = { x: e.offsetX, y: e.offsetY, lx: e.offsetX, ly: e.offsetY, lt: performance.now(), vx: 0, vy: 0, cx: W.cam.x, cy: W.cam.y, moved: false };
     if (W.ptrs.size === 2) {
       const [a, b] = [...W.ptrs.values()];
       W.pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), z: W.cam.z };
@@ -4266,31 +4676,56 @@ function worldInit() {
     }
   });
   W.el.addEventListener("pointermove", e => {
-    if (!W.ptrs.has(e.pointerId)) return;
+    if (!W.ptrs.has(e.pointerId)) {
+      if (e.pointerType === "mouse" && tabVivoOn()) {
+        const hv = hitTestHover(e.offsetX, e.offsetY);
+        const k1 = hv ? `${hv.type}:${hv.id ?? hv.forkId}:${hv.choice || ""}` : "", k0 = W.hover ? `${W.hover.type}:${W.hover.id ?? W.hover.forkId}:${W.hover.choice || ""}` : "";
+        W.hoverPos = { x: e.offsetX, y: e.offsetY };
+        if (k1 !== k0) { W.hover = hv; W.el.classList.toggle("hoverable", !!hv); W.dirty = true; }
+      }
+      return;
+    }
     W.ptrs.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
     if (W.pinch && W.ptrs.size === 2) {
       const [a, b] = [...W.ptrs.values()];
       zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, W.pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / W.pinch.d);
     } else if (W.drag) {
-      const dx = e.offsetX - W.drag.x, dy = e.offsetY - W.drag.y;
-      if (Math.abs(dx) + Math.abs(dy) > 6) { W.drag.moved = true; W.el.classList.add("dragging"); }
-      if (W.drag.moved) { W.target = null; W.cam.x = W.drag.cx - dx / W.cam.z; W.cam.y = W.drag.cy - dy / W.cam.z; clampCam(); W.dirty = true; }
+      const dx = e.offsetX - W.drag.x, dy = e.offsetY - W.drag.y, now = performance.now(), dt = Math.max(8, now - W.drag.lt);
+      if (Math.abs(dx) + Math.abs(dy) > 6) { W.drag.moved = true; W.el.classList.add("dragging"); W.hover = null; }
+      if (W.drag.moved) {
+        W.drag.vx = W.drag.vx * .4 + ((W.drag.lx - e.offsetX) / W.cam.z) / dt * 16 * .6;
+        W.drag.vy = W.drag.vy * .4 + ((W.drag.ly - e.offsetY) / W.cam.z) / dt * 16 * .6;
+        W.drag.lx = e.offsetX; W.drag.ly = e.offsetY; W.drag.lt = now;
+        W.target = null; W.cam.x = W.drag.cx - dx / W.cam.z; W.cam.y = W.drag.cy - dy / W.cam.z; clampCam(); W.dirty = true;
+      }
     }
   });
+  W.el.addEventListener("pointerleave", () => { if (W.hover) { W.hover = null; W.el.classList.remove("hoverable"); W.dirty = true; } });
   const up = e => {
-    if (W.drag && !W.drag.moved && W.ptrs.size === 1) handleTap(e.offsetX, e.offsetY);
+    if (W.drag && !W.drag.moved && W.ptrs.size === 1) {
+      const now = performance.now(), prev = W.lastTap;
+      const hit = hitTestHover(e.offsetX, e.offsetY);
+      if (!hit && tabVivoOn() && prev && now - prev.t < 290 && Math.hypot(e.offsetX - prev.x, e.offsetY - prev.y) < 28) {
+        W.lastTap = null; zoomSmooth(e.offsetX, e.offsetY, W.cam.z > 2.15 ? 1.25 : Math.min(2.5, W.cam.z * 1.5));
+      } else {
+        W.lastTap = { t: now, x: e.offsetX, y: e.offsetY };
+        handleTap(e.offsetX, e.offsetY);
+      }
+    } else if (W.drag && W.drag.moved && W.ptrs.size === 1 && tabVivoOn() && !reduceMotion() && performance.now() - W.drag.lt < 80) {
+      if (Math.hypot(W.drag.vx, W.drag.vy) > 1.2) W.vel = { x: W.drag.vx, y: W.drag.vy };
+    }
     W.ptrs.delete(e.pointerId);
     if (W.ptrs.size < 2) W.pinch = null;
     if (W.ptrs.size === 0) { W.drag = null; W.el.classList.remove("dragging"); }
   };
   W.el.addEventListener("pointerup", up);
   W.el.addEventListener("pointercancel", up);
-  W.el.addEventListener("wheel", e => { e.preventDefault(); zoomAt(e.offsetX, e.offsetY, W.cam.z * (e.deltaY < 0 ? 1.12 : 1 / 1.12)); }, { passive: false });
+  W.el.addEventListener("wheel", e => { e.preventDefault(); W.zAnim = null; zoomAt(e.offsetX, e.offsetY, W.cam.z * (e.deltaY < 0 ? 1.12 : 1 / 1.12)); }, { passive: false });
   W.mini.addEventListener("click", e => { const r = W.mini.getBoundingClientRect(); centerOn((e.clientX - r.left) / r.width * MAP_W, (e.clientY - r.top) / r.height * MAP_H, true); });
   if (!W.base && !W.building) {
     W.building = true;
     document.fonts.ready.then(async () => {
-      try { W.base = await buildWorld(); }
+      try { W.base = await buildWorld(); W.baseVivo = tabVivoOn(); }
       catch (e) { console.error(e); W.building = false; W.mapError = true; W.dirty = true; return; }
       const mh = Math.round(192 * MAP_H / MAP_W), m = document.createElement("canvas"); m.width = 192; m.height = mh; W.mini.height = mh;
       const mg = m.getContext("2d"); mg.imageSmoothingEnabled = true; mg.drawImage(W.base, 0, 0, 192, mh);
@@ -4302,41 +4737,226 @@ function worldInit() {
   requestAnimationFrame(loop);
 }
 window.addEventListener("resize", () => { if (W.el && document.body.contains(W.el)) worldResize(); });
+function spawnBoardFx(wx, wy, txt, col = "#FFE37A", kind = "pop") {
+  (W.fx ||= []).push({ wx, wy, txt, col, kind, t0: performance.now(), dur: kind === "dust" ? 420 : kind === "spark" ? 680 : 1250, dx: (Math.random() - .5) * 18 });
+  W.dirty = true;
+}
 function loop(t) {
   if (!W.el || !document.body.contains(W.el) || !S.me) return;
+  W.now = t;
+  if (W.base && !W.building && W.baseVivo !== undefined && W.baseVivo !== tabVivoOn()) {
+    W.base = null; worldInit(); return;
+  }
   if (W.target) {
-    W.cam.x += (W.target.x - W.cam.x) * .2; W.cam.y += (W.target.y - W.cam.y) * .2; clampCam();
+    W.cam.x += (W.target.x - W.cam.x) * .22; W.cam.y += (W.target.y - W.cam.y) * .22; clampCam();
     if (Math.abs(W.target.x - W.cam.x) < .5 && Math.abs(W.target.y - W.cam.y) < .5) W.target = null;
     W.dirty = true;
+  } else if (W.vel) {
+    W.cam.x += W.vel.x; W.cam.y += W.vel.y; W.vel.x *= .88; W.vel.y *= .88; clampCam();
+    if (Math.hypot(W.vel.x, W.vel.y) < .25) W.vel = null;
+    W.dirty = true;
+  }
+  if (W.zAnim) {
+    const nz = W.cam.z + (W.zAnim.to - W.cam.z) * .26;
+    zoomAt(W.zAnim.sx, W.zAnim.sy, Math.abs(W.zAnim.to - nz) < .01 ? W.zAnim.to : nz);
+    if (W.cam.z === W.zAnim.to) W.zAnim = null;
   }
   const bob = reduceMotion() ? 0 : Math.round(Math.sin(t / 220) * 3);
   if (bob !== W.bob) { W.bob = bob; W.dirty = true; }
-  if (W.dirty) { W.dirty = false; drawWorld(); drawMini(); }
+  if (S.anim || (W.fx && W.fx.length)) W.dirty = true;
+  else if (tabVivoOn() && !S.win && !document.hidden && !reduceMotion() && t - (W.lastAmb || 0) > 55) { W.lastAmb = t; W.dirty = true; }
+  if (W.dirty) { W.dirty = false; drawWorld(t); drawMini(); positionBoardPop(); }
   requestAnimationFrame(loop);
 }
-function drawWorld() {
+// efeitos vivos do tabuleiro em coordenadas do mundo (nuvens suaves, brilho na água, auras e prévia de alcance)
+function drawWalkPreview(ctx, t) {
+  if (!tabVivoOn() || !S.today || S.today.moved || S.anim || !S.me || S.me.arrived_rank || S.trapMode || S.huntDraw) return;
+  const T = S.today, cls = S.me.class;
+  const vcasas = typeof vbVal === "function" ? (vbVal("centro", "casas") || 0) : 0;
+  const hs = heroStats(cls, S.me.level);
+  const skOn = !!T.skill?.used;
+  const skFixed = skOn && ["guerreiro", "ladino", "clerigo", "pesquisador", "mercador"].includes(cls) ? (hs.sv || 0) : 0;
+  const mud = S.me.pending_mud || 0;
+  const guar = Math.max(0, (T.steps || 0) + (S.me.bonus_steps || 0) + vcasas + skFixed - mud);
+  let rMin = S.cfg.roll_min ?? 1, rMax = S.cfg.roll_max ?? 3;
+  if (cls === "arqueiro") rMin = Math.max(rMin, S.cfg.arqueiro_min_die ?? 2);
+  if (skOn && cls === "arqueiro") rMin = rMax;
+  if (skOn && cls === "domador" && hs.sv > 1) { rMin *= hs.sv; rMax *= hs.sv; }
+  const minTot = Math.max(0, guar + rMin), maxTot = Math.max(0, guar + rMax);
+  if (maxTot <= 0) return;
+  const pathIds = previewWalk(S.me.node, maxTot);
+  if (!pathIds.length) return;
+  const pred = buildPredMap(), seq = [S.me.node, ...pathIds];
+  ctx.save(); ctx.lineCap = "round"; ctx.lineJoin = "round";
+  // trilha luminosa até o alcance máximo
+  ctx.beginPath();
+  for (let i = 0; i < seq.length - 1; i++) {
+    const a = S.nodeById[seq[i]], b = S.nodeById[seq[i + 1]]; if (!a || !b) continue;
+    const [c1x, c1y, c2x, c2y] = edgeCurvePts(a, b, pred, 0);
+    if (i === 0) ctx.moveTo(a.x, a.y);
+    ctx.bezierCurveTo(c1x, c1y, c2x, c2y, b.x, b.y);
+  }
+  ctx.strokeStyle = "rgba(76, 224, 150, .28)"; ctx.lineWidth = 9; ctx.stroke();
+  ctx.strokeStyle = "#FFE37A"; ctx.lineWidth = 2.6; ctx.setLineDash([6, 8]);
+  ctx.lineDashOffset = reduceMotion() ? 0 : -(t / 38) % 28;
+  ctx.stroke(); ctx.setLineDash([]);
+  // anéis nas casas onde o dado pode parar hoje
+  const pulse = reduceMotion() ? 1 : 1 + Math.sin(t / 280) * .08;
+  for (let s = Math.max(1, minTot); s <= pathIds.length; s++) {
+    const nd = S.nodeById[pathIds[s - 1]]; if (!nd) continue;
+    const rr = (nd.kind === "normal" ? 15 : 21) * pulse;
+    ctx.strokeStyle = s === minTot && minTot === maxTot ? "#4CC38A" : "#FFE37A";
+    ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(nd.x, nd.y, rr, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = "rgba(255,227,122,.16)"; ctx.fill();
+    if (W.cam.z >= 0.85) {
+      const lb = `🎲 +${s}`; ctx.font = "800 10px Inter, sans-serif";
+      const lw = ctx.measureText(lb).width + 10;
+      roundRect(ctx, nd.x - lw / 2, nd.y - rr - 15, lw, 14, 7);
+      ctx.fillStyle = "rgba(16,24,36,.9)"; ctx.fill(); ctx.strokeStyle = "#E0B44C"; ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.fillStyle = "#FFE7A8"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(lb, nd.x, nd.y - rr - 8);
+    }
+  }
+  ctx.restore();
+}
+function drawBoardAmbient(ctx, t) {
+  if (!tabVivoOn()) return;
+  ctx.save();
+  // brilhos suaves na água dos rios
+  if (!reduceMotion()) {
+    ctx.fillStyle = "rgba(220,248,255,.32)";
+    for (let k = 0; k < WATER.length; k++) {
+      const my = (WATER[k][0] + WATER[k][1]) / 2;
+      for (let i = 0; i < 14; i++) {
+        const wx = ((i * 193 + k * 410 + t * .022) % (MAP_W - 80)) + 40;
+        const wy = my + Math.sin(wx / 260 + k * 2) * 26 + Math.sin(wx / 97 + k) * 10 + Math.sin(i * 3.1 + t / 600) * 14;
+        const a = .5 + .5 * Math.sin(t / 340 + i * 1.9);
+        if (a > .55) { ctx.globalAlpha = (a - .55) * .9; ctx.fillRect(wx, wy, 8, 2.2); }
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  // aura dourada viva no Castelo e mística nos Portais
+  const castle = S.nodes.find(n => n.kind === "castelo");
+  if (castle) {
+    const p = reduceMotion() ? 1 : 1 + Math.sin(t / 520) * .06;
+    const cg = ctx.createRadialGradient(castle.x, castle.y, 6, castle.x, castle.y, 58 * p);
+    cg.addColorStop(0, "rgba(255,225,115,.36)"); cg.addColorStop(1, "rgba(255,225,115,0)");
+    ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(castle.x, castle.y, 58 * p, 0, Math.PI * 2); ctx.fill();
+  }
+  // rastro dourado durante a caminhada ao vivo
+  if (S.anim?.trail?.length) {
+    for (let i = 0; i < S.anim.trail.length; i++) {
+      const tn = S.nodeById[S.anim.trail[i]]; if (!tn) continue;
+      ctx.strokeStyle = "rgba(255,225,110,.78)"; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(tn.x, tn.y, 16, 0, Math.PI * 2); ctx.stroke();
+    }
+  }
+  drawWalkPreview(ctx, t);
+  // sombras muito leves de nuvens atravessando o tabuleiro
+  if (!reduceMotion()) {
+    ctx.fillStyle = "rgba(8,22,16,.065)";
+    for (let i = 0; i < 4; i++) {
+      const cx = ((i * 720 + t * .016) % (MAP_W + 520)) - 260, cy = (260 + i * 470 + Math.sin(t / 4000 + i) * 40) % MAP_H;
+      ctx.beginPath(); ctx.ellipse(cx, cy, 210 + (i % 2) * 55, 85 + (i % 3) * 20, -.15, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+function drawForkSigns(ctx) {
+  W.forkHits = [];
+  if (!tabVivoOn() || !S.me || S.me.arrived_rank || S.anim || S.trapMode || S.huntDraw || W.cam.z < 0.72) return;
+  const f = forksAhead().filter(x => !(S.huntChoice && S.hunt && x.id === S.hunt.fork_node))[0];
+  if (!f || stepsTo(f.id) > 30 || (!S.huntChoice && S.hunt && f.id === S.hunt.fork_node)) return;
+  const cur = (S.me.route || {})[f.id] === "b" ? "b" : "a";
+  for (const [ch, nid, txt, col] of [["a", f.next_a, "Seguro", "#2E7D4A"], ["b", f.next_b, "Arriscado", "#B8323C"]]) {
+    const n1 = S.nodeById[nid], n2 = n1 && S.nodeById[n1.next_a]; if (!n1) continue;
+    const wx = n2 ? (f.x * .25 + n1.x * .5 + n2.x * .25) : n1.x, wy = (n2 ? (f.y * .25 + n1.y * .5 + n2.y * .25) : n1.y) - 24;
+    const s = worldToScreen(wx, wy);
+    if (s.x < -60 || s.x > W.w + 60 || s.y < -40 || s.y > W.h + 40) continue;
+    const on = cur === ch, hov = W.hover?.type === "fork" && W.hover.forkId === f.id && W.hover.choice === ch;
+    const lb = `${on ? "✓ " : ""}${ch === "a" ? "🛡️" : "🔥"} ${txt}`;
+    ctx.save(); ctx.font = "800 11.5px Inter, system-ui, sans-serif";
+    const pw = ctx.measureText(lb).width + 18, ph = 23, x = Math.round(s.x - pw / 2), y = Math.round(s.y - ph / 2);
+    ctx.fillStyle = on ? col : "rgba(15,22,34,.92)";
+    roundRect(ctx, x, y, pw, ph, 11.5); ctx.fill();
+    ctx.strokeStyle = on || hov ? "#FFE37A" : "rgba(255,255,255,.32)"; ctx.lineWidth = on || hov ? 2.2 : 1.3; ctx.stroke();
+    ctx.fillStyle = on ? "#FFF" : "#DCE5F2"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(lb, x + pw / 2, y + ph / 2 + .5);
+    ctx.restore();
+    W.forkHits.push({ x, y, w: pw, h: ph, forkId: f.id, choice: ch });
+  }
+}
+function drawBoardHover(ctx) {
+  if (!tabVivoOn() || !W.hover || W.hover.type !== "node" || S.selectedNode === W.hover.id) return;
+  const n = S.nodeById[W.hover.id]; if (!n) return;
+  const s = worldToScreen(n.x, n.y), r = (n.kind === "normal" ? 15 : 22) * W.cam.z;
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,231,150,.92)"; ctx.lineWidth = 2.4;
+  ctx.beginPath(); ctx.arc(s.x, s.y, r, 0, Math.PI * 2); ctx.stroke();
+  const k = KIND[n.kind], st = nodeRelText(n.id);
+  const lb = `Casa nº ${n.id} · ${k?.nome || "Casa"}${st ? ` · ${st}` : ""}`;
+  ctx.font = "700 11.5px Inter, system-ui, sans-serif";
+  const pw = ctx.measureText(lb).width + 16, ph = 22, px = Math.max(8, Math.min(W.w - pw - 8, s.x - pw / 2)), py = Math.max(8, s.y - r - ph - 8);
+  roundRect(ctx, px, py, pw, ph, 8);
+  ctx.fillStyle = "rgba(12,18,28,.94)"; ctx.fill();
+  ctx.strokeStyle = "rgba(217,180,106,.75)"; ctx.lineWidth = 1.2; ctx.stroke();
+  ctx.fillStyle = "#FFF4D6"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(lb, px + pw / 2, py + ph / 2 + .5);
+  ctx.restore();
+}
+function drawBoardFx(ctx, now) {
+  if (!W.fx?.length) return;
+  ctx.save();
+  W.fx = W.fx.filter(f => now - f.t0 < f.dur);
+  for (const f of W.fx) {
+    const u = Math.max(0, Math.min(1, (now - f.t0) / f.dur)), s = worldToScreen(f.wx + f.dx * u, f.wy);
+    if (f.kind === "dust") {
+      ctx.globalAlpha = (1 - u) * .55; ctx.fillStyle = "#EFE3C2";
+      ctx.beginPath(); ctx.arc(s.x, s.y - u * 8, (3 + u * 5) * W.cam.z, 0, Math.PI * 2); ctx.fill();
+    } else if (f.kind === "spark") {
+      ctx.globalAlpha = 1 - u; ctx.strokeStyle = f.col; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(s.x, s.y, (8 + u * 28) * W.cam.z, 0, Math.PI * 2); ctx.stroke();
+    } else {
+      const y = s.y - 26 - Math.sin(Math.min(1, u * 1.3) * Math.PI / 2) * 34;
+      ctx.globalAlpha = u > .72 ? (1 - u) / .28 : 1;
+      ctx.font = "800 13.5px Inter, system-ui, sans-serif";
+      const tw = ctx.measureText(f.txt).width + 16;
+      roundRect(ctx, s.x - tw / 2, y - 12, tw, 24, 12);
+      ctx.fillStyle = "rgba(14,20,32,.92)"; ctx.fill();
+      ctx.strokeStyle = f.col; ctx.lineWidth = 1.8; ctx.stroke();
+      ctx.fillStyle = f.col; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(f.txt, s.x, y + .5);
+    }
+  }
+  ctx.restore();
+}
+function drawWorld(t = performance.now()) {
   const ctx = W.ctx, z = W.cam.z, d = W.dpr;
   ctx.setTransform(d, 0, 0, d, 0, 0);
   ctx.fillStyle = W.base ? "#16301B" : "#0F1420"; ctx.fillRect(0, 0, W.w, W.h);
   if (!W.base) { ctx.fillStyle = "#A9B4C6"; ctx.font = "500 14px Inter, sans-serif"; ctx.fillText(W.mapError ? "Não foi possível desenhar o mapa. Recarregue a página." : "Desenhando o mapa… na primeira vez pode levar alguns segundos.", 24, 40); return; }
   ctx.imageSmoothingEnabled = false;
   ctx.setTransform(d * z, 0, 0, d * z, -W.cam.x * z * d, -W.cam.y * z * d);
-  if (mapaNovoOn()) mapaMar(ctx);
+  if (mapaNovoOn()) mapaMar(ctx, t);
   ctx.drawImage(W.base, 0, 0);
+  drawBoardAmbient(ctx, t);
   if (mapaNovoOn()) mapaMoldura(ctx);
   // armadilha própria e casa selecionada
   drawBoss(ctx);
   for (const p of Object.values(S.props || {})) drawPousada(ctx, p);
   for (const tr of S.myTraps) { const n = S.nodeById[tr.node]; if (n) drawSprite(ctx, { s: 3, rows: ICONS.trap, pal: { x: "#FF6B57" } }, n.x + 4, n.y - 26); }
   if (S.selectedNode != null) {
-    const n = S.nodeById[S.selectedNode];
-    ctx.strokeStyle = "#fff"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(n.x, n.y, 22, 0, Math.PI * 2); ctx.stroke();
+    const n = S.nodeById[S.selectedNode], pr = tabVivoOn() && !reduceMotion() ? 23 + Math.sin(t / 240) * 2 : 22;
+    ctx.strokeStyle = "rgba(18,14,8,.65)"; ctx.lineWidth = 5.5; ctx.beginPath(); ctx.arc(n.x, n.y, pr, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = "#FFE37A"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(n.x, n.y, pr, 0, Math.PI * 2); ctx.stroke();
   }
   if (S.trapMode) { ctx.fillStyle = "rgba(240,90,95,.10)"; ctx.fillRect(0, 0, MAP_W, MAP_H); }
   ctx.setTransform(d, 0, 0, d, 0, 0);
   const tint = weatherTint();
   if (tint) { ctx.fillStyle = tint.color; ctx.fillRect(0, 0, W.w, W.h); }
+  drawForkSigns(ctx);
   drawChars(ctx);
+  drawBoardHover(ctx);
+  drawBoardFx(ctx, t);
 }
 function drawChars(ctx) {
   W.hits = []; W.leader = S.titles?.leader || leaderId();
@@ -4354,18 +4974,28 @@ function drawChars(ctx) {
     list.sort((a, b) => (a.user_id === myId) - (b.user_id === myId));
     const groupPlates = [];
     list.forEach((c, i) => {
-      const mine = c.user_id === myId;
+      const mine = c.user_id === myId, hopping = mine && S.anim?.wx != null;
       const px = (2.3 + Math.min(c.level, 30) * 0.045) * (mine ? 1.2 : 1);
-      const w = 16 * px, h = 19 * px, off = (i - (list.length - 1) / 2) * w * 0.62;
-      const s = worldToScreen(n.x - w / 2 + off, n.y - h + 6), sw = w * z, sh = h * z;
+      const w = 16 * px, h = 19 * px, off = hopping ? 0 : (i - (list.length - 1) / 2) * w * 0.62;
+      const wx = hopping ? S.anim.wx : n.x + off, wy = hopping ? S.anim.wy : n.y;
+      const hop = hopping ? (S.anim.hopY || 0) : 0;
+      const s = worldToScreen(wx - w / 2, wy - h + 6 - hop), sw = w * z, sh = h * z;
+      const groundS = worldToScreen(wx, wy + 4);
       if (s.x + sw < -80 || s.x > W.w + 80 || s.y + sh < -80 || s.y > W.h + 80) return;
-      const fx = s.x + sw / 2, fy = s.y + sh - 2 * z;
-      ctx.fillStyle = "rgba(0,0,0,.32)"; ctx.beginPath(); ctx.ellipse(fx, fy, sw * .36, 5 * z, 0, 0, Math.PI * 2); ctx.fill();
-      if (mine) { ctx.strokeStyle = "#E0B44C"; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(fx, fy, sw * .5, 8 * z, 0, 0, Math.PI * 2); ctx.stroke(); }
+      const fx = s.x + sw / 2, fy = groundS.y, shScale = Math.max(.55, 1 - hop / 38);
+      ctx.fillStyle = "rgba(0,0,0,.34)"; ctx.beginPath(); ctx.ellipse(fx, fy, sw * .36 * shScale, 5 * z * shScale, 0, 0, Math.PI * 2); ctx.fill();
+      if (mine) {
+        if (tabVivoOn()) {
+          const rg = ctx.createRadialGradient(fx, fy, 2, fx, fy, sw * .68);
+          rg.addColorStop(0, "rgba(255,215,90,.32)"); rg.addColorStop(1, "rgba(255,215,90,0)");
+          ctx.fillStyle = rg; ctx.beginPath(); ctx.ellipse(fx, fy, sw * .68, 12 * z, 0, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.strokeStyle = "#FFE37A"; ctx.lineWidth = 2.8; ctx.beginPath(); ctx.ellipse(fx, fy, sw * .5, 8 * z, 0, 0, Math.PI * 2); ctx.stroke();
+      }
       if (c.user_id === W.leader) {
-        const pr = 1 + (W.bob || 0) * 0.05, gr = ctx.createRadialGradient(fx, fy - sh * 0.45, 4, fx, fy - sh * 0.45, sw * 0.95 * pr);
+        const pr = 1 + (W.bob || 0) * 0.05, gr = ctx.createRadialGradient(fx, s.y + sh * 0.55, 4, fx, s.y + sh * 0.55, sw * 0.95 * pr);
         gr.addColorStop(0, "rgba(255,213,74,.55)"); gr.addColorStop(1, "rgba(255,213,74,0)");
-        ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(fx, fy - sh * 0.45, sw * 0.95 * pr, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(fx, s.y + sh * 0.55, sw * 0.95 * pr, 0, Math.PI * 2); ctx.fill();
       }
       if (isSnorlax(c.user_id)) {
         ctx.fillStyle = "rgba(92,66,32,.55)"; ctx.beginPath(); ctx.ellipse(fx, fy, sw * 0.62, 10 * z, 0, 0, Math.PI * 2); ctx.fill();
@@ -4373,17 +5003,17 @@ function drawChars(ctx) {
       }
       const spr = avatarCanvas(c);
       ctx.imageSmoothingEnabled = false;
-      // mascote: anda do lado do herói, atrás das placas e sem área de clique
       const mcv = mascotCanvas(c.mascot);
       if (mcv) { const ms = sw * 1.45; ctx.drawImage(mcv, Math.round(s.x + sw * .45), Math.round(s.y + sh - ms * .82), Math.round(ms), Math.round(ms)); }
       if (spr.aura) { ctx.shadowColor = spr.aura; ctx.shadowBlur = 14; }
       avDraw(ctx, spr, Math.round(s.x), Math.round(s.y), Math.round(sw), Math.round(sh));
       ctx.shadowBlur = 0;
       W.hits.push({ x: s.x, y: s.y, w: sw, h: sh, user_id: c.user_id });
-      groupPlates.push({ c, mine, cx: fx, top: s.y, champ: c.user_id === champ, stack: list.length - 1 - i, nid: n.id });
+      groupPlates.push({ c, mine, cx: fx, top: s.y, champ: c.user_id === champ, stack: hopping ? 0 : list.length - 1 - i, nid: n.id, hopping });
     });
+    if (!groupPlates.length) continue;
     const top = Math.min(...groupPlates.map(p => p.top));
-    groupPlates.forEach(p => { p.top = top; p.alone = list.length === 1; plates.push(p); });
+    groupPlates.forEach(p => { if (!p.hopping) p.top = top; p.alone = list.length === 1 || p.hopping; plates.push(p); });
   }
   // no celular com zoom afastado: só você, o Brabo, o Snorlax e quem foi tocado; o resto vira "+N"
   let shown = plates;
@@ -4416,29 +5046,29 @@ function leaderId() {
   return list[0]?.user_id;
 }
 function drawPlate(ctx, p) {
-  const lvl = `Nv ${p.c.level}`;
+  const lvl = `Nv ${p.c.level}`, sel = S.tip?.type === "char" && S.tip.id === p.c.user_id;
   ctx.font = "600 11px 'IBM Plex Mono', ui-monospace, monospace"; const lw = ctx.measureText(lvl).width + 10;
   const nm = S.lazyIds?.has(p.c.user_id) ? `⏳ ${p.c.name}` : p.c.name;
   ctx.font = "600 12px Inter, system-ui, sans-serif"; const nw = ctx.measureText(nm).width;
   const pw = lw + nw + 16, ph = 22, x = Math.round(p.cx - pw / 2), y = Math.round(p.top - ph - 6 - p.stack * 26);
-  ctx.fillStyle = "rgba(15,20,32,.9)"; roundRect(ctx, x, y, pw, ph, 6); ctx.fill();
-  ctx.strokeStyle = p.mine ? "#E0B44C" : "rgba(255,255,255,.18)"; ctx.lineWidth = p.mine ? 2 : 1; roundRect(ctx, x, y, pw, ph, 6); ctx.stroke();
+  ctx.fillStyle = p.mine ? "rgba(18,26,40,.95)" : "rgba(14,20,32,.9)"; roundRect(ctx, x, y, pw, ph, 7); ctx.fill();
+  ctx.strokeStyle = sel ? "#FFE37A" : p.mine ? "#E0B44C" : "rgba(255,255,255,.2)"; ctx.lineWidth = p.mine || sel ? 2 : 1; roundRect(ctx, x, y, pw, ph, 7); ctx.stroke();
   if (p.c.team && teamOf(p.c.team)) { ctx.fillStyle = teamOf(p.c.team).cor; roundRect(ctx, x, y + 3, 3, ph - 6, 1); ctx.fill(); }
-  ctx.fillStyle = "#E0B44C"; roundRect(ctx, x + 4, y + 4, lw, ph - 8, 3); ctx.fill();
+  ctx.fillStyle = p.mine ? "#FFE37A" : "#E0B44C"; roundRect(ctx, x + 4, y + 4, lw, ph - 8, 4); ctx.fill();
   ctx.fillStyle = "#0F1420"; ctx.font = "600 11px 'IBM Plex Mono', ui-monospace, monospace"; ctx.textBaseline = "middle"; ctx.textAlign = "left";
   ctx.fillText(lvl, x + 9, y + ph / 2 + 1);
-  ctx.fillStyle = S.lazyIds?.has(p.c.user_id) ? "#FFC9A8" : "#fff"; ctx.font = "600 12px Inter, system-ui, sans-serif"; ctx.fillText(nm, x + lw + 10, y + ph / 2 + 1);
+  ctx.fillStyle = S.lazyIds?.has(p.c.user_id) ? "#FFC9A8" : p.mine ? "#FFF8DF" : "#fff"; ctx.font = "600 12px Inter, system-ui, sans-serif"; ctx.fillText(nm, x + lw + 10, y + ph / 2 + 1);
   if (p.champ) drawSprite(ctx, { s: 3, rows: ["y.y.y", "yyyyy", "yryry"], pal: { y: "#F5C542", r: "#D1453B" } }, x - 18, y + 4);
   if (p.c.user_id === W.leader || isSnorlax(p.c.user_id)) {
     ctx.font = "700 10px Inter, system-ui, sans-serif";
     const t = p.c.user_id === W.leader ? "👑 O BRABO · PROCURADO" : "💤 SNORLAX DA RODADA", tw = ctx.measureText(t).width + 10;
-    ctx.fillStyle = p.c.user_id === W.leader ? "#C0392B" : "#6B4F2A"; roundRect(ctx, Math.round(p.cx - tw / 2), y - 16, tw, 14, 3); ctx.fill();
+    ctx.fillStyle = p.c.user_id === W.leader ? "#C0392B" : "#6B4F2A"; roundRect(ctx, Math.round(p.cx - tw / 2), y - 16, tw, 14, 4); ctx.fill();
     ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(t, p.cx, y - 9);
     ctx.textAlign = "left";
   }
   if (p.mine && p.alone && p.c.user_id !== W.leader) {
     const ay = y - 10 - W.bob;
-    ctx.fillStyle = "#E0B44C"; ctx.beginPath(); ctx.moveTo(p.cx - 8, ay - 8); ctx.lineTo(p.cx + 8, ay - 8); ctx.lineTo(p.cx, ay); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#FFE37A"; ctx.beginPath(); ctx.moveTo(p.cx - 8, ay - 8); ctx.lineTo(p.cx + 8, ay - 8); ctx.lineTo(p.cx, ay); ctx.closePath(); ctx.fill();
     ctx.strokeStyle = "#0F1420"; ctx.lineWidth = 1.5; ctx.stroke();
   }
   W.hits.push({ x, y, w: pw, h: ph, user_id: p.c.user_id });
@@ -4452,20 +5082,29 @@ function drawMini() {
   for (const c of S.chars) {
     const n = S.nodeById[myProg(c)]; if (!n) continue;
     const mine = c.user_id === S.session.user.id;
-    g.fillStyle = mine ? "#E0B44C" : "#fff"; g.strokeStyle = "#0F1420"; g.lineWidth = 1;
-    g.beginPath(); g.arc(n.x * sx, n.y * sy, mine ? 4 : 2.5, 0, Math.PI * 2); g.fill(); g.stroke();
+    g.fillStyle = mine ? "#FFE37A" : "#fff"; g.strokeStyle = "#0F1420"; g.lineWidth = mine ? 1.5 : 1;
+    g.beginPath(); g.arc(n.x * sx, n.y * sy, mine ? 4.5 : 2.5, 0, Math.PI * 2); g.fill(); g.stroke();
   }
-  g.strokeStyle = "rgba(255,255,255,.9)"; g.lineWidth = 1.5;
+  g.strokeStyle = "rgba(255,235,170,.95)"; g.lineWidth = 1.6;
   g.strokeRect(W.cam.x * sx, W.cam.y * sy, W.w / W.cam.z * sx, W.h / W.cam.z * sy);
 }
 function handleTap(sx, sy) {
   if (S.huntDraw) return huntDrawTap(sx, sy);
+  for (let k = (W.forkHits || []).length - 1; k >= 0; k--) {
+    const h = W.forkHits[k];
+    if (sx >= h.x && sx <= h.x + h.w && sy >= h.y && sy <= h.y + h.h) {
+      sfx("tick");
+      guarded(async () => { S.me = await rpc("set_route", { _fork: +h.forkId, _choice: h.choice }); render(); });
+      return;
+    }
+  }
   for (let k = W.hits.length - 1; k >= 0; k--) {
     const h = W.hits[k];
     if (sx >= h.x && sx <= h.x + h.w && sy >= h.y && sy <= h.y + h.h && !S.trapMode) {
       if (h.npcNode != null) { S.selectedNode = null; ACTIONS.node(String(h.npcNode)); return; }
       if (h.goWin) { S.selectedNode = null; ACTIONS.go(h.goWin); return; }
-      S.tip = { type: "char", id: h.user_id }; S.selectedNode = null; renderHUD(); return;
+      S.tip = S.tip?.type === "char" && S.tip.id === h.user_id ? null : { type: "char", id: h.user_id };
+      S.selectedNode = null; renderHUD(); return;
     }
   }
   const p = screenToWorld(sx, sy); let best = null, bd = 24 * 24;
@@ -4508,6 +5147,24 @@ const COIN_ROWS = ["..xxxx..", ".xyyyyx.", "xyYyyyyx", "xyYyoyyx", "xyYyoyyx", "
 const coinSVG = () => `<svg class="coin-ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true">${pixels(COIN_ROWS, { x: "#8A5A12", y: "#F5C542", Y: "#FFF0A8", o: "#C8901E" })}</svg>`;
 const logoSVG = () => `<svg viewBox="0 0 9 9" shape-rendering="crispEdges" aria-hidden="true">${pixels(LOGO_ROWS, { p: "#A8323E", P: "#E06A72", b: "#7A2430" })}</svg>`;
 try { S.dockMin = localStorage.getItem("pg-dock") === "1"; } catch { S.dockMin = false; }
+function nodeRelText(targetId) {
+  if (!S.me || S.me.arrived_rank || targetId == null) return "";
+  if (targetId === S.me.node) return "você está aqui";
+  let n = S.nodeById[S.me.node], k = 0;
+  while (n && n.kind !== "castelo" && k < 80) {
+    const nx = (S.me.route || {})[n.id] === "b" && n.next_b != null ? n.next_b : n.next_a;
+    n = S.nodeById[nx]; k++;
+    if (n && n.id === targetId) return k === 1 ? "a 1 casa de você" : `a ${k} casas de você`;
+  }
+  const dMe = S.nodeById[S.me.node]?.dist, dT = S.nodeById[targetId]?.dist;
+  if (dMe != null && dT != null && dT > dMe) return "já ficou para trás";
+  return "";
+}
+const KIND_EMOJI = {
+  inicio: "🚩", normal: "🪨", bifurcacao: "🪧", avanco: "💨", recuo: "💦", bau: "🎁", xp: "⭐",
+  raio: "⚡", troca: "🌀", pagamento: "💰", carta: "🃏", mina: "⛏️", desafio: "🎯", ladrao: "🦹",
+  fonte: "⛲", cacada: "🔮", alvo: "🐾", treinador: "🧢", castelo: "🏰"
+};
 function ensureGameShell() {
   if ($("#game")) return;
   // visual novo: quem nunca escolheu começa com o menu lateral recolhido (tela cheia), se o admin deixou assim
@@ -4526,6 +5183,8 @@ function ensureGameShell() {
         <section class="dock-sec" id="sec-top"><div id="hud-top"><div id="hud-banner"></div><div id="hud-tip"></div></div></section>
         <section class="dock-sec" id="sec-info"><h3 class="dock-h">Mapa geral</h3><canvas id="minimap" width="192" height="157" aria-label="Mapa geral: toque para ir até um ponto"></canvas><div id="hud-info-text"></div></section>
       </aside>
+      <div id="walk-hud" aria-live="polite"></div>
+      <div id="board-pop" role="region" aria-label="Detalhes do mapa"></div>
       <div id="hud-cam"></div>
       <div id="hud-news"></div>
       ${HX_SHELL}
@@ -4541,9 +5200,67 @@ function ensureGameShell() {
   </div>`;
   worldInit();
 }
+function renderBoardPop() {
+  const el = $("#board-pop"), game = $("#game"); if (!el || !game) return;
+  const on = tabVivoOn() && !!S.tip && !S.win && !S.anim;
+  game.classList.toggle("tb-pop", tabVivoOn());
+  if (!on) { el.innerHTML = ""; return; }
+  const tools = `<div class="bp-tools"><button class="bp-icbtn" data-act="bp-center" title="Centralizar no mapa" aria-label="Centralizar">📍</button><button class="bp-icbtn" data-act="tipclose" title="Fechar" aria-label="Fechar">×</button></div>`;
+  if (S.tip.type === "char") {
+    const c = S.chars.find(x => x.user_id === S.tip.id); if (!c) { el.innerHTML = ""; return; }
+    const n = S.nodeById[c.node], rel = nodeRelText(c.node);
+    el.innerHTML = `${tools}<div class="who">${avatarSVG(c, 2.3)}<div class="bp-tit"><strong>${esc(c.name)} <span class="lvl">Nv ${c.level}</span></strong>
+      <small>${HEROES[c.class]?.nome || ""}${c.team && teamOf(c.team) ? ` · ${esc(teamOf(c.team).nome)}` : ""}${c.user_id === S.session.user.id ? " · você" : ""}</small></div></div>
+      ${titleChips(c.user_id)}
+      <div class="bp-pills">
+        ${c.arrived_rank ? `<span class="bp-pill gold">🏰 ${c.arrived_rank}º no Castelo</span>` : `<span class="bp-pill">📍 Casa nº ${c.node} · ${esc(n?.region || "")}</span><span class="bp-pill">🏁 Faltam ${n?.dist ?? 0}</span>`}
+        ${rel && !c.arrived_rank && c.user_id !== S.session.user.id ? `<span class="bp-pill near">🧭 ${rel}</span>` : ""}
+        <span class="bp-pill gold">${coinSVG()}${(c.coins ?? 0).toLocaleString("pt-BR")}</span>
+      </div>
+      ${c.user_id === leaderId() ? `<p class="bp-desc wanted">👑 Procurado: vencê-lo num duelo ou acertá-lo com o raio rende ${S.cfg.bounty_coins ?? 60} moedas.</p>` : ""}
+      ${c.user_id !== S.session.user.id ? `<div class="tip-actions"><button class="btn small" data-act="duel-new" data-v="${c.user_id}">🤺 Desafiar</button>${S.pk?.on ? `<button class="btn small" data-act="bt-challenge" data-v="${c.user_id}">⚔️ Batalha PK</button>` : ""}<button class="btn ghost small" data-act="react" data-v="${c.user_id}">😄 Reagir</button></div>` : ""}`;
+    positionBoardPop();
+    return;
+  }
+  const n = S.nodeById[S.tip.id]; if (!n) { el.innerHTML = ""; return; }
+  if (S.boss?.active && S.boss.node === n.id) { el.innerHTML = `${tools}${bossBox(true)}`; positionBoardPop(); return; }
+  const k = KIND[n.kind] || { nome: "Casa", desc: "", cor: "#C9A05A" }, here = S.chars.filter(c => c.node === n.id), rel = nodeRelText(n.id);
+  const pills = `<div class="bp-pills">${rel ? `<span class="bp-pill near">🧭 ${rel[0].toUpperCase() + rel.slice(1)}</span>` : ""}<span class="bp-pill">🏁 ${n.kind === "castelo" ? "Chegada" : `Faltam ${n.dist} casas`}</span></div>`;
+  const hereHTML = here.length ? `<div class="bp-here">${here.map(c => `<button class="bp-char" data-act="bp-char" data-v="${c.user_id}" title="Ver ${esc(c.name)}">${avatarSVG(c, 1.3)}<span>${esc(c.name)} <small>Nv ${c.level}</small></span></button>`).join("")}</div>` : "";
+  if (n.kind === "treinador" && n.npc === "red") {
+    el.innerHTML = `${tools}<div class="bp-head"><img class="npc-ic" src="${redCanvas().toDataURL()}" alt=""><div class="bp-tit"><strong>🔴 Red, o treinador lendário</strong><small>Casa nº ${n.id} · ${esc(n.region)}</small></div></div>
+      ${pills}<p class="bp-desc">Time de <b>6 Pokémon dos níveis 73 a 81</b>. Quem passar por aqui enfrenta a luta: vencer paga <b>${S.cfg.casas?.red_premio ?? 1000} moedas</b>; perder não tira nada.</p>${hereHTML}`;
+  } else if (n.kind === "treinador") {
+    const t = npcAt(n.id), lv = npcTeamLevel();
+    el.innerHTML = `${tools}<div class="bp-head">${npcImg(n.id)}<div class="bp-tit"><strong>🧢 ${esc(t.full)}</strong><small>Casa nº ${n.id} · ${esc(t.title)} · ${esc(n.region)}</small></div></div>
+      ${pills}<p class="bp-desc">Tipo <b>${t.types.map(x => esc(PK_TYPES[x]?.[0] || x)).join(" e ")}</b>${lv ? ` (~Nv <b>${lv}</b>)` : ""}. Passou por aqui, batalha: vitória dá moedas e XP; derrota não tira nada.</p>${hereHTML}`;
+  } else {
+    el.innerHTML = `${tools}<div class="bp-head"><span class="bp-dot" style="background:${k.cor}">${KIND_EMOJI[n.kind] || "📍"}</span><div class="bp-tit"><strong>${esc(k.nome)}</strong><small>Casa nº ${n.id} · ${esc(n.region)}</small></div></div>
+      ${pills}<p class="bp-desc">${esc(k.desc)}${n.value ? ` (<b>${n.value} casas</b>)` : ""}</p>
+      ${n.hm ? hmTip(n) : ""}${S.myTraps.some(t => t.node === n.id) ? `<p class="bp-desc" style="color:#FFB4A8">🪤 Sua armadilha está armada aqui.</p>` : ""}${hereHTML}${propInfo(n)}`;
+  }
+  positionBoardPop();
+}
+function positionBoardPop() {
+  const el = $("#board-pop"); if (!el || !el.innerHTML || window.innerWidth <= 760 || !W.el) return;
+  let n = null;
+  if (S.tip?.type === "char") { const c = S.chars.find(x => x.user_id === S.tip.id); n = c && S.nodeById[c.node]; }
+  else if (S.tip?.type === "node") n = S.nodeById[S.tip.id];
+  if (!n) return;
+  const s = worldToScreen(n.x, n.y), offL = W.el.offsetLeft || 0;
+  const pw = el.offsetWidth || 320, ph = el.offsetHeight || 190;
+  const sx = offL + s.x, sy = s.y;
+  let left = sx + 28;
+  if (left + pw > window.innerWidth - 16) left = sx - pw - 28;
+  left = Math.max(offL + 12, Math.min(window.innerWidth - pw - 14, left));
+  const top = Math.max(78, Math.min(window.innerHeight - ph - 20, sy - ph * .45));
+  el.style.left = Math.round(left) + "px";
+  el.style.top = Math.round(top) + "px";
+}
 function xpInfo(me) { const lv = me.level, next = 150 * lv * lv, cur = 150 * (lv - 1) * (lv - 1); return { next, pct: Math.max(0, Math.min(100, Math.round((me.xp_total - cur) / (next - cur) * 100))) }; }
 function renderHUD() {
   if (!$("#game")) return;
+  document.body.classList.toggle("ui-comp", telasCompactasOn());
   const me = S.me, xp = xpInfo(me);
   $("#hud-player").innerHTML = `
     <button class="menu-open-btn" data-act="menu-open" aria-label="Abrir o menu">☰</button>
@@ -4554,7 +5271,7 @@ function renderHUD() {
         <span class="pc-coins m-only"><span class="coins">${me.coins} moedas</span> <span class="muted">Dicas ${me.hints ?? 0}, outra vez ${me.retries ?? 0}</span></span>
         <span class="xpbar" title="${me.xp_total} de ${xp.next} XP"><i style="width:${xp.pct}%"></i></span><span class="xp-txt">XP: ${me.xp_total ?? 0} / ${xp.next} (${xp.pct}%)</span></span>
     </button>
-    <div class="hud-card res"><span class="pill coins" title="Moedas">${coinSVG()}<b>${(me.coins ?? 0).toLocaleString("pt-BR")}</b></span><span class="pill" title="Dicas">Dicas <b class="num">${me.hints ?? 0}</b></span><span class="pill" title="Tente outra vez">Outra vez <b class="num">${me.retries ?? 0}</b></span></div>`;
+    <div class="hud-card res"><span class="pill coins" title="Ver extrato de moedas">${coinSVG()}<b>${(me.coins ?? 0).toLocaleString("pt-BR")}</b></span><span class="pill" title="Dicas">Dicas <b class="num">${me.hints ?? 0}</b></span><span class="pill" title="Tente outra vez">Outra vez <b class="num">${me.retries ?? 0}</b></span></div>`;
   const T = S.today, se = T?.season, dist = S.nodeById[me.node]?.dist ?? 0;
   const champ = (T?.yesterday || []).find(y => y.rank === 1);
   $("#hud-info-text").innerHTML = `
@@ -4564,24 +5281,27 @@ function renderHUD() {
     <div class="info-line"><span>Novo desafio</span><span class="countdown">${countdownText()}</span></div>
     ${champ ? `<div class="info-line"><span>Campeão de ontem</span><span>${esc(champ.name)}</span></div>` : ""}`;
   $("#hud-banner").innerHTML = hudBanner();
-  $("#hud-tip").innerHTML = hudTip();
+  $("#hud-tip").innerHTML = tabVivoOn() ? "" : hudTip();
+  renderBoardPop();
   $("#hud-action").innerHTML = hudAction();
   $("#hud-action").classList.toggle("open", !!S.actOpen);
   $("#sec-boss").innerHTML = bossBox(false);
+  const keepSearch = document.activeElement?.id === "menu-q" ? { v: document.activeElement.value, a: document.activeElement.selectionStart, b: document.activeElement.selectionEnd } : null;
   $("#hud-menu").innerHTML = menuHTML();
+  if (keepSearch) { const mq = $("#menu-q"); if (mq) { mq.value = keepSearch.v; mq.focus(); try { mq.setSelectionRange(keepSearch.a, keepSearch.b); } catch {} } }
   $("#hud-caixa").innerHTML = caixaCard();
   sacDock(); pkDock(); raceDock(); $("#hud-news").innerHTML = avBell(false) + mailAlert() + huntAlert() + rocketAlert() + quizAlert() + sacAlert() + newsAlert() + leagueAlert() + arenaAlert(); $("#sec-caixa").classList.toggle("hidden", !$("#hud-caixa").innerHTML.trim());
   $("#hud-presence").innerHTML = presenceHUD();
   $("#sec-presence").classList.toggle("hidden", !S.presence);
-  $("#hud-player").insertAdjacentHTML("beforeend", presenceChip() + avBell(true) + `<button class="help-chip" data-act="go" data-v="caixa" aria-label="Ajude o jogo">💛</button>`);
+  $("#hud-player").insertAdjacentHTML("beforeend", `<button class="m-coin-chip" data-act="go" data-v="extrato" title="Extrato de moedas">${coinSVG()}${(me.coins ?? 0).toLocaleString("pt-BR")}</button>` + presenceChip() + avBell(true) + `<button class="help-chip" data-act="go" data-v="caixa" aria-label="Ajude o jogo">💛</button>`);
   const sb2 = $("#snd-btn"); if (sb2) { sb2.textContent = S.sound ? "🔊" : "🔇"; sb2.title = sb2.ariaLabel = S.sound ? "Desligar o som" : "Ligar o som"; sb2.ariaPressed = String(S.sound); }
   const tg = $("#dock-toggle");
   if (tg) { tg.textContent = S.dockMin ? "»" : "«"; tg.title = tg.ariaLabel = S.dockMin ? "Abrir painel" : "Recolher painel"; }
   const hasTop = !!($("#hud-banner").innerHTML.trim() || $("#hud-tip").innerHTML.trim());
   $("#sec-top").classList.toggle("hidden", !hasTop);
-  if (S.tip && !S.dockMin && window.innerWidth > 760) $("#sec-top").scrollIntoView({ block: "nearest" });
+  if (S.tip && !tabVivoOn() && !S.dockMin && window.innerWidth > 760) $("#sec-top").scrollIntoView({ block: "nearest" });
   hxRender();
-  $("#hud-cam").innerHTML = `<button class="cam-btn" data-act="zoom" data-v="1" aria-label="Aproximar">+</button><button class="cam-btn" data-act="zoom" data-v="-1" aria-label="Afastar">−</button><button class="cam-btn wide" data-act="center">Eu</button><button class="cam-btn wide" data-act="fit">Tudo</button>`;
+  $("#hud-cam").innerHTML = `<button class="cam-btn" data-act="zoom" data-v="-1" title="Afastar" aria-label="Afastar">−</button><button class="cam-btn" data-act="zoom" data-v="1" title="Aproximar" aria-label="Aproximar">+</button><button class="cam-btn wide" data-act="center" title="Centralizar no meu herói">📍 Eu</button><button class="cam-btn wide" data-act="fit" title="Ver o mapa inteiro">🗺️ Tudo</button>`;
   W.dirty = true;
 }
 function hudBanner() {
@@ -4747,25 +5467,68 @@ function formDirty(f) {
     : el.tagName === "SELECT" ? [...el.options].some(o => o.selected !== o.defaultSelected)
     : "defaultValue" in el && el.value !== el.defaultValue);
 }
+const WIN_GROUPS = [
+  ["comp", "🏆 Competir", ["desafio", "ranking", "liga", "duelos", "expedicao"]],
+  ["pk", "🐾 Pokémon", ["pokedex", "equipe", "batalhas", "arena", "centro", "creche", "pkloja", "cartas", "leilao", "trocas", "rocket", "treino"]],
+  ["vila", "🏰 Vila & Lojas", ["vila", "guerras", "loja", "mercado", "extrato"]],
+  ["com", "💬 Comunidade", ["chat", "correio", "caixa"]],
+  ["ajuda", "❓ Ajuda", ["regras", "sac", "admin"]]
+];
+const WIN_SHORT = {
+  desafio: "Desafio", ranking: "Ranking", liga: "Liga", duelos: "Duelos", expedicao: "Expedições",
+  pokedex: "Pokédex", equipe: "Equipe", batalhas: "Batalhas", arena: "Arena", centro: "Centro PK",
+  creche: "Creche", pkloja: "Loja PK", cartas: "Cartas", leilao: "Leilão", trocas: "Trocas",
+  rocket: "Rocket", treino: "Grama", vila: "Minha Vila", guerras: "Guerras", loja: "Visuais",
+  mercado: "Mercado", extrato: "Extrato", chat: "Chat & Jornal", correio: "Correio", caixa: "Caixa PIX",
+  regras: "Biblioteca", sac: "SAC", admin: "Admin"
+};
 function renderWindow() {
   const root = $("#win-root"); if (!root) return;
+  document.body.classList.toggle("ui-comp", telasCompactasOn());
   const auto = root.dataset.tab === S.win && Date.now() - (S.userActAt || 0) > 1200;
   const keepForms = auto ? [...root.querySelectorAll("form[id]")].filter(f => Date.now() - (FORM_SENT[f.id] || 0) > 5000 && formDirty(f)) : [];
   const fa = document.activeElement, keepFocus = fa && keepForms.some(f => f.contains(fa)) ? { el: fa, a: fa.selectionStart, b: fa.selectionEnd } : null;
-  if (!S.win || !WINS[S.win] || (S.win === "admin" && !S.isAdmin)) { root.innerHTML = ""; root.dataset.tab = ""; return; }
+  if (!S.win || !WINS[S.win] || (S.win === "admin" && !S.isAdmin)) { root.innerHTML = ""; root.dataset.tab = ""; renderBoardPop(); return; }
+  renderBoardPop();
   const prev = root.querySelector(".win-body"), keep = prev && root.dataset.tab === S.win ? prev.scrollTop : 0;
+  const prevNav = root.querySelector(".win-tabs"), keepNav = prevNav ? prevNav.scrollTop : 0;
   const ORDER = ["desafio", "ranking", "liga", "duelos", "pokedex", "equipe", "treino", "centro", "creche", "leilao", "trocas", "extrato", "batalhas", "rocket", "arena", "guerras", "correio", "chat", "caixa", "loja", "pkloja", "mercado", "vila", "regras", "sac", "admin"];
   const pos = k => { const i = ORDER.indexOf(k); return i < 0 ? 99 : i; };
-  const tabs = Object.entries(WINS).filter(([k]) => (k !== "admin" || S.isAdmin) && k !== "batalha").sort((a, b) => pos(a[0]) - pos(b[0]));
+  const okTab = k => (k !== "admin" || S.isAdmin) && k !== "batalha" && !(k === "treino" && S.cfg.treino?.on === false && !S.isAdmin);
+  const tabs = Object.entries(WINS).filter(([k]) => okTab(k)).sort((a, b) => pos(a[0]) - pos(b[0]));
   const [title, view] = WINS[S.win];
-  // a torcida chega ao vivo: não apagar o que a pessoa está escrevendo
   const ae = document.activeElement, keepIn = ae?.id === "cheer-in" ? { v: ae.value, a: ae.selectionStart, b: ae.selectionEnd } : null;
+  const comp = telasCompactasOn(), B = comp && typeof menuBadges === "function" ? menuBadges() : {};
+  let navHTML;
+  if (comp) {
+    const curGrp = WIN_GROUPS.find(([, , ks]) => ks.includes(S.win))?.[0] || "comp";
+    const seen = new Set(), parts = [];
+    for (const [gk, gn, ks] of WIN_GROUPS) {
+      const items = ks.filter(k => WINS[k] && okTab(k));
+      if (!items.length) continue;
+      parts.push(`<div class="wgrp-h">${gn}</div>`);
+      for (const k of items) {
+        seen.add(k);
+        const [t] = WINS[k], b = B[k] || "", other = gk !== curGrp && S.win !== k ? " wt-other" : "";
+        parts.push(`<button class="${other.trim()}" data-act="go" data-v="${k}" aria-current="${S.win === k}" title="${esc(t)}">${MENU[k] ? `<span class="wt-ic" aria-hidden="true">${MENU[k][0]}</span>` : ""}<span class="wt-t">${esc(WIN_SHORT[k] || t)}</span>${b}</button>`);
+      }
+    }
+    for (const [k, [t]] of tabs) if (!seen.has(k)) {
+      parts.push(`<button class="wt-other" data-act="go" data-v="${k}" aria-current="${S.win === k}" title="${esc(t)}">${MENU[k] ? `<span class="wt-ic" aria-hidden="true">${MENU[k][0]}</span>` : ""}<span class="wt-t">${esc(WIN_SHORT[k] || t)}</span></button>`);
+    }
+    parts.push(`<button class="wt-more" data-act="wt-all" aria-expanded="${!!S.wtAll}">${S.wtAll ? "▴ Menos" : "☰ Todas"}</button>`);
+    navHTML = parts.join("");
+  } else {
+    navHTML = tabs.map(([k, [t]]) => `<button data-act="go" data-v="${k}" aria-current="${S.win === k}">${MENU[k] ? `<span class="wt-ic" aria-hidden="true">${MENU[k][0]}</span>` : ""}${t}</button>`).join("");
+  }
+  const me = S.me, resBar = comp && me ? `<div class="win-res"><span class="pill coins" data-act="go" data-v="extrato" role="button" tabindex="0" style="cursor:pointer" title="Ver extrato de moedas">${coinSVG()}<b>${(me.coins ?? 0).toLocaleString("pt-BR")}</b></span><span class="pill" title="Dicas">💡 <b>${me.hints ?? 0}</b></span><span class="pill" title="Tente outra vez">🔁 <b>${me.retries ?? 0}</b></span></div>` : "";
   root.innerHTML = `<div class="win-bg"><section class="win${S.win === "vila" && vilaNovaOn() ? " win-vila" : ""}" role="dialog" aria-modal="true" aria-label="${title}">
-    <header class="win-head"><h2>${MENU[S.win] ? `<span aria-hidden="true">${MENU[S.win][0]}</span> ` : ""}${title}</h2><button class="btn ghost small" data-act="go" data-v="mapa">Voltar ao mapa</button></header>
-    <nav class="win-tabs" aria-label="Abas">${tabs.map(([k, [t]]) => `<button data-act="go" data-v="${k}" aria-current="${S.win === k}">${MENU[k] ? `<span class="wt-ic" aria-hidden="true">${MENU[k][0]}</span>` : ""}${t}</button>`).join("")}</nav>
+    <header class="win-head"><h2>${MENU[S.win] ? `<span aria-hidden="true">${MENU[S.win][0]}</span> ` : ""}${title}</h2>${resBar}<button class="btn ghost small" data-act="go" data-v="mapa">${comp ? "✕ Mapa" : "Voltar ao mapa"}</button></header>
+    <nav class="win-tabs${S.wtAll ? " wt-all" : ""}" aria-label="Abas">${navHTML}</nav>
     <div class="win-body">${view()}</div></section></div>`;
   root.dataset.tab = S.win;
   root.querySelector(".win-body").scrollTop = keep;
+  if (keepNav) root.querySelector(".win-tabs").scrollTop = keepNav;
   const ci = $("#cheer-in"); if (keepIn && ci) { ci.value = keepIn.v; ci.focus(); try { ci.setSelectionRange(keepIn.a, keepIn.b); } catch {} }
   for (const f of keepForms) { const n = document.getElementById(f.id); if (n && root.contains(n)) n.replaceWith(f); }
   if (keepFocus && document.contains(keepFocus.el)) { keepFocus.el.focus(); try { keepFocus.el.setSelectionRange(keepFocus.a, keepFocus.b); } catch {} }
@@ -4778,6 +5541,134 @@ function showSummary() {
     <p class="muted">+${m.xp_gained} XP e ${m.coins_gained >= 0 ? "+" : ""}${m.coins_gained} moedas.</p>
     <div class="actions"><button class="btn" data-r="1">Fechar</button></div>`);
   $("[data-r]", box).onclick = closeModal; $("[data-r]", box).focus();
+}
+function updateWalkHUD() {
+  const el = $("#walk-hud"); if (!el) return;
+  const A = S.anim;
+  if (!A || !tabVivoOn()) { el.innerHTML = ""; return; }
+  const pct = A.tot ? Math.min(100, Math.round(A.done / A.tot * 100)) : 100;
+  el.innerHTML = `<span class="wh-step">👣 ${A.tot ? `Passo <b>${A.done}/${A.tot}</b>` : "Caminhada"}</span>
+    ${A.tot ? `<span class="wh-bar"><i style="width:${pct}%"></i></span>` : ""}
+    ${A.evTxt ? `<span class="wh-ev">${esc(A.evTxt)}</span>` : ""}
+    <button class="wh-skip" data-act="walk-skip">⏭️ Pular</button>`;
+}
+function hopBetweenNodes(a, b, pred, dur, hopHeight = 15, backward = false) {
+  return new Promise(resolve => {
+    if (!a || !b || reduceMotion() || S.anim?.skip) { resolve(); return; }
+    const t0 = performance.now();
+    spawnBoardFx(a.x, a.y + 4, "", "#EFE3C2", "dust");
+    const step = now => {
+      if (!S.anim || S.anim.skip) { resolve(); return; }
+      const u = Math.min(1, (now - t0) / dur);
+      const pt = backward ? evalEdgeCurve(b, a, pred, 1 - u) : evalEdgeCurve(a, b, pred, u);
+      S.anim.wx = pt.x; S.anim.wy = pt.y;
+      S.anim.hopY = Math.sin(u * Math.PI) * hopHeight;
+      const tx = pt.x - W.w / 2 / W.cam.z, ty = pt.y - 20 - W.h / 2 / W.cam.z;
+      W.cam.x += (tx - W.cam.x) * .24; W.cam.y += (ty - W.cam.y) * .24; clampCam();
+      W.dirty = true;
+      if (u < 1) requestAnimationFrame(step);
+      else { S.anim.hopY = 0; resolve(); }
+    };
+    requestAnimationFrame(step);
+  });
+}
+async function animateBoardWalk(res) {
+  const startId = res.hunt_go ?? res.from, steps = res.hunt_go != null ? res.path.slice(res.path.lastIndexOf(res.hunt_go) + 1) : previewWalk(res.from, res.total);
+  if (!tabVivoOn() || reduceMotion()) {
+    S.anim = { node: startId }; render(); centerMe(false);
+    for (const nid of steps) { await sleep(reduceMotion() ? 0 : 180); S.anim.node = nid; centerMe(true); }
+    if (S.anim.node !== res.to) { await sleep(reduceMotion() ? 0 : 600); S.anim.node = res.to; centerMe(true); }
+    await sleep(reduceMotion() ? 0 : 400); S.anim = null; return;
+  }
+  const pred = buildPredMap(), n0 = S.nodeById[startId];
+  S.anim = { node: startId, wx: n0?.x, wy: n0?.y, hopY: 0, trail: [startId], done: 0, tot: steps.length, evTxt: "", skip: false };
+  render(); centerMe(false); updateWalkHUD();
+  const dur = steps.length > 14 ? 135 : steps.length > 8 ? 165 : 210;
+  let curId = startId;
+  for (let i = 0; i < steps.length && !S.anim.skip; i++) {
+    const nxtId = steps[i], a = S.nodeById[curId], b = S.nodeById[nxtId];
+    await hopBetweenNodes(a, b, pred, dur, 15, false);
+    curId = nxtId; S.anim.node = curId; S.anim.wx = b?.x; S.anim.wy = b?.y; S.anim.done = i + 1; S.anim.trail.push(curId);
+    sfx("tick");
+    // efeitos ao passar por casas no meio do caminho
+    if (b && i < steps.length - 1) {
+      if (b.kind === "pagamento") { sfx("moeda"); spawnBoardFx(b.x, b.y, "💰 Salário!", "#7FE0A4"); S.anim.evTxt = "💰 Dia de pagamento!"; }
+      else if (b.kind === "treinador" && S.cfg.casas?.passar_luta !== false) { spawnBoardFx(b.x, b.y, "⚔️ Batalha!", "#FFB86C"); S.anim.evTxt = "⚔️ Treinador no caminho!"; }
+      else if (S.props?.[b.id] && S.props[b.id].owner !== S.session.user.id && S.cfg.property_pedagio_passou !== false) {
+        spawnBoardFx(b.x, b.y, `🏠 −${pousadaToll(S.props[b.id])}`, "#FF9A9E"); S.anim.evTxt = "🏠 Pedágio na pousada";
+      }
+    }
+    updateWalkHUD();
+  }
+  // efeito na casa onde parou (e movimento extra se houver: Vento, Lamaçal, Armadilha, Portal, Atalho…)
+  const landed = S.nodeById[curId], evs = res.events || [];
+  if (landed && !S.anim.skip) {
+    spawnBoardFx(landed.x, landed.y, "", "#FFE37A", "spark");
+    const has = t => evs.find(e => e.t === t);
+    if (has("bau")) { sfx("moeda"); spawnBoardFx(landed.x, landed.y, "🎁 Baú de moedas!", "#FFE37A"); S.anim.evTxt = "🎁 Abriu um baú!"; }
+    else if (has("xp")) { sfx("acerto"); spawnBoardFx(landed.x, landed.y, "⭐ +XP!", "#CDB8FF"); S.anim.evTxt = "⭐ Clareira de treino!"; }
+    else if (has("raio")) { sfx("raio"); spawnBoardFx(landed.x, landed.y, "⚡ Tempestade!", "#7FD4FF"); S.anim.evTxt = "⚡ Raio lançado!"; }
+    else if (has("ladrao")) { sfx("erro"); spawnBoardFx(landed.x, landed.y, "🦹 Ladrão!", "#FF9A9E"); S.anim.evTxt = "🦹 Ladrão de estrada!"; }
+    else if (has("fonte")) { sfx("acerto"); spawnBoardFx(landed.x, landed.y, "⛲ Pokébola!", "#7FD4FF"); S.anim.evTxt = "⛲ Fonte das Bolas!"; }
+    else if (has("mina")) { sfx("moeda"); spawnBoardFx(landed.x, landed.y, "⛏️ Mina!", "#E6EEF8"); S.anim.evTxt = "⛏️ Escavou na mina!"; }
+    updateWalkHUD();
+    if (curId !== res.to) {
+      await sleep(260);
+      // descobre se o destino final está alguns passos à frente ou atrás
+      const fwd = previewWalk(curId, 12), fi = fwd.indexOf(res.to);
+      const back = []; { let p = curId; for (let k = 0; k < 12 && pred[p] != null; k++) { p = pred[p]; back.push(p); } }
+      const bi = back.indexOf(res.to);
+      if (fi >= 0) {
+        S.anim.evTxt = has("avanco") ? "💨 Vento a favor!" : "✨ Avanço extra!"; updateWalkHUD();
+        spawnBoardFx(landed.x, landed.y, S.anim.evTxt, "#7FD4FF"); sfx("acerto");
+        for (let k = 0; k <= fi && !S.anim.skip; k++) {
+          const a = S.nodeById[curId], b = S.nodeById[fwd[k]];
+          await hopBetweenNodes(a, b, pred, 150, 18, false);
+          curId = fwd[k]; S.anim.node = curId; S.anim.wx = b?.x; S.anim.wy = b?.y; S.anim.trail.push(curId); sfx("tick");
+        }
+      } else if (bi >= 0) {
+        S.anim.evTxt = has("armadilha") ? "🪤 Armadilha!" : has("duelo") ? "⚔️ Empurrado!" : "💦 Lamaçal!"; updateWalkHUD();
+        spawnBoardFx(landed.x, landed.y, S.anim.evTxt, "#FF9A9E"); sfx("erro");
+        for (let k = 0; k <= bi && !S.anim.skip; k++) {
+          const a = S.nodeById[curId], b = S.nodeById[back[k]];
+          await hopBetweenNodes(a, b, pred, 165, 9, true);
+          curId = back[k]; S.anim.node = curId; S.anim.wx = b?.x; S.anim.wy = b?.y;
+        }
+      } else {
+        const dest = S.nodeById[res.to];
+        if (dest) {
+          S.anim.evTxt = has("troca") ? "🌀 Portal!" : "✨ Movimento!"; updateWalkHUD();
+          spawnBoardFx(landed.x, landed.y, "🌀 Portal!", "#E1BEE7");
+          await sleep(280);
+          S.anim.node = res.to; S.anim.wx = dest.x; S.anim.wy = dest.y; centerOn(dest.x, dest.y - 20, true);
+          spawnBoardFx(dest.x, dest.y, "", "#E1BEE7", "spark");
+        }
+      }
+    }
+    const endN = S.nodeById[res.to];
+    if (endN && res.leveled && !S.anim.skip) {
+      sfx("acerto"); spawnBoardFx(endN.x, endN.y - 10, `🎉 Nível ${res.level}!`, "#FFE37A");
+    }
+    if (!S.anim.skip) await sleep(420);
+  }
+  const destN = S.nodeById[res.to];
+  if (destN) { S.anim.node = res.to; S.anim.wx = destN.x; S.anim.wy = destN.y; centerOn(destN.x, destN.y - 20, false); }
+  S.anim = null; updateWalkHUD();
+}
+async function walkSummaryModal(res) {
+  if (!tabVivoOn()) return;
+  const dest = S.nodeById[res.to], evs = res.events || [];
+  const evIc = { avanco: "💨", recuo: "💦", bau: "🎁", xp: "⭐", pagamento: "💰", carta: "🃏", raio: "⚡", troca: "🌀",
+    armadilha: "🪤", duelo: "🤺", pousada: "🏠", procurado: "👑", castelo: "🏰", nivel: "🎉", vila: "🏰", lama: "💩", cacada: "🎯", lendario: "🐉" };
+  const m = openModal(`<h2>🏁 Fim da caminhada</h2>
+    <div class="walk-sum-dest"><span class="bp-dot" style="background:${KIND[dest?.kind]?.cor || "#C9A05A"}">${KIND_EMOJI[dest?.kind] || "📍"}</span>
+      <div><b>Casa nº ${res.to} · ${esc(KIND[dest?.kind]?.nome || "Trilha")}</b><div class="muted" style="font-size:12.5px">${esc(dest?.region || "")}${dest && dest.kind !== "castelo" ? ` · faltam ${dest.dist} casas pro Castelo` : ""}</div></div></div>
+    ${evs.length ? `<ul class="walk-sum-evs">${evs.map(e => `<li>${evIc[e.t] || "•"} ${esc(e.msg)}${e.fight ? ` <button class="btn ghost small" data-npclog="${e.fight}">Ver a luta</button><div class="npc-log" id="npclog-${e.fight}"></div>` : ""}</li>`).join("")}</ul>` : `<p class="muted" style="text-align:center;margin:8px 0">Caminho tranquilo, sem sustos hoje!</p>`}
+    <div class="walk-sum-rews"><span>✨ +${res.xp} XP</span><span class="coins">${coinSVG()} ${res.coins >= 0 ? "+" : ""}${res.coins} moedas</span></div>
+    <div class="actions" style="justify-content:center;margin-top:14px"><button class="btn" id="wsum-ok">Continuar</button></div>`);
+  const ok = $("#wsum-ok", m); ok.focus();
+  await new Promise(r => ok.onclick = r);
+  closeModal();
 }
 async function doMove(recDate) {
   const T = recDate ? S.rec : S.today; if (!T) return;
@@ -4795,16 +5686,10 @@ async function doMove(recDate) {
   S.puzzle = {}; S.playDate = null; S.rec = null;
   await rollModal(res);
   S.win = null; S.selectedNode = null; S.tip = null;
-  // quem foi atrás da Caçada sai do começo do caminho dela (arquivo 48)
-  const steps = res.hunt_go != null ? res.path.slice(res.path.lastIndexOf(res.hunt_go) + 1) : previewWalk(res.from, res.total);
-  S.anim = { node: res.hunt_go ?? res.from };
-  render(); centerMe(false);
-  for (const nid of steps) { await sleep(reduceMotion() ? 0 : 180); S.anim.node = nid; centerMe(true); }
-  if (S.anim.node !== res.to) { await sleep(600); S.anim.node = res.to; centerMe(true); }
-  await sleep(400);
-  S.anim = null;
+  await animateBoardWalk(res);
   await guarded(async () => { await Promise.all([loadWorld(), loadToday(), refreshMe(), loadPresence()]); });
   render(); centerMe(true);
+  await walkSummaryModal(res);
   await pkAfterMove();
 }
 
@@ -6384,7 +7269,7 @@ function LIB() {
     { id: "cartas", ic: "🃏", t: "Cartas Pokegames", h: `<p>As <b>Cartas Pokegames</b> (menu Pokémon) são o nosso jogo de cartas, com as 151 da 1ª geração. Cada carta tem PV, 2 ataques (com o nome dos golpes do Pokémon), fraqueza, resistência e raridade: comum, incomum, rara e ultra rara. Qualquer carta pode vir <b>✨ brilhante</b>, raríssima: dourada e um pouco mais forte.</p>
       <p><b>Ganhar cartas:</b> ${S.cfg.cartas?.pacote_inicial ?? 2} pacotes de boas-vindas, 1 carta por dia ao andar, pacote pela vitória na rodada do dia, pelo Quiz, nos prêmios da temporada, às vezes nos baús e na loja das Cartas (${S.cfg.cartas?.pacote_preco ?? 300} moedas). Cada pacote tem 5 cartas: 3 comuns ou melhores, 1 incomum ou melhor e 1 rara ou melhor. Repetidas: desmanche em moedas ou venda no Mercado de cartas.</p>
       <p><b>Duelo:</b> monte um deck de ${S.cfg.cartas?.deck ?? 10} cartas (no máximo ${S.cfg.cartas?.max_iguais ?? 2} iguais). Você começa com 1 em campo e 3 na mão. Cada turno dá +1 ⚡ (até ${S.cfg.cartas?.energia_max ?? 5}); o ataque fraco custa ${S.cfg.cartas?.custo_fraco ?? 1} ⚡, o forte ${S.cfg.cartas?.custo_forte ?? 3} ⚡, e trocar o Pokémon em campo custa ${S.cfg.cartas?.custo_trocar ?? 1} ⚡. Fraqueza dá dano ×2 e resistência ×½, pela tabela de tipos das batalhas. Quando um Pokémon cai, entra o de mais vida da mão. Vence quem derrubar ${S.cfg.cartas?.nocautes ?? 3}. Contra outro jogador vale moedas (de ${S.cfg.cartas?.aposta_min ?? 10} a ${S.cfg.cartas?.aposta_max ?? 100}); contra o computador é só treino, sem prêmio.</p>` },
-    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p><b>🏁 Quadro da corrida:</b> no canto do mapa aparece quem está em 1º e quantas casas cada um está atrás dele (a sua linha fica destacada). Toque num nome para ver o jogador no mapa, e em "Ver todos" para o ranking da temporada. Toque no título para fechar e deixar só uma linha.</p><p><b>Botão da equipe:</b> mostra o primeiro Pokémon da equipe e uma bolinha de vida para cada um (verde, amarela ou vermelha). Toque para ver todos.</p><p><b>Tela nova no computador:</b> o mapa ocupa a tela toda, com o menu em ícones na lateral (o botão » abre o menu completo e « recolhe). No alto ficam o mapinha, a sua barra (nível, EXP e a <b>Missão diária</b>, que é o próximo passo de hoje: clique nela) e, à direita, a temporada, a casa onde você está, a região e os botões 🧭 Aventura, ⛲ Praça, 🎒 Mochila, Meus Pokémon, Pokédex, Ranking, Biblioteca e som. Embaixo fica o <b>chat fixo</b> com as abas Chat, Jornal, Acontecimentos e Missões (a setinha recolhe). A <b>🎒 Mochila</b> mostra em quadradinhos os seus itens, bolas e visuais, a equipe e as moedas.</p><p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, propostas de 🔁 troca de Pokémon, 🃏 Cartas, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
+    { id: "avisos", ic: "🔔", t: "Avisos e atalhos", h: `<p><b>🏁 Quadro da corrida:</b> no canto do mapa aparece quem está em 1º e quantas casas cada um está atrás dele (a sua linha fica destacada). Toque num nome para ver o jogador no mapa, e em "Ver todos" para o ranking da temporada. Toque no título para fechar e deixar só uma linha.</p><p><b>Botão da equipe:</b> mostra o primeiro Pokémon da equipe e uma bolinha de vida para cada um (verde, amarela ou vermelha). Toque para ver todos.</p><p><b>Tela nova no computador:</b> o mapa ocupa a tela toda, com o menu em ícones na lateral (o botão » abre o menu completo e « recolhe). No menu aberto, os grupos ficam em <b>2 colunas</b> com <b>busca rápida</b> no topo, e as janelas vêm separadas por categoria, com o seu saldo de moedas sempre visível no cabeçalho. No alto do mapa ficam o mapinha, a sua barra (nível, EXP e a <b>Missão diária</b>, que é o próximo passo de hoje: clique nela) e, à direita, o saldo de moedas (clique para o extrato), a temporada, a casa onde você está, a região e os botões 🧭 Aventura, ⛲ Praça, 🎒 Mochila, Meus Pokémon, Pokédex, Ranking, Biblioteca e som. Embaixo fica o <b>chat fixo</b> com as abas Chat, Jornal, Acontecimentos e Missões (a setinha recolhe). A <b>🎒 Mochila</b> mostra em quadradinhos os seus itens, bolas e visuais, a equipe e as moedas.</p><p>O <b>sino 🔔</b> no mapa (no celular, no alto da tela) mostra tudo o que é novo para você, com o atalho para abrir: item novo no <b>Mercado</b>, leilão novo ou <b>lance coberto no Leilão</b>, mensagens no <b>Chat</b>, presentes no Correio, avisos do Jornal, resposta do SAC, convites e vez de jogar nas batalhas, duelos, propostas de 🔁 troca de Pokémon, 🃏 Cartas, Quiz, Rocket, Caçada, Liga, ataques à sua vila e Pokémon prontos para evoluir.</p>
       <p>Quando chega algo novo com o jogo aberto, aparece um aviso na tela com som. Abrir o Mercado, o Leilão ou o Chat marca como visto (ou toque em "Marcar como vistos").</p>
       <p>O botão <b>Meus Pokémon 🐾</b> (canto do mapa) mostra a sua equipe com vida e XP, avisa quem pode evoluir ou está ferido e tem atalhos para montar a equipe, a Pokédex, ${S.cfg.treino?.on === false ? "a Aventura" : "a Grama"}, o Centro, a Creche, as batalhas, o Leilão e a Loja Pokémon.</p>` },
     { id: "comecar", ic: "🚀", t: "Começando", h: `<p>Todo dia você faz três coisas:</p><ol>
@@ -6400,7 +7285,8 @@ function LIB() {
       <p>A rodada fecha à meia-noite (horário de Brasília). Prêmios: 1º +${rs[0]} casas e ${rc[0]} moedas; 2º +${rs[1]} casas e ${rc[1]} moedas; 3º +${rs[2]} casa.</p>
       <p><b>Sem spoiler:</b> os palpites e números dos outros só aparecem quando você e todos os jogadores ativos já jogaram o dia. Antes disso, só aparece quem já jogou.</p>
       <p><b>Destaques:</b> o 1º do mapa é <b>O Brabo</b> (e o Procurado: vencê-lo rende recompensa, mas só o melhor da última rodada pode enfrentá-lo). O último de ontem é o <b>Snorlax da Rodada</b>: recebe menos salário e acorda com a vila enlameada. Toque num jogador para ver os títulos dele.</p>` },
-    { id: "mapa", ic: "🗺️", t: "Tabuleiro e casas", h: `<p>O tabuleiro tem bifurcações. O caminho <b>seguro</b> é mais longo, com baús e Dias de Pagamento; o <b>arriscado</b> é mais curto, mas cheio de lamaçais. Quando uma bifurcação está perto, o jogo pede para você escolher antes de andar.</p>
+    { id: "mapa", ic: "🗺️", t: "Tabuleiro e casas", h: `<p>O tabuleiro tem bifurcações. O caminho <b>seguro</b> é mais longo, com baús e Dias de Pagamento; o <b>arriscado</b> é mais curto, mas cheio de lamaçais. Quando uma bifurcação está perto, você pode escolher o caminho no aviso ou <b>clicando direto nas placas da bifurcação no mapa</b>.</p>
+      <p><b>Como navegar e planejar:</b> arraste o mapa com suavidade, use a rodinha/pinça ou dê <b>dois toques</b> num espaço livre para aproximar. Antes de andar no dia, o mapa acende no chão as casas já garantidas pelos seus acertos e a faixa extra da roleta. Ao tocar numa casa ou num jogador, abre um cartão ali perto mostrando também <b>a quantas casas está de você</b>. Na hora de andar, seu herói salta de casa em casa revelando os efeitos pelo caminho (com o botão <b>⏭️ Pular</b> no alto, se estiver com pressa) e mostra o resumo ao chegar.</p>
       <p><b>Casas especiais</b> (toque numa casa do mapa para ver o que ela faz):</p><ul class="lib-kinds">${kinds.map(([, k]) => `<li><i style="background:${k.cor}"></i><b>${k.nome}</b>: ${esc(k.desc)}</li>`).join("")}</ul>
       <p><b>Encontro:</b> parar na mesma casa de outro jogador gera um duelo rápido: quem perde entrega moedas e volta casas.</p>
       <p><b>Armadilhas:</b> compre na loja e arme numa casa; quem cair volta casas e você ganha moedas.</p>
@@ -6724,18 +7610,42 @@ function formModal(title, fields, okLabel) {
   });
 }
 async function rollModal(res) {
-  const m = openModal(`<h2 style="text-align:center">Roleta do movimento</h2><div class="die rolling" id="die">${diePips(1)}</div><div id="dres"></div>`);
+  if (!tabVivoOn()) {
+    const m = openModal(`<h2 style="text-align:center">Roleta do movimento</h2><div class="die rolling" id="die">${diePips(1)}</div><div id="dres"></div>`);
+    const die = $("#die", m);
+    sfx("dado");
+    for (let i = 0; i < (reduceMotion() ? 1 : 12); i++) { die.innerHTML = diePips(1 + Math.floor(Math.random() * 3)); await sleep(70); }
+    setTimeout(() => sfx(res.coins > 0 ? "moeda" : "tick"), 300);
+    if (res.events.some(e => e.t === "raio")) setTimeout(() => sfx("raio"), 700);
+    die.classList.remove("rolling"); die.innerHTML = diePips(Math.min(res.roll, 6));
+    $("#dres", m).innerHTML = `
+      <p style="text-align:center;font-size:1.05rem">Acertos: <strong class="num">${res.base}</strong> casas. Roleta: <strong class="num">${res.roll}</strong>.${res.bonus ? ` Bônus: <strong class="num">${res.bonus}</strong>.` : ""}${res.skill ? ` Habilidade: <strong class="num">${res.skill}</strong>.` : ""}<br>Total: <strong class="num">${res.total}</strong> casas.</p>
+      ${res.events.length ? `<ul class="events">${res.events.map(e => `<li>${esc(e.msg)}${e.fight ? ` <button class="btn ghost small" data-npclog="${e.fight}">Ver a luta</button><div class="npc-log" id="npclog-${e.fight}"></div>` : ""}</li>`).join("")}</ul>` : ""}
+      <p class="muted" style="text-align:center">+${res.xp} XP e ${res.coins >= 0 ? "+" : ""}${res.coins} moedas</p>
+      <div class="actions" style="justify-content:center"><button class="btn" id="dgo">Ver no mapa</button></div>`;
+    $("#dgo", m).focus();
+    await new Promise(r => $("#dgo", m).onclick = r);
+    closeModal();
+    return;
+  }
+  const m = openModal(`<div class="roll-v2"><h2>🎲 Roleta do movimento</h2><div class="rv-die-wrap"><div class="rv-die rolling" id="die">${diePips(1)}</div></div><div id="dres"></div></div>`);
   const die = $("#die", m);
   sfx("dado");
-  for (let i = 0; i < (reduceMotion() ? 1 : 12); i++) { die.innerHTML = diePips(1 + Math.floor(Math.random() * 3)); await sleep(70); }
-  setTimeout(() => sfx(res.coins > 0 ? "moeda" : "tick"), 300);
-  if (res.events.some(e => e.t === "raio")) setTimeout(() => sfx("raio"), 700);
-  die.classList.remove("rolling"); die.innerHTML = diePips(Math.min(res.roll, 6));
+  for (let i = 0; i < (reduceMotion() ? 1 : 11); i++) { die.innerHTML = diePips(1 + Math.floor(Math.random() * 6)); await sleep(65); }
+  die.classList.remove("rolling"); die.innerHTML = diePips(Math.max(1, Math.min(res.roll || 1, 6)));
+  sfx("acerto");
+  const extra = (res.total || 0) - ((res.base || 0) + (res.roll || 0) + (res.bonus || 0) + (res.skill || 0));
   $("#dres", m).innerHTML = `
-    <p style="text-align:center;font-size:1.05rem">Acertos: <strong class="num">${res.base}</strong> casas. Roleta: <strong class="num">${res.roll}</strong>.${res.bonus ? ` Bônus: <strong class="num">${res.bonus}</strong>.` : ""}${res.skill ? ` Habilidade: <strong class="num">${res.skill}</strong>.` : ""}<br>Total: <strong class="num">${res.total}</strong> casas.</p>
-    ${res.events.length ? `<ul class="events">${res.events.map(e => `<li>${esc(e.msg)}${e.fight ? ` <button class="btn ghost small" data-npclog="${e.fight}">Ver a luta</button><div class="npc-log" id="npclog-${e.fight}"></div>` : ""}</li>`).join("")}</ul>` : ""}
-    <p class="muted" style="text-align:center">+${res.xp} XP e ${res.coins >= 0 ? "+" : ""}${res.coins} moedas</p>
-    <div class="actions" style="justify-content:center"><button class="btn" id="dgo">Ver no mapa</button></div>`;
+    <div class="rv-chips">
+      <span class="rv-chip">🎯 Acertos<b>+${res.base}</b></span>
+      <span class="rv-chip">🎲 Dado<b>+${res.roll}</b></span>
+      ${res.bonus ? `<span class="rv-chip">🎁 Bônus<b>+${res.bonus}</b></span>` : ""}
+      ${res.skill ? `<span class="rv-chip">⚡ Habilidade<b>+${res.skill}</b></span>` : ""}
+      ${extra ? `<span class="rv-chip">${extra > 0 ? "🏰 Vila" : "💩 Lama"}<b>${extra > 0 ? "+" : ""}${extra}</b></span>` : ""}
+    </div>
+    <div><div class="rv-tot"><span>Total</span><b>${res.total}</b><span>${res.total === 1 ? "casa" : "casas"}</span></div></div>
+    <p class="muted" style="margin:10px 0 4px;font-size:13px">Veja ao vivo no tabuleiro o que espera por você!</p>
+    <div class="actions" style="justify-content:center;margin-top:12px"><button class="btn big" id="dgo">🚶 Andar no tabuleiro!</button></div>`;
   $("#dgo", m).focus();
   await new Promise(r => $("#dgo", m).onclick = r);
   closeModal();
@@ -6802,10 +7712,19 @@ const ACTIONS = {
     renderHUD();
   },
   tipclose: () => { S.tip = null; S.selectedNode = null; renderHUD(); },
+  "bp-center": () => {
+    if (!S.tip) return;
+    const n = S.tip.type === "char" ? S.nodeById[S.chars.find(c => c.user_id === S.tip.id)?.node] : S.nodeById[S.tip.id];
+    if (n) centerOn(n.x, n.y - 20, true);
+  },
+  "bp-char": v => { S.tip = { type: "char", id: v }; S.selectedNode = null; renderHUD(); },
+  "walk-skip": () => { if (S.anim) S.anim.skip = true; },
+  "wt-all": () => { S.wtAll = !S.wtAll; renderWindow(); },
+  "menu-q-clear": () => { S.menuQ = ""; renderHUD(); $("#menu-q")?.focus(); },
   summary: () => showSummary(),
-  fit: () => { W.cam.z = zMin(); clampCam(); W.dirty = true; },
+  fit: () => { if (tabVivoOn() && !reduceMotion()) zoomSmooth(W.w / 2, W.h / 2, zMin()); else { W.cam.z = zMin(); clampCam(); W.dirty = true; } },
   route: async (v, el) => guarded(async () => { S.me = await rpc("set_route", { _fork: +v, _choice: el.dataset.c }); render(); }),
-  zoom: v => zoomAt(W.w / 2, W.h / 2, W.cam.z * (+v > 0 ? 1.25 : 0.8)),
+  zoom: v => { const nz = W.cam.z * (+v > 0 ? 1.25 : 0.8); if (tabVivoOn() && !reduceMotion()) zoomSmooth(W.w / 2, W.h / 2, nz); else zoomAt(W.w / 2, W.h / 2, nz); },
   center: () => centerMe(true),
   dock: () => {
     const cx = W.cam.x + W.w / 2 / W.cam.z, cy = W.cam.y + W.h / 2 / W.cam.z;
@@ -7144,18 +8063,11 @@ ICONS.obra = ["..xx..", ".xxxx.", "xxxxxx", "x.xx.x", "x.xx.x", "xxxxxx"];
 ICONS.equipe = ["xx..xx", "xx..xx", "......", "xx..xx", "xx..xx"];
 ICONS.espadas = ["x....x", ".x..x.", "..xx..", "..xx..", ".x..x.", "x....x"];
 function pendingModes() { const T = S.today; return T ? Object.values(T.modes).filter(m => m.available && !m.solved && !m.failed).length : 0; }
-function menuHTML() {
+function menuBadges() {
   const T = S.today, pend = pendingModes(), total = T ? Object.values(T.modes).filter(m => m.available).length : 4;
   const duels = (S.social?.duels_in || 0) + (S.social?.duels_play || 0), pi = presenceInfo();
-  // parte principal: jogar o dia (no computador ela já aparece no painel "Hoje", logo acima)
-  const play = `<div class="menu-play">
-    <p class="menu-sub">Jogar hoje</p>
-    ${pend ? `<button class="btn big" data-act="go" data-v="desafio">Jogar desafio (${total - pend}/${total})</button>` : `<button class="btn ghost" data-act="go" data-v="desafio">Desafio do dia ✓</button>`}
-    <div class="menu-play-row">${T && !T.spin ? `<button class="btn spin-btn" data-act="spin">Girar a roleta</button>` : ""}${T && !T.moved ? `<button class="btn ghost" data-act="move">Andar no mapa</button>` : ""}</div>
-    ${caixaCard()}</div>`;
-  // menu novo (pedido do dono em 03/11/2026): atalhos no topo; grupos do mais usado para o menos usado;
-  // dentro de cada grupo, ordem alfabética; cada grupo abre e fecha com um clique (fica guardado no aparelho)
-  const B = {
+  return {
+    desafio: pend ? `<b class="mb red">${total - pend}/${total}</b>` : `<b class="mb ok">✓</b>`,
     liga: S.league !== false && S.league ? (S.league.lg?.status === "rodada" ? `<b class="mb live">AO VIVO</b>` : S.league.lg?.status === "caverna" ? `<b class="mb red">🕳️</b>` : "") : null,
     ranking: pi && !pi.P.released ? `<b class="mb lock" title="Travado até todos jogarem">🔒</b>` : "",
     presence: pi ? `<b class="mb ${pi.missing.length ? "warn" : "ok"}">${pi.done.length}/${pi.act.length}</b>` : "",
@@ -7183,15 +8095,35 @@ function menuHTML() {
     expedicao: S.isAdmin || S.cfg.exp?.on !== false ? (S.cfg.exp?.on === false ? `<b class="mb">FECHADA</b>` : S.exp?.est?.run ? `<b class="mb red">!</b>` : `<b class="mb live">NOVO</b>`) : null,   // arquivo 111
     vila: "", loja: "", pkloja: "", equipe: "", regras: ""
   };
-  const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k]];
+}
+function menuHTML() {
+  const T = S.today, pend = pendingModes(), total = T ? Object.values(T.modes).filter(m => m.available).length : 4;
+  // parte principal: jogar o dia (no computador ela já aparece no painel "Hoje", logo acima)
+  const play = `<div class="menu-play">
+    <p class="menu-sub">Jogar hoje</p>
+    ${pend ? `<button class="btn big" data-act="go" data-v="desafio">Jogar desafio (${total - pend}/${total})</button>` : `<button class="btn ghost" data-act="go" data-v="desafio">Desafio do dia ✓</button>`}
+    <div class="menu-play-row">${T && !T.spin ? `<button class="btn spin-btn" data-act="spin">Girar a roleta</button>` : ""}${T && !T.moved ? `<button class="btn ghost" data-act="move">Andar no mapa</button>` : ""}</div>
+    ${caixaCard()}</div>`;
+  const B = menuBadges(), comp = telasCompactasOn(), q = comp ? norm(S.menuQ || "") : "";
+  const item = k => B[k] === null || B[k] === undefined ? null : [k === "presence" ? "presence" : "go", k === "presence" ? "" : k, MENU[k][1], MENU[k][0], B[k], k];
   const byName = list => list.map(item).filter(Boolean).sort((a, b) => a[2].localeCompare(b[2], "pt-BR"));
   const groups = MENU_GROUPS.map(([gk, gn, keys]) => [gk, gn, byName(keys)]).filter(g => g[2].length);
   const closed = menuClosed();
-  const btn = ([act, v, t, ic, b]) => `<button class="menu-btn" data-act="${act}" data-v="${v}" ${act === "go" ? `aria-current="${S.win === v}"` : ""} title="${t}"><span class="me" aria-hidden="true">${ic}</span><span>${t}</span>${b}</button>`;
-  const fast = MENU_FAST.map(k => { const it = k === "desafio" ? ["go", "desafio", "Desafio", "🎯", pend ? `<b class="mb red">${total - pend}/${total}</b>` : `<b class="mb ok">✓</b>`] : item(k); return it; }).filter(Boolean);
+  const btn = ([act, v, t, ic, b, key]) => {
+    const lbl = comp && MENU_COMPACT[key] ? MENU_COMPACT[key] : t;
+    return `<button class="menu-btn" data-act="${act}" data-v="${v}" ${act === "go" ? `aria-current="${S.win === v}"` : ""} title="${t}"><span class="me" aria-hidden="true">${ic}</span><span>${lbl}</span>${b}</button>`;
+  };
+  const fast = MENU_FAST.map(k => k === "desafio" ? ["go", "desafio", "Desafio", "🎯", B.desafio] : item(k)).filter(Boolean);
   const fastHTML = `<div class="menu-fast" aria-label="Atalhos rápidos">${fast.map(([act, v, t, ic, b]) => `<button class="mf-btn" data-act="${act}" data-v="${v}" aria-current="${S.win === v}" title="${t}"><span class="mf-ic" aria-hidden="true">${ic}</span><span class="mf-t">${MENU_SHORT[v] || t}</span>${b}</button>`).join("")}</div>`;
+  const searchHTML = comp ? `<div class="menu-search"><input id="menu-q" type="text" placeholder="🔍 Buscar no menu…" value="${esc(S.menuQ || "")}" autocomplete="off" aria-label="Buscar no menu">${S.menuQ ? `<button type="button" data-act="menu-q-clear" aria-label="Limpar busca">×</button>` : ""}</div>` : "";
+  if (q) {
+    const hits = groups.flatMap(([, gn, list]) => list.filter(x => norm(x[2] + " " + (MENU_COMPACT[x[5]] || "") + " " + gn).includes(q)));
+    return play + fastHTML + searchHTML
+      + (hits.length ? `<div class="mg-list">${hits.map(btn).join("")}</div>` : `<p class="muted" style="font-size:12px;margin:6px 4px">Nenhuma opção encontrada.</p>`)
+      + `<button class="menu-btn menu-out" data-act="logout" title="Sair"><span class="me" aria-hidden="true">🚪</span><span>Sair</span></button>`;
+  }
   const reds = list => list.filter(x => /mb (red|live)/.test(x[4] || "")).length;
-  return play + fastHTML + groups.map(([gk, gn, list]) => { const off = closed.has(gk), r = reds(list);
+  return play + fastHTML + searchHTML + groups.map(([gk, gn, list]) => { const off = closed.has(gk), r = reds(list);
     return `<button class="mg-btn" data-act="mgrp" data-v="${gk}" aria-expanded="${!off}"><span>${gn}</span>${off && r ? `<b class="mb red">${r}</b>` : ""}<i class="mg-arrow" aria-hidden="true">${off ? "▸" : "▾"}</i></button>${off ? "" : `<div class="mg-list">${list.map(btn).join("")}</div>`}`; }).join("")
     + `<button class="menu-btn menu-out" data-act="logout" title="Sair"><span class="me" aria-hidden="true">🚪</span><span>Sair</span></button>`;
 }
@@ -7212,7 +8144,16 @@ const MENU_GROUPS = [
   ["ajuda", "❓ Ajuda", ["admin", "regras", "sac"]]
 ];
 const MENU_FAST = ["desafio", "pokedex", "aventura", "batalhas", "vila", "ranking"];
-const MENU_SHORT = { desafio: "Desafio", pokedex: "Pokédex", treino: "Grama", batalhas: "Batalhas", vila: "Vila", ranking: "Ranking" };
+const MENU_SHORT = { desafio: "Desafio", pokedex: "Pokédex", aventura: "Aventura", treino: "Grama", batalhas: "Batalhas", vila: "Vila", ranking: "Ranking" };
+const MENU_COMPACT = {
+  arena: "Arena", batalhas: "Batalhas", cartas: "Cartas", centro: "Centro PK", creche: "Creche", equipe: "Equipe",
+  leilao: "Leilão", rocket: "Rocket", treino: "Grama", trocas: "Trocas", pkloja: "Loja PK", pokedex: "Pokédex",
+  extrato: "Extrato", guerras: "Guerras", loja: "Visuais", mercado: "Mercado", vila: "Minha Vila",
+  aventura: "Aventura", duelos: "Duelos", expedicao: "Expedições", liga: "Liga", pokebound: "PokeBound",
+  presence: "Quem jogou", ranking: "Ranking", caixa: "Caixa PIX", chat: "Chat & Jornal", correio: "Correio",
+  praca: "Praça", admin: "Admin", regras: "Biblioteca", sac: "SAC"
+};
+document.addEventListener("input", e => { if (e.target.id === "menu-q") { S.menuQ = e.target.value; renderHUD(); } });
 function menuClosed() { try { return new Set(JSON.parse(localStorage.getItem("pg-menu-fechado") || "[]")); } catch { return new Set(); } }
 ACTIONS.mgrp = v => {
   const c = menuClosed(); c.has(v) ? c.delete(v) : c.add(v);
@@ -9902,7 +10843,7 @@ const AJ_LABELS = {
     lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "noite": "🌙 Noite", "noite.on": "Noite ligada", "noite.inicio": "Noite começa (hora)", "noite.fim": "Noite termina (hora)", "noite.tipos": "Tipos que aparecem de noite em todas as áreas", "missoes": "📜 Missões dos moradores", "missoes.on": "Missões ligadas", "missoes.por_dia": "Missões por dia", "missoes.moedas_min": "Prêmio: moedas (mínimo)", "missoes.moedas_max": "Prêmio: moedas (máximo)", "missoes.itens": "Itens sorteados de prêmio", "ginasios": "🏟️ Ginásios", "ginasios.on": "Ginásios abertos", "ginasios.tentativas_dia": "Tentativas por dia em cada Ginásio", "ginasios.moedas": "Prêmio da insígnia: moedas", "ginasios.itens": "Prêmio da insígnia: itens", "ginasios.todas_moedas": "Prêmio de todas as insígnias: moedas", "ginasios.expira_min": "Minutos até a batalha do Ginásio virar derrota (0 = sem prazo)", "ginasios.moedas_por_nivel": "Prêmio: moedas por nível médio do Líder", "ginasios.revanche_on": "Revanche liberada (já com a insígnia)", "ginasios.revanche_pct": "Revanche: % das moedas do prêmio", "ginasios.faixas": "Prêmio por faixa de rotas (itens, doces e TM)", "ginasios.todas_itens": "Prêmio de todas as insígnias: itens", "ginasios.lideres": "Líderes (nome, herói, tipo e time [espécie, nível])", "elite": "🏛️ Desafio do Planalto (Elite 4 e Campeão)", "elite.on": "Desafio do Planalto aberto", "elite.insignias_min": "Insígnias para entrar", "elite.tentativas_dia": "Tentativas por dia", "elite.time_max": "Pokémon que cada um leva (até 6)", "elite.moedas": "Prêmio da 1ª vitória (moedas)", "elite.itens": "Itens da 1ª vitória", "elite.doces": "Doces de Forja da 1ª vitória", "elite.repetir_moedas": "Prêmio das outras vitórias (moedas)", "elite.repetir_doces": "Doces de Forja das outras vitórias",
     "pvp": "⚔️ Batalha entre jogadores", "pvp.on": "Desafios na Aventura ligados", "pvp.distancia": "Distância para desafiar (casas)", "pvp.desafia_dia": "Desafios que cada um pode fazer por dia", "pvp.recebe_dia": "Vezes que cada um pode ser desafiado por dia", "pvp.prazo_horas": "Horas para responder o desafio (depois some)", "pvp.oferta_min": "Oferta mínima para não lutar (moedas)", "pvp.teto": "Usar o teto de nível das batalhas", "chefe": "👹 Chefe da rota", "chefe.on": "Chefe automático ligado", "chefe.dia_semana": "Dia da semana (0 = domingo, 6 = sábado)", "chefe.hora": "Hora em que aparece", "chefe.horas": "Quantas horas fica", "chefe.nivel": "Nível do chefe", "chefe.vidas": "Tamanho da barra (vezes a vida dele)", "chefe.turnos": "Turnos por luta", "chefe.tentativas_dia": "Lutas por dia de cada jogador", "chefe.especies": "Espécies sorteadas (números da Pokédex)", "chefe.moedas": "Prêmio para quem lutou: moedas", "chefe.itens": "Prêmio para quem lutou: itens", "chefe.top_moedas": "Extra para o 1º, 2º e 3º que mais bateram", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem", "zonas.vulcao": "Área: Vulcão: encosta", "zonas.vulcao.nome": "Nome que aparece", "zonas.vulcao.regiao": "Região (não mude)", "zonas.vulcao.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao.min": "Nível mínimo do selvagem", "zonas.vulcao.max": "Nível máximo do selvagem", "zonas.vulcao_fundo": "Área: Vulcão: cratera", "zonas.vulcao_fundo.nome": "Nome que aparece", "zonas.vulcao_fundo.regiao": "Região (não mude)", "zonas.vulcao_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao_fundo.min": "Nível mínimo do selvagem", "zonas.vulcao_fundo.max": "Nível máximo do selvagem", "zonas.estrada": "Área: Estrada da Vitória: trilha", "zonas.estrada.nome": "Nome que aparece", "zonas.estrada.regiao": "Região (não mude)", "zonas.estrada.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada.min": "Nível mínimo do selvagem", "zonas.estrada.max": "Nível máximo do selvagem", "zonas.estrada_fundo": "Área: Estrada da Vitória: desfiladeiro", "zonas.estrada_fundo.nome": "Nome que aparece", "zonas.estrada_fundo.regiao": "Região (não mude)", "zonas.estrada_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada_fundo.min": "Nível mínimo do selvagem", "zonas.estrada_fundo.max": "Nível máximo do selvagem" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
-  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)", vila_nova: "Minha Vila nova (desenho grande com a Fazenda; desligado = desenho antigo)", aventura_viva: "Bosque Sussurrante novo, Ginásio estufa e vagalumes na Aventura" },
+  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)", vila_nova: "Minha Vila nova (desenho grande com a Fazenda; desligado = desenho antigo)", aventura_viva: "Bosque Sussurrante novo, Ginásio estufa e vagalumes na Aventura", tabuleiro_vivo: "Tabuleiro vivo (trilhas curvas, peças em relevo, água/nuvens vivas, prévia de casas, placas nas bifurcações e caminhada em pulinhos)", telas_compactas: "Menu e janelas compactos (grupos em 2 colunas, busca rápida, abas por categoria e moedas no topo)" },
   vale: { on: "Vale do Treino aberto para os jogadores", treinos_dia: "Treinos por dia (cada jogador)", exp_ref: "Força do treino (experiência de referência; 120 ≈ vencer um selvagem do mesmo nível)", xp_mult: "Multiplicador da experiência",
     afinidade_mult: "Bônus quando o tipo combina com a estação (1,5 = +50%)", nota_min: "Nota mínima para ganhar experiência", duracao_min_seg: "Segundos mínimos de um treino", duracao_max_min: "Minutos máximos (depois disso o treino vence sem XP)",
     estacoes: "Estações (nome e tipos que combinam com cada uma)" },
@@ -11540,9 +12481,10 @@ function hxRender() {
   $("#hx-player").innerHTML = `<button class="hx-av" data-act="go" data-v="loja" title="Seu herói">${avatarSVG(me, 2.2)}</button>
     <div class="hx-lv"><b>Lv. ${me.level}</b><span class="hx-xp" title="${me.xp_total} de ${xp.next} XP"><i style="width:${xp.pct}%"></i><em>EXP ${xp.pct}%</em></span></div>
     <button class="hx-missao ${ms.ok ? "ok" : ""}" data-act="${ms.act}" data-v="${ms.v}"><span class="hx-ex">${ms.ok ? "✓" : "!"}</span><span><b>Missão diária</b><small>${esc(ms.txt)}</small></span></button>`;
-  const se = S.today?.season, btn = (ic, t, act, v = "", sel = "") => `<button class="hx-rb ${sel}" data-act="${act}" data-v="${v}" title="${t}" aria-label="${t}">${ic}</button>`;
-  $("#hx-right").innerHTML = `<div class="hx-info"><span>Temporada <b>${se?.id ?? ""}</b></span><i></i><span>Casa <b>nº ${me.node}</b></span><i></i><span>${me.arrived_rank ? `<b>No Castelo</b>` : `Faltam <b>${no?.dist ?? 0}</b>`}</span><i></i><span>Região: <b>${esc(no?.region || "")}</b></span></div>
-    <div class="hx-rbs">${S.isAdmin || S.cfg.rpg?.on !== false ? btn("🧭", "Aventura (RPG)", "go", "aventura") : ""}${S.isAdmin || S.cfg.praca?.on !== false ? btn("⛲", "Praça Central", "go", "praca") : ""}${btn("🎒", "Mochila", "hx-inv", "", S.hx.inv ? "on" : "")}${btn(MENU.equipe[0], "Meus Pokémon", "go", "equipe")}${btn(MENU.pokedex[0], "Pokédex", "go", "pokedex")}${btn(MENU.ranking[0], "Ranking", "go", "ranking")}${btn(MENU.regras[0], "Biblioteca", "go", "regras")}${btn(S.sound ? "🔊" : "🔇", S.sound ? "Desligar o som" : "Ligar o som", "sound")}</div>`;
+  const se = S.today?.season, evo = S.pk?.mons?.some(m => evoReady(m).length || m.pending_moves?.length), fer = S.treino?.st?.feridos?.length || 0;
+  const btn = (ic, t, act, v = "", sel = "", bdg = "") => `<button class="hx-rb ${sel}" data-act="${act}" data-v="${v}" title="${t}" aria-label="${t}">${ic}${bdg}</button>`;
+  $("#hx-right").innerHTML = `<div class="hx-info"><button class="hx-moeda" data-act="go" data-v="extrato" title="Ver extrato de moedas">${coinSVG()}${(me.coins ?? 0).toLocaleString("pt-BR")}</button><i></i><span>Temporada <b>${se?.id ?? ""}</b></span><i></i><span>Casa <b>nº ${me.node}</b></span><i></i><span>${me.arrived_rank ? `<b>No Castelo</b>` : `Faltam <b>${no?.dist ?? 0}</b>`}</span><i></i><span>Região: <b>${esc(no?.region || "")}</b></span></div>
+    <div class="hx-rbs">${S.isAdmin || S.cfg.rpg?.on !== false ? btn("🧭", "Aventura (RPG)", "go", "aventura") : ""}${S.isAdmin || S.cfg.praca?.on !== false ? btn("⛲", "Praça Central", "go", "praca") : ""}${btn("🎒", "Mochila", "hx-inv", "", S.hx.inv ? "on" : "")}${btn(MENU.equipe[0], "Meus Pokémon", "go", "equipe", "", fer ? `<b class="mb red">${fer}</b>` : "")}${btn(MENU.pokedex[0], "Pokédex", "go", "pokedex", "", evo ? `<b class="mb red">!</b>` : "")}${btn(MENU.ranking[0], "Ranking", "go", "ranking")}${btn(MENU.regras[0], "Biblioteca", "go", "regras")}${btn(S.sound ? "🔊" : "🔇", S.sound ? "Desligar o som" : "Ligar o som", "sound")}</div>`;
   hxChatRender(); hxInvRender();
 }
 // ---------- chat fixo ----------
@@ -15354,6 +16296,13 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "tabuleiro-vivo-2026-11-17", sql: "124", title: "🎲 Tabuleiro renovado, caminhada ao vivo e telas mais compactas", body: () => `O tabuleiro e as janelas do jogo ganharam um acabamento novo (todas as regras, casas, moedas e XP continuam iguais):
+• Cenário mais rico: trilhas em curvas suaves (estrada clara no caminho seguro e trilha avermelhada no arriscado), cores próprias por região, água e mar com movimento suave, nuvens passando e brilho no Castelo e nos Portais.
+• Casas redesenhadas como peças de tabuleiro em relevo, com ícones nítidos e plaquinha limpa com o número da casa.
+• Prévia no próprio chão: antes de andar no dia, o mapa acende as casas à sua frente (os passos já garantidos pelos acertos e a faixa extra da roleta) para ajudar a planejar a jogada.
+• Interação direto no mapa: escolha o caminho nas placas das bifurcações, deslize o mapa com suavidade, dê dois toques para aproximar e veja os detalhes num cartão pertinho da casa ou do jogador clicado (já mostrando a quantas casas está de você).
+• Novo jeito de andar: sem spoiler antes da caminhada! Seu herói salta de casa em casa com rastro dourado, moedas e efeitos aparecem na hora em que acontecem (com botão para pular a animação) e o resumo abre ao chegar.
+• Menus e telas mais enxutos: menu em grade compacta com filtro rápido, janelas organizadas por categoria com avisos e o seu saldo de moedas sempre visível no topo.` },
   { id: "bosque-sussurrante-2026-11-17", sql: "123", title: "🌲 Bosque Sussurrante e Ginásio da Líder Flora de cara nova", body: () => `O Bosque Sussurrante e o Ginásio da Líder Flora ganharam cenário novo, feito nos detalhes (os níveis dos Pokémon, os encontros e os caminhos continuam os mesmos):
 • Cachoeira no paredão norte, riacho cristalino cortando o bosque, duas pontes de madeira e um píer na lagoa de vitórias-régias.
 • Recanto do Lenhador Davi com cabana, pilha de lenha, tocos e fogueira acesa na beira da estrada.
