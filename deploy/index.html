@@ -2405,7 +2405,7 @@ body.pb-on{overflow:hidden}
 .rmap-acts .btn{padding:5px 10px;font-size:12px;min-height:28px}
 .rmap-caminho{padding:8px 10px;border-radius:10px;background:rgba(76,195,138,.12);border:1px solid rgba(76,195,138,.4);font:700 12.5px/1.4 var(--sans);color:#C8F7DC}
 @media (max-width:860px){.rmap-grid{grid-template-columns:1fr}.rmap-side{max-height:none}}
-@media (max-width:760px){.rpg-ib{width:42px;height:40px;font-size:17px}.rpg-ib em{display:none}.rpg-loc-bar{font-size:11.5px;padding:5px 9px;gap:6px}#rpg-guia-bar{top:62px;max-width:calc(100vw - 16px);overflow:hidden;text-overflow:ellipsis}#rpg-inv{top:58px;left:8px;right:8px;width:auto;max-height:calc(100vh - 72px);overflow:auto;z-index:14}.rinv-top{grid-template-columns:1fr}}
+@media (max-width:760px){#aventura #rpg-tit,#aventura #rpg-noite{display:none!important}.rpg-hud-r{margin-left:0;width:100%}.rpg-loc-bar{justify-content:center}.rpg-rbs{justify-content:flex-end}.rpg-ib{width:42px;height:40px;font-size:17px}.rpg-ib em{display:none}.rpg-loc-bar{font-size:11.5px;padding:5px 9px;gap:6px}#rpg-guia-bar{top:62px;max-width:calc(100vw - 16px);overflow:hidden;text-overflow:ellipsis}#rpg-inv{top:58px;left:8px;right:8px;width:auto;max-height:calc(100vh - 72px);overflow:auto;z-index:14}.rinv-top{grid-template-columns:1fr}}
 /* =====================================================================
    TABULEIRO VIVO, INTERAÇÃO NO MAPA E TELAS COMPACTAS (arquivo 124)
    ===================================================================== */
@@ -14603,25 +14603,34 @@ function rpgMapaLocalDesenha() {
   }
   // Marcadores claros de saídas e lugares (evitando sobreposição de rótulos)
   const { saidas, lugares } = rpgDestinosLocais(AV.r), caixas = [];
-  const desenhaPin = (it, corFundo, corBorda) => {
-    const px = ox + (it.x + .5) * esc0, py = oy + (it.y + .5) * esc0;
-    g.fillStyle = corFundo; g.strokeStyle = corBorda; g.lineWidth = 2;
-    g.beginPath(); g.arc(px, py, 9.5, 0, 6.28); g.fill(); g.stroke();
-    g.font = "12px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(it.ic, px, py + .5);
-    const cur = it.nome.replace(/^Ginásio · /, "Ginásio ").slice(0, 18);
+  // 1º todas as bolinhas, depois os nomes: cada nome tenta em cima, embaixo, à direita e à esquerda,
+  // e só aparece onde não encosta em outro nome nem em outra bolinha (sem nomes encavalados)
+  const pins = [...saidas.map(it => [it, "#1C3F2B", "#7CEB9E"]), ...lugares.filter(l => l.ic !== "🪧").map(it => [it, "#232F4B", "#F5C542"])]
+    .map(([it, f, b]) => ({ it, f, b, px: ox + (it.x + .5) * esc0, py: oy + (it.y + .5) * esc0 }));
+  for (const P of pins) {
+    g.fillStyle = P.f; g.strokeStyle = P.b; g.lineWidth = 2;
+    g.beginPath(); g.arc(P.px, P.py, 9.5, 0, 6.28); g.fill(); g.stroke();
+    g.font = "12px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(P.it.ic, P.px, P.py + .5);
+  }
+  const ux0 = ox + (AV.x + .5) * esc0, uy0 = oy + (AV.y + .5) * esc0;
+  const bate = (x, y, w, h) => caixas.some(c => Math.abs(c.x - x) < (c.w + w) / 2 + 2 && Math.abs(c.y - y) < (c.h + h) / 2 + 1)
+    || pins.some(q => Math.abs(q.px - x) < w / 2 + 9 && Math.abs(q.py - y) < h / 2 + 9)
+    || (Math.abs(ux0 - x) < w / 2 + 52 && Math.abs(uy0 + 23 - y) < h / 2 + 10);   // não cobre a etiqueta VOCÊ
+  for (const P of pins) {
+    const cur = P.it.nome.replace(/^Ginásio · /, "Ginásio ").slice(0, 18);
     g.font = "800 10.5px Inter, system-ui, sans-serif";
     const tw = g.measureText(cur).width + 10, th = 16;
-    let lx = Math.max(tw / 2 + 4, Math.min(S0 - tw / 2 - 4, px)), ly = py < 34 ? py + 18 : py - 18;
-    if (caixas.some(b => Math.abs(b.x - lx) < (b.w + tw) / 2 - 2 && Math.abs(b.y - ly) < 15)) ly = py + 19;
-    if (!caixas.some(b => Math.abs(b.x - lx) < (b.w + tw) / 2 - 4 && Math.abs(b.y - ly) < 14)) {
-      caixas.push({ x: lx, y: ly, w: tw });
-      g.fillStyle = "rgba(10,15,26,.9)"; g.strokeStyle = corBorda; g.lineWidth = 1;
+    const opc = [[0, -18], [0, 18], [tw / 2 + 13, 0], [-tw / 2 - 13, 0], [tw / 2 + 8, -16], [-tw / 2 - 8, -16], [tw / 2 + 8, 16], [-tw / 2 - 8, 16], [0, -34], [0, 34]];
+    for (const [dx, dy] of opc) {
+      const lx = Math.max(tw / 2 + 4, Math.min(S0 - tw / 2 - 4, P.px + dx)), ly = Math.max(th / 2 + 2, Math.min(S0 - th / 2 - 2, P.py + dy));
+      if (bate(lx, ly, tw, th)) continue;
+      caixas.push({ x: lx, y: ly, w: tw, h: th });
+      g.fillStyle = "rgba(10,15,26,.9)"; g.strokeStyle = P.b; g.lineWidth = 1;
       g.beginPath(); g.roundRect(lx - tw / 2, ly - th / 2, tw, th, 5); g.fill(); g.stroke();
-      g.fillStyle = "#FFF5D6"; g.fillText(cur, lx, ly + .5);
+      g.fillStyle = "#FFF5D6"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(cur, lx, ly + .5);
+      break;
     }
-  };
-  for (const s of saidas) desenhaPin(s, "#1C3F2B", "#7CEB9E");
-  for (const l of lugares) if (l.ic !== "🪧") desenhaPin(l, "#232F4B", "#F5C542");
+  }
   // VOCÊ bem grande e impossível de perder de vista
   const ux = ox + (AV.x + .5) * esc0, uy = oy + (AV.y + .5) * esc0;
   g.fillStyle = "rgba(245,197,66,.26)"; g.beginPath(); g.arc(ux, uy, 16, 0, 6.28); g.fill();
