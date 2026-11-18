@@ -7297,7 +7297,7 @@ function LIB() {
       <p>As skins da <b>Loja & Visuais</b> mudam o desenho: a <b>roupa</b> troca as cores (algumas têm listras ou detalhes), a <b>capa</b> aparece nas costas (ou vira asas), o <b>chapéu</b> substitui o enfeite de cabeça do herói, o <b>acessório</b> vai no rosto ou no peito e a <b>aura</b> deixa um brilho em volta.</p>` },
     { id: "aventura", ic: "🧭", t: "Aventura (RPG)", h: `<p>A <b>Aventura</b> (menu Competir, ou o botão 🧭 no alto do mapa) é um jogo a mais dentro do Pokegames, para andar e explorar em <b>visão 3D diagonal (isométrica)</b> — com ruas e praças de pedra em relevo, canais de água mais fundos, pontes, árvores e casas em 3D, barraquinhas e os 8 Ginásios em 3D (quem preferir pode alternar entre <b>📐 3D</b> e <b>🗺️ 2D</b> a qualquer momento pelo botão no topo). O tabuleiro continua igual, e os <b>Pokémon e as moedas são os mesmos</b> dos dois jogos.</p>
       <p>🥋 <b>Vale do Treino:</b> na trilha ao norte da Vila Aurora (no alto do penhasco) fica um vale com 6 estações de treino, onde os Pokémon ganham experiência sem lutar (veja o assunto Vale do Treino).</p>
-      <p><b>Como andar e interagir:</b> além de usar WASD, as setas ou os botões na tela do celular, basta <b>clicar ou tocar em qualquer lugar do chão ou numa porta</b> que o seu herói vai andando sozinho até lá desviando de rios e muros! Chegue na porta de uma casa e aperte <b>E</b> (ou clique nela) para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas, os Pokémon selvagens da área aparecem passeando visíveis no mato e os outros jogadores aparecem ao vivo.</p>
+      <p><b>Como andar e interagir:</b> além de usar WASD, as setas ou os botões na tela do celular, basta <b>clicar ou tocar em qualquer lugar do chão ou numa porta</b> que o seu herói vai andando sozinho até lá desviando de rios e muros! Chegue na porta de uma casa e aperte <b>E</b> (ou clique nela) para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas, os Pokémon selvagens da área aparecem passeando visíveis no mato e os outros jogadores aparecem ao vivo. Na Vila Aurora, os moradores que passeiam pelas ruas são só enfeite: não falam nem lutam.</p>
       <p>🎒 <b>Inventário na tela (botão 🎒 ou tecla I):</b> abre uma janela flutuante sem fechar a Aventura, mostrando seu herói com os 5 equipamentos e o Pokémon de suporte, suas abas de Itens, Pokébolas e TMs, as 6 criaturas da equipe com barra de vida ao vivo e suas moedas. No canto esquerdo ficam o minimapa com bússola, seu nível, barra de experiência e a Missão Diária da Aventura, e embaixo o Chat com abas rápidas de Missões, Ir para… e Mundo.</p>
       <p><b>É aqui que se treina:</b> a Grama de Treino fechou, e a Aventura é o lugar de ganhar experiência e evoluir os Pokémon. Todos os Pokémon aparecem por aqui (menos os lendários), cada um nas áreas do seu tipo.</p>
       <p>🗺️ <b>Onde estou e Mapa Grande com guia (botão 🗺️, tecla M ou clique no minimapa):</b> no canto superior direito aparece sempre a região, suas coordenadas (X e Y), a área de mato atual, lutas do dia e insígnias. O Mapa Grande tem <b>2 abas</b>: <b>📍 Onde estou</b> (mapa amplo e nítido da região atual com todas as lojas, casas, estações, Ginásio, saídas e você bem destacado) e <b>🌍 Mundo inteiro</b> (todas as 11 regiões, estradas, níveis e insígnias). Clique em <b>🧭 Marcar trilha</b> ou <b>🚶 Ir andando</b> em qualquer destino ou outra região para acender uma <b>trilha dourada no chão</b> te guiando passo a passo até a porta ou saída certa!</p>
@@ -14796,7 +14796,48 @@ const RPG_DECO_FALLBACK = {
   vulcao: [37, 58, 77, 126, 74, 111, 67, 148],
   estrada: [67, 75, 95, 105, 112, 64, 93, 148]
 };
+// Moradores passeando pelas ruas da Vila (só enfeite: não falam, não lutam, ninguém mais vê)
+const RPG_PASSANTES = { vila: 8, vale: 3 };
+function rpgPassantesInit(r) {
+  AV.passantes = [];
+  const g = AV.dc?.[r]?.g || AV.g, qtd = RPG_PASSANTES[r] || 0; if (!g || !qtd || rpgIsoOn?.() === false) return;
+  const ruas = [];
+  for (let y = 1; y < g.length - 1; y++) for (let x = 1; x < g[0].length - 1; x++) {
+    if (g[y][x] !== ".") continue;
+    const viz = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => g[y + dy][x + dx] === ".").length;
+    if (viz >= 2) ruas.push([x, y]);
+  }
+  if (!ruas.length) return;
+  const classes = ["guerreiro", "mago", "arqueiro", "ladino", "clerigo", "domador", "pesquisador", "mercador"];
+  for (let i = 0; i < qtd; i++) {
+    const [x, y] = ruas[(i * 131 + 37) % ruas.length];
+    AV.passantes.push({ uid: `morador-${r}-${i}`, x, y, fx: x, fy: y, tx: x, ty: y, t: 1, dir: "down", dx: 0, dy: 1,
+      ch: { class: classes[(i * 3 + r.length) % classes.length], outfit: {} }, wait: 400 + i * 700 });
+  }
+}
+function rpgPassantesStep(dt) {
+  if (!AV.passantes?.length || !AV.g) return;
+  for (const m of AV.passantes) {
+    if (m.t < 1) {
+      m.t = Math.min(1, m.t + dt / 560);
+      m.fx = m.x + (m.tx - m.x) * m.t; m.fy = m.y + (m.ty - m.y) * m.t;
+      if (m.t >= 1) { m.x = m.tx; m.y = m.ty; }
+      continue;
+    }
+    m.wait -= dt; if (m.wait > 0) continue;
+    // segue em frente pela rua; às vezes vira; de vez em quando para um pouco
+    const livre = ([dx, dy]) => (AV.g[m.y + dy] || "")[m.x + dx] === "." && !(Math.round(AV.fx) === m.x + dx && Math.round(AV.fy) === m.y + dy);
+    const opc = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(livre), reto = opc.find(([dx, dy]) => dx === m.dx && dy === m.dy);
+    const semVolta = opc.filter(([dx, dy]) => !(dx === -m.dx && dy === -m.dy));
+    const [dx, dy] = reto && Math.random() < .78 ? reto : (semVolta.length ? semVolta : opc)[(Math.random() * Math.max(1, (semVolta.length ? semVolta : opc).length)) | 0] || [0, 0];
+    if (!dx && !dy) { m.wait = 900; continue; }
+    m.dx = dx; m.dy = dy; m.tx = m.x + dx; m.ty = m.y + dy; m.t = 0;
+    m.dir = dx > 0 ? "right" : dx < 0 ? "left" : dy > 0 ? "down" : "up";
+    m.wait = Math.random() < .08 ? 1500 + Math.random() * 2500 : 0;
+  }
+}
 function rpgDecoInit(r = AV.r) {
+  rpgPassantesInit(r);
   AV.decoMons = [];
   const g = AV.dc?.[r]?.g || AV.g; if (!g || RPG_REG[r]?.gym || RPG_REG[r]?.elite || RPG_REG[r]?.mina || RPG_REG[r]?.vale) return;
   const cels = [];
@@ -14815,6 +14856,7 @@ function rpgDecoInit(r = AV.r) {
   }
 }
 function rpgDecoStep(dt) {
+  rpgPassantesStep(dt);
   if (!AV.decoMons?.length || !AV.g) return;
   for (const m of AV.decoMons) {
     if (m.t < 1) {
@@ -15584,12 +15626,12 @@ function rpgMiniDesenha(todos) {
     }
     for (const sd of rpgSaidas()) { const [sx, sy] = sd.em[0]; mg.fillStyle = "#5CE68C"; mg.fillRect(sx * kx - 2, sy * ky - 2, 5, 5); }
     for (const p of rpgPontos()) if (!p.fala) { const [px, py] = p.em[0]; mg.fillStyle = "#F58242"; mg.fillRect(px * kx - 2, py * ky - 2, 4.5, 4.5); }
-    for (const o of todos) if (!o.npc) {
+    for (const o of todos) if (!o.npc && !o.passante) {
       mg.fillStyle = o.eu ? "#FFE37A" : "#FFFFFF"; mg.strokeStyle = "#0F1420"; mg.lineWidth = 1.4;
       mg.beginPath(); mg.arc((o.fx + .5) * kx, (o.fy + .5) * ky, o.eu ? 4.5 : 3, 0, 6.28); mg.fill(); mg.stroke();
     }
   }
-  const n = todos.filter(o => !o.npc).length, mt = $("#rpg-mini-tit"), mo = $("#rpg-mini-on");
+  const n = todos.filter(o => !o.npc && !o.passante).length, mt = $("#rpg-mini-tit"), mo = $("#rpg-mini-on");
   if (mt) mt.textContent = RPG_REG[AV.r]?.nome || "";
   if (mo) mo.textContent = `👥 ${n}`;
 }
@@ -15600,7 +15642,9 @@ function rpgAtoresLista(dpr) {
       eqs: n.gym || n.elite ? (k => ({ peitoral: k, calca: k, botas: k, luvas: k }))(n.elite ? 9 : LID(n.gym)) : {} })),
     ...Object.values(AV.others).map(o => { const mv = o.x != null && (Math.abs(o.x - o.fx) > .03 || Math.abs(o.y - o.fy) > .03), dx = (o.x ?? o.fx) - o.fx, dy = (o.y ?? o.fy) - o.fy;
       return { ...o, eqs: o.es || {}, anda: mv, dir: mv ? (Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up")) : (o.d || "down"),
-        ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } }; }), eu].filter(o => o.ch?.class && o.fx != null);
+        ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } }; }),
+    ...(rpgIsoOn() ? (AV.passantes || []).map(m => ({ uid: m.uid, fx: m.fx, fy: m.fy, f: m.dx < 0 ? -1 : 1, ch: m.ch, passante: true, dir: m.dir, anda: m.t < 1, eqs: {} })) : []),
+    eu].filter(o => o.ch?.class && o.fx != null);
 }
 function rpgPintaIso(cv, now) {
   const dpr = Math.min(2, window.devicePixelRatio || 1), W0 = cv.clientWidth || 960, H0 = cv.clientHeight || 600;
@@ -15717,8 +15761,8 @@ function rpgPintaIso(cv, now) {
         const fo = lpcFolha({ ...o, c: o.c || o.ch?.class }), lin = LPC_LIN[dirIso] ?? 2, col = o.anda ? 1 + Math.floor(now / 85) % 8 : 0;
         g.imageSmoothingEnabled = false; g.drawImage(fo, col * 64, lin * 64, 64, 64, Math.round(ox - S2 / 2), Math.round(oy - S2 * .95), Math.round(S2), Math.round(S2));
       } else { g.save(); g.translate(ox, oy - (o.pulo || 0)); if ((o.f || 1) < 0) g.scale(-1, 1); avDraw(g, sp, -w / 2, -h, w, h); g.restore(); }
-      texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : o.npc ? "#BFE8FF" : "#F4F8E8");
-      if (!o.npc && AV.st?.campeoes?.includes(o.uid)) texto("👑", ox, oy - h - 22 * dpr, 15, "#FFE37A");
+      if (!o.passante) texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : o.npc ? "#BFE8FF" : "#F4F8E8");
+      if (!o.npc && !o.passante && AV.st?.campeoes?.includes(o.uid)) texto("👑", ox, oy - h - 22 * dpr, 15, "#FFE37A");
       if (o.npc) texto(o.gym ? (rpgInsig().includes(o.gym) ? "🏅" : "🏟️") : o.elite ? "👑" : rpgMissoesDe(AV.r).some(m => !m.resgatada && m.prog >= m.meta) ? "🎁" : "!", ox + w * 0.48, oy - h + 4 * dpr, 15, "#FFE37A");
       const bl = AV.baloes[o.uid];
       if (bl && bl.ate > now && pzCfg().baloes !== false) {
@@ -15741,6 +15785,29 @@ function rpgPintaIso(cv, now) {
   for (const it of fila) {
     if (frente(it)) { g.save(); g.globalAlpha = .32; it.fn(); g.restore(); }
     else it.fn();
+  }
+  // Fumaça subindo das chaminés das lojas e da Creche (Vila e Vale)
+  for (const pr of predios) {
+    if (!["loja", "celeiro"].includes(pr.t)) continue;
+    const [chx, chy] = P(pr.x1 + .2, pr.y0 + .3, pr.h + .55);
+    if (chx < -60 || chy < -120 || chx > cv.width + 60 || chy > cv.height + 60) continue;
+    for (let k = 0; k < 5; k++) {
+      const fase = ((now / 2600 + k / 5 + pr.x0 * .13) % 1), sobe = fase * u * 1.6, raio = (u * .09) * (1 + fase * 1.8);
+      g.fillStyle = `rgba(232,232,236,${(.42 * (1 - fase)).toFixed(3)})`;
+      g.beginPath(); g.arc(chx + Math.sin(now / 900 + k * 1.7) * u * .12 * fase + fase * u * .25, chy - sobe, raio, 0, 6.28); g.fill();
+    }
+  }
+  // Pássaros cruzando o céu de dia (desenho nosso, só um "v" batendo as asas)
+  if (!AV.st?.noite && !RPG_REG[AV.r]?.gym && !RPG_REG[AV.r]?.elite && !RPG_REG[AV.r]?.mina) {
+    g.save(); g.strokeStyle = "rgba(30,36,48,.75)"; g.lineWidth = 2 * dpr; g.lineCap = "round";
+    for (let k = 0; k < 4; k++) {
+      const per = 26000 + k * 5200, fase = ((now + k * 9100) % per) / per, bx = -60 * dpr + fase * (cv.width + 120 * dpr), by = cv.height * (.16 + .1 * k) + Math.sin(now / 1300 + k) * 14 * dpr;
+      for (let j = 0; j < 3 - (k % 2); j++) {
+        const ax = bx - j * 22 * dpr, ay = by + j * 9 * dpr, asa = 5 * dpr * (1 + Math.sin(now / 140 + j + k) * .55);
+        g.beginPath(); g.moveTo(ax - 7 * dpr, ay - asa); g.quadraticCurveTo(ax - 3 * dpr, ay, ax, ay); g.quadraticCurveTo(ax + 3 * dpr, ay, ax + 7 * dpr, ay - asa); g.stroke();
+      }
+    }
+    g.restore();
   }
   // Plaquinhas nítidas dos lugares e saídas em 3D
   const placas = [...rpgPontos(), ...rpgSaidas().map(sd => {
@@ -17900,7 +17967,7 @@ const NOVIDADES = [
 • Mundo em 3D diagonal: ruas e praças de pedra em relevo, canais de água cristalina mais fundos que o chão, pontes de madeira, árvores e coqueiros em pé com sombra, casas com paredes e telhados 3D, barraquinhas com toldo listrado, chafarizes, tochas acesas e os 8 Ginásios em 3D! (Quem preferir também pode alternar entre 3D e 2D a qualquer momento pelo botão 3D/2D no topo.)
 • Clique no chão para andar: além do teclado (WASD/setas) e dos botões no celular, agora basta clicar ou tocar em qualquer lugar do chão ou numa porta que o seu herói vai andando sozinho até lá desviando dos obstáculos.
 • Painéis de RPG e Inventário sem sair do mapa: minimapa com bússola no canto superior esquerdo ao lado da barra de nível, EXP e Missão Diária da Aventura; coordenadas no canto direito; Chat com abas embaixo; e a nova janela flutuante de Inventário (tecla I ou botão 🎒) mostrando seu herói com os 5 equipamentos, itens, bolas, TMs, sua equipe de 6 Pokémon e moedas sem fechar o mundo!
-• Cenário mais vivo: Pokémon selvagens da própria área aparecem passeando visíveis no mato e na água, e os moradores dão dicas em balões quando você passa por perto.
+• Cenário mais vivo: Pokémon selvagens da própria área aparecem passeando visíveis no mato e na água, os moradores dão dicas em balões quando você passa por perto, gente passeia pelas ruas da Vila Aurora, sai fumaça das chaminés e passam pássaros no céu durante o dia.
 • Mapa Grande novo com guia no chão (botão 🗺️ ou tecla M): dividido em "📍 Onde estou" (mapa grande e nítido da região atual com todas as lojas, casas, estações, Ginásio e saídas marcadas) e "🌍 Mundo inteiro" (todas as rotas, níveis e insígnias). Clique em "🧭 Ir até lá" em qualquer lugar ou região para acender uma trilha dourada no chão te guiando até a porta certa!` },
   { id: "pacote-trocas-rocket-guerra-2026-11-18", sql: "125", title: "🚀 Pacote de novidades: Trocas com vitrine, Rocket reforçada, Ataques às vilas e mais!", body: () => `Várias melhorias e regras novas acabam de entrar no jogo:
 • Guerra sem travamento: os Pokémon agora nunca insistem em golpe que não afeta o alvo, trocam sozinhos se precisarem acertar o adversário e, em caso de impasse ou após 50 turnos, vence o esquadrão com maior % de vida somada.
