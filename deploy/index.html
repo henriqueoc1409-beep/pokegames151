@@ -2320,16 +2320,92 @@ body.pb-on{overflow:hidden}
 .tm-segue{font-size:14px;padding:4px 2px}
 .modal-tm{max-width:880px !important;width:min(880px,calc(100vw - 20px)) !important}
 @media (max-width:760px){.tm-time{grid-template-columns:repeat(3,1fr)}.tm-card{min-height:122px}}
-#aventura .rpg-hud{justify-content:space-between;align-items:flex-start;flex-wrap:nowrap;gap:10px}
-.rpg-hud-l{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:0}
-.rpg-hud-r{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.rpg-ib{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:58px;height:52px;border-radius:12px;background:linear-gradient(rgba(16,24,40,.94),rgba(10,15,26,.94));border:2px solid rgba(201,160,90,.75);font-size:20px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.35)}
-.rpg-ib em{font:700 10.5px var(--sans);font-style:normal;color:#E8ECF3;margin-top:4px;white-space:nowrap}.rpg-ib:hover{border-color:#FFE37A}.rpg-ib .mb{position:absolute;top:-7px;right:-7px}
+#aventura .rpg-hud{justify-content:space-between;align-items:flex-start;flex-wrap:nowrap;gap:10px;pointer-events:none}
+#aventura .rpg-hud>*{pointer-events:auto}
+.rpg-hud-l{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.rpg-hud-r{display:flex;flex-direction:column;gap:7px;align-items:flex-end;margin-left:auto}
+.rpg-rbs{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.rpg-ib{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:48px;border-radius:11px;background:linear-gradient(180deg,#26344E,#131B2C);border:2px solid rgba(208,168,92,.82);font-size:19px;line-height:1;box-shadow:0 5px 14px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,235,180,.2)}
+.rpg-ib em{font:700 10px var(--sans);font-style:normal;color:#E8ECF3;margin-top:3px;white-space:nowrap}.rpg-ib:hover,.rpg-ib.on{border-color:#FFE37A;background:linear-gradient(180deg,#35486B,#1B2740);box-shadow:0 0 12px rgba(255,227,122,.28)}.rpg-ib .mb{position:absolute;top:-7px;right:-7px}
 .rpg-ib.sair{border-color:rgba(255,255,255,.35)}.rpg-ib[hidden]{display:none}
-#aventura .rpg-zona{font-size:12.5px;padding:5px 10px}
-.rpg-chatmin{all:unset;cursor:pointer;float:right;padding:0 6px;color:#FFE7A8}
-.rpg-chat.min .hx-chat-body,.rpg-chat.min form{display:none}.rpg-chat.min .rpg-chatmin{transform:rotate(180deg)}
-@media (max-width:760px){.rpg-ib{width:44px;height:42px;font-size:17px}.rpg-ib em{display:none}#aventura .pz-tit{font-size:12.5px;padding:6px 9px}}
+#aventura .rpg-zona{font-size:12px;padding:4px 10px}
+#rpg-cv.iso{image-rendering:auto;cursor:pointer}
+/* Painéis RPG estilo MMO na Aventura (arquivo 126) */
+.rpg-loc-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end;padding:6px 13px;border-radius:11px;background:linear-gradient(180deg,rgba(18,27,44,.95),rgba(10,15,26,.96));border:2px solid rgba(208,168,92,.8);box-shadow:0 6px 18px rgba(0,0,0,.48);font:600 12.5px/1.2 var(--sans);color:#BFCDE0}
+.rpg-loc-bar b{color:#FFF4D6;font-weight:800}.rpg-loc-bar i{width:1px;height:13px;background:rgba(255,255,255,.2)}
+.rpg-loc-zona{color:#9CF2B0;font-weight:700}
+#rpg-hero-bar{display:none}
+@media (min-width:761px){
+  #aventura .pz-hud{left:208px;top:12px;right:12px}
+  #aventura .rpg-mini{display:block;position:absolute;left:12px;top:12px;padding:5px;background:linear-gradient(180deg,rgba(18,27,44,.96),rgba(10,15,26,.97));border:2px solid rgba(214,172,94,.88);border-radius:13px;box-shadow:0 8px 24px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,236,185,.2);cursor:pointer;z-index:5}
+  #aventura .rpg-mini:hover{border-color:#FFE37A}
+  #aventura .rpg-mini-top{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:2px 6px 5px;font:800 12.5px/1.1 var(--sans);color:#FFE7A8}
+  #aventura .rpg-mini-top small{font:700 11px var(--sans);color:#A8BDD6}
+  .rpg-mini-wrap{position:relative;width:176px;height:176px;border-radius:8px;overflow:hidden;border:1.5px solid rgba(255,231,168,.35)}
+  #aventura #rpg-mini{display:block;width:176px;height:176px;border-radius:7px}
+  .rpg-cp{position:absolute;font:900 10px/14px var(--sans);width:15px;height:15px;text-align:center;border-radius:50%;background:rgba(10,15,26,.88);border:1px solid rgba(214,172,94,.8);color:#FFE7A8;pointer-events:none}
+  .rpg-cp.n{top:3px;left:50%;transform:translateX(-50%)}.rpg-cp.s{bottom:3px;left:50%;transform:translateX(-50%)}.rpg-cp.o{left:3px;top:50%;transform:translateY(-50%)}.rpg-cp.l{right:3px;top:50%;transform:translateY(-50%)}
+  .rpg-mini-zoom{position:absolute;right:4px;bottom:4px;padding:2px 6px;border-radius:6px;background:rgba(12,18,30,.88);border:1px solid rgba(214,172,94,.7);font:800 10.5px var(--sans);color:#FFE37A}
+  #rpg-hero-bar{display:flex;align-items:center;gap:11px;padding:5px 14px 5px 6px;border-radius:999px 13px 13px 999px;background:linear-gradient(180deg,rgba(18,27,44,.95),rgba(10,15,26,.96));border:2px solid rgba(214,172,94,.85);box-shadow:0 6px 18px rgba(0,0,0,.48)}
+  #rpg-hero-bar .hx-av{width:48px;height:48px;flex:none}
+  #rpg-hero-bar .hx-lv{min-width:148px}
+  #rpg-hero-bar .hx-missao{max-width:300px}
+  #aventura #rpg-tit,#aventura #rpg-zona{display:none}
+  #aventura .rpg-chat:not([hidden]){display:block;position:absolute;left:12px;bottom:12px;width:min(540px,calc(100vw - 460px));background:linear-gradient(180deg,rgba(16,24,40,.94),rgba(10,15,26,.95));border:2px solid rgba(208,168,92,.82);border-radius:12px;overflow:hidden;color:#E8ECF3;touch-action:auto;user-select:text;-webkit-user-select:text;box-shadow:0 8px 26px rgba(0,0,0,.52);z-index:5}
+}
+.rpg-chat-tabs{display:flex;align-items:center;gap:3px;padding:5px 6px 0;background:rgba(0,0,0,.3)}
+.rpg-chat-tabs button[data-rpgctab]{all:unset;cursor:pointer;padding:6px 13px;border-radius:8px 8px 0 0;font:700 12.5px var(--sans);color:#9FB0C7;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-bottom:0}
+.rpg-chat-tabs button[data-rpgctab].on{background:rgba(208,168,92,.22);color:#FFE7A8;border-color:rgba(208,168,92,.72)}
+.rpg-chatmin{all:unset;cursor:pointer;margin-left:auto;padding:3px 10px;color:#FFE7A8;font-size:14px}
+.rpg-chat.min .hx-chat-body,.rpg-chat.min form{display:none}
+.rpg-chat.min .rpg-chat-tabs{padding-bottom:5px}.rpg-chat.min .rpg-chat-tabs button[data-rpgctab]{border-radius:8px;border-bottom:1px solid rgba(255,255,255,.09)}
+.rpg-cguia{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.rpg-cguia button{all:unset;cursor:pointer;display:flex;align-items:center;gap:5px;font:600 12.5px var(--sans);color:#DCE6F5;padding:2px 4px;border-radius:6px}
+.rpg-cguia button:hover{background:rgba(245,197,66,.15);color:#FFE7A8}
+/* Barra da trilha guiada */
+#rpg-guia-bar{position:absolute;top:76px;left:50%;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;border-radius:999px;background:linear-gradient(180deg,rgba(22,32,50,.96),rgba(11,17,28,.97));border:2px solid #F5C542;box-shadow:0 8px 24px rgba(0,0,0,.55),0 0 16px rgba(245,197,66,.26);color:#FFF4D6;font:700 13px var(--sans);white-space:nowrap}
+#rpg-guia-bar[hidden]{display:none}
+#rpg-guia-bar small{color:#9CF2B0;font-weight:700}
+#rpg-guia-bar button{all:unset;cursor:pointer;padding:3px 9px;border-radius:999px;font:800 11.5px var(--sans);background:rgba(245,197,66,.2);border:1px solid rgba(245,197,66,.65);color:#FFE7A8}
+#rpg-guia-bar button:hover{background:rgba(245,197,66,.35)}
+#rpg-guia-bar button.x{padding:2px 7px;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);color:#C9D4E3}
+/* Janela flutuante de Inventário dentro da Aventura */
+#rpg-inv{position:absolute;top:114px;right:12px;width:min(426px,calc(100vw - 24px));z-index:7;background:linear-gradient(180deg,rgba(17,25,42,.97),rgba(10,15,26,.98));border:2px solid rgba(214,172,94,.88);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,235,180,.2);color:#E8ECF3;touch-action:auto;user-select:none}
+#rpg-inv[hidden]{display:none}
+.rinv-top{display:grid;grid-template-columns:152px 1fr;gap:10px;padding:10px 12px 6px}
+.rinv-doll{display:grid;grid-template-columns:40px 1fr 40px;gap:5px;align-items:center;padding:6px;border-radius:11px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1)}
+.rinv-col{display:grid;gap:6px}
+.rinv-eq{all:unset;box-sizing:border-box;cursor:pointer;position:relative;width:40px;height:40px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(180deg,#23304A,#131A2B);border:1.5px solid rgba(255,255,255,.18);font-size:18px}
+.rinv-eq:hover{border-color:#FFE37A}
+.rinv-eq.vazio{opacity:.5;border-style:dashed}
+.rinv-eq i{position:absolute;right:2px;bottom:1px;font:900 10px/1 var(--sans);font-style:normal;padding:1px 3px;border-radius:4px;background:#1E293B;color:#BFE8FF}
+.rinv-eq.t2 i{background:#4A2A7A;color:#F0D4FF}.rinv-eq.t3 i{background:#F5C542;color:#1E150C}
+.rinv-heroi{all:unset;cursor:pointer;display:grid;place-items:center;height:132px;border-radius:9px;background:radial-gradient(circle at 50% 38%,#2E4266,#111827);border:1px solid rgba(208,168,92,.35);overflow:hidden}
+.rinv-mon{position:relative}.rinv-hp{width:84%;height:4px;border-radius:2px;background:rgba(0,0,0,.55);overflow:hidden;margin-top:2px}.rinv-hp i{display:block;height:100%;background:#4CC38A}.rinv-hp i.low{background:#E05A5A}.rinv-hp i.mid{background:#E5B92E}
+/* Novo Mapa Grande da Aventura em 2 abas */
+.modal.modal-mapa-novo{width:min(1100px,calc(100vw - 16px))!important;max-width:1100px!important;max-height:92vh;overflow:auto;padding:16px 18px!important;background:linear-gradient(180deg,#141E32,#0C1322)!important;border:2px solid rgba(214,172,94,.88)!important}
+.rmap-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+.rmap-tab{all:unset;box-sizing:border-box;cursor:pointer;padding:9px 16px;border-radius:11px;font:800 14px var(--sans);color:#B8C7DC;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.12)}
+.rmap-tab:hover{border-color:rgba(245,197,66,.5);color:#FFF}
+.rmap-tab.on{background:linear-gradient(180deg,rgba(245,197,66,.26),rgba(201,150,58,.18));border-color:#F5C542;color:#FFE7A8;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.rmap-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(290px,.85fr);gap:14px;align-items:start}
+.rmap-cvbox{position:relative;background:#0A111E;border:2px solid rgba(208,168,92,.65);border-radius:14px;padding:8px;box-shadow:inset 0 0 24px rgba(0,0,0,.6)}
+.rmap-cv{display:block;width:100%;height:auto;border-radius:10px;cursor:pointer;background:#0D1626}
+.rmap-leg{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px 4px 2px;font:600 12px var(--sans);color:#A8BDD6}
+.rmap-leg span{display:inline-flex;align-items:center;gap:4px}
+.rmap-side{display:flex;flex-direction:column;gap:8px;max-height:560px;overflow:auto;padding-right:3px}
+.rmap-sec{font:800 12px var(--sans);text-transform:uppercase;letter-spacing:.6px;color:#FFE37A;margin:4px 0 2px}
+.rmap-card{display:flex;flex-direction:column;gap:5px;padding:9px 11px;border-radius:11px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.11)}
+.rmap-card.sel,.rmap-card.aqui{border-color:#F5C542;background:rgba(245,197,66,.1)}
+.rmap-card-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rmap-card-h b{font:800 14px var(--sans);color:#FFF4D6}
+.rmap-card-h small{font:700 11.5px var(--sans);color:#9CF2B0;white-space:nowrap}
+.rmap-card p{margin:0;font-size:12.5px;color:#B8C7DC;line-height:1.35}
+.rmap-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.rmap-acts .btn{padding:5px 10px;font-size:12px;min-height:28px}
+.rmap-caminho{padding:8px 10px;border-radius:10px;background:rgba(76,195,138,.12);border:1px solid rgba(76,195,138,.4);font:700 12.5px/1.4 var(--sans);color:#C8F7DC}
+@media (max-width:860px){.rmap-grid{grid-template-columns:1fr}.rmap-side{max-height:none}}
+@media (max-width:760px){.rpg-ib{width:42px;height:40px;font-size:17px}.rpg-ib em{display:none}.rpg-loc-bar{font-size:11.5px;padding:5px 9px;gap:6px}#rpg-guia-bar{top:62px;max-width:calc(100vw - 16px);overflow:hidden;text-overflow:ellipsis}#rpg-inv{top:58px;left:8px;right:8px;width:auto;max-height:calc(100vh - 72px);overflow:auto;z-index:14}.rinv-top{grid-template-columns:1fr}}
 /* =====================================================================
    TABULEIRO VIVO, INTERAÇÃO NO MAPA E TELAS COMPACTAS (arquivo 124)
    ===================================================================== */
@@ -7219,11 +7295,12 @@ function LIB() {
   return [
     { id: "visual-herois", ic: "🧙", t: "Visual dos heróis", h: `<p>Os 8 heróis têm um desenho próprio do Pokegames: cabeça grande, traço grosso e cores vivas. Cada um carrega a sua marca: o Guerreiro a espada e o escudo, o Mago o chapéu e o cajado de cristal, o Arqueiro o arco, o Ladino o capuz e as adagas, o Clérigo o cajado dourado, o Domador o chapéu e o chicote, o Pesquisador os óculos e a lupa, e o Mercador a bolsa de moedas.</p>
       <p>As skins da <b>Loja & Visuais</b> mudam o desenho: a <b>roupa</b> troca as cores (algumas têm listras ou detalhes), a <b>capa</b> aparece nas costas (ou vira asas), o <b>chapéu</b> substitui o enfeite de cabeça do herói, o <b>acessório</b> vai no rosto ou no peito e a <b>aura</b> deixa um brilho em volta.</p>` },
-    { id: "aventura", ic: "🧭", t: "Aventura (RPG)", h: `<p>A <b>Aventura</b> (menu Competir, ou o botão 🧭 no alto do mapa) é um jogo a mais dentro do Pokegames, para andar e explorar. O tabuleiro continua igual. Os <b>Pokémon e as moedas são os mesmos</b> dos dois jogos.</p>
+    { id: "aventura", ic: "🧭", t: "Aventura (RPG)", h: `<p>A <b>Aventura</b> (menu Competir, ou o botão 🧭 no alto do mapa) é um jogo a mais dentro do Pokegames, para andar e explorar em <b>visão 3D diagonal (isométrica)</b> — com ruas e praças de pedra em relevo, canais de água mais fundos, pontes, árvores e casas em 3D, barraquinhas e os 8 Ginásios em 3D (quem preferir pode alternar entre <b>📐 3D</b> e <b>🗺️ 2D</b> a qualquer momento pelo botão no topo). O tabuleiro continua igual, e os <b>Pokémon e as moedas são os mesmos</b> dos dois jogos.</p>
       <p>🥋 <b>Vale do Treino:</b> na trilha ao norte da Vila Aurora (no alto do penhasco) fica um vale com 6 estações de treino, onde os Pokémon ganham experiência sem lutar (veja o assunto Vale do Treino).</p>
-      <p><b>Vila Aurora:</b> ande com WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas. Os outros jogadores aparecem andando ao vivo.</p>
+      <p><b>Como andar e interagir:</b> além de usar WASD, as setas ou os botões na tela do celular, basta <b>clicar ou tocar em qualquer lugar do chão ou numa porta</b> que o seu herói vai andando sozinho até lá desviando de rios e muros! Chegue na porta de uma casa e aperte <b>E</b> (ou clique nela) para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas, os Pokémon selvagens da área aparecem passeando visíveis no mato e os outros jogadores aparecem ao vivo.</p>
+      <p>🎒 <b>Inventário na tela (botão 🎒 ou tecla I):</b> abre uma janela flutuante sem fechar a Aventura, mostrando seu herói com os 5 equipamentos e o Pokémon de suporte, suas abas de Itens, Pokébolas e TMs, as 6 criaturas da equipe com barra de vida ao vivo e suas moedas. No canto esquerdo ficam o minimapa com bússola, seu nível, barra de experiência e a Missão Diária da Aventura, e embaixo o Chat com abas rápidas de Missões, Ir para… e Mundo.</p>
       <p><b>É aqui que se treina:</b> a Grama de Treino fechou, e a Aventura é o lugar de ganhar experiência e evoluir os Pokémon. Todos os Pokémon aparecem por aqui (menos os lendários), cada um nas áreas do seu tipo.</p>
-      <p>📍 <b>Onde estou?</b> No alto da tela aparece sempre o nome do lugar e as coordenadas (coluna, linha). O botão <b>🗺️ Mapa</b> abre o mapa completo com todas as regiões, os nomes, os níveis, os Ginásios e você marcado.</p>
+      <p>🗺️ <b>Onde estou e Mapa Grande com guia (botão 🗺️, tecla M ou clique no minimapa):</b> no canto superior direito aparece sempre a região, suas coordenadas (X e Y), a área de mato atual, lutas do dia e insígnias. O Mapa Grande tem <b>2 abas</b>: <b>📍 Onde estou</b> (mapa amplo e nítido da região atual com todas as lojas, casas, estações, Ginásio, saídas e você bem destacado) e <b>🌍 Mundo inteiro</b> (todas as 11 regiões, estradas, níveis e insígnias). Clique em <b>🧭 Marcar trilha</b> ou <b>🚶 Ir andando</b> em qualquer destino ou outra região para acender uma <b>trilha dourada no chão</b> te guiando passo a passo até a porta ou saída certa!</p>
       <p><b>Rotas:</b> da Vila Aurora saem o Bosque Sussurrante (oeste), a Praia Coral (sul), o Deserto Rubro (leste) e a Gruta da Pedreira (pela caverna do penhasco). Mais longe ficam o Charco Sombrio (depois do Bosque), o Pico Gelado (depois da Pedreira), o 🌋 Vulcão Cinzento (depois do Deserto) e a 🏆 Estrada da Vitória (depois do Pico), as rotas mais fortes. Ande até a borda, na saída com a placa ➡️, para trocar de região.</p>
       <p><b>Níveis:</b> cada área tem a sua faixa de nível, que aparece no alto da tela quando você pisa no mato e no botão <b>🗺️ Mapa</b>. Perto da vila os Pokémon são fracos; no fundo de cada rota (o mato com o chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Os evoluídos só aparecem nas áreas de nível alto. Quanto mais forte o selvagem, mais experiência ele dá.</p>
       ${Object.values(RPG_REG).filter(R => !R.gym && Object.keys(R.z || {}).length).map(R => `<p>${R.ic} <b>${R.nome}</b>: ${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `${z.nome} (Nv ${z.min}–${z.max}: ${rpgTipos(z)})` : ""; }).filter(Boolean).join("; ")}.</p>`).join("")}
@@ -11031,7 +11108,7 @@ const AJ_LABELS = {
     lendarios: "Lendários que NÃO aparecem (números da Pokédex)", "noite": "🌙 Noite", "noite.on": "Noite ligada", "noite.inicio": "Noite começa (hora)", "noite.fim": "Noite termina (hora)", "noite.tipos": "Tipos que aparecem de noite em todas as áreas", "missoes": "📜 Missões dos moradores", "missoes.on": "Missões ligadas", "missoes.por_dia": "Missões por dia", "missoes.moedas_min": "Prêmio: moedas (mínimo)", "missoes.moedas_max": "Prêmio: moedas (máximo)", "missoes.itens": "Itens sorteados de prêmio", "ginasios": "🏟️ Ginásios", "ginasios.on": "Ginásios abertos", "ginasios.tentativas_dia": "Tentativas por dia em cada Ginásio", "ginasios.moedas": "Prêmio da insígnia: moedas", "ginasios.itens": "Prêmio da insígnia: itens", "ginasios.todas_moedas": "Prêmio de todas as insígnias: moedas", "ginasios.expira_min": "Minutos até a batalha do Ginásio virar derrota (0 = sem prazo)", "ginasios.moedas_por_nivel": "Prêmio: moedas por nível médio do Líder", "ginasios.revanche_on": "Revanche liberada (já com a insígnia)", "ginasios.revanche_pct": "Revanche: % das moedas do prêmio", "ginasios.revanche_pagas_dia": "Revanches vencidas por dia que pagam moedas (somando todos os Ginásios)", "ginasios.faixas": "Prêmio por faixa de rotas (itens, doces e TM)", "ginasios.todas_itens": "Prêmio de todas as insígnias: itens", "ginasios.lideres": "Líderes (nome, herói, tipo e time [espécie, nível])", "elite": "🏛️ Desafio do Planalto (Elite 4 e Campeão)", "elite.on": "Desafio do Planalto aberto", "elite.insignias_min": "Insígnias para entrar", "elite.tentativas_dia": "Tentativas por dia", "elite.time_max": "Pokémon que cada um leva (até 6)", "elite.moedas": "Prêmio da 1ª vitória (moedas)", "elite.itens": "Itens da 1ª vitória", "elite.doces": "Doces de Forja da 1ª vitória", "elite.repetir_moedas": "Prêmio das outras vitórias (moedas)", "elite.repetir_doces": "Doces de Forja das outras vitórias",
     "pvp": "⚔️ Batalha entre jogadores", "pvp.on": "Desafios na Aventura ligados", "pvp.distancia": "Distância para desafiar (casas)", "pvp.desafia_dia": "Desafios que cada um pode fazer por dia", "pvp.recebe_dia": "Vezes que cada um pode ser desafiado por dia", "pvp.prazo_horas": "Horas para responder o desafio (depois some)", "pvp.oferta_min": "Oferta mínima para não lutar (moedas)", "pvp.teto": "Usar o teto de nível das batalhas", "chefe": "👹 Chefe da rota", "chefe.on": "Chefe automático ligado", "chefe.dia_semana": "Dia da semana (0 = domingo, 6 = sábado)", "chefe.hora": "Hora em que aparece", "chefe.horas": "Quantas horas fica", "chefe.nivel": "Nível do chefe", "chefe.vidas": "Tamanho da barra (vezes a vida dele)", "chefe.turnos": "Turnos por luta", "chefe.tentativas_dia": "Lutas por dia de cada jogador", "chefe.especies": "Espécies sorteadas (números da Pokédex)", "chefe.moedas": "Prêmio para quem lutou: moedas", "chefe.itens": "Prêmio para quem lutou: itens", "chefe.top_moedas": "Extra para o 1º, 2º e 3º que mais bateram", "zonas.mato": "Área: Capim alto", "zonas.mato.nome": "Nome que aparece", "zonas.mato.regiao": "Região (não mude)", "zonas.mato.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.mato.min": "Nível mínimo do selvagem", "zonas.mato.max": "Nível máximo do selvagem", "zonas.escura": "Área: Grama escura", "zonas.escura.nome": "Nome que aparece", "zonas.escura.regiao": "Região (não mude)", "zonas.escura.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.escura.min": "Nível mínimo do selvagem", "zonas.escura.max": "Nível máximo do selvagem", "zonas.pantano": "Área: Pântano", "zonas.pantano.nome": "Nome que aparece", "zonas.pantano.regiao": "Região (não mude)", "zonas.pantano.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pantano.min": "Nível mínimo do selvagem", "zonas.pantano.max": "Nível máximo do selvagem", "zonas.pedra": "Área: Alto do penhasco", "zonas.pedra.nome": "Nome que aparece", "zonas.pedra.regiao": "Região (não mude)", "zonas.pedra.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedra.min": "Nível mínimo do selvagem", "zonas.pedra.max": "Nível máximo do selvagem", "zonas.bosque": "Área: Bosque: mato", "zonas.bosque.nome": "Nome que aparece", "zonas.bosque.regiao": "Região (não mude)", "zonas.bosque.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque.min": "Nível mínimo do selvagem", "zonas.bosque.max": "Nível máximo do selvagem", "zonas.bosque_fundo": "Área: Bosque: mata funda", "zonas.bosque_fundo.nome": "Nome que aparece", "zonas.bosque_fundo.regiao": "Região (não mude)", "zonas.bosque_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.bosque_fundo.min": "Nível mínimo do selvagem", "zonas.bosque_fundo.max": "Nível máximo do selvagem", "zonas.praia": "Área: Praia: dunas", "zonas.praia.nome": "Nome que aparece", "zonas.praia.regiao": "Região (não mude)", "zonas.praia.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia.min": "Nível mínimo do selvagem", "zonas.praia.max": "Nível máximo do selvagem", "zonas.praia_fundo": "Área: Praia: costão", "zonas.praia_fundo.nome": "Nome que aparece", "zonas.praia_fundo.regiao": "Região (não mude)", "zonas.praia_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.praia_fundo.min": "Nível mínimo do selvagem", "zonas.praia_fundo.max": "Nível máximo do selvagem", "zonas.deserto": "Área: Deserto: capim seco", "zonas.deserto.nome": "Nome que aparece", "zonas.deserto.regiao": "Região (não mude)", "zonas.deserto.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto.min": "Nível mínimo do selvagem", "zonas.deserto.max": "Nível máximo do selvagem", "zonas.deserto_fundo": "Área: Deserto: oásis distante", "zonas.deserto_fundo.nome": "Nome que aparece", "zonas.deserto_fundo.regiao": "Região (não mude)", "zonas.deserto_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.deserto_fundo.min": "Nível mínimo do selvagem", "zonas.deserto_fundo.max": "Nível máximo do selvagem", "zonas.pedreira": "Área: Pedreira: entrada", "zonas.pedreira.nome": "Nome que aparece", "zonas.pedreira.regiao": "Região (não mude)", "zonas.pedreira.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira.min": "Nível mínimo do selvagem", "zonas.pedreira.max": "Nível máximo do selvagem", "zonas.pedreira_fundo": "Área: Pedreira: fundo da gruta", "zonas.pedreira_fundo.nome": "Nome que aparece", "zonas.pedreira_fundo.regiao": "Região (não mude)", "zonas.pedreira_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pedreira_fundo.min": "Nível mínimo do selvagem", "zonas.pedreira_fundo.max": "Nível máximo do selvagem", "zonas.charco": "Área: Charco: margem", "zonas.charco.nome": "Nome que aparece", "zonas.charco.regiao": "Região (não mude)", "zonas.charco.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco.min": "Nível mínimo do selvagem", "zonas.charco.max": "Nível máximo do selvagem", "zonas.charco_fundo": "Área: Charco: brejo escuro", "zonas.charco_fundo.nome": "Nome que aparece", "zonas.charco_fundo.regiao": "Região (não mude)", "zonas.charco_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.charco_fundo.min": "Nível mínimo do selvagem", "zonas.charco_fundo.max": "Nível máximo do selvagem", "zonas.pico": "Área: Pico: encosta", "zonas.pico.nome": "Nome que aparece", "zonas.pico.regiao": "Região (não mude)", "zonas.pico.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico.min": "Nível mínimo do selvagem", "zonas.pico.max": "Nível máximo do selvagem", "zonas.pico_fundo": "Área: Pico: cume", "zonas.pico_fundo.nome": "Nome que aparece", "zonas.pico_fundo.regiao": "Região (não mude)", "zonas.pico_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.pico_fundo.min": "Nível mínimo do selvagem", "zonas.pico_fundo.max": "Nível máximo do selvagem", "zonas.vulcao": "Área: Vulcão: encosta", "zonas.vulcao.nome": "Nome que aparece", "zonas.vulcao.regiao": "Região (não mude)", "zonas.vulcao.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao.min": "Nível mínimo do selvagem", "zonas.vulcao.max": "Nível máximo do selvagem", "zonas.vulcao_fundo": "Área: Vulcão: cratera", "zonas.vulcao_fundo.nome": "Nome que aparece", "zonas.vulcao_fundo.regiao": "Região (não mude)", "zonas.vulcao_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.vulcao_fundo.min": "Nível mínimo do selvagem", "zonas.vulcao_fundo.max": "Nível máximo do selvagem", "zonas.estrada": "Área: Estrada da Vitória: trilha", "zonas.estrada.nome": "Nome que aparece", "zonas.estrada.regiao": "Região (não mude)", "zonas.estrada.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada.min": "Nível mínimo do selvagem", "zonas.estrada.max": "Nível máximo do selvagem", "zonas.estrada_fundo": "Área: Estrada da Vitória: desfiladeiro", "zonas.estrada_fundo.nome": "Nome que aparece", "zonas.estrada_fundo.regiao": "Região (não mude)", "zonas.estrada_fundo.tipos": "Tipos (ex.: [\"AGUA\", \"GELO\"])", "zonas.estrada_fundo.min": "Nível mínimo do selvagem", "zonas.estrada_fundo.max": "Nível máximo do selvagem" },
   praca: { on: "Praça aberta para os jogadores", envio_seg: "Segundos entre avisos de posição (menor = mais suave, gasta mais)", mascote: "Pokémon da equipe acompanha o jogador", baloes: "Balão com a fala do chat em cima do jogador" },
-  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)", vila_nova: "Minha Vila nova (desenho grande com a Fazenda; desligado = desenho antigo)", aventura_viva: "Bosque Sussurrante novo, Ginásio estufa e vagalumes na Aventura", tabuleiro_vivo: "Tabuleiro vivo (trilhas curvas, peças em relevo, água/nuvens vivas, prévia de casas, placas nas bifurcações e caminhada em pulinhos)", telas_compactas: "Menu e janelas compactos (grupos em 2 colunas, busca rápida, abas por categoria e moedas no topo)" },
+  visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)", vila_nova: "Minha Vila nova (desenho grande com a Fazenda; desligado = desenho antigo)", aventura_viva: "Bosque Sussurrante novo, Ginásio estufa e vagalumes na Aventura", tabuleiro_vivo: "Tabuleiro vivo (trilhas curvas, peças em relevo, água/nuvens vivas, prévia de casas, placas nas bifurcações e caminhada em pulinhos)", telas_compactas: "Menu e janelas compactos (grupos em 2 colunas, busca rápida, abas por categoria e moedas no topo)", aventura_iso: "Aventura em 3D diagonal (isométrica) com painéis RPG e Inventário na tela (desligado = visão 2D clássica)" },
   vale: { on: "Vale do Treino aberto para os jogadores", treinos_dia: "Treinos por dia (cada jogador)", exp_ref: "Força do treino (experiência de referência; 120 ≈ vencer um selvagem do mesmo nível)", xp_mult: "Multiplicador da experiência",
     afinidade_mult: "Bônus quando o tipo combina com a estação (1,5 = +50%)", nota_min: "Nota mínima para ganhar experiência", duracao_min_seg: "Segundos mínimos de um treino", duracao_max_min: "Minutos máximos (depois disso o treino vence sem XP)",
     estacoes: "Estações (nome e tipos que combinam com cada uma)" },
@@ -14253,11 +14330,28 @@ function rpgCarregar(r = AV.r) {
     const sc = document.createElement("script"); sc.src = `${RPG_REG[r].arq}?v=${RPG_ARTE_V}`; sc.onload = pronto; sc.onerror = () => erro(new Error("arquivo")); document.head.appendChild(sc);
   }).catch(e => { AV.cargas[r] = null; throw e; }));
 }
+const rpgIsoPermitido = () => S.cfg?.visual?.aventura_iso !== false;
+function rpgIsoOn() {
+  if (!rpgIsoPermitido()) return false;
+  if (AV.isoPref == null) { try { AV.isoPref = localStorage.getItem("pg-rpg-iso"); } catch { AV.isoPref = null; } }
+  return AV.isoPref !== "0";
+}
+function rpgToggleIso() {
+  if (!rpgIsoPermitido()) return toast("A visão 3D está desligada nos Ajustes do jogo.", true);
+  AV.isoPref = rpgIsoOn() ? "0" : "1";
+  try { localStorage.setItem("pg-rpg-iso", AV.isoPref); } catch {}
+  AV.autoPath = null; AV.autoAlvo = null;
+  const cv = $("#rpg-cv"); if (cv) cv.classList.toggle("iso", rpgIsoOn());
+  sfx("tick"); rpgHud();
+  toast(rpgIsoOn() ? "📐 Visão 3D diagonal ligada! Clique no chão para andar." : "🗺️ Visão 2D clássica ligada.");
+}
 async function rpgEntra(r) {
   if (!RPG_REG[r]) r = "vila";
   const d = await rpgCarregar(r);
   AV.r = r; AV.dados = d; AV.img = d.im; AV.g = d.g;
+  AV.autoPath = null; AV.autoAlvo = null;
   if (RPG_REG[r]?.vale && !S.vale) valeEstado();   // arquivo 112
+  rpgDecoInit(r);
   const t = $("#rpg-tit"), mb = $("#rpg-mini-box b"); if (t) t.textContent = `${RPG_REG[r].ic} ${RPG_REG[r].nome}`; if (mb) mb.textContent = RPG_REG[r].nome;
 }
 function rpgSeguidor() { const lado = [[-AV.face, 0], [AV.face, 0], [0, 1], [0, -1]].find(([dx, dy]) => !rpgSolid(AV.x + dx, AV.y + dy)) || [0, 0]; AV.ax = AV.x + lado[0]; AV.ay = AV.y + lado[1]; }
@@ -14269,7 +14363,7 @@ async function rpgViajar(para) {
     if (rpgInsig().length < min && !S.isAdmin) { [AV.x, AV.y] = [AV.ax, AV.ay]; AV.fx = AV.x; AV.fy = AV.y; rpgPerto(); sfx("erro"); return toast(`🏛️ O Desafio do Planalto só recebe quem tem as ${min} insígnias. Você tem ${rpgInsig().length}.`, true); }
     rpgEliteCarregar().then(() => rpgPerto());
   }
-  AV.busy = true; AV.keys.clear(); const de = AV.r;
+  AV.busy = true; AV.keys.clear(); AV.autoPath = null; AV.autoAlvo = null; const de = AV.r;
   const fl = $("#rpg-flash"); if (fl && !reduceMotion()) { fl.classList.add("on", "viagem"); await sleep(350); }
   try { await rpgEntra(para); }
   catch { AV.busy = false; if (fl) fl.classList.remove("on", "viagem"); return toast("Não consegui carregar essa região. Tente de novo.", true); }
@@ -14277,89 +14371,1025 @@ async function rpgViajar(para) {
   const ch = RPG_REG[para]?.mina ? minaChegada() : de === "mina" ? expMinaPos() : gpv ? (!rpgSolid(gpv[0], gpv[1] + 1) ? [gpv[0], gpv[1] + 1] : gpv) : para === "vila" ? RPG_VILA_CHEGA[de] : (AV.dados.saidas?.find(s => s.para === de)?.dentro || AV.dados.chegada);
   [AV.x, AV.y] = ch && !rpgSolid(ch[0], ch[1]) ? ch : (AV.dados.chegada || [28, 30]); AV.moving = null; AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();
   try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
+  rpgGuiaAoViajar(de, para);
   rpgNetLeave(); rpgNetJoin(); rpgPerto();
   const h = $("#rpg-hint"); if (h) { h.hidden = false; clearTimeout(AV.dicaT); AV.dicaT = setTimeout(() => { h.hidden = true; }, 5000); } if (h) h.textContent = `${RPG_REG[para].ic} ${RPG_REG[para].nome}${para === "vila" || RPG_REG[para].gym || RPG_REG[para].elite || RPG_REG[para].vale ? "" : ` · ${rpgFaixa(para)}`}`;
   if (fl) { await sleep(150); fl.classList.remove("on", "viagem"); }
   sfx("tick"); AV.busy = false;
 }
-// quadro com todas as rotas, os níveis e os tipos
+// ---------- Caminho inteligente (BFS), trilha dourada no chão e Mapa Grande em 2 abas (arquivo 126) ----------
 const RPG_MAPA_POS = { elite: [1, 0], estrada: [1, 1], pico: [1, 2], pedreira: [1, 3], charco: [0, 3], bosque: [0, 4], vila: [1, 4], deserto: [2, 4], vulcao: [3, 4], praia: [1, 5], vale: [2, 3] };
 const RPG_MAPA_LIG = [["vila", "vale"], ["vila", "bosque"], ["bosque", "charco"], ["vila", "deserto"], ["deserto", "vulcao"], ["vila", "praia"], ["vila", "pedreira"], ["pedreira", "pico"], ["pico", "estrada"], ["estrada", "elite"]];
-async function rpgMapaDesenha() {
-  const cv = $("#rpg-mapa"); if (!cv) return;
-  const C = 190, G0 = 18, g = cv.getContext("2d"), NC = Math.max(...Object.values(RPG_MAPA_POS).map(p => p[0])) + 1, NL = Math.max(...Object.values(RPG_MAPA_POS).map(p => p[1])) + 1; cv.width = NC * C + (NC - 1) * G0; cv.height = NL * C + (NL - 1) * G0;
-  g.fillStyle = "#0F1726"; g.fillRect(0, 0, cv.width, cv.height);
-  g.fillStyle = "#AFC0D8"; g.font = "700 15px Inter, system-ui, sans-serif"; g.textAlign = "center"; g.fillText("Carregando o mapa…", cv.width / 2, cv.height / 2);
-  const ids = Object.keys(RPG_MAPA_POS); await Promise.all(ids.map(r => rpgCarregar(r).catch(() => null)));
-  if (!$("#rpg-mapa")) return;
-  g.fillStyle = "#0F1726"; g.fillRect(0, 0, cv.width, cv.height);
-  const L = ([c, r]) => [c * (C + G0), r * (C + G0)];
-  g.strokeStyle = "#FFE37A"; g.lineWidth = 6; g.setLineDash([3, 10]); g.lineCap = "round";
+function rpgPontosDe(r = AV.r) {
+  if (r === AV.r) return rpgPontos();
+  if (r === "vila") return AV_PONTOS;
+  const d = AV.dc?.[r]; if (!d || RPG_REG[r]?.gym || RPG_REG[r]?.elite || RPG_REG[r]?.mina) return [];
+  if (RPG_REG[r]?.vale) return Object.entries(d.pontos?.estacoes || {}).map(([k, pos]) => ({ em: [pos], ic: VALE_EST[k]?.ic || "🥋", nome: S.vale?.estacoes?.[k]?.nome || k, vale: k }));
+  const out = [], gp = rpgGymPos(r), L = rpgLider(r);
+  if (gp && L) out.push({ em: [gp], ic: "🏟️", nome: `Ginásio · ${L.nome}`, vai: "gym_" + r });
+  if (d.pontos?.placa) out.push({ em: [d.pontos.placa], ic: "🪧", nome: "Placa" });
+  return out;
+}
+const rpgSaidasDe = (r = AV.r) => r === "vila" ? RPG_VILA_SAIDAS : (r === AV.r ? (AV.dados?.saidas || []) : (AV.dc?.[r]?.saidas || []));
+function rpgSolidEm(x, y, r = AV.r, ignoraNpc = false) {
+  const g = r === AV.r ? AV.g : AV.dc?.[r]?.g;
+  if (!g || y < 0 || x < 0 || y >= g.length || x >= g[0].length) return true;
+  if ("#~".includes((g[y] || "")[x] || "#")) return true;
+  if (r === AV.r && minaFechada(x, y)) return true;
+  if (!RPG_REG[r]?.gym && r !== "vila") { const gp = rpgGymPos(r); if (gp && x >= gp[0] - 2 && x <= gp[0] + 2 && y >= gp[1] - 4 && y <= gp[1] - 1) return true; }
+  if (!ignoraNpc && r === AV.r) {
+    if (rpgNpcs().some(n => n.x === x && n.y === y)) return true;
+    if (rpgChefeAqui()) { const cp = rpgChefePos(r); if (cp && cp[0] === x && cp[1] === y) return true; }
+  }
+  return false;
+}
+function rpgAlvoAndavel(tx, ty, r = AV.r) {
+  const g = r === AV.r ? AV.g : AV.dc?.[r]?.g; if (!g) return null;
+  tx = Math.max(0, Math.min(g[0].length - 1, Math.round(tx)));
+  ty = Math.max(0, Math.min(g.length - 1, Math.round(ty)));
+  if (!rpgSolidEm(tx, ty, r)) return [tx, ty];
+  // Se clicou em cima de um prédio/estação/NPC, procura a porta dele ou a casa livre colada nele
+  for (const p of rpgPontosDe(r)) {
+    const [px, py] = p.em[0];
+    if (Math.abs(px - tx) <= 2 && py - ty >= -1 && py - ty <= 4 && !rpgSolidEm(px, py, r)) return [px, py];
+  }
+  for (let raio = 1; raio <= 3; raio++) {
+    const cand = [];
+    for (let dy = -raio; dy <= raio; dy++) for (let dx = -raio; dx <= raio; dx++) {
+      if (Math.abs(dx) + Math.abs(dy) !== raio) continue;
+      if (!rpgSolidEm(tx + dx, ty + dy, r)) cand.push([tx + dx, ty + dy]);
+    }
+    if (cand.length) { cand.sort((a, b) => (b[1] - a[1]) || (Math.hypot(a[0] - AV.x, a[1] - AV.y) - Math.hypot(b[0] - AV.x, b[1] - AV.y))); return cand[0]; }
+  }
+  return null;
+}
+function rpgAchaCaminho(x0, y0, x1, y1, r = AV.r) {
+  const g = r === AV.r ? AV.g : AV.dc?.[r]?.g; if (!g) return null;
+  const alvo = rpgAlvoAndavel(x1, y1, r); if (!alvo) return null;
+  const [tx, ty] = alvo; if (x0 === tx && y0 === ty) return [];
+  const W = g[0].length, H = g.length, key = (x, y) => y * W + x;
+  const prev = new Int32Array(W * H).fill(-1), vis = new Uint8Array(W * H);
+  const start = key(x0, y0), goal = key(tx, ty);
+  vis[start] = 1;
+  const fila = [start]; let qi = 0;
+  while (qi < fila.length) {
+    const cur = fila[qi++]; if (cur === goal) break;
+    const cx = cur % W, cy = (cur / W) | 0;
+    for (const [dx, dy] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) {
+      const nx = cx + dx, ny = cy + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+      const nk = key(nx, ny); if (vis[nk] || rpgSolidEm(nx, ny, r)) continue;
+      vis[nk] = 1; prev[nk] = cur; fila.push(nk);
+    }
+  }
+  if (!vis[goal]) return null;
+  const out = [];
+  for (let cur = goal; cur !== start; cur = prev[cur]) out.push([cur % W, (cur / W) | 0]);
+  out.reverse();
+  return out;
+}
+function rpgRotaMundo(de, ate) {
+  const b0 = rpgRegBase(de), b1 = rpgRegBase(ate);
+  if (b0 === b1) return [b0];
+  const adj = {};
+  for (const [a, b] of RPG_MAPA_LIG) { (adj[a] = adj[a] || []).push(b); (adj[b] = adj[b] || []).push(a); }
+  const prev = { [b0]: null }, fila = [b0];
+  while (fila.length) {
+    const u = fila.shift(); if (u === b1) break;
+    for (const v of adj[u] || []) if (!(v in prev)) { prev[v] = u; fila.push(v); }
+  }
+  if (!(b1 in prev)) return null;
+  const cam = []; for (let cur = b1; cur; cur = prev[cur]) cam.push(cur);
+  return cam.reverse();
+}
+function rpgPortaParaRegiao(de, prox) {
+  for (const p of rpgPontosDe(de)) if (p.vai === prox) return { x: p.em[0][0], y: p.em[0][1], ic: p.ic, nome: p.nome, vai: prox };
+  for (const sd of rpgSaidasDe(de)) if (sd.para === prox) {
+    const [sx, sy] = sd.em[Math.floor((sd.em.length - 1) / 2)];
+    return { x: sx, y: sy, ic: RPG_REG[prox]?.ic || "➡️", nome: `Saída para ${RPG_REG[prox]?.nome || prox}`, saida: prox };
+  }
+  return null;
+}
+function rpgGuiaLimpa() { AV.guia = null; AV.autoPath = null; AV.autoAlvo = null; rpgGuiaBarra(); }
+function rpgGuiarPara(x, y, nome, ic = "📍", andarAgora = false) {
+  const cam = rpgAchaCaminho(AV.x, AV.y, x, y, AV.r);
+  if (!cam) return toast("Não achei um caminho livre até esse ponto.", true);
+  const fim = cam.length ? cam.at(-1) : [AV.x, AV.y];
+  AV.guia = { r: AV.r, x: fim[0], y: fim[1], nome, ic, path: cam };
+  if (andarAgora) { AV.autoPath = cam.slice(); AV.autoAlvo = { x: fim[0], y: fim[1], acao: true }; }
+  rpgGuiaBarra();
+  if (!andarAgora) toast(`🧭 Trilha dourada acesa até ${nome} (${cam.length} passos)!`);
+}
+function rpgGuiarRegiao(dest, andarAgora = false) {
+  if (RPG_REG[AV.r]?.gym && rpgRegBase(AV.r) !== dest) {
+    const sd = rpgSaidas()[0]?.em?.[0];
+    if (sd) { AV.guia = { r: AV.r, x: sd[0], y: sd[1], nome: `Sair do Ginásio ➔ ${RPG_REG[dest]?.nome || dest}`, ic: RPG_REG[dest]?.ic || "🧭", destReg: dest, path: rpgAchaCaminho(AV.x, AV.y, sd[0], sd[1]) || [] };
+      if (andarAgora) { AV.autoPath = AV.guia.path.slice(); AV.autoAlvo = { x: sd[0], y: sd[1], acao: true }; }
+      rpgGuiaBarra(); return; }
+  }
+  const rota = rpgRotaMundo(AV.r, dest);
+  if (!rota || rota.length < 2) { toast(`📍 Você já está em ${RPG_REG[dest]?.nome || dest}!`); return; }
+  const prox = rota[1], porta = rpgPortaParaRegiao(AV.r, prox);
+  if (!porta) return toast("Saída não encontrada a partir daqui.", true);
+  const cam = rpgAchaCaminho(AV.x, AV.y, porta.x, porta.y, AV.r) || [];
+  AV.guia = { r: AV.r, x: porta.x, y: porta.y, nome: `${RPG_REG[dest]?.nome || dest} (via ${RPG_REG[prox]?.nome || prox})`, ic: RPG_REG[dest]?.ic || "🧭", destReg: dest, path: cam };
+  if (andarAgora) { AV.autoPath = cam.slice(); AV.autoAlvo = { x: porta.x, y: porta.y, acao: true }; }
+  rpgGuiaBarra();
+  toast(`🧭 Trilha acesa! Siga o caminho dourado até ${porta.nome}.`);
+}
+function rpgGuiaAoViajar(de, para) {
+  if (!AV.guia) return;
+  if (AV.guia.destReg) {
+    if (rpgRegBase(para) === AV.guia.destReg) {
+      const nm = RPG_REG[AV.guia.destReg]?.nome || para;
+      AV.guia = null; rpgGuiaBarra();
+      setTimeout(() => toast(`🎉 Você chegou em ${nm}!`), 250);
+    } else setTimeout(() => rpgGuiarRegiao(AV.guia.destReg, false), 80);
+  } else { AV.guia = null; rpgGuiaBarra(); }
+}
+function rpgGuiaAtualiza() {
+  if (!AV.guia) return;
+  if (AV.guia.r !== AV.r) { if (!AV.guia.destReg) rpgGuiaLimpa(); return; }
+  if (Math.abs(AV.x - AV.guia.x) + Math.abs(AV.y - AV.guia.y) <= 1 && !AV.guia.destReg) {
+    const nm = AV.guia.nome; AV.guia = null; rpgGuiaBarra();
+    toast(`📍 Você chegou: ${nm}!`);
+    return;
+  }
+  AV.guia.path = rpgAchaCaminho(AV.x, AV.y, AV.guia.x, AV.guia.y, AV.r) || [];
+  rpgGuiaBarra();
+}
+function rpgGuiaBarra() {
+  const el = $("#rpg-guia-bar"); if (!el) return;
+  if (!AV.guia || !AV.open) { el.hidden = true; return; }
+  const n = AV.guia.path?.length ?? Math.abs(AV.x - AV.guia.x) + Math.abs(AV.y - AV.guia.y);
+  el.hidden = false;
+  el.innerHTML = `<span>🧭 <b>${esc(AV.guia.ic)} ${esc(AV.guia.nome)}</b> <small>· ${n} ${n === 1 ? "passo" : "passos"}</small></span>
+    <button type="button" data-rpg="guia-ir" title="Ir andando sozinho até lá">🚶 Andar só</button>
+    <button type="button" class="x" data-rpg="guia-x" title="Apagar trilha" aria-label="Apagar trilha">✕</button>`;
+}
+function rpgAndarAte(tx, ty, acao = true) {
+  if (AV.busy || AV.fala) return;
+  const cam = rpgAchaCaminho(AV.x, AV.y, tx, ty, AV.r);
+  if (!cam) { sfx("erro"); return; }
+  if (!cam.length) { if (acao && AV.perto) rpgUsar(); return; }
+  const fim = cam.at(-1);
+  AV.autoPath = cam; AV.autoAlvo = { x: fim[0], y: fim[1], acao, t: performance.now() };
+}
+function rpgDestinosLocais(r = AV.r) {
+  const saidas = [], lugares = [];
+  for (const sd of rpgSaidasDe(r)) {
+    const [sx, sy] = sd.em[Math.floor((sd.em.length - 1) / 2)], R = RPG_REG[sd.para]; if (!R) continue;
+    const d = r === AV.r ? (rpgAchaCaminho(AV.x, AV.y, sx, sy, r)?.length ?? Math.hypot(sx - AV.x, sy - AV.y) | 0) : null;
+    saidas.push({ x: sx, y: sy, ic: R.ic, nome: R.nome, sub: rpgFaixa(sd.para) || (R.vale ? "Estações de treino" : R.elite ? "Desafio do Planalto" : "Saída"), para: sd.para, passos: d });
+  }
+  for (const p of rpgPontosDe(r)) {
+    const [px, py] = p.em[0], d = r === AV.r ? (rpgAchaCaminho(AV.x, AV.y, px, py, r)?.length ?? Math.hypot(px - AV.x, py - AV.y) | 0) : null;
+    if (p.vai && !p.vai.startsWith("gym_")) {
+      const R = RPG_REG[p.vai];
+      saidas.push({ x: px, y: py, ic: p.ic, nome: p.nome, sub: rpgFaixa(p.vai) || (R?.vale ? "6 estações sem batalha" : "Passagem"), para: p.vai, passos: d });
+    } else {
+      const desc = p.win === "pkloja" ? "Bolas, poções, pedras e TMs" : p.win === "loja" ? "Roupas, capas, chapéus e ajudas" : p.win === "centro" ? "Cura imediata dos seus Pokémon"
+        : p.win === "creche" ? "Sobe nível enquanto você descansa" : p.win === "leilao" ? "Leilões de Pokémon da turma" : p.win === "mercado" ? "Mercado de itens e cartas"
+        : p.win === "jornal" ? "Novidades, avisos e enquetes" : p.win === "caixa" ? "Apoio e mural da comunidade" : p.win === "ranking" ? "Placar da temporada e medalhas"
+        : p.vai?.startsWith("gym_") ? `Líder ${rpgLider(r)?.nome || ""} (${rpgLider(r)?.tipo || ""})` : p.minaPorta ? "Expedição de 5 salas na mina" : p.vale ? "Estação de treino (ganha XP)" : "Informações da área";
+      lugares.push({ x: px, y: py, ic: p.ic, nome: p.nome, sub: desc, passos: d });
+    }
+  }
+  if (r === AV.r) {
+    for (const n of rpgNpcs()) {
+      const adj = [[0, 1], [0, -1], [1, 0], [-1, 0]].map(([dx, dy]) => [n.x + dx, n.y + dy]).find(([ax, ay]) => !rpgSolidEm(ax, ay, r)) || [n.x, n.y];
+      const d = rpgAchaCaminho(AV.x, AV.y, adj[0], adj[1], r)?.length ?? (Math.hypot(adj[0] - AV.x, adj[1] - AV.y) | 0);
+      lugares.push({ x: adj[0], y: adj[1], ic: n.gym ? "🏟️" : n.elite ? "🏛️" : "💬", nome: n.nome, sub: n.gym ? "Desafiar pelo Ginásio" : n.elite ? "Desafio do Planalto" : "Morador · missões e dicas", passos: d });
+    }
+    if (rpgChefeAqui()) { const cp = rpgChefePos(r); if (cp) lugares.unshift({ x: cp[0], y: cp[1], ic: "👹", nome: `Chefe: ${pkName(AV.st.chefe.especie)}`, sub: `Nível ${AV.st.chefe.nivel} · luta coletiva!`, passos: Math.hypot(cp[0] - AV.x, cp[1] - AV.y) | 0 }); }
+  }
+  saidas.sort((a, b) => (a.passos ?? 999) - (b.passos ?? 999));
+  lugares.sort((a, b) => (a.passos ?? 999) - (b.passos ?? 999));
+  return { saidas, lugares };
+}
+function rpgMapaLocalDesenha() {
+  const cv = $("#rmap-local"); if (!cv || !AV.g) return;
+  const H = AV.g.length, W = AV.g[0].length, S0 = 560, pad = 16;
+  const esc0 = Math.min((S0 - pad * 2) / W, (S0 - pad * 2) / H), ox = Math.round((S0 - W * esc0) / 2), oy = Math.round((S0 - H * esc0) / 2);
+  cv.width = S0; cv.height = S0; cv._mapGeo = { ox, oy, esc0, W, H };
+  const g = cv.getContext("2d");
+  g.fillStyle = "#0B1322"; g.fillRect(0, 0, S0, S0);
+  // Imagem real suave de fundo + leitura esquemática bem nítida por cima
+  if (AV.img) { g.save(); g.globalAlpha = 0.32; g.drawImage(AV.img, ox, oy, W * esc0, H * esc0); g.restore(); }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const ch = AV.g[y][x], px = ox + x * esc0, py = oy + y * esc0;
+    g.fillStyle = ch === "#" ? "rgba(30,42,56,.82)" : ch === "~" ? "rgba(36,156,214,.88)" : ch === "m" ? "rgba(62,158,76,.78)" : ch === "e" ? "rgba(34,108,58,.86)"
+      : ch === "p" ? "rgba(72,132,126,.82)" : ch === "r" ? "rgba(148,122,92,.82)" : "rgba(234,212,168,.84)";
+    g.fillRect(px, py, Math.ceil(esc0), Math.ceil(esc0));
+  }
+  // Prédio do Ginásio destacado na rota
+  const gp = !RPG_REG[AV.r]?.gym && AV.r !== "vila" ? rpgGymPos(AV.r) : null;
+  if (gp) {
+    g.fillStyle = "rgba(245,197,66,.28)"; g.strokeStyle = "#FFE37A"; g.lineWidth = 2;
+    g.fillRect(ox + (gp[0] - 2) * esc0, oy + (gp[1] - 4) * esc0, 5 * esc0, 4 * esc0);
+    g.strokeRect(ox + (gp[0] - 2) * esc0, oy + (gp[1] - 4) * esc0, 5 * esc0, 4 * esc0);
+  }
+  // Trilha dourada ativa
+  if (AV.guia?.r === AV.r && AV.guia.path?.length) {
+    g.save(); g.strokeStyle = "#FFE37A"; g.lineWidth = Math.max(3, esc0 * 0.45); g.lineCap = "round"; g.lineJoin = "round"; g.setLineDash([6, 5]);
+    g.beginPath(); g.moveTo(ox + (AV.x + .5) * esc0, oy + (AV.y + .5) * esc0);
+    for (const [tx, ty] of AV.guia.path) g.lineTo(ox + (tx + .5) * esc0, oy + (ty + .5) * esc0);
+    g.stroke(); g.restore();
+  }
+  // Outros jogadores na região
+  for (const o of Object.values(AV.others)) {
+    if (o.x == null) continue;
+    g.fillStyle = "#7CE8FF"; g.strokeStyle = "#09101D"; g.lineWidth = 1.5;
+    g.beginPath(); g.arc(ox + (o.x + .5) * esc0, oy + (o.y + .5) * esc0, 4.5, 0, 6.28); g.fill(); g.stroke();
+  }
+  // Marcadores claros de saídas e lugares (evitando sobreposição de rótulos)
+  const { saidas, lugares } = rpgDestinosLocais(AV.r), caixas = [];
+  const desenhaPin = (it, corFundo, corBorda) => {
+    const px = ox + (it.x + .5) * esc0, py = oy + (it.y + .5) * esc0;
+    g.fillStyle = corFundo; g.strokeStyle = corBorda; g.lineWidth = 2;
+    g.beginPath(); g.arc(px, py, 9.5, 0, 6.28); g.fill(); g.stroke();
+    g.font = "12px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(it.ic, px, py + .5);
+    const cur = it.nome.replace(/^Ginásio · /, "Ginásio ").slice(0, 18);
+    g.font = "800 10.5px Inter, system-ui, sans-serif";
+    const tw = g.measureText(cur).width + 10, th = 16;
+    let lx = Math.max(tw / 2 + 4, Math.min(S0 - tw / 2 - 4, px)), ly = py < 34 ? py + 18 : py - 18;
+    if (caixas.some(b => Math.abs(b.x - lx) < (b.w + tw) / 2 - 2 && Math.abs(b.y - ly) < 15)) ly = py + 19;
+    if (!caixas.some(b => Math.abs(b.x - lx) < (b.w + tw) / 2 - 4 && Math.abs(b.y - ly) < 14)) {
+      caixas.push({ x: lx, y: ly, w: tw });
+      g.fillStyle = "rgba(10,15,26,.9)"; g.strokeStyle = corBorda; g.lineWidth = 1;
+      g.beginPath(); g.roundRect(lx - tw / 2, ly - th / 2, tw, th, 5); g.fill(); g.stroke();
+      g.fillStyle = "#FFF5D6"; g.fillText(cur, lx, ly + .5);
+    }
+  };
+  for (const s of saidas) desenhaPin(s, "#1C3F2B", "#7CEB9E");
+  for (const l of lugares) if (l.ic !== "🪧") desenhaPin(l, "#232F4B", "#F5C542");
+  // VOCÊ bem grande e impossível de perder de vista
+  const ux = ox + (AV.x + .5) * esc0, uy = oy + (AV.y + .5) * esc0;
+  g.fillStyle = "rgba(245,197,66,.26)"; g.beginPath(); g.arc(ux, uy, 16, 0, 6.28); g.fill();
+  g.fillStyle = "#E04848"; g.strokeStyle = "#FFFFFF"; g.lineWidth = 2.5; g.beginPath(); g.arc(ux, uy, 7.5, 0, 6.28); g.fill(); g.stroke();
+  const vt = `📍 VOCÊ (${AV.x}, ${AV.y})`; g.font = "900 11.5px Inter, system-ui, sans-serif";
+  const vw = g.measureText(vt).width + 14, vx = Math.max(vw / 2 + 6, Math.min(S0 - vw / 2 - 6, ux)), vy = uy > S0 - 42 ? uy - 24 : uy + 23;
+  g.fillStyle = "#F5C542"; g.strokeStyle = "#1E150C"; g.lineWidth = 2;
+  g.beginPath(); g.roundRect(vx - vw / 2, vy - 10, vw, 20, 6); g.fill(); g.stroke();
+  g.fillStyle = "#1E150C"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(vt, vx, vy + .5);
+}
+async function rpgMapaMundoDesenha() {
+  const cv = $("#rmap-mundo") || $("#rpg-mapa"); if (!cv) return;
+  const W0 = 680, H0 = 560, CW = 148, CH = 74, GX = 18, GY = 16, ox = 16, oy = 16;
+  cv.width = W0; cv.height = H0;
+  const g = cv.getContext("2d");
+  const grad = g.createLinearGradient(0, 0, 0, H0); grad.addColorStop(0, "#0D1729"); grad.addColorStop(1, "#09101D");
+  g.fillStyle = grad; g.fillRect(0, 0, W0, H0);
+  const ids = Object.keys(RPG_MAPA_POS);
+  Promise.all(ids.map(r => rpgCarregar(r).catch(() => null))).then(() => { if (($("#rmap-mundo") || $("#rpg-mapa")) === cv && !cv._redrawn) { cv._redrawn = true; rpgMapaMundoDesenha(); } });
+  const pos = r => { const [col, lin] = RPG_MAPA_POS[r]; return [ox + col * (CW + GX), oy + lin * (CH + GY)]; };
+  const aqui = rpgRegBase(AV.r), sel = AV.mapSel || aqui, rota = rpgRotaMundo(aqui, sel) || [];
+  const naRota = (a, b) => { for (let i = 0; i < rota.length - 1; i++) if ((rota[i] === a && rota[i + 1] === b) || (rota[i] === b && rota[i + 1] === a)) return true; return false; };
+  cv._cards = {};
+  // Estradas entre as regiões (acende em dourado a rota até a região selecionada)
   for (const [a, b] of RPG_MAPA_LIG) {
-    const [ax, ay] = L(RPG_MAPA_POS[a]), [bx, by] = L(RPG_MAPA_POS[b]); g.beginPath(); g.moveTo(ax + C / 2, ay + C / 2); g.lineTo(bx + C / 2, by + C / 2); g.stroke(); }
-  g.setLineDash([]);
-  const aqui = rpgRegBase(AV.r);
-  for (const r of ids) {
-    const d = AV.dc?.[r], [x, y] = L(RPG_MAPA_POS[r]), R = RPG_REG[r];
-    g.save(); g.beginPath(); g.roundRect(x, y, C, C, 14); g.clip();
-    if (d?.im) g.drawImage(d.im, x, y, C, C); else { g.fillStyle = "#24324A"; g.fillRect(x, y, C, C); }
-    g.fillStyle = "rgba(8,12,22,.78)"; g.fillRect(x, y + C - 48, C, 48);
-    g.fillStyle = "#FFE7A8"; g.font = "800 15px Inter, system-ui, sans-serif"; g.textAlign = "left"; g.fillText(`${R.ic} ${R.nome}`, x + 8, y + C - 28, C - 16);
-    g.fillStyle = "#9FE0B4"; g.font = "700 13px Inter, system-ui, sans-serif"; g.fillText(R.elite ? `Elite 4 + Campeão${AV.st?.elite?.campeao ? " · 👑 você venceu!" : ""}` : R.vale ? "🥋 6 estações de treino" : `${rpgFaixa(r)}${rpgLider(r) ? ` · 🏟️ ${rpgInsig().includes(r) ? "✅" : rpgLider(r).nome}` : ""}`, x + 8, y + C - 10, C - 16);
-    // o prédio do Ginásio no mapa
-    const gp = d && rpgLider(r) ? rpgGymPos(r) : null; if (gp) { const kx = C / d.g[0].length, ky = C / d.g.length; g.font = "18px 'Segoe UI Emoji',sans-serif"; g.textAlign = "center"; g.fillText("🏟️", x + (gp[0] + .5) * kx, y + (gp[1] - 1) * ky); }
+    const [ax, ay] = pos(a), [bx, by] = pos(b), ativa = naRota(a, b);
+    g.save();
+    g.strokeStyle = ativa ? "#FFE37A" : "rgba(155,180,214,.38)";
+    g.lineWidth = ativa ? 7 : 4;
+    if (!ativa) g.setLineDash([5, 7]);
+    g.lineCap = "round";
+    g.beginPath(); g.moveTo(ax + CW / 2, ay + CH / 2); g.lineTo(bx + CW / 2, by + CH / 2); g.stroke();
     g.restore();
-    g.strokeStyle = r === aqui ? "#FFE37A" : "rgba(201,160,90,.75)"; g.lineWidth = r === aqui ? 4 : 2; g.beginPath(); g.roundRect(x, y, C, C, 14); g.stroke();
-    if (r === aqui && d) {   // você está aqui
-      const dentro = RPG_REG[AV.r]?.gym ? rpgGymPos(r) || [AV.x, AV.y] : [Math.min(AV.x, d.g[0].length - 1), Math.min(AV.y, d.g.length - 1)], px = x + (dentro[0] + .5) * C / d.g[0].length, py = y + (dentro[1] + .5) * C / d.g.length;
-      g.fillStyle = "#E05A5A"; g.strokeStyle = "#fff"; g.lineWidth = 2; g.beginPath(); g.arc(px, py, 7, 0, 6.28); g.fill(); g.stroke();
-      const txt = `Você · ${AV.x}, ${AV.y}`; g.font = "800 12px Inter, system-ui, sans-serif"; const w = g.measureText(txt).width + 12;
-      g.fillStyle = "rgba(10,14,24,.9)"; g.beginPath(); g.roundRect(px - w / 2, py - 30, w, 20, 6); g.fill(); g.fillStyle = "#FFE37A"; g.textAlign = "center"; g.fillText(txt, px, py - 15);
+  }
+  for (const r of ids) {
+    const [x, y] = pos(r), R = RPG_REG[r], d = AV.dc?.[r], ehAqui = r === aqui, ehSel = r === sel, ins = rpgInsig().includes(r);
+    cv._cards[r] = { x, y, w: CW, h: CH };
+    g.save();
+    g.beginPath(); g.roundRect(x, y, CW, CH, 12); g.clip();
+    if (d?.im) { g.globalAlpha = 0.42; g.drawImage(d.im, x, y, CW, CH); g.globalAlpha = 1; }
+    const bg = g.createLinearGradient(0, y, 0, y + CH);
+    bg.addColorStop(0, ehAqui ? "rgba(42,34,12,.72)" : "rgba(14,22,38,.78)"); bg.addColorStop(1, "rgba(8,13,24,.94)");
+    g.fillStyle = bg; g.fillRect(x, y, CW, CH);
+    g.fillStyle = "#FFF4D6"; g.font = "800 13px Inter, system-ui, sans-serif"; g.textAlign = "left"; g.textBaseline = "alphabetic";
+    g.fillText(`${R.ic} ${R.nome}`, x + 9, y + 22, CW - 18);
+    g.fillStyle = R.elite ? "#E5C6FF" : R.vale ? "#9CF2B0" : r === "vila" ? "#FFE37A" : "#9FD8FF";
+    g.font = "700 11.5px Inter, system-ui, sans-serif";
+    const sub = R.elite ? "Elite 4 + Campeão" : R.vale ? "6 estações · sem luta" : r === "vila" ? "Lojas · Centro · Feira" : rpgFaixa(r);
+    g.fillText(sub, x + 9, y + 41, CW - 18);
+    if (rpgLider(r)) {
+      g.fillStyle = ins ? "#7CEB9E" : "#FFD98A"; g.font = "700 11px Inter, system-ui, sans-serif";
+      g.fillText(ins ? "✅ Insígnia ganha" : `🏟️ ${rpgLider(r).nome}`, x + 9, y + 60, CW - 18);
+    } else if (r === "vila") {
+      g.fillStyle = "#B8C7DC"; g.font = "600 11px Inter, system-ui, sans-serif"; g.fillText("Ponto central", x + 9, y + 60);
+    }
+    if (AV.st?.chefe?.status === "ativo" && AV.st.chefe.regiao === r) {
+      g.font = "16px 'Segoe UI Emoji',sans-serif"; g.textAlign = "right"; g.fillText("👹", x + CW - 8, y + 62);
+    }
+    g.restore();
+    g.strokeStyle = ehAqui ? "#F5C542" : ehSel ? "#7CE8FF" : "rgba(208,168,92,.55)";
+    g.lineWidth = ehAqui || ehSel ? 3 : 1.5;
+    g.beginPath(); g.roundRect(x, y, CW, CH, 12); g.stroke();
+    if (ehAqui) {
+      g.fillStyle = "#F5C542"; g.beginPath(); g.roundRect(x + CW - 66, y - 9, 60, 18, 6); g.fill();
+      g.fillStyle = "#1E150C"; g.font = "900 10px Inter, system-ui, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
+      g.fillText("📍 AQUI", x + CW - 36, y);
     }
   }
 }
-function rpgRotasHTML() {
-  return `<div class="rpg-rotas"><div class="av-head"><h2>🗺️ Mapa da Aventura</h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
-    <p>Você está em <b>${RPG_REG[AV.r]?.ic} ${esc(RPG_REG[AV.r]?.nome || "")}</b>, na casa <b>📍 ${AV.x}, ${AV.y}</b>.</p>
-    <canvas id="rpg-mapa" class="rpg-mapa" aria-label="Mapa completo da Aventura"></canvas>
-    <p class="muted">Cada área tem uma faixa de nível. Perto da Vila Aurora os Pokémon são fracos; no fundo das rotas (chão diferente, longe da entrada) e nas rotas mais distantes, bem mais fortes. Quanto mais forte o selvagem, mais experiência ele dá. Os evoluídos só aparecem nas áreas de nível alto.</p>
-    <p>🏅 Suas insígnias: <b>${rpgInsig().length} de ${Object.keys(rpgLideres()).length}</b>${rpgInsig().length ? ` (${rpgInsig().map(r => RPG_REG[r]?.ic || "").join(" ")})` : ""}</p>
-    ${Object.entries(RPG_REG).filter(([, R]) => !R.gym && !R.mina).map(([id, R]) => `<div class="rpg-rota ${id === rpgRegBase(AV.r) ? "aqui" : ""}"><h3>${R.ic} ${esc(R.nome)} <small>${id === AV.r ? "· você está aqui" : `· ${esc(R.como)}`}</small></h3>${rpgLider(id) ? `<p class="rpg-gin-l">🏟️ Ginásio: <b>${esc(rpgLider(id).nome)}</b> (${esc(rpgLider(id).tipo || "")}, ${rpgLider(id).n} Pokémon) ${rpgInsig().includes(id) ? "· ✅ insígnia" : ""}</p>` : ""}
-      ${R.elite ? `<p class="rpg-gin-l">🏛️ A Elite 4 e o Campeão. Só entra quem tem as ${AV.st?.elite?.insignias_min ?? 8} insígnias.${AV.st?.elite?.campeao ? " · 👑 você já venceu!" : ""}</p>` : ""}
-      <ul>${Object.values(R.z).map(k => { const z = rpgZonaInfo(k); return z ? `<li><b>${esc(z.nome)}</b> <span class="rpg-nv">Nv ${z.min}–${z.max}</span><small>${esc(rpgTipos(z))}</small></li>` : ""; }).join("")}</ul></div>`).join("")}
-    <p class="muted" style="margin-top:10px">🏃 Fugir de uma luta custa ${rpgCfg().fuga_base ?? 10} moedas, mais ${rpgCfg().fuga_por_ataque ?? 10} por ataque que você já fez nela. Lutas por dia: ${AV.st?.batalhas_dia ?? rpgCfg().batalhas_dia}.</p></div>`;
+const rpgMapaDesenha = rpgMapaMundoDesenha;
+function rpgMapaHTML(aba = AV.mapTab || "local") {
+  AV.mapTab = aba;
+  const R0 = RPG_REG[AV.r] || RPG_REG.vila, aqui = rpgRegBase(AV.r), sel = AV.mapSel || aqui, RS = RPG_REG[sel] || R0;
+  const { saidas, lugares } = rpgDestinosLocais(AV.r);
+  const rota = rpgRotaMundo(aqui, sel) || [aqui];
+  const corpoLocal = `<div class="rmap-grid">
+      <div class="rmap-cvbox"><canvas id="rmap-local" class="rmap-cv" aria-label="Mapa detalhado de ${esc(R0.nome)}"></canvas>
+        <div class="rmap-leg"><span>🔴 <b>Você</b></span><span>🟨 Ruas e chão livre</span><span>🟩 Mato selvagem</span><span>🟦 Água</span><span>✨ Trilha guiada</span></div>
+        <p class="muted" style="margin:4px 0 0;text-align:center;font-size:12px">Dica: clique em qualquer lugar do mapa ou nos botões ao lado para acender a trilha dourada no chão!</p></div>
+      <div class="rmap-side">
+        ${AV.guia ? `<div class="rmap-caminho">🧭 Trilha ativa: <b>${esc(AV.guia.ic)} ${esc(AV.guia.nome)}</b> <button class="btn ghost small" data-rmap="limpa" style="margin-left:6px;padding:2px 8px">Apagar</button></div>` : ""}
+        ${saidas.length ? `<div class="rmap-sec">🚪 Saídas para outras regiões (${saidas.length})</div>
+          ${saidas.map(s => `<div class="rmap-card"><div class="rmap-card-h"><b>${s.ic} ${esc(s.nome)}</b><small>${s.passos != null ? `${s.passos} passos` : ""}</small></div>
+            <p>${esc(s.sub)}</p>
+            <div class="rmap-acts"><button class="btn small" data-rmap-ir="${s.x},${s.y}" data-rmap-nm="${esc(s.nome)}" data-rmap-ic="${esc(s.ic)}">🚶 Ir andando</button>
+              <button class="btn ghost small" data-rmap-guia="${s.x},${s.y}" data-rmap-nm="${esc(s.nome)}" data-rmap-ic="${esc(s.ic)}">🧭 Marcar trilha</button></div></div>`).join("")}` : ""}
+        <div class="rmap-sec">🏛️ Lojas, casas e lugares daqui (${lugares.length})</div>
+        ${lugares.length ? lugares.map(l => `<div class="rmap-card"><div class="rmap-card-h"><b>${l.ic} ${esc(l.nome)}</b><small>${l.passos != null ? `${l.passos} passos` : ""}</small></div>
+          <p>${esc(l.sub)}</p>
+          <div class="rmap-acts"><button class="btn small" data-rmap-ir="${l.x},${l.y}" data-rmap-nm="${esc(l.nome)}" data-rmap-ic="${esc(l.ic)}">🚶 Ir andando</button>
+            <button class="btn ghost small" data-rmap-guia="${l.x},${l.y}" data-rmap-nm="${esc(l.nome)}" data-rmap-ic="${esc(l.ic)}">🧭 Marcar trilha</button></div></div>`).join("")
+          : `<p class="muted">Use a saída para voltar à rota.</p>`}
+      </div></div>`;
+  const corpoMundo = `<div class="rmap-grid">
+      <div class="rmap-cvbox"><canvas id="rmap-mundo" class="rmap-cv" aria-label="Mapa do mundo inteiro da Aventura"></canvas>
+        <div class="rmap-leg"><span>📍 <b>Onde você está</b></span><span>💛 Rota sugerida</span><span>✅ Insígnia conquistada</span><span>👹 Chefe ativo</span></div>
+        <p class="muted" style="margin:4px 0 0;text-align:center;font-size:12px">Clique em qualquer região do mapa para ver os Pokémon, o Ginásio e como chegar lá!</p></div>
+      <div class="rmap-side">
+        <div class="rmap-card sel"><div class="rmap-card-h"><b>${RS.ic} ${esc(RS.nome)}</b><small>${sel === aqui ? "📍 Você está aqui" : rpgFaixa(sel) || "Especial"}</small></div>
+          <p>Como chegar: ${esc(RS.como || "ponto inicial")}.</p>
+          ${rpgLider(sel) ? `<p>🏟️ Ginásio: <b>${esc(rpgLider(sel).nome)}</b> (${esc(rpgLider(sel).tipo || "")} · ${rpgLider(sel).n} Pokémon) ${rpgInsig().includes(sel) ? "· ✅ <b>Insígnia ganha</b>" : ""}</p>` : ""}
+          ${RS.elite ? `<p>🏛️ Elite 4 + Campeão (pede as ${AV.st?.elite?.insignias_min ?? 8} insígnias).${AV.st?.elite?.campeao ? " 👑 Você já é Campeão!" : ""}</p>` : ""}
+          ${RS.vale ? `<p>🥋 6 estações onde seus Pokémon ganham experiência sem gastar lutas do dia.</p>` : ""}
+          ${Object.values(RS.z || {}).map(k => { const z = rpgZonaInfo(k); return z ? `<p>• <b>${esc(z.nome)}</b> (Nv ${z.min}–${z.max}): ${esc(rpgTipos(z))}</p>` : ""; }).join("")}
+          ${sel !== aqui ? `<div class="rmap-caminho">🧭 Caminho: ${rota.map(r => `${RPG_REG[r]?.ic || ""} ${esc(RPG_REG[r]?.nome || r)}`).join(" ➔ ")}</div>
+            <div class="rmap-acts"><button class="btn small" data-rmap-reg="${sel}" data-rmap-go="1">🚶 Começar a ir</button><button class="btn ghost small" data-rmap-reg="${sel}">🧭 Marcar trilha até lá</button></div>`
+            : `<div class="rmap-acts"><button class="btn ghost small" data-rmap-tab="local">📍 Ver ruas e lojas daqui</button></div>`}
+        </div>
+        <div class="rmap-sec">🌍 Todas as regiões (🏅 ${rpgInsig().length}/${Object.keys(rpgLideres()).length} insígnias)</div>
+        ${Object.keys(RPG_MAPA_POS).map(id => { const R = RPG_REG[id]; return `<div class="rmap-card ${id === sel ? "sel" : ""}" data-rmap-pick="${id}" style="cursor:pointer">
+          <div class="rmap-card-h"><b>${R.ic} ${esc(R.nome)}</b><small>${id === aqui ? "📍 Aqui" : rpgInsig().includes(id) ? "✅ Insígnia" : rpgFaixa(id) || ""}</small></div></div>`; }).join("")}
+      </div></div>`;
+  return `<div class="rpg-rotas"><div class="av-head"><h2>🗺️ Mapa da Aventura · ${R0.ic} ${esc(R0.nome)} <small class="muted" style="font-size:13px">(X: ${AV.x}, Y: ${AV.y})</small></h2><button class="btn ghost small" data-avx="1" aria-label="Fechar">✕</button></div>
+    <div class="rmap-tabs">
+      <button type="button" class="rmap-tab ${aba === "local" ? "on" : ""}" data-rmap-tab="local">📍 Onde estou (${esc(R0.nome)})</button>
+      <button type="button" class="rmap-tab ${aba === "mundo" ? "on" : ""}" data-rmap-tab="mundo">🌍 Mundo inteiro (todas as rotas)</button>
+    </div>${aba === "local" ? corpoLocal : corpoMundo}</div>`;
 }
-function rpgRotas() { const m = openModal(rpgRotasHTML()); m.querySelector(".modal").classList.add("modal-av", "modal-mapa"); m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-avx]")) closeModal(); }); rpgMapaDesenha(); }
+const rpgRotasHTML = () => rpgMapaHTML("local");
+function rpgRotas(aba = "local") {
+  AV.mapSel = rpgRegBase(AV.r);
+  const m = openModal(rpgMapaHTML(aba));
+  m.querySelector(".modal").classList.add("modal-av", "modal-mapa", "modal-mapa-novo");
+  const pinta = () => {
+    const box = m.querySelector(".modal"); if (!box) return;
+    box.innerHTML = rpgMapaHTML(AV.mapTab);
+    if (AV.mapTab === "local") rpgMapaLocalDesenha(); else rpgMapaMundoDesenha();
+  };
+  m.addEventListener("click", e => {
+    if (e.target === m || e.target.closest("[data-avx]")) return closeModal();
+    const tb = e.target.closest("[data-rmap-tab]"); if (tb) { AV.mapTab = tb.dataset.rmapTab; sfx("tick"); return pinta(); }
+    if (e.target.closest("[data-rmap='limpa']")) { rpgGuiaLimpa(); return pinta(); }
+    const pk = e.target.closest("[data-rmap-pick]"); if (pk) { AV.mapSel = pk.dataset.rmapPick; sfx("tick"); return pinta(); }
+    const ir = e.target.closest("[data-rmap-ir]");
+    if (ir) { const [x, y] = ir.dataset.rmapIr.split(",").map(Number); closeModal(); rpgGuiarPara(x, y, ir.dataset.rmapNm, ir.dataset.rmapIc, true); return; }
+    const gu = e.target.closest("[data-rmap-guia]");
+    if (gu) { const [x, y] = gu.dataset.rmapGuia.split(",").map(Number); closeModal(); rpgGuiarPara(x, y, gu.dataset.rmapNm, gu.dataset.rmapIc, false); return; }
+    const rg = e.target.closest("[data-rmap-reg]");
+    if (rg) { const go = rg.dataset.rmapGo === "1"; closeModal(); rpgGuiarRegiao(rg.dataset.rmapReg, go); return; }
+    if (e.target.id === "rmap-local") {
+      const cv = e.target, r = cv.getBoundingClientRect(), geo = cv._mapGeo; if (!geo) return;
+      const sx = (e.clientX - r.left) * (cv.width / r.width), sy = (e.clientY - r.top) * (cv.height / r.height);
+      const tx = Math.floor((sx - geo.ox) / geo.esc0), ty = Math.floor((sy - geo.oy) / geo.esc0);
+      if (tx >= 0 && ty >= 0 && tx < geo.W && ty < geo.H) { closeModal(); rpgGuiarPara(tx, ty, `Ponto (${tx}, ${ty})`, "📍", false); }
+    }
+    if (e.target.id === "rmap-mundo") {
+      const cv = e.target, r = cv.getBoundingClientRect();
+      const sx = (e.clientX - r.left) * (cv.width / r.width), sy = (e.clientY - r.top) * (cv.height / r.height);
+      for (const [id, c] of Object.entries(cv._cards || {})) if (sx >= c.x && sx <= c.x + c.w && sy >= c.y && sy <= c.y + c.h) { AV.mapSel = id; sfx("tick"); return pinta(); }
+    }
+  });
+  if (aba === "local") rpgMapaLocalDesenha(); else rpgMapaMundoDesenha();
+}
+// ---------- Pokémon selvagens passeando visíveis na Aventura (só enfeite vivo; sprites oficiais da PokeAPI, regra 7) ----------
+const RPG_DECO_FALLBACK = {
+  vila: [16, 19, 10, 43, 25, 60, 54, 66, 74, 133],
+  bosque: [10, 13, 43, 46, 69, 25, 16, 48, 123, 127],
+  praia: [54, 60, 72, 90, 98, 116, 120, 81, 25, 131],
+  deserto: [27, 37, 50, 58, 77, 104, 111, 56, 74],
+  pedreira: [74, 95, 66, 50, 104, 111, 41, 81, 147],
+  charco: [92, 93, 41, 88, 109, 96, 63, 23, 48],
+  pico: [86, 87, 124, 131, 90, 147, 148, 64, 125],
+  vulcao: [37, 58, 77, 126, 74, 111, 67, 148],
+  estrada: [67, 75, 95, 105, 112, 64, 93, 148]
+};
+function rpgDecoInit(r = AV.r) {
+  AV.decoMons = [];
+  const g = AV.dc?.[r]?.g || AV.g; if (!g || RPG_REG[r]?.gym || RPG_REG[r]?.elite || RPG_REG[r]?.mina || RPG_REG[r]?.vale) return;
+  const cels = [];
+  for (let y = 1; y < g.length - 1; y++) for (let x = 1; x < g[0].length - 1; x++) if ("mepr".includes(g[y][x])) cels.push([x, y]);
+  if (!cels.length) return;
+  let pool = RPG_DECO_FALLBACK[r] || RPG_DECO_FALLBACK.vila;
+  const tipos = new Set(Object.values(RPG_REG[r]?.z || {}).flatMap(k => rpgZonaInfo(k)?.tipos || []));
+  if (S.pokeById && tipos.size) {
+    const achados = Object.values(S.pokeById).filter(p => p.id <= (genOn() ? 251 : 151) && !(rpgCfg().lendarios || [144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251]).includes(p.id) && (tipos.has(p.g1_type1) || tipos.has(p.g1_type2))).map(p => p.id);
+    if (achados.length >= 4) pool = achados;
+  }
+  const qtd = Math.min(r === "vila" ? 9 : 8, Math.max(3, (cels.length / 26) | 0));
+  for (let i = 0; i < qtd; i++) {
+    const [x, y] = cels[(i * 97 + 13) % cels.length], sp = pool[(i * 7 + r.length * 3) % pool.length];
+    AV.decoMons.push({ sp, x, y, fx: x, fy: y, tx: x, ty: y, t: 1, face: i % 2 ? 1 : -1, wait: 600 + (i * 430) % 2400 });
+  }
+}
+function rpgDecoStep(dt) {
+  if (!AV.decoMons?.length || !AV.g) return;
+  for (const m of AV.decoMons) {
+    if (m.t < 1) {
+      m.t = Math.min(1, m.t + dt / 720);
+      m.fx = m.x + (m.tx - m.x) * m.t; m.fy = m.y + (m.ty - m.y) * m.t;
+      if (m.t >= 1) { m.x = m.tx; m.y = m.ty; }
+      continue;
+    }
+    m.wait -= dt; if (m.wait > 0) continue;
+    m.wait = 1400 + Math.random() * 3200;
+    const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    const [dx, dy] = dirs[(Math.random() * 4) | 0], nx = m.x + dx, ny = m.y + dy;
+    if (!"mepr".includes((AV.g[ny] || "")[nx] || "#")) continue;
+    m.tx = nx; m.ty = ny; m.t = 0; if (dx) m.face = dx;
+  }
+}
+// ---------- Motor 3D Diagonal Isométrico (2.5D) da Aventura (arquivo 126, arte 100% nossa em Canvas) ----------
+const ISO_PAL = {
+  vila: { ceu: "#0E2A42", rua: ["#EAD3A3", "#DEC18B", "#C8A76E"], parede: ["#B99660", "#8D6E42"], grama: ["#69B84F", "#5CA844"], mato: ["#4CA03E", "#3D8C32"], escura: ["#37823B", "#2B6E30"], pantano: ["#4F8D7E", "#417A6C"], pedra: ["#C9B084", "#B2976A"], penhasco: ["#A88858", "#83673E"], agua: ["#22B5D8", "#168EB4"], arvore: "costeira" },
+  praia: { ceu: "#0C3352", rua: ["#F4DFB0", "#E8CE96", "#D1B378"], parede: ["#C5A56E", "#987B4C"], grama: ["#85C85E", "#73B64E"], mato: ["#64B44C", "#52A03C"], escura: ["#489650", "#398042"], pantano: ["#46A2B8", "#388CA2"], pedra: ["#D4BE92", "#BEA67A"], penhasco: ["#B4986A", "#8E734A"], agua: ["#1DC4E8", "#1199C4"], arvore: "palmeira" },
+  bosque: { ceu: "#0E2016", rua: ["#CBB58A", "#BDA478", "#9E865C"], parede: ["#7D6846", "#5C4B32"], grama: ["#55A646", "#49963B"], mato: ["#3E8E36", "#317A2B"], escura: ["#27682C", "#1E5623"], pantano: ["#3C7E74", "#2F6B62"], pedra: ["#8C9482", "#747C6B"], penhasco: ["#6E634E", "#524938"], agua: ["#2EA6BA", "#218498"], arvore: "floresta" },
+  deserto: { ceu: "#2A180E", rua: ["#ECCB90", "#DFBA7B", "#C69F60"], parede: ["#BA8B4E", "#8F6736"], grama: ["#DEB873", "#CFA862"], mato: ["#B59E48", "#9E8838"], escura: ["#8F883E", "#787232"], pantano: ["#4EA8B4", "#3E8E9A"], pedra: ["#C99262", "#B07A4C"], penhasco: ["#A66D42", "#7E4F2E"], agua: ["#29B8CC", "#1B94A8"], arvore: "palmeira" },
+  pedreira: { ceu: "#161820", rua: ["#AEA69A", "#9E968A", "#857D72"], parede: ["#787066", "#58524A"], grama: ["#8D867B", "#7E776D"], mato: ["#737A62", "#626952"], escura: ["#586055", "#485046"], pantano: ["#4A6E7A", "#3B5B66"], pedra: ["#9C9183", "#867B6E"], penhasco: ["#6E655A", "#4F4840"], agua: ["#34809E", "#26647E"], arvore: "rocha" },
+  charco: { ceu: "#140F22", rua: ["#8C8296", "#7B7185", "#645B6E"], parede: ["#5E5368", "#443B4D"], grama: ["#4B6E58", "#3F604B"], mato: ["#3D6252", "#315244"], escura: ["#2F4A48", "#243B3A"], pantano: ["#4A3F6E", "#3B315A"], pedra: ["#6E667A", "#5B5366"], penhasco: ["#52485E", "#3B3345"], agua: ["#4C528C", "#383E70"], arvore: "charco" },
+  pico: { ceu: "#0E1D30", rua: ["#DCE8F2", "#C9D8E6", "#AFC2D4"], parede: ["#8FA6BE", "#6B829B"], grama: ["#E6F0F8", "#D4E4F0"], mato: ["#BBD4E6", "#A6C4DA"], escura: ["#9ABBD6", "#86A8C4"], pantano: ["#74B2D4", "#5E9CC0"], pedra: ["#B8C8D8", "#9FB2C4"], penhasco: ["#7F96AE", "#5E748C"], agua: ["#42B8E6", "#2B96C4"], arvore: "neve" },
+  vulcao: { ceu: "#220B08", rua: ["#6E5852", "#5E4A45", "#4A3935"], parede: ["#523832", "#382420"], grama: ["#524440", "#463936"], mato: ["#694638", "#58392D"], escura: ["#542E26", "#44231C"], pantano: ["#8C381E", "#702B16"], pedra: ["#66524C", "#54423D"], penhasco: ["#4A322C", "#33201C"], agua: ["#F26419", "#C93B0E"], arvore: "vulcao", lava: true },
+  estrada: { ceu: "#161426", rua: ["#D8CEB8", "#C8BC9E", "#AE9F80"], parede: ["#968668", "#70624A"], grama: ["#789668", "#688658"], mato: ["#5D8252", "#4E7044"], escura: ["#476848", "#39563A"], pantano: ["#4A7E8C", "#3B6875"], pedra: ["#B2A690", "#9A8E78"], penhasco: ["#857862", "#635846"], agua: ["#2FA2C4", "#21809E"], arvore: "ruina" },
+  vale: { ceu: "#10281E", rua: ["#E8D4A8", "#DAC292", "#C2A876"], parede: ["#B49462", "#886C42"], grama: ["#6BB854", "#5DA846"], mato: ["#52A242", "#449035"], escura: ["#3E863A", "#32722E"], pantano: ["#3FA6C4", "#2E8AA8"], pedra: ["#C6B28E", "#AE9A76"], penhasco: ["#9E845C", "#7A6342"], agua: ["#24BCE0", "#1896BA"], arvore: "costeira" },
+  elite: { ceu: "#120920", rua: ["#523B78", "#443066", "#352452"], parede: ["#6E529E", "#4A3470"], grama: ["#3B2A57", "#33244C"], mato: ["#5B3A86", "#4A2E70"], escura: ["#7A54AE", "#644294"], pantano: ["#4A3470", "#382658"], pedra: ["#9E2A2B", "#7E1F20"], penhasco: ["#4A3470", "#2E1E4A"], agua: ["#6848A8", "#4E3286"], arvore: "coluna" },
+  mina: { ceu: "#090706", rua: ["#5C4E42", "#4E4238", "#3E342C"], parede: ["#4A3E34", "#332A23"], grama: ["#4A3F35", "#3F352C"], mato: ["#594B3E", "#4A3E33"], escura: ["#3B322A", "#2E2720"], pantano: ["#38525E", "#2B404A"], pedra: ["#6B5D50", "#594C41"], penhasco: ["#3D332B", "#29221C"], agua: ["#2E6E82", "#215262"], arvore: "rocha" }
+};
+function isoPalDe(r = AV.r) {
+  if (RPG_REG[r]?.gym) {
+    const T = RPG_GYM_TEMA[RPG_REG[r].gym] || RPG_GYM_TEMA.bosque;
+    return { ceu: "#0D1320", rua: [T.f1, T.f2, T.c2], parede: [T.c2, T.c1], grama: [T.campo, T.f2], mato: [T.campo, T.c2], escura: [T.c2, T.c1], pantano: [T.campo, T.c2], pedra: [T.f1, T.f2], penhasco: [T.c2, T.c1], agua: ["#28B2D8", "#1A8CAE"], arvore: "coluna" };
+  }
+  return ISO_PAL[r] || ISO_PAL.vila;
+}
+function isoElev(r, g, x, y) {
+  const H = g.length, W = g[0].length;
+  if (x < 0 || y < 0 || x >= W || y >= H) return 0;
+  const ch = g[y][x];
+  if (ch === "~") return -0.55;
+  if (r === "vila") {
+    if (x >= 35 && y <= 16) return 1.0;
+    if (x >= 41 && x <= 44 && y === 17) return 0.55;
+    if (x >= 40 && y >= 38) return 0.25;
+    return 0;
+  }
+  if (RPG_REG[r]?.gym || RPG_REG[r]?.elite) return y <= 5 && ch !== "#" ? 0.48 : 0;
+  if (r === "pico" || r === "estrada" || r === "vulcao") return ch === "e" ? 0.32 : 0;
+  return 0;
+}
+function isoPrediosDe(r, d) {
+  if (d._isoPredios && r !== AV.r) return d._isoPredios;
+  const L = [];
+  if (r === "vila") {
+    L.push(
+      { x0: 29, y0: 23, x1: 31, y1: 25, h: 2.35, t: "loja", cor: "#E8DEC8", telha: "#2978B8", porta: [30, 26], ic: "🛒", placa: "POKEMART" },
+      { x0: 36, y0: 23, x1: 38, y1: 25, h: 2.35, t: "loja", cor: "#EFE3CE", telha: "#9B4DCA", porta: [38, 26], ic: "👕", placa: "VISUAIS" },
+      { x0: 11, y0: 7, x1: 14, y1: 9, h: 2.45, t: "celeiro", cor: "#D98A4E", telha: "#A63A2B", porta: [13, 10], ic: "🏡", placa: "CRECHE" },
+      { x0: 55, y0: 43, x1: 57, y1: 45, h: 2.55, t: "loja", cor: "#F4ECE0", telha: "#D64242", porta: [57, 46], ic: "➕", placa: "CENTRO" },
+      { x0: 46, y0: 43, x1: 48, y1: 45, h: 2.4, t: "loja", cor: "#E6D8BE", telha: "#C9922E", porta: [48, 46], ic: "🔨", placa: "LEILÕES" },
+      { x0: 4, y0: 24, x1: 6, y1: 26, h: 1.75, t: "barraca", cor: "#C9965B", telha: "#2874C8", porta: [6, 27], ic: "🤝", fala: "Troque seus itens aqui!" },
+      { x0: 11, y0: 25, x1: 12, y1: 26, h: 1.45, t: "mural", cor: "#9A6B3E", telha: "#6B4626", porta: [11, 27], ic: "📰" },
+      { x0: 52, y0: 55, x1: 53, y1: 56, h: 1.15, t: "fonte", cor: "#D8CEBC", telha: "#28B8E0", porta: [51, 57], ic: "💛" },
+      { x0: 15, y0: 26, x1: 16, y1: 27, h: 2.05, t: "estatua", cor: "#D8D0C0", telha: "#F2C444", porta: [15, 28], ic: "🏆" },
+      { x0: 51, y0: 4, x1: 53, y1: 5, h: 2.2, t: "caverna", cor: "#8C7858", telha: "#5E4E38", porta: [52, 6], ic: "⛏️" },
+      { x0: 38, y0: 2, x1: 40, y1: 3, h: 2.1, t: "portal", cor: "#B84232", telha: "#6B241B", porta: [39, 4], ic: "🥋" }
+    );
+  } else if (RPG_REG[r]?.vale) {
+    const ch = d.pontos?.chafariz;
+    if (ch) L.push({ x0: ch[0] - 1, y0: ch[1] - 1, x1: ch[0] + 1, y1: ch[1], h: 1.2, t: "fonte", cor: "#DED4C2", telha: "#28BCE4", porta: ch, ic: "⛲" });
+    const fg = d.pontos?.fogo;
+    if (fg) L.push({ x0: fg[0], y0: fg[1], x1: fg[0], y1: fg[1], h: 0.9, t: "fogueira", cor: "#6E4A2E", telha: "#FF7828", porta: fg, ic: "🔥" });
+  } else if (!RPG_REG[r]?.gym && !RPG_REG[r]?.elite && !RPG_REG[r]?.mina) {
+    const gp = rpgGymPos(r), T = RPG_GYM_TEMA[r];
+    if (gp && T) L.push({ x0: gp[0] - 2, y0: gp[1] - 4, x1: gp[0] + 2, y1: gp[1] - 1, h: 2.85, t: r === "bosque" ? "gym_bosque" : "gym", cor: T.f1, telha: T.c2, borda: T.c1, luz: T.luz, porta: gp, ic: T.ic, placa: "GINÁSIO" });
+    if (r === "pedreira" && S.cfg?.exp?.on !== false) {
+      const mp = expMinaPos();
+      if (mp) L.push({ x0: Math.max(0, mp[0] - 1), y0: Math.max(0, mp[1] - 2), x1: Math.min(d.g[0].length - 1, mp[0] + 1), y1: Math.max(0, mp[1] - 1), h: 1.9, t: "caverna", cor: "#7A6A58", telha: "#4A3E32", porta: mp, ic: "⛏️" });
+    }
+  }
+  return (d._isoPredios = L);
+}
+function isoAnalisar(r, d) {
+  if (d._isoTipos) return d._isoTipos;
+  const H = d.g.length, W = d.g[0].length, mat = new Uint8Array(W * H);   // 0=grama, 1=estrada/pedra clara, 2=ponte
+  let px = null;
+  try {
+    if (d.im?.width >= W * 16) {
+      const c = document.createElement("canvas"); c.width = W; c.height = H;
+      const cg = c.getContext("2d"); cg.drawImage(d.im, 0, 0, W, H);
+      px = cg.getImageData(0, 0, W, H).data;
+    }
+  } catch {}
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const ch = d.g[y][x]; if (ch !== ".") continue;
+    const aguaPerto = (d.g[y - 1]?.[x] === "~" && d.g[y + 1]?.[x] === "~") || (d.g[y]?.[x - 1] === "~" && d.g[y]?.[x + 1] === "~");
+    if (aguaPerto) { mat[y * W + x] = 2; continue; }
+    if (RPG_REG[r]?.gym || RPG_REG[r]?.elite || r === "pedreira" || r === "vulcao") { mat[y * W + x] = 1; continue; }
+    if (px) {
+      const i = (y * W + x) * 4, R = px[i], G = px[i + 1], B = px[i + 2];
+      // Nas artes 2D da vila/rotas, estradas de areia/pedra têm R >= G - 8, enquanto a grama tem G bem maior que R
+      if (G - R < 16 || (R > 145 && B > 110)) mat[y * W + x] = 1;
+    } else if ((x >= 24 && x <= 42 && y >= 24 && y <= 34) || (x >= 42 && y >= 40)) mat[y * W + x] = 1;
+  }
+  return (d._isoTipos = mat);
+}
+function isoMontaChao(r, d) {
+  const IW = 30, IH = 15, IZ = 16;
+  if (d.isoFloor && d.isoFloorNoite === !!AV.st?.noite) return d.isoFloor;
+  const g0 = d.g, H = g0.length, W = g0[0].length, pal = isoPalDe(r), mat = isoAnalisar(r, d);
+  const padX = IW * 3, padY = IH * 5, ox = H * IW + padX, oy = padY + 2 * IZ;
+  const cv = document.createElement("canvas");
+  cv.width = (W + H) * IW + padX * 2;
+  cv.height = (W + H) * IH + padY * 2 + 3 * IZ;
+  const g = cv.getContext("2d");
+  const P = (x, y, z = 0) => [ox + (x - y) * IW, oy + (x + y) * IH - z * IZ];
+  const losango = (x, y, z, cor, borda) => {
+    const [cx, cy] = P(x, y, z);
+    g.fillStyle = cor;
+    g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + IW, cy + IH); g.lineTo(cx, cy + IH * 2); g.lineTo(cx - IW, cy + IH); g.closePath(); g.fill();
+    if (borda) { g.strokeStyle = borda; g.lineWidth = 1; g.stroke(); }
+    return [cx, cy];
+  };
+  const saiaDir = (x, y, zTop, zBot, cor) => {
+    if (zTop <= zBot) return;
+    const [ax, ay] = P(x + 1, y, zTop), [bx, by] = P(x + 1, y + 1, zTop), dz = (zTop - zBot) * IZ;
+    g.fillStyle = cor; g.beginPath(); g.moveTo(ax, ay); g.lineTo(bx, by); g.lineTo(bx, by + dz); g.lineTo(ax, ay + dz); g.closePath(); g.fill();
+    g.strokeStyle = "rgba(0,0,0,.22)"; g.lineWidth = 1; g.stroke();
+  };
+  const saiaEsq = (x, y, zTop, zBot, cor) => {
+    if (zTop <= zBot) return;
+    const [ax, ay] = P(x, y + 1, zTop), [bx, by] = P(x + 1, y + 1, zTop), dz = (zTop - zBot) * IZ;
+    g.fillStyle = cor; g.beginPath(); g.moveTo(ax, ay); g.lineTo(bx, by); g.lineTo(bx, by + dz); g.lineTo(ax, ay + dz); g.closePath(); g.fill();
+    g.strokeStyle = "rgba(0,0,0,.26)"; g.lineWidth = 1; g.stroke();
+  };
+  const ocup = new Set();
+  for (const pr of isoPrediosDe(r, d)) for (let py = pr.y0; py <= pr.y1; py++) for (let px = pr.x0; px <= pr.x1; px++) ocup.add(py * W + px);
+  for (let s = 0; s <= W + H - 2; s++) {
+    for (let x = Math.max(0, s - (H - 1)); x <= Math.min(W - 1, s); x++) {
+      const y = s - x, ch = g0[y][x], z = isoElev(r, g0, x, y), hsh = ((x * 73856093) ^ (y * 19349663)) >>> 0;
+      const tp = mat[y * W + x], ehPredio = ocup.has(y * W + pxFix(x));
+      if (ch === "~") {
+        // Paredes internas de pedra do canal quando o vizinho de trás (x-1 ou y-1) é mais alto
+        const zN = isoElev(r, g0, x, y - 1), zO = isoElev(r, g0, x - 1, y);
+        if (zN > z) {
+          const [ax, ay] = P(x, y, zN), [bx, by] = P(x + 1, y, zN), dz = (zN - z) * IZ;
+          g.fillStyle = pal.parede[0]; g.beginPath(); g.moveTo(ax, ay); g.lineTo(bx, by); g.lineTo(bx, by + dz); g.lineTo(ax, ay + dz); g.closePath(); g.fill();
+        }
+        if (zO > z) {
+          const [ax, ay] = P(x, y, zO), [bx, by] = P(x, y + 1, zO), dz = (zO - z) * IZ;
+          g.fillStyle = pal.parede[1]; g.beginPath(); g.moveTo(ax, ay); g.lineTo(bx, by); g.lineTo(bx, by + dz); g.lineTo(ax, ay + dz); g.closePath(); g.fill();
+        }
+        const [cx, cy] = losango(x, y, z, pal.agua[(x + y) & 1], pal.lava ? "rgba(255,210,90,.25)" : "rgba(180,248,255,.18)");
+        // Espuma clara na borda do canal
+        if (zN > z) { g.strokeStyle = pal.lava ? "rgba(255,220,110,.65)" : "rgba(210,252,255,.65)"; g.lineWidth = 2; g.beginPath(); g.moveTo(cx, cy + 1); g.lineTo(cx + IW - 2, cy + IH); g.stroke(); }
+        if (zO > z) { g.strokeStyle = pal.lava ? "rgba(255,220,110,.5)" : "rgba(210,252,255,.5)"; g.lineWidth = 2; g.beginPath(); g.moveTo(cx, cy + 1); g.lineTo(cx - IW + 2, cy + IH); g.stroke(); }
+        continue;
+      }
+      let cor = pal.grama[(x + y) & 1], borda = "rgba(0,0,0,.06)";
+      if (tp === 2) { cor = "#A67644"; borda = "#5E3E1E"; }
+      else if (tp === 1 || ehPredio || (ch === "#" && r === "vila" && x >= 40 && y >= 38)) {
+        cor = pal.rua[(x * 3 + y * 5) % 3]; borda = "rgba(110,82,44,.26)";
+      } else if (ch === "m") cor = pal.mato[(x + y) & 1];
+      else if (ch === "e") cor = pal.escura[(x + y) & 1];
+      else if (ch === "p") cor = pal.pantano[(x + y) & 1];
+      else if (ch === "r" || z >= 0.9) { cor = pal.pedra[(x + y) & 1]; borda = "rgba(95,72,42,.24)"; }
+      const [cx, cy] = losango(x, y, z, cor, borda);
+      // Lajotas de arenito nas ruas/praças e tábuas nas pontes
+      if (tp === 2) {
+        g.strokeStyle = "rgba(58,34,14,.55)"; g.lineWidth = 1.4;
+        for (let k = -1; k <= 1; k++) { g.beginPath(); g.moveTo(cx - IW * .45 + k * 6, cy + IH * .75 + k * 3); g.lineTo(cx + IW * .45 + k * 6, cy + IH * 1.25 + k * 3); g.stroke(); }
+      } else if (tp === 1) {
+        g.fillStyle = (hsh & 3) === 0 ? "rgba(255,250,230,.22)" : "rgba(120,88,46,.12)";
+        g.beginPath(); g.moveTo(cx, cy + 4); g.lineTo(cx + IW * .55, cy + IH); g.lineTo(cx, cy + IH * 2 - 4); g.lineTo(cx - IW * .55, cy + IH); g.closePath(); g.fill();
+      } else if ("me".includes(ch)) {
+        // Tufos de capim vivo e florzinhas nas áreas selvagens
+        g.strokeStyle = ch === "e" ? "#18461C" : "#2D7226"; g.lineWidth = 1.6;
+        for (let k = 0; k < 3; k++) {
+          const gx = cx + (((hsh >> (k * 3)) & 7) - 3.5) * 4.2, gy = cy + IH + (((hsh >> (k * 3 + 2)) & 3) - 1.5) * 3.5;
+          g.beginPath(); g.moveTo(gx, gy); g.lineTo(gx - 2.5, gy - 6.5); g.moveTo(gx + 1.5, gy); g.lineTo(gx + 3.5, gy - 7); g.stroke();
+        }
+        if ((hsh % 9) === 0) { g.fillStyle = (hsh & 16) ? "#FFE26A" : "#FF94B8"; g.beginPath(); g.arc(cx + 4, cy + IH - 2, 2, 0, 6.28); g.fill(); }
+      }
+      // Saias 3D de penhasco / borda da rua sobre água ou terreno mais baixo
+      const zL = x + 1 < W ? isoElev(r, g0, x + 1, y) : z - 0.65;
+      const zS = y + 1 < H ? isoElev(r, g0, x, y + 1) : z - 0.65;
+      saiaDir(x, y, z, zL, z >= 0.9 ? pal.penhasco[0] : pal.parede[0]);
+      saiaEsq(x, y, z, zS, z >= 0.9 ? pal.penhasco[1] : pal.parede[1]);
+    }
+  }
+  d.isoFloorNoite = !!AV.st?.noite;
+  return (d.isoFloor = { cv, ox, oy, IW, IH, IZ });
+}
+const pxFix = x => x;
+function isoBloco3D(g, P, x0, y0, x1, y1, z0, h, cTopo, cEsq, cDir) {
+  const [tN_x, tN_y] = P(x0, y0, z0 + h), [tL_x, tL_y] = P(x1 + 1, y0, z0 + h), [tS_x, tS_y] = P(x1 + 1, y1 + 1, z0 + h), [tO_x, tO_y] = P(x0, y1 + 1, z0 + h);
+  const [bL_x, bL_y] = P(x1 + 1, y0, z0), [bS_x, bS_y] = P(x1 + 1, y1 + 1, z0), [bO_x, bO_y] = P(x0, y1 + 1, z0);
+  // Parede sudoeste (esquerda na tela)
+  g.fillStyle = cEsq; g.beginPath(); g.moveTo(tO_x, tO_y); g.lineTo(tS_x, tS_y); g.lineTo(bS_x, bS_y); g.lineTo(bO_x, bO_y); g.closePath(); g.fill();
+  g.strokeStyle = "rgba(0,0,0,.24)"; g.lineWidth = 1; g.stroke();
+  // Parede sudeste (direita na tela)
+  g.fillStyle = cDir; g.beginPath(); g.moveTo(tS_x, tS_y); g.lineTo(tL_x, tL_y); g.lineTo(bL_x, bL_y); g.lineTo(bS_x, bS_y); g.closePath(); g.fill();
+  g.stroke();
+  // Topo
+  g.fillStyle = cTopo; g.beginPath(); g.moveTo(tN_x, tN_y); g.lineTo(tL_x, tL_y); g.lineTo(tS_x, tS_y); g.lineTo(tO_x, tO_y); g.closePath(); g.fill();
+  g.stroke();
+  return { tN: [tN_x, tN_y], tL: [tL_x, tL_y], tS: [tS_x, tS_y], tO: [tO_x, tO_y], bS: [bS_x, bS_y], bL: [bL_x, bL_y], bO: [bO_x, bO_y] };
+}
+function isoDesenhaPredio(g, P, pr, r, now, dpr, u) {
+  const z0 = isoElev(r, AV.g, pr.x0, pr.y0);
+  if (pr.t === "fonte") {
+    const b = isoBloco3D(g, P, pr.x0, pr.y0, pr.x1, pr.y1, z0, 0.55, "#32C5E8", "#B8AEA0", "#CFC6B8");
+    const cx = (b.tN[0] + b.tS[0]) / 2, cy = (b.tN[1] + b.tS[1]) / 2;
+    g.fillStyle = "#EAE2D2"; g.beginPath(); g.ellipse(cx, cy - u * .18, u * .24, u * .14, 0, 0, 6.28); g.fill();
+    const jato = u * (.48 + Math.sin(now / 180) * .07);
+    g.strokeStyle = "rgba(210,250,255,.9)"; g.lineWidth = 2.5 * dpr;
+    for (const dx of [-1, 0, 1]) { g.beginPath(); g.moveTo(cx, cy - u * .2); g.quadraticCurveTo(cx + dx * u * .18, cy - jato, cx + dx * u * .34, cy); g.stroke(); }
+    return;
+  }
+  if (pr.t === "fogueira") {
+    const [cx, cy] = P(pr.x0 + .5, pr.y0 + .5, z0);
+    g.fillStyle = "#5A3A1E"; g.beginPath(); g.ellipse(cx, cy, u * .36, u * .18, 0, 0, 6.28); g.fill();
+    for (let k = 0; k < 3; k++) {
+      const fh = u * (.65 - k * .14 + Math.sin(now / 110 + k) * .08), fw = u * (.26 - k * .06);
+      g.fillStyle = ["#E8541C", "#FFA62B", "#FFE77A"][k];
+      g.beginPath(); g.moveTo(cx - fw, cy); g.quadraticCurveTo(cx, cy - fh * 1.2, cx + fw, cy); g.fill();
+    }
+    return;
+  }
+  if (pr.t === "estatua") {
+    const b = isoBloco3D(g, P, pr.x0, pr.y0, pr.x1, pr.y1, z0, 0.75, "#E8E0D0", "#ACA496", "#C8C0B0");
+    const cx = (b.tN[0] + b.tS[0]) / 2, cy = (b.tN[1] + b.tS[1]) / 2;
+    g.fillStyle = "#F5C542"; g.strokeStyle = "#7A5812"; g.lineWidth = 1.6 * dpr;
+    g.beginPath(); g.roundRect(cx - u * .22, cy - u * .95, u * .44, u * .9, 6 * dpr); g.fill(); g.stroke();
+    g.font = `${Math.round(u * .52)}px 'Segoe UI Emoji',sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("🏆", cx, cy - u * .52);
+    return;
+  }
+  if (pr.t === "mural") {
+    const [ax, ay] = P(pr.x0 + .2, pr.y1 + .6, z0), [bx, by] = P(pr.x1 + .8, pr.y1 + .6, z0);
+    g.strokeStyle = "#5E3E22"; g.lineWidth = 4 * dpr;
+    g.beginPath(); g.moveTo(ax, ay); g.lineTo(ax, ay - u * 1.05); g.moveTo(bx, by); g.lineTo(bx, by - u * 1.05); g.stroke();
+    g.fillStyle = "#8C5E34"; g.beginPath(); g.moveTo(ax - 4 * dpr, ay - u * 1.05); g.lineTo(bx + 4 * dpr, by - u * 1.05); g.lineTo(bx + 4 * dpr, by - u * .35); g.lineTo(ax - 4 * dpr, ay - u * .35); g.closePath(); g.fill();
+    g.fillStyle = "#F7EED8"; g.fillRect((ax + bx) / 2 - u * .35, (ay + by) / 2 - u * .92, u * .7, u * .42);
+    return;
+  }
+  if (pr.t === "barraca") {
+    // Balcão de madeira + toldo listrado azul e branco estilo Porto Solare + barris!
+    isoBloco3D(g, P, pr.x0, pr.y0, pr.x1, pr.y1, z0, 0.72, "#D8A86E", "#8F6339", "#AE7B49");
+    const t = isoBloco3D(g, P, pr.x0 - .1, pr.y0 - .1, pr.x1 + .1, pr.y1 + .1, z0 + 1.45, 0.32, "#2A7AD0", "#1E5CA0", "#F4F7FB");
+    // Listras azuis e brancas no toldo
+    for (let k = 0; k < 5; k++) {
+      const f0 = k / 5, f1 = (k + 1) / 5;
+      g.fillStyle = k % 2 ? "#F5F8FC" : "#2574C9";
+      g.beginPath();
+      g.moveTo(t.tO[0] + (t.tS[0] - t.tO[0]) * f0, t.tO[1] + (t.tS[1] - t.tO[1]) * f0);
+      g.lineTo(t.tO[0] + (t.tS[0] - t.tO[0]) * f1, t.tO[1] + (t.tS[1] - t.tO[1]) * f1);
+      g.lineTo(t.tN[0] + (t.tL[0] - t.tN[0]) * f1, t.tN[1] + (t.tL[1] - t.tN[1]) * f1);
+      g.lineTo(t.tN[0] + (t.tL[0] - t.tN[0]) * f0, t.tN[1] + (t.tL[1] - t.tN[1]) * f0);
+      g.closePath(); g.fill();
+    }
+    g.strokeStyle = "#5C3D22"; g.lineWidth = 2.5 * dpr;
+    for (const [px, py] of [[pr.x0, pr.y1 + 1], [pr.x1 + 1, pr.y1 + 1], [pr.x1 + 1, pr.y0]]) {
+      const [bx, by] = P(px, py, z0 + .7), [tx, ty] = P(px, py, z0 + 1.45);
+      g.beginPath(); g.moveTo(bx, by); g.lineTo(tx, ty); g.stroke();
+    }
+    if (((now / 4500) | 0) % 2 === 0) {
+      const cx = (t.tN[0] + t.tS[0]) / 2, cy = t.tN[1] - u * .38, txt = pr.fala || "Troque seus itens aqui!";
+      g.font = `700 ${Math.round(11 * dpr)}px Inter, system-ui, sans-serif`;
+      const bw = g.measureText(txt).width + 16 * dpr, bh = 22 * dpr;
+      g.fillStyle = "rgba(18,27,44,.92)"; g.strokeStyle = "#D6AC5E"; g.lineWidth = 1.5 * dpr;
+      g.beginPath(); g.roundRect(cx - bw / 2, cy - bh, bw, bh, 7 * dpr); g.fill(); g.stroke();
+      g.fillStyle = "#FFF4D6"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(txt, cx, cy - bh / 2);
+    }
+    return;
+  }
+  if (pr.t === "portal") {
+    const [ax, ay] = P(pr.x0 + .2, pr.y1 + .8, z0), [bx, by] = P(pr.x1 + .8, pr.y1 + .8, z0);
+    g.strokeStyle = "#A83224"; g.lineWidth = 5 * dpr;
+    g.beginPath(); g.moveTo(ax, ay); g.lineTo(ax, ay - u * 1.45); g.moveTo(bx, by); g.lineTo(bx, by - u * 1.45); g.stroke();
+    g.strokeStyle = "#6B1F16"; g.lineWidth = 7 * dpr;
+    g.beginPath(); g.moveTo(ax - u * .22, ay - u * 1.42); g.lineTo(bx + u * .22, by - u * 1.42); g.stroke();
+    g.strokeStyle = "#D64532"; g.lineWidth = 4 * dpr;
+    g.beginPath(); g.moveTo(ax - u * .15, ay - u * 1.18); g.lineTo(bx + u * .15, by - u * 1.18); g.stroke();
+    return;
+  }
+  if (pr.t === "caverna") {
+    const b = isoBloco3D(g, P, pr.x0, pr.y0, pr.x1, pr.y1, z0, pr.h, "#9C8664", "#6E5C42", "#857052");
+    const mx = (b.bO[0] + b.bS[0]) / 2, my = (b.bO[1] + b.bS[1]) / 2;
+    g.fillStyle = "#0E0B09"; g.strokeStyle = "#4A3C2A"; g.lineWidth = 2.5 * dpr;
+    g.beginPath(); g.arc(mx, my - u * .22, u * .38, Math.PI, 0); g.lineTo(mx + u * .38, my + u * .08); g.lineTo(mx - u * .38, my + u * .08); g.closePath(); g.fill(); g.stroke();
+    return;
+  }
+  // Casas, Lojas, Celeiro e os 8 Ginásios 3D
+  const ehGym = pr.t === "gym" || pr.t === "gym_bosque";
+  const b = isoBloco3D(g, P, pr.x0, pr.y0, pr.x1, pr.y1, z0, pr.h, pr.telha, rpgCor(pr.cor, -28), rpgCor(pr.cor, -8));
+  // Cumeeira / telhado inclinado 3D por cima do bloco
+  const cx = (b.tN[0] + b.tS[0]) / 2, cy = (b.tN[1] + b.tS[1]) / 2 - u * (ehGym ? .72 : .55);
+  g.fillStyle = rpgCor(pr.telha, 16); g.beginPath(); g.moveTo(cx, cy); g.lineTo(b.tN[0], b.tN[1]); g.lineTo(b.tO[0], b.tO[1]); g.lineTo(b.tS[0], b.tS[1]); g.closePath(); g.fill();
+  g.fillStyle = rpgCor(pr.telha, -18); g.beginPath(); g.moveTo(cx, cy); g.lineTo(b.tN[0], b.tN[1]); g.lineTo(b.tL[0], b.tL[1]); g.lineTo(b.tS[0], b.tS[1]); g.closePath(); g.fill();
+  g.strokeStyle = "rgba(0,0,0,.28)"; g.lineWidth = 1.3 * dpr;
+  g.beginPath(); g.moveTo(b.tO[0], b.tO[1]); g.lineTo(b.tS[0], b.tS[1]); g.lineTo(b.tL[0], b.tL[1]); g.stroke();
+  if (pr.t === "gym_bosque") {
+    // Cúpula de vidro da estufa botânica da Líder Flora em 3D!
+    g.fillStyle = "rgba(175,255,230,.68)"; g.strokeStyle = "#D8A944"; g.lineWidth = 2 * dpr;
+    g.beginPath(); g.arc(cx, cy + u * .08, u * .52, Math.PI, 0); g.closePath(); g.fill(); g.stroke();
+  }
+  // Porta na face frontal (sudoeste, voltada para y+1 onde todas as portas de AV_PONTOS e Ginásios ficam!)
+  const fDoor = pr.porta ? Math.max(.2, Math.min(.8, (pr.porta[0] - pr.x0 + .5) / Math.max(1, pr.x1 - pr.x0 + 1))) : 0.5;
+  const dx = b.bO[0] + (b.bS[0] - b.bO[0]) * fDoor, dy = b.bO[1] + (b.bS[1] - b.bO[1]) * fDoor;
+  g.fillStyle = ehGym ? "#121826" : "#4A2E1B"; g.strokeStyle = "#E4B44C"; g.lineWidth = 1.6 * dpr;
+  g.beginPath(); g.roundRect(dx - u * .18, dy - u * .52, u * .36, u * .5, [6 * dpr, 6 * dpr, 0, 0]); g.fill(); g.stroke();
+  // Janelinhas iluminadas nas duas paredes visíveis
+  g.fillStyle = AV.st?.noite ? "#FFE382" : "#9EE4FF"; g.strokeStyle = "rgba(50,32,18,.65)"; g.lineWidth = 1.2 * dpr;
+  for (const f of [.24, .76]) {
+    if (Math.abs(f - fDoor) > .18) {
+      const wx = b.bO[0] + (b.bS[0] - b.bO[0]) * f, wy = b.bO[1] + (b.bS[1] - b.bO[1]) * f - u * .68;
+      g.fillRect(wx - u * .1, wy - u * .16, u * .2, u * .24); g.strokeRect(wx - u * .1, wy - u * .16, u * .2, u * .24);
+    }
+    const wx2 = b.bS[0] + (b.bL[0] - b.bS[0]) * f, wy2 = b.bS[1] + (b.bL[1] - b.bS[1]) * f - u * .68;
+    g.fillRect(wx2 - u * .09, wy2 - u * .15, u * .18, u * .22); g.strokeRect(wx2 - u * .09, wy2 - u * .15, u * .18, u * .22);
+  }
+  if (pr.placa) {
+    const px = (b.tO[0] + b.tS[0]) / 2, py = (b.tO[1] + b.tS[1]) / 2 - u * .12;
+    g.fillStyle = "rgba(12,18,30,.9)"; g.strokeStyle = "#E4B44C"; g.lineWidth = 1.4 * dpr;
+    g.beginPath(); g.roundRect(px - u * .52, py - u * .18, u * 1.04, u * .32, 4 * dpr); g.fill(); g.stroke();
+    g.fillStyle = "#FFE7A8"; g.font = `900 ${Math.round(u * .19)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.textBaseline = "middle";
+    g.fillText(pr.placa, px, py - u * .01);
+  }
+}
+function isoDesenhaProp(g, P, x, y, r, pal, now, dpr, u) {
+  const hsh = ((x * 2654435761) ^ (y * 2246822519)) >>> 0;
+  // Para não poluir bordas maciças de mata/pedra, desenha elementos 3D variados com espaçamento natural
+  const bordaLivre = [".", "m", "e", "p", "r", "~"].some(c => [[-1, 0], [1, 0], [0, -1], [0, 1]].some(([dx, dy]) => (AV.g[y + dy] || "")[x + dx] === c));
+  if (!bordaLivre && ((x + y) % 2 !== 0 || (hsh & 3) !== 0)) return;
+  const z0 = isoElev(r, AV.g, x, y), [cx, cy] = P(x + .5, y + .5, z0);
+  const aguaPerto = [[-1, 0], [1, 0], [0, -1], [0, 1], [-2, 0], [2, 0], [0, -2], [0, 2]].some(([dx, dy]) => (AV.g[y + dy] || "")[x + dx] === "~");
+  // Muros e colunas na cidade murada / santuários / salões
+  if (pal.arvore === "coluna" || (r === "vila" && x >= 40 && y >= 38 && !aguaPerto)) {
+    if ((hsh % 5) === 0) {
+      g.fillStyle = "rgba(0,0,0,.25)"; g.beginPath(); g.ellipse(cx, cy + 2 * dpr, u * .24, u * .11, 0, 0, 6.28); g.fill();
+      g.fillStyle = "#DED5C3"; g.strokeStyle = "#8C8270"; g.lineWidth = 1.2 * dpr;
+      const ch = (hsh & 8) ? u * 1.25 : u * .8;
+      g.beginPath(); g.roundRect(cx - u * .16, cy - ch, u * .32, ch, 4 * dpr); g.fill(); g.stroke();
+      g.fillStyle = "#EFE8DA"; g.fillRect(cx - u * .21, cy - ch - u * .09, u * .42, u * .1);
+    } else {
+      isoBloco3D(g, P, x, y, x, y, z0, 0.78, "#D8C59E", "#9E8762", "#B8A078");
+    }
+    return;
+  }
+  // Caixotes, barris e tochas perto de estradas na Vila Aurora
+  if (r === "vila" && bordaLivre && (hsh % 11) === 0) {
+    if ((hsh % 22) === 0) {
+      // Tocha acesa em braseiro!
+      g.fillStyle = "#4A3A2E"; g.fillRect(cx - u * .07, cy - u * .52, u * .14, u * .52);
+      const fl = .85 + Math.sin(now / 130 + x) * .15;
+      const rg = g.createRadialGradient(cx, cy - u * .62, 0, cx, cy - u * .62, u * .9 * fl);
+      rg.addColorStop(0, "rgba(255,190,70,.42)"); rg.addColorStop(1, "rgba(255,130,30,0)");
+      g.fillStyle = rg; g.fillRect(cx - u, cy - u * 1.5, u * 2, u * 1.8);
+      g.fillStyle = "#FF781F"; g.beginPath(); g.arc(cx, cy - u * .6, u * .13 * fl, 0, 6.28); g.fill();
+      g.fillStyle = "#FFE57A"; g.beginPath(); g.arc(cx, cy - u * .62, u * .07 * fl, 0, 6.28); g.fill();
+    } else {
+      isoBloco3D(g, P, x + .15, y + .15, x - .15, y - .15, z0, 0.45, "#C89658", "#8A5E32", "#A87844");
+    }
+    return;
+  }
+  if (pal.arvore === "rocha" || pal.arvore === "vulcao" || z0 >= 0.9) {
+    g.fillStyle = "rgba(0,0,0,.26)"; g.beginPath(); g.ellipse(cx, cy + 2 * dpr, u * .32, u * .15, 0, 0, 6.28); g.fill();
+    g.fillStyle = pal.arvore === "vulcao" ? "#5A3832" : "#9E8B70";
+    g.beginPath(); g.moveTo(cx - u * .3, cy); g.lineTo(cx - u * .12, cy - u * .72); g.lineTo(cx + u * .18, cy - u * .58); g.lineTo(cx + u * .32, cy); g.closePath(); g.fill();
+    g.fillStyle = "rgba(255,255,255,.14)"; g.beginPath(); g.moveTo(cx - u * .12, cy - u * .72); g.lineTo(cx + u * .04, cy - u * .64); g.lineTo(cx - u * .04, cy); g.lineTo(cx - u * .3, cy); g.closePath(); g.fill();
+    return;
+  }
+  // Sombra no chão
+  g.fillStyle = "rgba(0,0,0,.26)"; g.beginPath(); g.ellipse(cx, cy + 2 * dpr, u * .34, u * .16, 0, 0, 6.28); g.fill();
+  // Coqueiros/palmeiras costeiras (perto da água ou na Praia/Deserto/Vila)
+  if (pal.arvore === "palmeira" || (pal.arvore === "costeira" && (aguaPerto || (hsh % 3) === 0))) {
+    const incl = ((hsh & 7) - 3.5) * u * .04, tx = cx + incl, ty = cy - u * 1.18;
+    g.strokeStyle = "#8C5E34"; g.lineWidth = u * .13; g.lineCap = "round";
+    g.beginPath(); g.moveTo(cx, cy); g.quadraticCurveTo(cx + incl * 1.6, cy - u * .6, tx, ty); g.stroke();
+    for (let k = 0; k < 6; k++) {
+      const a = k * 1.047 + Math.sin(now / 900 + x) * .04, fx = tx + Math.cos(a) * u * .58, fy = ty + Math.sin(a) * u * .32 + u * .12;
+      g.strokeStyle = k % 2 ? "#4EB83B" : "#2F8E28"; g.lineWidth = u * .13;
+      g.beginPath(); g.moveTo(tx, ty); g.quadraticCurveTo((tx + fx) / 2, ty - u * .14, fx, fy); g.stroke();
+    }
+    return;
+  }
+  // Pinheiro nevado (Pico) ou árvore frondosa em camadas 3D
+  g.fillStyle = "#6E4726"; g.fillRect(cx - u * .08, cy - u * .52, u * .16, u * .52);
+  if (pal.arvore === "neve") {
+    for (let k = 0; k < 3; k++) {
+      const by = cy - u * (.34 + k * .32), bw = u * (.46 - k * .1);
+      g.fillStyle = "#2E6B5E"; g.beginPath(); g.moveTo(cx, by - u * .46); g.lineTo(cx + bw, by); g.lineTo(cx - bw, by); g.closePath(); g.fill();
+      g.fillStyle = "#F0F8FF"; g.beginPath(); g.moveTo(cx, by - u * .46); g.lineTo(cx + bw * .58, by - u * .19); g.lineTo(cx - bw * .58, by - u * .19); g.closePath(); g.fill();
+    }
+  } else {
+    const c1 = pal.arvore === "charco" ? "#2E5648" : "#246B29", c2 = pal.arvore === "charco" ? "#437862" : "#3E9C38", c3 = pal.arvore === "charco" ? "#5E987E" : "#68CA4E";
+    g.fillStyle = c1; g.beginPath(); g.arc(cx, cy - u * .72, u * .42, 0, 6.28); g.fill();
+    g.fillStyle = c2; g.beginPath(); g.arc(cx - u * .12, cy - u * .86, u * .34, 0, 6.28); g.arc(cx + u * .14, cy - u * .82, u * .31, 0, 6.28); g.fill();
+    g.fillStyle = c3; g.beginPath(); g.arc(cx - u * .04, cy - u * .98, u * .24, 0, 6.28); g.fill();
+  }
+}
+function rpgTelaParaCasa(clientX, clientY) {
+  const cv = $("#rpg-cv"); if (!cv || !AV.g) return null;
+  const r = cv.getBoundingClientRect(), sx = (clientX - r.left) * (cv.width / Math.max(1, r.width)), sy = (clientY - r.top) * (cv.height / Math.max(1, r.height));
+  const cam = AV._cam; if (!cam) return null;
+  if (!cam.iso) return [Math.floor((sx + cam.cx) / cam.tile), Math.floor((sy + cam.cy) / cam.tile)];
+  // Inversa exata da projeção isométrica (testando do relevo mais alto para o chão normal)
+  const wx = (sx + cam.cx) / cam.k - cam.ox;
+  for (const zTest of [1.0, 0.48, 0.25, 0]) {
+    const wy = (sy + cam.cy) / cam.k - cam.oy + zTest * cam.IZ;
+    const tx = Math.floor((wx / cam.IW + wy / cam.IH) / 2), ty = Math.floor((wy / cam.IH - wx / cam.IW) / 2);
+    if (tx >= 0 && ty >= 0 && tx < AV.g[0].length && ty < AV.g.length) {
+      if (Math.abs(isoElev(AV.r, AV.g, tx, ty) - zTest) < 0.3) return [tx, ty];
+    }
+  }
+  const wy0 = (sy + cam.cy) / cam.k - cam.oy;
+  return [Math.floor((wx / cam.IW + wy0 / cam.IH) / 2), Math.floor((wy0 / cam.IH - wx / cam.IW) / 2)];
+}
+// ---------- Janela flutuante de Inventário dentro da Aventura + abas do Chat (arquivo 126) ----------
+function rpgInvTms() {
+  const bag = S.pk?.bag || {}, out = [];
+  for (const i of Object.values(S.pk?.items || {}).sort((a, b) => a.sort - b.sort)) {
+    if (!["tm", "hm", "evo"].includes(i.kind)) continue;
+    const n = bag[i.id] || 0; if (!n) continue;
+    out.push({ ic: HX_IC[i.kind] || "📀", n: i.kind === "hm" ? "∞" : n, nome: i.name, d: i.descr || "Ensine na tela de Pokémon.", v: "pokemon" });
+  }
+  for (const [k, nome] of Object.entries(PK_STONES)) if (bag[k]) out.push({ ic: "💎", n: bag[k], nome, d: "Pedra de evolução. Use na tela de Pokémon.", v: "pokemon" });
+  return out;
+}
+function rpgInvRender() {
+  const el = $("#rpg-inv"); if (!el || el.hidden || !S.me) return;
+  AV.invTab = AV.invTab || "itens";
+  const aba = AV.invTab, lista = aba === "bolas" ? hxInvBolas() : aba === "tms" ? rpgInvTms() : hxInvItens().filter(x => !["📀", "💿", "💎"].includes(x.ic));
+  const vagas = Math.max(15, Math.ceil(lista.length / 5) * 5), sel = lista[AV.invSel] || null;
+  const grade = Array.from({ length: vagas }, (_, i) => {
+    const it = lista[i];
+    return it ? `<button type="button" class="hx-slot ${AV.invSel === i ? "on" : ""}" data-rinv-sel="${i}" title="${esc(it.nome)}"><span class="hx-ic">${it.ic}</span>${it.n !== "" ? `<em>${it.n}</em>` : ""}</button>` : `<span class="hx-slot vazio"></span>`;
+  }).join("");
+  const E = AV.eq, slotBtn = sl => {
+    const [ic, nome] = EQ_SLOTS[sl], p = (E?.minhas || []).find(x => x.slot === sl && x.equipada);
+    const tier = !p ? "" : p.nivel >= 9 ? "t3" : p.nivel >= 6 ? "t2" : "t1";
+    return `<button type="button" class="rinv-eq ${p ? tier : "vazio"}" data-rpg="equip" title="${esc(nome)}${p ? ` +${p.nivel}` : " (vazio · clique para equipar)"}">${ic}${p ? `<i>+${p.nivel}</i>` : ""}</button>`;
+  };
+  const sup = rpgSup();
+  const supBtn = `<button type="button" class="rinv-eq ${sup ? "" : "vazio"}" data-rpg="suporte" title="${sup ? `Suporte: ${esc(pkName(sup.species_id))} Nv ${sup.level}` : "Escolher Pokémon de suporte"}">${sup ? `<img src="${SPRITE(sup.species_id)}" alt="" style="width:30px;height:30px;image-rendering:pixelated">` : "🎒"}</button>`;
+  const time = pkTeam(), maxCol = S.pk?.rules?.storage?.max_monsters ?? 60;
+  el.innerHTML = `<div class="hx-inv-h"><b>🎒 Inventário</b><button type="button" class="hx-x" data-rpg="inv" aria-label="Fechar">×</button></div>
+    <div class="rinv-top">
+      <div class="rinv-doll">
+        <div class="rinv-col">${slotBtn("capacete")}${slotBtn("peitoral")}${slotBtn("calca")}</div>
+        <button type="button" class="rinv-heroi" data-rpg="equip" title="Ver equipamentos do herói">${avatarSVG(S.me, 4.2)}</button>
+        <div class="rinv-col">${slotBtn("luvas")}${slotBtn("botas")}${supBtn}</div>
+      </div>
+      <div class="hx-inv-dir">
+        <div class="hx-invtabs" role="tablist">
+          <button type="button" role="tab" data-rinv-tab="itens" aria-selected="${aba === "itens"}">Itens</button>
+          <button type="button" role="tab" data-rinv-tab="bolas" aria-selected="${aba === "bolas"}">Pokébolas</button>
+          <button type="button" role="tab" data-rinv-tab="tms" aria-selected="${aba === "tms"}">TMs</button>
+        </div>
+        <div class="hx-grade">${grade}</div>
+      </div>
+    </div>
+    <div class="hx-inv-info">${sel ? `<b>${esc(sel.nome)}</b> <span>${esc(sel.d)}</span><button type="button" class="btn small ghost" data-rinv-go="${sel.v}">Abrir</button>` : `<span class="muted">Toque num item ou peça para ver os detalhes.</span>`}</div>
+    <div class="hx-inv-sub">Criaturas na Equipe <button type="button" class="btn ghost small" data-rpg="equipe" style="float:right;padding:1px 8px;font-size:11px;min-height:20px">Organizar</button></div>
+    <div class="hx-time">${time.map(m => { const hp = Math.max(0, Math.min(100, Math.round(treinoHpOf(m)))); return `<button type="button" class="hx-mon rinv-mon" data-rpg="equipe" title="${esc(pkName(m.species_id))} · Nv ${m.level} (${hp}% PV)"><img src="${SPRITE(m.species_id)}" alt=""><small>Lv. ${m.level}</small><span class="rinv-hp"><i class="${hp <= 25 ? "low" : hp <= 60 ? "mid" : ""}" style="width:${hp}%"></i></span></button>`; }).join("")}${time.length < 6 ? `<button type="button" class="hx-mon mais" data-rpg="equipe" title="Adicionar à equipe">＋</button>` : ""}</div>
+    <div class="hx-inv-pe"><span title="Pokémon na coleção">🐾 <b>${(S.pk?.mons || []).length}/${maxCol}</b></span><span title="Doces de Forja">🍬 <b>${E?.doces ?? 0}</b></span><span class="hx-moedas" title="Moedas">${coinSVG()}<b>${(S.me.coins ?? 0).toLocaleString("pt-BR")}</b></span></div>`;
+  const ib = $("#rpg-inv-btn"); if (ib) ib.classList.add("on");
+}
+function rpgInvToggle(forca) {
+  const el = $("#rpg-inv"); if (!el) return;
+  const abrir = forca != null ? forca : el.hidden;
+  el.hidden = !abrir;
+  const ib = $("#rpg-inv-btn"); if (ib) ib.classList.toggle("on", abrir);
+  if (abrir) { AV.invSel = null; if (!AV.eq) eqCarregar().then(rpgInvRender); rpgInvRender(); }
+}
+function rpgChatAbaRender() {
+  const c = $("#rpg-chat"); if (!c || !AV.open) return;
+  const aba = AV.chatTab || "chat", l = $("#rpg-chat-list"), fm = $("#rpgchatform");
+  c.querySelectorAll("[data-rpgctab]").forEach(b => b.classList.toggle("on", b.dataset.rpgctab === aba));
+  if (fm) fm.style.display = aba === "chat" && !c.classList.contains("min") ? "" : "none";
+  if (!l) return;
+  if (aba === "chat") { l.className = "hx-chat-list"; l.innerHTML = hxChatLista(25); l.scrollTop = l.scrollHeight; return; }
+  if (aba === "missoes") {
+    const ms = AV.st?.missoes || [];
+    l.className = "hx-chat-list";
+    l.innerHTML = ms.length ? ms.map(m => `<li>${m.resgatada ? "✅" : m.prog >= m.meta ? "🎁" : "📜"} <b>(${m.prog}/${m.meta})</b> ${esc(rpgMissaoTxt(m))}</li>`).join("")
+      : `<li class="vazio">Fale com os moradores para ver as missões de hoje.</li>`;
+    return;
+  }
+  if (aba === "guia") {
+    const { saidas, lugares } = rpgDestinosLocais(AV.r), itens = [...saidas, ...lugares].slice(0, 10);
+    l.className = "rpg-cguia";
+    l.innerHTML = itens.map(it => `<li><button type="button" data-cguia="${it.x},${it.y}" data-cnm="${esc(it.nome)}" data-cic="${esc(it.ic)}">${it.ic} ${esc(it.nome)}</button></li>`).join("");
+    return;
+  }
+  l.className = "hx-chat-list";
+  l.innerHTML = (S.feed || []).slice(0, 18).map(e => `<li><time>${hhmm(e.created_at)}</time> ${esc(e.text)}</li>`).join("") || `<li class="vazio">Nada nos acontecimentos ainda.</li>`;
+}
 function rpgRoot() {
   let el = $("#aventura"); if (el) return el;
   el = document.createElement("div"); el.id = "aventura"; el.hidden = true;
-  el.innerHTML = `<canvas id="rpg-cv" aria-label="Aventura: ande com WASD ou as setas"></canvas>
-    <div class="pz-hud rpg-hud"><div class="rpg-hud-l"><span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span>
-      <span id="rpg-on" hidden></span><span id="rpg-lutas" hidden></span><span id="rpg-noite" hidden></span><span id="rpg-ins" hidden></span></div>
-      <div class="rpg-hud-r"><button class="rpg-ib" data-rpg="equipe" title="Minha equipe">🐾<em>Equipe</em></button><button class="rpg-ib" data-rpg="equip" title="Equipamentos">🛡️<em>Equipar</em></button><button class="rpg-ib" id="rpg-mis" data-rpg="missoes" title="Missões" hidden>📜<em>Missões</em></button><button class="rpg-ib rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" title="Chefe da rota" hidden></button><button class="rpg-ib" data-rpg="rotas" title="Mapa completo">🗺️<em>Mapa</em></button><button class="rpg-ib sair" data-rpg="sair" title="Voltar ao tabuleiro">✕<em>Sair</em></button></div></div>
-    <div id="rpg-mini-box" class="rpg-mini"><b>Vila Aurora</b><canvas id="rpg-mini" width="184" height="184"></canvas></div>
+  el.innerHTML = `<canvas id="rpg-cv" aria-label="Aventura: clique no chão ou use WASD e as setas"></canvas>
+    <div id="rpg-mini-box" class="rpg-mini" title="Clique para abrir o Mapa Grande (M)">
+      <div class="rpg-mini-top"><b id="rpg-mini-tit">Vila Aurora</b><small id="rpg-mini-on">👥 1</small></div>
+      <div class="rpg-mini-wrap"><canvas id="rpg-mini" width="176" height="176"></canvas>
+        <span class="rpg-cp n">N</span><span class="rpg-cp s">S</span><span class="rpg-cp o">O</span><span class="rpg-cp l">L</span>
+        <span class="rpg-mini-zoom">🔍 Mapa</span></div>
+    </div>
+    <div class="pz-hud rpg-hud">
+      <div class="rpg-hud-l">
+        <div id="rpg-hero-bar"></div>
+        <span class="pz-tit" id="rpg-tit">🏡 Vila Aurora</span><span class="pz-on rpg-zona" id="rpg-zona" hidden></span>
+        <span id="rpg-on" hidden></span><span id="rpg-lutas" hidden></span><span id="rpg-noite" hidden></span><span id="rpg-ins" hidden></span>
+      </div>
+      <div class="rpg-hud-r">
+        <div class="rpg-loc-bar" id="rpg-loc-bar"></div>
+        <div class="rpg-rbs">
+          <button class="rpg-ib" id="rpg-inv-btn" data-rpg="inv" title="Inventário na tela (I)">🎒<em>Mochila</em></button>
+          <button class="rpg-ib" data-rpg="equipe" title="Minha equipe">🐾<em>Equipe</em></button>
+          <button class="rpg-ib" data-rpg="equip" title="Equipamentos">🛡️<em>Equipar</em></button>
+          <button class="rpg-ib" id="rpg-mis" data-rpg="missoes" title="Missões" hidden>📜<em>Missões</em></button>
+          <button class="rpg-ib rpg-chefe-btn" id="rpg-chefe" data-rpg="chefe" title="Chefe da rota" hidden></button>
+          <button class="rpg-ib" data-rpg="rotas" title="Mapa Grande com guia (M)">🗺️<em>Mapa</em></button>
+          <button class="rpg-ib" id="rpg-iso-btn" data-rpg="iso" title="Alternar visão 3D diagonal / 2D clássica">📐<em>3D</em></button>
+          <button class="rpg-ib sair" data-rpg="sair" title="Voltar ao tabuleiro">✕<em>Sair</em></button>
+        </div>
+      </div>
+    </div>
+    <div id="rpg-guia-bar" hidden></div>
+    <div id="rpg-inv" hidden></div>
     <button id="rpg-acao" class="rpg-acao" hidden></button>
     <div id="rpg-fala" class="rpg-fala" hidden></div>
     <p class="gr-hint" id="rpg-hint">Carregando a Vila Aurora…</p>
-    <div id="rpg-chat" class="rpg-chat"><h4>💬 Chat da galera <button class="rpg-chatmin" data-rpg="chatmin" title="Recolher ou abrir o chat" aria-label="Recolher ou abrir o chat">▾</button></h4><div class="hx-chat-body"><ul class="hx-chat-list" id="rpg-chat-list"></ul></div>
-      <form id="rpgchatform" class="hx-chat-form" autocomplete="off"><label for="rpg-chat-in" class="sr">Mensagem</label><input id="rpg-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form></div>
+    <div id="rpg-chat" class="rpg-chat">
+      <div class="rpg-chat-tabs">
+        <button type="button" class="on" data-rpgctab="chat">💬 Chat</button>
+        <button type="button" data-rpgctab="missoes">📜 Missões</button>
+        <button type="button" data-rpgctab="guia">🧭 Ir para…</button>
+        <button type="button" data-rpgctab="mundo">🌍 Mundo</button>
+        <button type="button" class="rpg-chatmin" data-rpg="chatmin" title="Recolher ou abrir o painel" aria-label="Recolher ou abrir o painel">▾</button>
+      </div>
+      <div class="hx-chat-body"><ul class="hx-chat-list" id="rpg-chat-list"></ul></div>
+      <form id="rpgchatform" class="hx-chat-form" autocomplete="off"><label for="rpg-chat-in" class="sr">Mensagem</label><input id="rpg-chat-in" maxlength="300" placeholder="Digite sua mensagem…" enterkeyhint="send"><button class="hx-send" aria-label="Enviar">➤</button></form>
+    </div>
     <div class="gr-pad" aria-label="Controles"><button data-dir="up" aria-label="Cima">▲</button><button data-dir="left" aria-label="Esquerda">◀</button><button data-dir="right" aria-label="Direita">▶</button><button data-dir="down" aria-label="Baixo">▼</button></div>
     <div class="gr-flash" id="rpg-flash"></div>`;
   document.body.appendChild(el);
   el.addEventListener("click", e => {
+    if (e.target.closest("#rpg-mini-box")) return rpgRotas("local");
     if (e.target.closest("[data-rpg='sair']")) return rpgSair();
-    if (e.target.closest("[data-rpg='rotas']")) return rpgRotas();
+    if (e.target.closest("[data-rpg='rotas']")) return rpgRotas("local");
+    if (e.target.closest("[data-rpg='inv']")) { sfx("tick"); return rpgInvToggle(); }
+    if (e.target.closest("[data-rpg='iso']")) return rpgToggleIso();
+    if (e.target.closest("[data-rpg='guia-ir']")) { if (AV.guia) rpgAndarAte(AV.guia.x, AV.guia.y, true); return; }
+    if (e.target.closest("[data-rpg='guia-x']")) return rpgGuiaLimpa();
     if (e.target.closest("[data-rpg='missoes']")) return rpgMissoesAbrir(null, null);
     if (e.target.closest("[data-rpg='suporte']")) return rpgSupAbrir();
     if (e.target.closest("[data-rpg='equip']")) return eqAbrir();
     if (e.target.closest("[data-rpg='equipe']")) return tmAbrir();
-    if (e.target.closest("[data-rpg='chatmin']")) { const c = $("#rpg-chat"); c?.classList.toggle("min"); try { localStorage.setItem("pg-rpg-chat-min", c?.classList.contains("min") ? "1" : "0"); } catch {} return; }
+    const ct = e.target.closest("[data-rpgctab]");
+    if (ct) { AV.chatTab = ct.dataset.rpgctab; const c = $("#rpg-chat"); c?.classList.remove("min"); sfx("tick"); rpgChatAbaRender(); return; }
+    const cg = e.target.closest("[data-cguia]");
+    if (cg) { const [x, y] = cg.dataset.cguia.split(",").map(Number); rpgGuiarPara(x, y, cg.dataset.cnm, cg.dataset.cic, true); return; }
+    const rt = e.target.closest("[data-rinv-tab]");
+    if (rt) { AV.invTab = rt.dataset.rinvTab; AV.invSel = null; sfx("tick"); return rpgInvRender(); }
+    const rs = e.target.closest("[data-rinv-sel]");
+    if (rs) { const idx = +rs.dataset.rinvSel; AV.invSel = AV.invSel === idx ? null : idx; sfx("tick"); return rpgInvRender(); }
+    const rg = e.target.closest("[data-rinv-go]");
+    if (rg) { rpgInvToggle(false); rpgClose(false); AV.volta = true; return ACTIONS.go(rg.dataset.rinvGo); }
+    if (e.target.closest("[data-rpg='chatmin']")) { const c = $("#rpg-chat"); c?.classList.toggle("min"); rpgChatAbaRender(); try { localStorage.setItem("pg-rpg-chat-min", c?.classList.contains("min") ? "1" : "0"); } catch {} return; }
     if (e.target.closest("[data-rpg='chefe']")) return rpgChefeAbrir();
     if (e.target.closest("#rpg-acao")) return rpgUsar();
     if (e.target.closest("#rpg-fala")) return rpgFalaProx();
+    if (e.target.id === "rpg-cv") {
+      if (AV.fala) return rpgFalaProx();
+      const c = rpgTelaParaCasa(e.clientX, e.clientY);
+      if (c) rpgAndarAte(c[0], c[1], true);
+    }
   });
   const pad = el.querySelector(".gr-pad");
-  const press = e => { const b = e.target.closest("[data-dir]"); if (!b) return; e.preventDefault(); AV.keys.clear(); AV.keys.add(b.dataset.dir); b.setPointerCapture?.(e.pointerId); };
+  const press = e => { const b = e.target.closest("[data-dir]"); if (!b) return; e.preventDefault(); AV.autoPath = null; AV.autoAlvo = null; AV.keys.clear(); AV.keys.add(b.dataset.dir); b.setPointerCapture?.(e.pointerId); };
   const lift = e => { e.preventDefault?.(); AV.keys.clear(); };
   pad.addEventListener("pointerdown", press); pad.addEventListener("pointerup", lift); pad.addEventListener("pointercancel", lift); pad.addEventListener("pointerleave", lift);
   pad.addEventListener("contextmenu", e => e.preventDefault());
@@ -14368,10 +15398,18 @@ function rpgRoot() {
 document.addEventListener("keydown", e => {
   if (!AV.open || document.querySelector(".modal-bg") || e.target.matches?.("input,textarea,select")) return;
   const k = e.key.toLowerCase();
+  if (k === "m") { e.preventDefault(); return rpgRotas("local"); }
+  if (k === "i" || k === "b") { e.preventDefault(); sfx("tick"); return rpgInvToggle(); }
   if (k === "e" || k === "enter" || k === " ") { e.preventDefault(); return AV.fala ? rpgFalaProx() : rpgUsar(); }
-  if (k === "escape") { e.preventDefault(); return AV.fala ? rpgFalaFecha() : rpgSair(); }
+  if (k === "escape") {
+    e.preventDefault();
+    if (AV.fala) return rpgFalaFecha();
+    const inv = $("#rpg-inv"); if (inv && !inv.hidden) return rpgInvToggle(false);
+    if (AV.autoPath) { AV.autoPath = null; AV.autoAlvo = null; return; }
+    return rpgSair();
+  }
   const d = GR_KEYS[k]; if (!d) return;
-  e.preventDefault(); if (AV.fala) rpgFalaFecha(); AV.keys.add(d);
+  e.preventDefault(); AV.autoPath = null; AV.autoAlvo = null; if (AV.fala) rpgFalaFecha(); AV.keys.add(d);
 });
 document.addEventListener("keyup", e => { const d = GR_KEYS[e.key?.toLowerCase?.()]; if (d) AV.keys.delete(d); });
 window.addEventListener("blur", () => AV.keys.clear());
@@ -14379,8 +15417,9 @@ const rpgPosKey = () => `pg-rpg-pos-${S.session?.user?.id}`;
 async function rpgOpen() {
   if (rpgCfg().on === false && !S.isAdmin) return toast("A Aventura está fechada no momento.", true);
   const el = rpgRoot(); S.win = null; AV.volta = false; render();
-  AV.open = true; AV.busy = false; AV.keys.clear(); el.hidden = false; document.body.classList.add("gr-on", "rpg-on");
+  AV.open = true; AV.busy = false; AV.keys.clear(); AV.autoPath = null; AV.autoAlvo = null; el.hidden = false; document.body.classList.add("gr-on", "rpg-on");
   document.body.classList.toggle("hx-gr", hxOn());
+  $("#rpg-cv", el)?.classList.toggle("iso", rpgIsoOn());
   $("#rpg-chat", el).hidden = hxCfg().chat_fixo === false;
   try { $("#rpg-chat", el).classList.toggle("min", localStorage.getItem("pg-rpg-chat-min") === "1"); } catch {}
   if (grChatOn()) { if (!S.chat.loaded) loadChat().then(rpgChatRender); else rpgChatRender(); hxChatVisto(); }
@@ -14397,18 +15436,18 @@ async function rpgOpen() {
   AV.fx = AV.x; AV.fy = AV.y; rpgSeguidor();   // o Pokémon que segue começa num lugar livre
   clearInterval(AV.pvpT); AV.pvpT = setInterval(() => { if (AV.open) rpgPvpCheck(); else clearInterval(AV.pvpT); }, 45000); setTimeout(() => rpgPvpCheck(), 2500);   // arquivo 107
   clearTimeout(AV.dicaT); AV.dicaT = setTimeout(() => { const h = $("#rpg-hint"); if (h) h.hidden = true; }, 8000); $("#rpg-hint", el).hidden = false;
-  $("#rpg-hint", el).textContent = matchMedia("(pointer:coarse)").matches ? "Ande e explore. Pokémon selvagens aparecem no mato." : "WASD ou setas para andar · E para entrar, conversar e desafiar · 🗺️ Mapa mostra tudo";
-  rpgNetJoin(); rpgPerto(); rpgEstado(); eqCarregar().then(() => rpgNetJoin()); lpcCarregar();
+  $("#rpg-hint", el).textContent = matchMedia?.("(pointer:coarse)")?.matches ? "Toque no chão para andar até lá · 🗺️ Mapa com guia" : "Clique no chão ou use WASD/setas · E interagir · I inventário · M mapa com guia";
+  rpgNetJoin(); rpgPerto(); rpgHud(); rpgGuiaBarra(); rpgChatAbaRender(); rpgEstado(); eqCarregar().then(() => { rpgNetJoin(); rpgInvRender(); }); lpcCarregar();
   cancelAnimationFrame(AV.raf); AV.last = performance.now(); AV.raf = requestAnimationFrame(rpgLoop);
 }
 async function rpgEstado() {
   try { AV.st = await rpc("rpg_estado"); } catch (e) { AV.st = null; if (isMissingFn(e)) toast("A Aventura precisa do arquivo 93_rpg_aventura.sql rodado no Supabase.", true); }
   const l = $("#rpg-lutas"); if (l) l.textContent = AV.st ? `⚔️ Lutas hoje: ${AV.st.batalhas}/${AV.st.batalhas_dia}` : "";
-  rpgHud();
+  rpgHud(); if (AV.chatTab === "missoes") rpgChatAbaRender();
   if (AV.open && AV.st?.batalha && !AV.busy) { rpgClose(false); AV.volta = true; await guarded(loadBattles); await btOpen(AV.st.batalha); }   // ficou uma luta aberta: termine primeiro
 }
 function rpgClose(sai = true) {
-  AV.open = false; AV.keys.clear(); cancelAnimationFrame(AV.raf); rpgFalaFecha();
+  AV.open = false; AV.keys.clear(); AV.autoPath = null; AV.autoAlvo = null; cancelAnimationFrame(AV.raf); rpgFalaFecha();
   try { localStorage.setItem(rpgPosKey(), JSON.stringify({ r: AV.r, x: AV.x, y: AV.y })); } catch {}
   if (sai) rpgNetLeave();
   const el = $("#aventura"); if (el) el.hidden = true; document.body.classList.remove("gr-on", "rpg-on");
@@ -14426,9 +15465,10 @@ function rpgPerto() {
   }
   if (!p && rpgChefeAqui()) { const cp = rpgChefePos(); if (cp && Math.abs(cp[0] - AV.x) + Math.abs(cp[1] - AV.y) <= 1) p = { chefe: true, ic: "👹", nome: `Chefe: ${pkName(AV.st.chefe.especie)}` }; }
   AV.perto = p;
-  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai || p.minaPorta ? "Entrar" : p.vale ? "Treinar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym || p.npc?.elite ? "Desafiar" : p.npc?.minaEv ? (p.npc.ch ? "Falar com" : "Investigar") : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia("(pointer:coarse)").matches ? "" : " <kbd>E</kbd>"}`; }
+  const b = $("#rpg-acao"); if (b) { b.hidden = !p; if (p) b.innerHTML = `${p.ic} ${p.win || p.vai || p.minaPorta ? "Entrar" : p.vale ? "Treinar" : p.pvp ? "Desafiar" : p.chefe ? "Enfrentar" : p.npc?.gym || p.npc?.elite ? "Desafiar" : p.npc?.minaEv ? (p.npc.ch ? "Falar com" : "Investigar") : p.npc ? "Falar com" : "Ver"}: <b>${esc(p.nome)}</b>${matchMedia?.("(pointer:coarse)")?.matches ? "" : " <kbd>E</kbd>"}`; }
   const z = rpgZonaKey(rpgAt(AV.x, AV.y)), ze = $("#rpg-zona"); if (ze) { ze.hidden = !z; if (z) ze.textContent = rpgZonaTxt(z); }
   const mr = RPG_REG[AV.r]?.mina && S.exp?.est?.run; if (ze && mr) { ze.hidden = false; ze.textContent = `⚡ ${mr.recursos.energia} · 🔦 ${mr.recursos.luz} · Sala ${mr.etapa} de ${mr.etapas} · 🎒 ${minaMochilaN(mr)}`; }
+  rpgGuiaAtualiza();
   rpgTit();   // arquivo 101: sempre onde você está
 }
 function rpgUsar() {
@@ -14455,7 +15495,7 @@ function rpgFalaFecha() { AV.fala = null; const el = $("#rpg-fala"); if (el) el.
 async function rpgEncontro(zona) {
   const time = pkTeam(), m = time.find(x => treinoHpOf(x) > 0) || time[0] || (S.pk?.mons || [])[0];
   if (!m) { $("#rpg-hint").textContent = "Você ainda não tem Pokémon para lutar. Capture um no tabuleiro primeiro."; return; }
-  AV.busy = true; AV.keys.clear(); AV.lastEnc = Date.now();
+  AV.busy = true; AV.keys.clear(); AV.autoPath = null; AV.autoAlvo = null; AV.lastEnc = Date.now();
   let r;
   try { r = await rpc("rpg_encontro", { _mon: m.id, _zona: zona, _comp: rpgSupId() }); }
   catch (e) { AV.busy = false; const t = errMsg(e); if (!/continue andando/.test(t)) { $("#rpg-hint").textContent = t; if (/lutas de hoje/.test(t) && AV.st) AV.st.batalhas = AV.st.batalhas_dia; } return; }
@@ -14472,17 +15512,33 @@ function rpgLoop(now) {
   if (!AV.open) return;
   AV.raf = requestAnimationFrame(rpgLoop);
   const dt = Math.min(80, now - (AV.last || now)); AV.last = now;
+  rpgDecoStep(dt);
   if (AV.moving) { AV.moving.t += dt / 140; if (AV.moving.t >= 1) { AV.ax = AV.x; AV.ay = AV.y; AV.x = AV.moving.tx; AV.y = AV.moving.ty; AV.moving = null; rpgNetSend(); rpgPerto();
     const sd = rpgSaidas().find(s => s.em.some(([x, y]) => x === AV.x && y === AV.y));
-    if (sd) rpgViajar(sd.para);
+    if (sd) { AV.autoPath = null; AV.autoAlvo = null; rpgViajar(sd.para); }
     const z = rpgZonaKey(rpgAt(AV.x, AV.y)), st = AV.st;
-    if (!sd && z && st && !AV.busy && st.batalhas < st.batalhas_dia && Date.now() - AV.lastEnc > (st.espera_seg ?? 8) * 1000 && Math.random() * 100 < (st.chance_pct ?? 12)) rpgEncontro(z); } }
+    if (!sd && z && st && !AV.busy && st.batalhas < st.batalhas_dia && Date.now() - AV.lastEnc > (st.espera_seg ?? 8) * 1000 && Math.random() * 100 < (st.chance_pct ?? 12)) { AV.autoPath = null; AV.autoAlvo = null; rpgEncontro(z); }
+    if (!sd && !AV.busy && AV.autoPath && !AV.autoPath.length) {
+      const ac = AV.autoAlvo?.acao; AV.autoPath = null; AV.autoAlvo = null;
+      if (ac && AV.perto) rpgUsar();
+    }
+  } }
   if (!AV.moving && !AV.busy && !AV.fala && AV.keys.size) {
+    AV.autoPath = null; AV.autoAlvo = null;
     const d = [...AV.keys].at(-1), [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[d];
     if (AV.dir !== d) { AV.dir = d; rpgNetSend(); }
     if (dx) AV.face = dx;
     const tx = AV.x + dx, ty = AV.y + dy;
     if (!rpgSolid(tx, ty)) AV.moving = { fx: AV.x, fy: AV.y, tx, ty, t: 0 };
+  } else if (!AV.moving && !AV.busy && !AV.fala && AV.autoPath?.length) {
+    const [tx, ty] = AV.autoPath.shift(), dx = tx - AV.x, dy = ty - AV.y;
+    if (Math.abs(dx) + Math.abs(dy) !== 1 || rpgSolid(tx, ty)) { AV.autoPath = null; AV.autoAlvo = null; }
+    else {
+      const d = dy < 0 ? "up" : dy > 0 ? "down" : dx > 0 ? "right" : "left";
+      if (AV.dir !== d) AV.dir = d;
+      AV.face = (dx - dy) >= 0 ? 1 : -1;
+      AV.moving = { fx: AV.x, fy: AV.y, tx, ty, t: 0 };
+    }
   }
   const mv = AV.moving; AV.fx = mv ? mv.fx + (mv.tx - mv.fx) * mv.t : AV.x; AV.fy = mv ? mv.fy + (mv.ty - mv.fy) * mv.t : AV.y;
   for (const o of Object.values(AV.others)) {
@@ -14494,8 +15550,211 @@ function rpgLoop(now) {
   }
   rpgPinta(now);
 }
+function rpgMiniDesenha(todos) {
+  const mc = $("#rpg-mini");
+  if (mc && mc.offsetParent !== null && AV.g) {
+    const mg = mc.getContext("2d"), H = AV.g.length, W = AV.g[0].length, kx = mc.width / W, ky = mc.height / H;
+    mg.fillStyle = "#0D1626"; mg.fillRect(0, 0, mc.width, mc.height);
+    if (AV.img) { mg.globalAlpha = 0.45; mg.drawImage(AV.img, 0, 0, mc.width, mc.height); mg.globalAlpha = 1; }
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const ch = AV.g[y][x];
+      if (ch === "#") continue;
+      mg.fillStyle = ch === "~" ? "rgba(34,178,224,.85)" : "me".includes(ch) ? "rgba(68,168,78,.68)" : ch === "p" ? "rgba(64,136,132,.72)" : ch === "r" ? "rgba(176,146,104,.72)" : "rgba(238,214,168,.8)";
+      mg.fillRect(x * kx, y * ky, Math.ceil(kx), Math.ceil(ky));
+    }
+    if (AV.guia?.r === AV.r && AV.guia.path?.length) {
+      mg.strokeStyle = "#FFE37A"; mg.lineWidth = 2.4; mg.beginPath(); mg.moveTo((AV.fx + .5) * kx, (AV.fy + .5) * ky);
+      for (const [gx, gy] of AV.guia.path) mg.lineTo((gx + .5) * kx, (gy + .5) * ky);
+      mg.stroke();
+    }
+    for (const sd of rpgSaidas()) { const [sx, sy] = sd.em[0]; mg.fillStyle = "#5CE68C"; mg.fillRect(sx * kx - 2, sy * ky - 2, 5, 5); }
+    for (const p of rpgPontos()) if (!p.fala) { const [px, py] = p.em[0]; mg.fillStyle = "#F58242"; mg.fillRect(px * kx - 2, py * ky - 2, 4.5, 4.5); }
+    for (const o of todos) if (!o.npc) {
+      mg.fillStyle = o.eu ? "#FFE37A" : "#FFFFFF"; mg.strokeStyle = "#0F1420"; mg.lineWidth = 1.4;
+      mg.beginPath(); mg.arc((o.fx + .5) * kx, (o.fy + .5) * ky, o.eu ? 4.5 : 3, 0, 6.28); mg.fill(); mg.stroke();
+    }
+  }
+  const n = todos.filter(o => !o.npc).length, mt = $("#rpg-mini-tit"), mo = $("#rpg-mini-on");
+  if (mt) mt.textContent = RPG_REG[AV.r]?.nome || "";
+  if (mo) mo.textContent = `👥 ${n}`;
+}
+function rpgAtoresLista(dpr) {
+  const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: rpgSegue() ? pkTeam()[0]?.species_id : null, eq: eqSoma(AV.eq), eqs: eqSlotsDe(AV.eq), dir: AV.dir || "down", anda: !!AV.moving, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
+  const LID = n => ["pico", "vulcao", "estrada"].includes(n) ? 9 : 6;
+  return [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.gym ? `🏟️ ${n.nome}` : n.elite ? `🏛️ ${n.nome}` : n.nome, ch: n.ch, npc: true, gym: n.gym, elite: n.elite, dir: "down",
+      eqs: n.gym || n.elite ? (k => ({ peitoral: k, calca: k, botas: k, luvas: k }))(n.elite ? 9 : LID(n.gym)) : {} })),
+    ...Object.values(AV.others).map(o => { const mv = o.x != null && (Math.abs(o.x - o.fx) > .03 || Math.abs(o.y - o.fy) > .03), dx = (o.x ?? o.fx) - o.fx, dy = (o.y ?? o.fy) - o.fy;
+      return { ...o, eqs: o.es || {}, anda: mv, dir: mv ? (Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up")) : (o.d || "down"),
+        ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } }; }), eu].filter(o => o.ch?.class && o.fx != null);
+}
+function rpgPintaIso(cv, now) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1), W0 = cv.clientWidth || 960, H0 = cv.clientHeight || 600;
+  if (cv.width !== Math.round(W0 * dpr) || cv.height !== Math.round(H0 * dpr)) { cv.width = Math.round(W0 * dpr); cv.height = Math.round(H0 * dpr); }
+  const g = cv.getContext("2d"), fl = isoMontaChao(AV.r, AV.dados), pal = isoPalDe(AV.r);
+  const k = (W0 > 900 ? 1.18 : 0.92) * dpr, u = fl.IW * 2 * k;
+  const zHero = isoElev(AV.r, AV.g, Math.round(AV.fx), Math.round(AV.fy));
+  const hx = (fl.ox + (AV.fx - AV.fy) * fl.IW) * k, hy = (fl.oy + (AV.fx + AV.fy + 1) * fl.IH - zHero * fl.IZ) * k;
+  const MW = fl.cv.width * k, MH = fl.cv.height * k;
+  let cx = hx - cv.width / 2, cy = hy - cv.height * 0.54;
+  cx = Math.round(MW <= cv.width ? (MW - cv.width) / 2 : Math.max(-80 * dpr, Math.min(MW - cv.width + 80 * dpr, cx)));
+  cy = Math.round(MH <= cv.height ? (MH - cv.height) / 2 : Math.max(-80 * dpr, Math.min(MH - cv.height + 80 * dpr, cy)));
+  AV._cam = { iso: true, cx, cy, k, ox: fl.ox, oy: fl.oy, IW: fl.IW, IH: fl.IH, IZ: fl.IZ };
+  const P = (x, y, z = 0) => [(fl.ox + (x - y) * fl.IW) * k - cx, (fl.oy + (x + y) * fl.IH - z * fl.IZ) * k - cy];
+  g.fillStyle = pal.ceu; g.fillRect(0, 0, cv.width, cv.height);
+  g.imageSmoothingEnabled = true;
+  g.drawImage(fl.cv, -cx, -cy, MW, MH);
+  // Brilho vivo da água (ou lava) nas casas ~ visíveis na tela
+  const H = AV.g.length, W = AV.g[0].length;
+  for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) {
+    if (AV.g[y][x] !== "~") continue;
+    const [wx, wy] = P(x + .5, y + .5, -0.55);
+    if (wx < -40 || wy < -40 || wx > cv.width + 40 || wy > cv.height + 40) continue;
+    const br = .35 + .35 * Math.sin(now / 420 + x * .9 + y * .7);
+    g.fillStyle = pal.lava ? `rgba(255,235,120,${br})` : `rgba(220,252,255,${br})`;
+    g.beginPath(); g.ellipse(wx + Math.sin(now / 700 + y) * 5 * dpr, wy, 7 * dpr, 2.5 * dpr, 0, 0, 6.28); g.fill();
+  }
+  // Trilha dourada guiada no chão 3D + anel onde você clicou
+  if (AV.guia?.r === AV.r && AV.guia.path?.length) {
+    for (let i = 0; i < AV.guia.path.length; i++) {
+      const [gx, gy] = AV.guia.path[i], gz = isoElev(AV.r, AV.g, gx, gy), [px, py] = P(gx + .5, gy + .5, gz);
+      if (px < -30 || py < -30 || px > cv.width + 30 || py > cv.height + 30) continue;
+      const onda = .55 + .45 * Math.sin(now / 220 - i * .55);
+      g.fillStyle = `rgba(255,222,90,${.28 + .48 * onda})`; g.strokeStyle = `rgba(255,248,200,${.6 + .4 * onda})`; g.lineWidth = 1.6 * dpr;
+      g.beginPath(); g.ellipse(px, py, 9 * dpr, 4.8 * dpr, 0, 0, 6.28); g.fill(); g.stroke();
+    }
+  }
+  if (AV.autoAlvo) {
+    const gz = isoElev(AV.r, AV.g, AV.autoAlvo.x, AV.autoAlvo.y), [ax, ay] = P(AV.autoAlvo.x + .5, AV.autoAlvo.y + .5, gz);
+    const rr = (11 + Math.sin(now / 160) * 2.5) * dpr;
+    g.strokeStyle = "#FFE37A"; g.lineWidth = 2.2 * dpr; g.beginPath(); g.ellipse(ax, ay, rr, rr * .52, 0, 0, 6.28); g.stroke();
+  }
+  // Lista única ordenada pela profundidade isométrica (x + y): prédios 3D, árvores/colunas, selvagens, chefe e jogadores!
+  const fila = [], predios = isoPrediosDe(AV.r, AV.dados), ocup = new Set();
+  for (const pr of predios) {
+    for (let py = pr.y0; py <= pr.y1; py++) for (let px = pr.x0; px <= pr.x1; px++) ocup.add(py * W + px);
+    const [sx, sy] = P((pr.x0 + pr.x1 + 1) / 2, (pr.y0 + pr.y1 + 1) / 2, 0);
+    if (sx > -u * 3 && sy > -u * 2 && sx < cv.width + u * 3 && sy < cv.height + u * 4) fila.push({ d: pr.x1 + pr.y1 + .25, fn: () => isoDesenhaPredio(g, P, pr, AV.r, now, dpr, u) });
+  }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (AV.g[y][x] !== "#" || ocup.has(y * W + x)) continue;
+    const [sx, sy] = P(x + .5, y + .5, isoElev(AV.r, AV.g, x, y));
+    if (sx < -u * 1.4 || sy < -u * .8 || sx > cv.width + u * 1.4 || sy > cv.height + u * 2.2) continue;
+    fila.push({ d: x + y, fn: () => isoDesenhaProp(g, P, x, y, AV.r, pal, now, dpr, u) });
+  }
+  for (const dm of AV.decoMons || []) {
+    const dz = isoElev(AV.r, AV.g, Math.round(dm.fx), Math.round(dm.fy)), [mx, my] = P(dm.fx + .5, dm.fy + .5, dz);
+    if (mx < -u || my < -u || mx > cv.width + u || my > cv.height + u * 1.5) continue;
+    fila.push({ d: dm.fx + dm.fy + .1, fn: () => {
+      const im = grImg(dm.sp); if (!im.complete || !im.naturalWidth) return;
+      const dist = Math.hypot(dm.fx - AV.fx, dm.fy - AV.fy), sz = u * .54, pul = Math.abs(Math.sin(now / 260 + dm.sp)) * 2.5 * dpr;
+      if (dist < 4.5) {
+        g.save(); g.strokeStyle = "#E85444"; g.lineWidth = 2 * dpr; g.setLineDash([4 * dpr, 3 * dpr]);
+        g.beginPath(); g.ellipse(mx, my + 2 * dpr, u * .28, u * .14, 0, 0, 6.28); g.stroke(); g.restore();
+      }
+      g.fillStyle = "rgba(0,0,0,.28)"; g.beginPath(); g.ellipse(mx, my + 2 * dpr, u * .19, u * .09, 0, 0, 6.28); g.fill();
+      g.save(); g.translate(mx, my - pul); if (dm.face > 0) g.scale(-1, 1); g.imageSmoothingEnabled = false; g.drawImage(im, -sz / 2, -sz * .92, sz, sz); g.restore();
+      if (dist < 4.5) {
+        g.fillStyle = "#FFF8EB"; g.strokeStyle = "#B83228"; g.lineWidth = 1.8 * dpr;
+        g.beginPath(); g.arc(mx, my - sz * .96, 8.5 * dpr, 0, 6.28); g.fill(); g.stroke();
+        g.fillStyle = "#C92A2A"; g.font = `900 ${Math.round(11 * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("!", mx, my - sz * .96 + .5 * dpr);
+      }
+    } });
+  }
+  const chq = rpgChefeAqui(), chp = chq && rpgChefePos();
+  if (chp) {
+    fila.push({ d: chp[0] + chp[1] + .3, fn: () => {
+      const im = rpgArt(chq.especie), [bx, by] = P(chp[0] + .5, chp[1] + .5, isoElev(AV.r, AV.g, chp[0], chp[1])), sz = u * 1.9, pul = 1 + Math.sin(now / 300) * .04;
+      const au = g.createRadialGradient(bx, by - sz * .45, sz * .1, bx, by - sz * .45, sz * .75); au.addColorStop(0, "rgba(255,60,60,.38)"); au.addColorStop(1, "rgba(255,60,60,0)");
+      g.fillStyle = au; g.fillRect(bx - sz, by - sz * 1.3, sz * 2, sz * 1.6);
+      g.fillStyle = "rgba(0,0,0,.36)"; g.beginPath(); g.ellipse(bx, by, sz * .32, sz * .14, 0, 0, 6.28); g.fill();
+      if (im.complete && im.naturalWidth) g.drawImage(im, bx - sz * pul / 2, by - sz * pul, sz * pul, sz * pul);
+      const pct = Math.max(0, 1 - chq.dano / Math.max(1, chq.hp_total)), bw = u * 1.6, bh = 9 * dpr, byy = by - sz - 12 * dpr;
+      g.fillStyle = "rgba(10,14,24,.9)"; g.fillRect(bx - bw / 2 - 2 * dpr, byy - 2 * dpr, bw + 4 * dpr, bh + 4 * dpr);
+      g.fillStyle = pct > .5 ? "#4CC38A" : pct > .2 ? "#E5B92E" : "#E05A5A"; g.fillRect(bx - bw / 2, byy, bw * pct, bh);
+    } });
+  }
+  const texto = (txt, x, y, px, cor = "#F4F8E8") => { g.font = `700 ${Math.round(px * dpr)}px Inter, system-ui, sans-serif`; g.textAlign = "center"; g.textBaseline = "alphabetic"; g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(10,14,24,.92)"; g.strokeText(txt, x, y); g.fillStyle = cor; g.fillText(txt, x, y); };
+  const todos = rpgAtoresLista(dpr);
+  for (const o of todos) {
+    if (o.m) {
+      const mx0 = o.tx ?? (o.fx - (o.f || 1)), my0 = o.ty ?? o.fy;
+      fila.push({ d: mx0 + my0 + .08, fn: () => {
+        const im = grImg(o.m); if (!im.complete || !im.naturalWidth) return;
+        const mz = isoElev(AV.r, AV.g, Math.round(mx0), Math.round(my0)), [mx, my] = P(mx0 + .5, my0 + .5, mz), sz = u * .56;
+        g.fillStyle = "rgba(0,0,0,.26)"; g.beginPath(); g.ellipse(mx, my + 2 * dpr, u * .16, u * .08, 0, 0, 6.28); g.fill();
+        g.save(); g.translate(mx, my - Math.abs(Math.sin(now / 260 + mx)) * 2 * dpr); if ((o.f || 1) > 0) g.scale(-1, 1); g.imageSmoothingEnabled = false; g.drawImage(im, -sz / 2, -sz * .94, sz, sz); g.restore();
+      } });
+    }
+    fila.push({ d: o.fx + o.fy + .15, fn: () => {
+      const oz = isoElev(AV.r, AV.g, Math.round(o.fx), Math.round(o.fy)), [ox, oy] = P(o.fx + .5, o.fy + .5, oz);
+      if (ox < -u * 1.5 || oy < -u * 1.5 || ox > cv.width + u * 1.5 || oy > cv.height + u * 2) return;
+      const lpc = LPC.ok, S2 = u * .96, sp = lpc ? null : avatarCanvas(o.ch), h = lpc ? S2 * .74 : u * .72, w = lpc ? S2 * .45 : h * sp.cv.width / sp.cv.height;
+      if ((o.eq || 0) >= 10) {
+        const forte = Math.min(1, o.eq / 45), cor = o.eq >= 45 ? "255,215,90" : o.eq >= 30 ? "190,120,255" : "110,190,255", al = .25 + forte * .35 + Math.sin(now / 350) * .08;
+        const ag = g.createRadialGradient(ox, oy - h * .45, 0, ox, oy - h * .45, h * .75); ag.addColorStop(0, `rgba(${cor},${al})`); ag.addColorStop(1, `rgba(${cor},0)`);
+        g.fillStyle = ag; g.fillRect(ox - h, oy - h * 1.3, h * 2, h * 1.6);
+      }
+      g.fillStyle = o.eu ? "rgba(245,197,66,.35)" : "rgba(0,0,0,.32)";
+      g.beginPath(); g.ellipse(ox, oy + 2 * dpr, u * .21, u * .1, 0, 0, 6.28); g.fill();
+      if (lpc) {
+        // Na diagonal isométrica: up=(NE→direita/cima), right=(SE→direita/baixo), down=(SW→esquerda/baixo), left=(NW→esquerda/cima)
+        const dirIso = o.dir === "up" ? "right" : o.dir === "left" ? "up" : o.dir === "down" ? "down" : "right";
+        const fo = lpcFolha({ ...o, c: o.c || o.ch?.class }), lin = LPC_LIN[dirIso] ?? 2, col = o.anda ? 1 + Math.floor(now / 85) % 8 : 0;
+        g.imageSmoothingEnabled = false; g.drawImage(fo, col * 64, lin * 64, 64, 64, Math.round(ox - S2 / 2), Math.round(oy - S2 * .95), Math.round(S2), Math.round(S2));
+      } else { g.save(); g.translate(ox, oy - (o.pulo || 0)); if ((o.f || 1) < 0) g.scale(-1, 1); avDraw(g, sp, -w / 2, -h, w, h); g.restore(); }
+      texto(o.n || "Treinador", ox, oy - h - 6 * dpr, 11, o.eu ? "#FFE37A" : o.npc ? "#BFE8FF" : "#F4F8E8");
+      if (!o.npc && AV.st?.campeoes?.includes(o.uid)) texto("👑", ox, oy - h - 22 * dpr, 15, "#FFE37A");
+      if (o.npc) texto(o.gym ? (rpgInsig().includes(o.gym) ? "🏅" : "🏟️") : o.elite ? "👑" : rpgMissoesDe(AV.r).some(m => !m.resgatada && m.prog >= m.meta) ? "🎁" : "!", ox + w * 0.48, oy - h + 4 * dpr, 15, "#FFE37A");
+      const bl = AV.baloes[o.uid];
+      if (bl && bl.ate > now && pzCfg().baloes !== false) {
+        g.font = `600 ${Math.round(12 * dpr)}px Inter, system-ui, sans-serif`; const t = bl.txt, bw = Math.min(g.measureText(t).width + 16 * dpr, 250 * dpr), bh = 23 * dpr, by = oy - h - 22 * dpr;
+        g.globalAlpha = Math.min(1, (bl.ate - now) / 600); g.fillStyle = "#FFFFFF"; g.strokeStyle = "#1E150C"; g.lineWidth = 1.5 * dpr; g.beginPath(); g.roundRect(ox - bw / 2, by - bh, bw, bh, 9 * dpr); g.fill(); g.stroke();
+        g.fillStyle = "#1E150C"; g.textAlign = "center"; g.fillText(t, ox, by - 7 * dpr, bw - 10 * dpr); g.globalAlpha = 1;
+      }
+    } });
+  }
+  fila.sort((a, b) => a.d - b.d);
+  for (const it of fila) it.fn();
+  // Plaquinhas nítidas dos lugares e saídas em 3D
+  const placas = [...rpgPontos(), ...rpgSaidas().map(sd => {
+    const [ex, ey] = sd.em[Math.floor((sd.em.length - 1) / 2)], R = RPG_REG[sd.para];
+    return { em: [[ex, ey]], ic: "➡️", nome: `${R.ic} ${R.nome}${sd.para === "vila" || !rpgFaixa(sd.para) ? "" : ` · ${rpgFaixa(sd.para)}`}`, saida: true, altoIso: 1.2 };
+  })];
+  for (const p of placas) {
+    const [px0, py0] = p.em[0], pz = isoElev(AV.r, AV.g, Math.round(px0), Math.round(py0));
+    const hIso = p.altoIso ?? (p.vai?.startsWith("gym_") ? 3.5 : p.win && !["mercado", "jornal", "caixa", "ranking"].includes(p.win) ? 2.9 : 1.7);
+    const [x, y] = P(px0 + .5, py0 + .5, pz + hIso);
+    if (x < -180 || y < -50 || x > cv.width + 180 || y > cv.height + 50) continue;
+    const perto = AV.perto === p; g.font = `700 ${Math.round(11.5 * dpr)}px Inter, system-ui, sans-serif`;
+    const w = g.measureText(`${p.ic} ${p.nome}`).width + 20 * dpr, h = 21 * dpr;
+    g.fillStyle = perto ? "rgba(245,197,66,.96)" : "rgba(14,22,38,.88)"; g.strokeStyle = perto ? "#1E150C" : "rgba(214,172,94,.88)"; g.lineWidth = 1.5 * dpr;
+    g.beginPath(); g.roundRect(x - w / 2, y - h, w, h, 8 * dpr); g.fill(); g.stroke();
+    g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = perto ? "#1E150C" : "#FFE7A8"; g.fillText(`${p.ic} ${p.nome}`, x, y - h / 2 + .5 * dpr);
+  }
+  // Vagalumes / pólen no Bosque ou atmosfera da noite / Mina
+  if (AV.r === "bosque" || AV.r === "gym_bosque") {
+    const noite = !!AV.st?.noite;
+    for (let i = 0; i < 20; i++) {
+      const bx = ((i * 97) % cv.width + Math.sin(now / 1100 + i) * 28 * dpr + cv.width) % cv.width;
+      const by = ((i * 67) % cv.height + Math.cos(now / 950 + i * 2) * 22 * dpr + cv.height) % cv.height;
+      g.fillStyle = noite ? `rgba(185,255,105,${.35 + .45 * Math.sin(now / 320 + i)})` : "rgba(255,244,170,.32)";
+      g.beginPath(); g.arc(bx, by, (noite ? 3 : 2) * dpr, 0, 6.28); g.fill();
+    }
+  }
+  if (AV.st?.noite && !RPG_REG[AV.r]?.gym && !RPG_REG[AV.r]?.mina) {
+    const [lx, ly] = P(AV.fx + .5, AV.fy + .5, zHero + .5), gr = g.createRadialGradient(lx, ly, u * 1.1, lx, ly, u * 5.2);
+    gr.addColorStop(0, "rgba(10,16,48,.12)"); gr.addColorStop(1, "rgba(6,10,32,.62)"); g.fillStyle = gr; g.fillRect(0, 0, cv.width, cv.height);
+  }
+  if (RPG_REG[AV.r]?.mina) {
+    const lz = S.exp?.est?.run?.recursos?.luz ?? 3, [lx, ly] = P(AV.fx + .5, AV.fy + .5, 0), rr = u * (2.2 + lz * .95);
+    const gr = g.createRadialGradient(lx, ly, rr * .42, lx, ly, rr); gr.addColorStop(0, "rgba(4,3,2,0)"); gr.addColorStop(1, `rgba(4,3,2,${lz <= 0 ? .88 : .68})`);
+    g.fillStyle = gr; g.fillRect(0, 0, cv.width, cv.height);
+  }
+  rpgMiniDesenha(todos);
+}
 function rpgPinta(now) {
   const cv = $("#rpg-cv"); if (!cv || !AV.img) return;
+  if (rpgIsoOn()) return rpgPintaIso(cv, now);
   const dpr = Math.min(2, window.devicePixelRatio || 1), W0 = cv.clientWidth, H0 = cv.clientHeight;
   if (cv.width !== Math.round(W0 * dpr) || cv.height !== Math.round(H0 * dpr)) { cv.width = Math.round(W0 * dpr); cv.height = Math.round(H0 * dpr); }
   const g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
@@ -14503,12 +15762,27 @@ function rpgPinta(now) {
   let cx = (AV.fx + .5) * tile - cv.width / 2, cy = (AV.fy + .5) * tile - cv.height / 2;
   cx = Math.round(MW <= cv.width ? (MW - cv.width) / 2 : Math.max(0, Math.min(MW - cv.width, cx)));
   cy = Math.round(MH <= cv.height ? (MH - cv.height) / 2 : Math.max(0, Math.min(MH - cv.height, cy)));
+  AV._cam = { iso: false, cx, cy, tile };
   g.fillStyle = "#16301B"; g.fillRect(0, 0, cv.width, cv.height);
   g.drawImage(AV.img, cx / k, cy / k, cv.width / k, cv.height / k, 0, 0, cv.width, cv.height);
+  if (AV.guia?.r === AV.r && AV.guia.path?.length) {
+    for (let i = 0; i < AV.guia.path.length; i++) {
+      const [gx, gy] = AV.guia.path[i], onda = .55 + .45 * Math.sin(now / 220 - i * .55);
+      g.fillStyle = `rgba(255,222,90,${.28 + .48 * onda})`;
+      g.beginPath(); g.arc((gx + .5) * tile - cx, (gy + .5) * tile - cy, tile * .2, 0, 6.28); g.fill();
+    }
+  }
   { const gpd = !RPG_REG[AV.r]?.gym && AV.r !== "vila" && rpgGymPos(); if (gpd) rpgDesenhaGinasio(g, gpd, tile, cx, cy, now, dpr); }   // arquivo 101
   if (RPG_REG[AV.r]?.mina) minaDesenha(g, tile, cx, cy, now, dpr);   // arquivo 111
   if (RPG_REG[AV.r]?.vale) valeDesenha(g, tile, cx, cy, now, dpr);   // arquivo 112
   if (AV.r === "bosque" || AV.r === "gym_bosque") bosqueDesenha(g, tile, cx, cy, now, dpr);   // arquivo 123
+  for (const dm of AV.decoMons || []) {
+    const im = grImg(dm.sp); if (!im.complete || !im.naturalWidth) continue;
+    const mx = (dm.fx + .5) * tile - cx, my = (dm.fy + 1) * tile - cy, sz = tile * .86;
+    if (mx < -tile || my < -tile || mx > cv.width + tile || my > cv.height + tile) continue;
+    g.fillStyle = "rgba(0,0,0,.22)"; g.beginPath(); g.ellipse(mx, my - 3 * dpr, tile * .2, tile * .08, 0, 0, 6.28); g.fill();
+    g.save(); g.translate(mx, my - Math.abs(Math.sin(now / 260 + dm.sp)) * 2 * dpr); if (dm.face > 0) g.scale(-1, 1); g.drawImage(im, -sz / 2, -sz * .95, sz, sz); g.restore();
+  }
   if (AV.st?.noite && !RPG_REG[AV.r]?.gym && !RPG_REG[AV.r]?.mina) {   // arquivo 99: noite, com a luz em volta de você
     const lx = (AV.fx + .5) * tile - cx, ly = (AV.fy + .5) * tile - cy, gr = g.createRadialGradient(lx, ly, tile * 1.3, lx, ly, tile * 6.5);
     gr.addColorStop(0, "rgba(10,14,48,.18)"); gr.addColorStop(1, "rgba(8,10,36,.66)"); g.fillStyle = gr; g.fillRect(0, 0, cv.width, cv.height);
@@ -14541,14 +15815,7 @@ function rpgPinta(now) {
     g.beginPath(); g.roundRect(x - w / 2, y - h, w, h, 8 * dpr); g.fill(); g.stroke();
     g.textAlign = "center"; g.fillStyle = perto ? "#1E150C" : "#FFE7A8"; g.fillText(`${p.ic} ${p.nome}`, x, y - 6 * dpr);
   }
-  // moradores, outros jogadores e você, de trás para a frente
-  const eu = { uid: pkMe(), fx: AV.fx, fy: AV.fy, f: AV.face, n: S.me?.name, ch: S.me, eu: true, m: rpgSegue() ? pkTeam()[0]?.species_id : null, eq: eqSoma(AV.eq), eqs: eqSlotsDe(AV.eq), dir: AV.dir || "down", anda: !!AV.moving, tx: AV.ax, ty: AV.ay, pulo: AV.moving ? Math.abs(Math.sin(AV.moving.t * Math.PI)) * 3 * dpr : 0 };
-  const LID = n => ["pico", "vulcao", "estrada"].includes(n) ? 9 : 6;   // os Líderes vestem aço (os 3 últimos e a Elite, ouro)
-  const todos = [...rpgNpcs().map(n => ({ uid: "npc" + n.nome, fx: n.x, fy: n.y, f: 1, n: n.gym ? `🏟️ ${n.nome}` : n.elite ? `🏛️ ${n.nome}` : n.nome, ch: n.ch, npc: true, gym: n.gym, elite: n.elite, dir: "down",
-      eqs: n.gym || n.elite ? (k => ({ peitoral: k, calca: k, botas: k, luvas: k }))(n.elite ? 9 : LID(n.gym)) : {} })),
-    ...Object.values(AV.others).map(o => { const mv = o.x != null && (Math.abs(o.x - o.fx) > .03 || Math.abs(o.y - o.fy) > .03), dx = (o.x ?? o.fx) - o.fx, dy = (o.y ?? o.fy) - o.fy;
-      return { ...o, eqs: o.es || {}, anda: mv, dir: mv ? (Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up")) : (o.d || "down"),
-        ch: S.chars?.find(c => c.user_id === o.uid) || { class: o.c, outfit: o.o || {} } }; }), eu].filter(o => o.ch?.class && o.fx != null).sort((a, b) => a.fy - b.fy);
+  const todos = rpgAtoresLista(dpr).sort((a, b) => a.fy - b.fy);
   for (const o of todos) {
     const ox = (o.fx + .5) * tile - cx, oy = (o.fy + 1) * tile - cy; if (ox < -tile * 2 || oy < -tile * 2 || ox > cv.width + tile * 2 || oy > cv.height + tile * 3) continue;
     if (o.m) { const im = grImg(o.m);
@@ -14586,11 +15853,7 @@ function rpgPinta(now) {
       tg.addColorStop(0, `rgba(255,190,90,${f})`); tg.addColorStop(1, "rgba(255,190,90,0)"); g.fillStyle = tg; g.fillRect(tx - tile * 2.2, ty - tile * 2.2, tile * 4.4, tile * 4.4); }
     minaRotulo(g, tile, cx, cy, now, dpr);   // o nome do acontecimento fica visível mesmo no escuro
   }
-  // mapinha
-  const mc = $("#rpg-mini");
-  if (mc && mc.offsetParent !== null) { const mg = mc.getContext("2d"), kx = mc.width / AV.g[0].length, ky = mc.height / AV.g.length; mg.imageSmoothingEnabled = true; mg.drawImage(AV.img, 0, 0, mc.width, mc.height);
-    for (const o of todos) if (!o.npc) { mg.fillStyle = o.eu ? "#FFE37A" : "#FFFFFF"; mg.strokeStyle = "#0F1420"; mg.lineWidth = 1; mg.beginPath(); mg.arc((o.fx + .5) * kx, (o.fy + .5) * ky, o.eu ? 4 : 3, 0, 6.28); mg.fill(); mg.stroke(); } }
-  const n = todos.filter(o => !o.npc).length, mb = $("#rpg-mini-box b"), mt = `${RPG_REG[AV.r]?.nome || ""} · 👥 ${n}`; if (mb && mb.textContent !== mt) mb.textContent = mt;
+  rpgMiniDesenha(todos);
 }
 // ---------- quem está na vila (Realtime) ----------
 let rpgChannel = null;
@@ -14636,7 +15899,7 @@ function rpgNetLeave() {
 }
 setInterval(() => { if (rpgChannel && !AV.open && (!AV.volta || (AV.foraDesde && Date.now() - AV.foraDesde > 600000))) { AV.volta = false; rpgNetLeave(); } AV.foraDesde = AV.open ? 0 : (AV.foraDesde || Date.now()); }, 5000);
 // ---------- chat na Aventura ----------
-function rpgChatRender() { const l = $("#rpg-chat-list"); if (!l || !AV.open) return; l.innerHTML = hxChatLista(25); l.scrollTop = l.scrollHeight; }
+function rpgChatRender() { if (!AV.open) return; rpgChatAbaRender(); }
 function rpgChatNova(m) { rpgChatRender(); if (m && AV.open && m.user_id) AV.baloes[m.user_id] = { txt: String(m.body || "").slice(0, 60), ate: performance.now() + 6000 }; }
 
 
@@ -15091,17 +16354,48 @@ function rpgChefeAbrir() {
       try { await rpc("admin_rpg_chefe", { _regiao: null, _especie: null }); toast("👹 Chefe solto!"); await rpgEstado(); } catch (er) { toast(errMsg(er), true); } }
   });
 }
-function rpgTit() {   // uma linha só: lugar, coordenadas, lutas do dia e a noite
-  const tt = $("#rpg-tit"), R0 = RPG_REG[AV.r]; if (!tt || !R0) return;
-  tt.textContent = `${R0.ic} ${R0.nome} · 📍 ${AV.x}, ${AV.y}${AV.st ? ` · ⚔️ ${AV.st.batalhas}/${AV.st.batalhas_dia}` : ""}${AV.st?.noite ? " · 🌙" : ""}`;
+function rpgTit() {   // barra superior direita estilo RPG + título compacto no celular
+  const tt = $("#rpg-tit"), lb = $("#rpg-loc-bar"), R0 = RPG_REG[AV.r]; if (!R0) return;
+  if (tt) tt.textContent = `${R0.ic} ${R0.nome} · 📍 ${AV.x}, ${AV.y}${AV.st ? ` · ⚔️ ${AV.st.batalhas}/${AV.st.batalhas_dia}` : ""}${AV.st?.noite ? " · 🌙" : ""}`;
+  if (lb) {
+    const z = rpgZonaKey(rpgAt(AV.x, AV.y)), zi = z ? rpgZonaInfo(z) : null;
+    const mr = RPG_REG[AV.r]?.mina && S.exp?.est?.run;
+    const zTxt = mr ? `<span class="rpg-loc-zona">⚡ ${mr.recursos.energia} · 🔦 ${mr.recursos.luz} · Sala ${mr.etapa}/${mr.etapas}</span>`
+      : zi ? `<span class="rpg-loc-zona">🌿 ${esc(zi.nome)} · Nv ${zi.min}–${zi.max}</span>` : "";
+    const zElev = AV.g ? Math.round(isoElev(AV.r, AV.g, AV.x, AV.y) * 10) : 0;
+    lb.innerHTML = `<span>Mundo: <b>Aurora</b></span><i></i><span>X: <b>${AV.x}</b> Y: <b>${AV.y}</b>${zElev ? ` Z: <b>${zElev}</b>` : ""}</span><i></i><span>Região: <b>${R0.ic} ${esc(R0.nome)}</b></span>`
+      + (zTxt ? `<i></i>${zTxt}` : "")
+      + (AV.st ? `<i></i><span title="Lutas contra selvagens hoje">⚔️ <b>${AV.st.batalhas}/${AV.st.batalhas_dia}</b></span>` : "")
+      + `<i></i><span title="Insígnias conquistadas">🏅 <b>${rpgInsig().length}/${Object.keys(rpgLideres()).length}</b></span>`
+      + (AV.st?.noite && !RPG_REG[AV.r]?.mina ? `<i></i><span title="Noite: Fantasmas e Sombrios aparecem">🌙</span>` : "");
+  }
 }
 function rpgHud() {
-  const st = AV.st, n = $("#rpg-noite"), ins = $("#rpg-ins"), mi = $("#rpg-mis"), ch = $("#rpg-chefe"), su = $("#rpg-sup");
+  const st = AV.st, n = $("#rpg-noite"), ins = $("#rpg-ins"), mi = $("#rpg-mis"), ch = $("#rpg-chefe"), su = $("#rpg-sup"), hb = $("#rpg-hero-bar"), ib = $("#rpg-iso-btn");
   if (su) { const sp = rpgSup(); su.textContent = sp ? `🎒 ${innerWidth > 760 ? "Suporte: " : ""}${pkName(sp.species_id)}` : `🎒 ${innerWidth > 760 ? "Escolher suporte" : "Suporte"}`; }
   if (n) { n.hidden = !st?.noite || !!RPG_REG[AV.r]?.mina; n.textContent = "🌙 Noite"; n.title = "De noite, Fantasmas e Sombrios aparecem em todas as áreas"; }
   if (ins) ins.textContent = `🏅 ${rpgInsig().length}/${Object.keys(rpgLideres()).length}`;
   if (mi) { const ms = st?.missoes || [], prontas = ms.filter(m => !m.resgatada && m.prog >= m.meta).length; mi.hidden = !ms.length; mi.title = `Missões: ${ms.filter(m => m.resgatada).length} de ${ms.length} feitas`; mi.innerHTML = `📜<em>Missões</em>${prontas ? `<b class="mb red">${prontas}</b>` : ""}`; }
   if (ch) { const c = st?.chefe; ch.hidden = !c || c.status !== "ativo"; if (c) { const pc = Math.max(0, Math.round(100 - c.dano * 100 / Math.max(1, c.hp_total))); ch.innerHTML = `👹<em>Chefe ${pc}%</em>`; ch.title = `Chefe: ${pkName(c.especie)} em ${RPG_REG[c.regiao]?.nome || c.regiao}`; } }
+  if (ib) {
+    ib.hidden = !rpgIsoPermitido();
+    const on = rpgIsoOn();
+    ib.classList.toggle("on", on);
+    ib.innerHTML = on ? `📐<em>3D</em>` : `🗺️<em>2D</em>`;
+    ib.title = on ? "Visão 3D diagonal ligada (clique para mudar para 2D)" : "Visão 2D clássica ligada (clique para voltar ao 3D)";
+  }
+  if (hb && S.me) {
+    const xp = xpInfo(S.me), pct = Math.max(0, Math.min(100, Math.round(xp.pct || 0)));
+    const ms = st?.missoes || [], mAtiva = ms.find(m => !m.resgatada && m.prog >= m.meta) || ms.find(m => !m.resgatada) || ms[0] || null;
+    const mPronta = mAtiva && !mAtiva.resgatada && mAtiva.prog >= mAtiva.meta, mFeita = mAtiva && mAtiva.resgatada;
+    hb.innerHTML = `<button type="button" class="hx-av" data-rpg="inv" title="Abrir Inventário (I)">${avatarSVG(S.me, 2.2)}</button>
+      <div class="hx-lv"><b>Lv. ${S.me.level ?? 1}</b><span class="hx-xp" title="Experiência do herói"><i style="width:${pct}%"></i><em>EXP ${pct}%</em></span></div>
+      ${mAtiva ? `<button type="button" class="hx-missao ${mPronta || mFeita ? "ok" : ""}" data-rpg="missoes" title="${esc(rpgMissaoTxt(mAtiva))}">
+        <span class="hx-ex">${mPronta ? "🎁" : mFeita ? "✓" : "!"}</span>
+        <div><b>${mPronta ? "Prêmio pronto!" : "Missão Diária"}</b><small>${esc(rpgMissaoTxt(mAtiva))} (${mAtiva.prog}/${mAtiva.meta})</small></div>
+      </button>` : ""}`;
+  }
+  const inv = $("#rpg-inv"); if (inv && !inv.hidden) rpgInvRender();
   rpgTit();
 }
 ACTIONS["rpg-gym-next"] = async v => { await guarded(async () => { await Promise.all([loadPk(), loadTreino()]); }); await rpgGinasioLutar(v); };
@@ -16575,6 +17869,12 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "aventura-3d-mapa-2026-11-18", sql: "126", title: "🧭 Aventura em 3D diagonal, Inventário na tela e Mapa Grande com guia", body: () => `A Aventura ganhou um visual novo em 3D diagonal (estilo RPG isométrico) e um Mapa Grande para ninguém mais se perder — mantendo todas as regras, lutas, Ginásios, rotas e posições exatamente iguais:
+• Mundo em 3D diagonal: ruas e praças de pedra em relevo, canais de água cristalina mais fundos que o chão, pontes de madeira, árvores e coqueiros em pé com sombra, casas com paredes e telhados 3D, barraquinhas com toldo listrado, chafarizes, tochas acesas e os 8 Ginásios em 3D! (Quem preferir também pode alternar entre 3D e 2D a qualquer momento pelo botão 3D/2D no topo.)
+• Clique no chão para andar: além do teclado (WASD/setas) e dos botões no celular, agora basta clicar ou tocar em qualquer lugar do chão ou numa porta que o seu herói vai andando sozinho até lá desviando dos obstáculos.
+• Painéis de RPG e Inventário sem sair do mapa: minimapa com bússola no canto superior esquerdo ao lado da barra de nível, EXP e Missão Diária da Aventura; coordenadas no canto direito; Chat com abas embaixo; e a nova janela flutuante de Inventário (tecla I ou botão 🎒) mostrando seu herói com os 5 equipamentos, itens, bolas, TMs, sua equipe de 6 Pokémon e moedas sem fechar o mundo!
+• Cenário mais vivo: Pokémon selvagens da própria área aparecem passeando visíveis no mato e na água, e os moradores dão dicas em balões quando você passa por perto.
+• Mapa Grande novo com guia no chão (botão 🗺️ ou tecla M): dividido em "📍 Onde estou" (mapa grande e nítido da região atual com todas as lojas, casas, estações, Ginásio e saídas marcadas) e "🌍 Mundo inteiro" (todas as rotas, níveis e insígnias). Clique em "🧭 Ir até lá" em qualquer lugar ou região para acender uma trilha dourada no chão te guiando até a porta certa!` },
   { id: "pacote-trocas-rocket-guerra-2026-11-18", sql: "125", title: "🚀 Pacote de novidades: Trocas com vitrine, Rocket reforçada, Ataques às vilas e mais!", body: () => `Várias melhorias e regras novas acabam de entrar no jogo:
 • Guerra sem travamento: os Pokémon agora nunca insistem em golpe que não afeta o alvo, trocam sozinhos se precisarem acertar o adversário e, em caso de impasse ou após 50 turnos, vence o esquadrão com maior % de vida somada.
 • Troca de Pokémon com vitrine: marque na sua coleção quais Pokémon você aceita trocar. Os outros jogadores só veem a sua vitrine (nunca a coleção inteira), quem recebe a proposta escolhe qual Pokémon dar em troca e a troca só fecha com a aprovação dos dois lados!
