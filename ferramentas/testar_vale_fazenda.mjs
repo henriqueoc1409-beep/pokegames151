@@ -34,7 +34,7 @@ const pika = await mk(A, 25, 20, 1), geo = await mk(A, 74, 20, 2), dele = await 
 
 console.log("\nVale do Treino");
 let e = (await as(A, `select public.vale_estado() e`)).rows[0].e;
-check("o estado mostra as 6 estações, o limite e 0 treinos hoje", Object.keys(e.estacoes).length === 6 && e.treinos === 0 && e.treinos_dia === 8, JSON.stringify(e).slice(0, 200));
+check("o estado mostra as estações (6 ou mais desde o 129), o limite e 0 treinos hoje", Object.keys(e.estacoes).length >= 6 && e.treinos === 0 && e.treinos_dia === 8, JSON.stringify(e).slice(0, 200));
 check("estação que não existe é recusada", !!(await as(A, `select public.vale_comecar('piscina', $1)`, [pika])).error);
 check("só treina Pokémon seu", /não é seu/.test((await as(A, `select public.vale_comecar('pista', $1)`, [dele])).error || ""));
 let r = (await as(A, `select public.vale_comecar('pista', $1) e`, [pika])).rows[0].e;
