@@ -2092,7 +2092,11 @@ body.pb-on{overflow:hidden}
 .vale-mons{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:6px;max-height:min(280px,36vh);overflow:auto;padding:2px}
 .vale-mon{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 4px;border-radius:10px;border:2px solid rgba(255,255,255,.15);background:rgba(0,0,0,.28);color:inherit;cursor:pointer;font:600 12px Inter,system-ui,sans-serif}
 .vale-mon img{width:56px;height:56px;image-rendering:pixelated}.vale-mon.on{border-color:#FFD25A;background:rgba(255,210,90,.16)}.vale-mon:disabled{opacity:.4}.vale-star{position:absolute;top:2px;right:4px}
-.vale-ult{font-size:13px}.vale-pe{font-size:12px;margin:4px 0 0}
+.vale-ult{font-size:13px}
+.vale-rk{margin:10px 0;padding:10px 12px;border-radius:12px;background:rgba(245,197,66,.08);border:1px solid rgba(245,197,66,.35)}.vale-rk h3{margin:0 0 6px;font-size:15px}
+.vale-rk-l{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:8px}.vale-rk-l.me{background:rgba(245,197,66,.18)}.vale-rk-l img{width:36px;height:36px;image-rendering:pixelated}
+.vale-rk-p{font-size:20px;width:28px;text-align:center}.vale-rk-n{flex:1;display:flex;flex-direction:column;line-height:1.2}.vale-rk-n small{opacity:.75;font-size:12px}.vale-rk-v{font-size:18px;color:#F5C542}
+.vale-rk-me{font-size:12.5px;margin:6px 0 0}.vale-pe{font-size:12px;margin:4px 0 0}
 .vale-hud{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}.vale-hud span{font-weight:800;color:#FFE7A8}
 #vj-cv{display:block;width:100%;height:auto;border-radius:12px;border:2px solid rgba(255,255,255,.2);touch-action:none;user-select:none;-webkit-user-select:none}
 .vale-dica{margin:6px 0 0;font-size:13px}
@@ -7297,7 +7301,7 @@ function LIB() {
     { id: "visual-herois", ic: "🧙", t: "Visual dos heróis", h: `<p>Os 8 heróis têm um desenho próprio do Pokegames: cabeça grande, traço grosso e cores vivas. Cada um carrega a sua marca: o Guerreiro a espada e o escudo, o Mago o chapéu e o cajado de cristal, o Arqueiro o arco, o Ladino o capuz e as adagas, o Clérigo o cajado dourado, o Domador o chapéu e o chicote, o Pesquisador os óculos e a lupa, e o Mercador a bolsa de moedas.</p>
       <p>As skins da <b>Loja & Visuais</b> mudam o desenho: a <b>roupa</b> troca as cores (algumas têm listras ou detalhes), a <b>capa</b> aparece nas costas (ou vira asas), o <b>chapéu</b> substitui o enfeite de cabeça do herói, o <b>acessório</b> vai no rosto ou no peito e a <b>aura</b> deixa um brilho em volta.</p>` },
     { id: "aventura", ic: "🧭", t: "Aventura (RPG)", h: `<p>A <b>Aventura</b> (menu Competir, ou o botão 🧭 no alto do mapa) é um jogo a mais dentro do Pokegames, para andar e explorar em <b>visão 3D diagonal (isométrica)</b> — com ruas e praças de pedra em relevo, canais de água mais fundos, pontes, árvores e casas em 3D, barraquinhas e os 8 Ginásios em 3D (quem preferir pode alternar entre <b>📐 3D</b> e <b>🗺️ 2D</b> a qualquer momento pelo botão no topo). O tabuleiro continua igual, e os <b>Pokémon e as moedas são os mesmos</b> dos dois jogos.</p>
-      <p>🥋 <b>Vale do Treino:</b> na trilha ao norte da Vila Aurora (no alto do penhasco) fica um vale com 6 estações de treino, onde os Pokémon ganham experiência sem lutar (veja o assunto Vale do Treino).</p>
+      <p>🥋 <b>Vale do Treino:</b> na trilha ao norte da Vila Aurora (no alto do penhasco) fica um vale com 8 estações de treino, onde os Pokémon ganham experiência sem lutar (veja o assunto Vale do Treino).</p>
       <p><b>Como andar e interagir:</b> além de usar WASD, as setas ou os botões na tela do celular, basta <b>clicar ou tocar em qualquer lugar do chão ou numa porta</b> que o seu herói vai andando sozinho até lá desviando de rios e muros! Chegue na porta de uma casa e aperte <b>E</b> (ou clique nela) para entrar: Loja Pokémon, Loja & Visuais, Creche (no celeiro), Centro Pokémon (na pousada da cidade), Casa de Leilões, a Feira (Mercado), o Mural do Jornal, a Fonte e a Estátua dos Campeões. Os moradores com "!" dão dicas, os Pokémon selvagens da área aparecem passeando visíveis no mato e os outros jogadores aparecem ao vivo. Na Vila Aurora, os moradores que passeiam pelas ruas são só enfeite: não falam nem lutam.</p>
       <p>🎒 <b>Inventário na tela (botão 🎒 ou tecla I):</b> abre uma janela flutuante sem fechar a Aventura, mostrando seu herói com os 5 equipamentos e o Pokémon de suporte, suas abas de Itens, Pokébolas e TMs, as 6 criaturas da equipe com barra de vida ao vivo e suas moedas. No canto esquerdo ficam o minimapa com bússola, seu nível, barra de experiência e a Missão Diária da Aventura, e embaixo o Chat com abas rápidas de Missões, Ir para… e Mundo.</p>
       <p><b>É aqui que se treina:</b> a Grama de Treino fechou, e a Aventura é o lugar de ganhar experiência e evoluir os Pokémon. Todos os Pokémon aparecem por aqui (menos os lendários), cada um nas áreas do seu tipo.</p>
@@ -7320,16 +7324,15 @@ function LIB() {
       <p>🌙 <b>Noite:</b> das ${S.cfg.rpg?.noite?.inicio ?? 19}h às ${S.cfg.rpg?.noite?.fim ?? 5}h a Aventura escurece, e Pokémon ${(S.cfg.rpg?.noite?.tipos || ["FANTASMA", "SOMBRIO"]).filter(t => genOn() || t !== "SOMBRIO").map(t => PK_TYPES[t]?.[0] || t).join(" e ")} aparecem em todas as áreas.</p>
       <p>🏛️ <b>Desafio do Planalto (Elite 4 e o Campeão):</b> no fim da Estrada da Vitória fica o Planalto, e só entra quem tem as ${S.cfg.rpg?.elite?.insignias_min ?? 8} insígnias. (Não confunda com a Liga Pokémon do tabuleiro, que fecha a temporada.) Lá você enfrenta a Elite 4 e depois o Campeão, um atrás do outro, um Pokémon de cada vez. Antes de entrar, escolha até ${S.cfg.rpg?.elite?.time_max ?? 6} Pokémon: <b>a vida deles nunca volta durante o Desafio</b> (nem com o tempo, nem no Centro Pokémon). Começou, vai até o fim: ou vence o Campeão, ou cai com a equipe toda, ou desiste (fugir de uma luta também é desistir). Dá para entrar ${(S.cfg.rpg?.elite?.tentativas_dia ?? 1) === 1 ? "uma vez" : `${S.cfg.rpg?.elite?.tentativas_dia} vezes`} por dia. Quem vence entra para o 👑 Hall da Fama, ganha um prêmio grande na primeira vez (e menor nas outras) e uma coroa em cima do boneco, que todos veem.</p>
       <p>👹 <b>Chefe da rota:</b> ${(d => `${d === 0 || d === 6 ? "todo" : "toda"} ${["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"][d] || "sábado"}`)(S.cfg.rpg?.chefe?.dia_semana ?? 6)}, às ${S.cfg.rpg?.chefe?.hora ?? 10}h, um Pokémon gigante (nível ${S.cfg.rpg?.chefe?.nivel ?? 75}) aparece numa rota por ${S.cfg.rpg?.chefe?.horas ?? 48} horas. Todos lutam contra ele, e cada golpe tira da mesma barra de vida. Se a turma derrubar o chefe, todos que lutaram ganham prêmio, e os 3 que mais bateram ganham mais. Cada um luta ${S.cfg.rpg?.chefe?.tentativas_dia ?? 3} vezes por dia.</p>` },
-    { id: "praca", ic: "⛲", t: "Praça Central", h: `<p>A <b>Praça Central</b> (menu Comunidade, ou o botão ⛲ no alto do mapa no computador) é um lugar para passear: você anda com o seu herói, vê quem mais está por lá e conversa pelo chat. O que cada um escreve aparece num balão em cima da cabeça, e o primeiro Pokémon da sua equipe anda atrás de você.</p>
-      <p><b>Como andar:</b> WASD ou as setas (no celular, os botões na tela). Chegue na porta de uma casa e aperte <b>E</b> (ou toque no botão "Entrar") para abrir: Loja Pokémon, Loja & Visuais, Centro Pokémon, Creche, Leilão, Mercado, Biblioteca, Jornal, SAC, Caixa da Obra, Arena, Batalhas, Cartas, PokeBound, ${S.cfg.treino?.on === false ? "Aventura (a porta da antiga Grama de Treino)" : "Grama de Treino"} e Ranking. Ao fechar a janela você volta para a porta. Para sair, use "Voltar ao mapa" ou desça pela estrada de baixo.</p>
-      <p>A Praça não muda nada nas regras: é só outro caminho para as mesmas janelas. O tabuleiro continua igual.</p>` },
     { id: "vale", ic: "🥋", t: "Vale do Treino", h: `<p>O <b>Vale do Treino</b> fica na Aventura, na trilha ao norte da Vila Aurora (no alto do penhasco). Lá os Pokémon ganham experiência <b>treinando</b>, sem lutar no mato.</p>
-      <p>São <b>6 estações</b>. Chegue perto de uma e aperte <b>E</b>, escolha o Pokémon e faça o exercício (uns 20 segundos):</p>
+      <p>São <b>8 estações</b>. Chegue perto de uma e aperte <b>E</b>, escolha o Pokémon e faça o exercício (uns 20 segundos):</p>
       <ul><li>🏃 <b>Pista de Corrida:</b> aperte quando a marca passar pela faixa verde (no meio vale mais).</li><li>🥊 <b>Saco de Pancada:</b> repita a sequência de setas antes do tempo acabar.</li>
       <li>🧘 <b>Templo da Meditação:</b> os cristais acendem numa ordem; repita a ordem. A cada rodada, um a mais.</li><li>🏊 <b>Lago das Correntes:</b> nade desviando das pedras e pegue as bolhas.</li>
-      <li>🧗 <b>Paredão de Escalada:</b> toque rápido na pedra que brilhar.</li><li>🔥 <b>Fogueira do Fôlego:</b> segure para soprar e solte para descansar, deixando a chama dentro da faixa.</li></ul>
+      <li>🧗 <b>Paredão de Escalada:</b> toque rápido na pedra que brilhar.</li><li>🔥 <b>Fogueira do Fôlego:</b> segure para soprar e solte para descansar, deixando a chama dentro da faixa.</li>
+      <li>🎯 <b>Estande de Pontaria:</b> a mira passeia pelo alvo; atire quando ela passar pelo centro.</li><li>🧺 <b>Pomar das Frutas:</b> pegue as frutas com a cesta e fuja das podres.</li></ul>
       <p>A <b>nota</b> (0 a 100) vira experiência: quanto melhor a nota e maior o nível do Pokémon, mais experiência. Cada estação combina com alguns tipos (⭐ no nome da estação e na lista): o Pokémon do tipo certo rende ${Math.round(((S.cfg.vale?.afinidade_mult ?? 1.5) - 1) * 100)}% a mais.</p>
-      <p>São <b>${S.cfg.vale?.treinos_dia ?? 8} treinos por dia</b>. O treino conta quando começa; se você sair no meio, ele termina sem experiência.</p>` },
+      <p>São <b>${S.cfg.vale?.treinos_dia ?? 8} treinos por dia</b>. O treino conta quando começa; se você sair no meio, ele termina sem experiência.</p>
+      <p>🏆 <b>Top 3 de cada estação:</b> a tela de cada estação mostra os 3 jogadores com a melhor nota da temporada e o Pokémon que treinou. Vale a sua melhor nota em cada estação. Na mesma nota, fica na frente quem jogou melhor (a pontuação exata do exercício), depois quem fez mais rápido e, por último, quem fez primeiro. No fim da temporada, o Top 3 de cada estação ganha ${(p => p.length ? p.map((v, i) => `${i + 1}º ${v}`).join(", ") + " moedas" : "um prêmio")((S.cfg.vale?.ranking?.premios || [150, 100, 50]).filter(v => +v > 0))}, com o presente no Correio.</p>` },
     { id: "fazenda", ic: "🍓", t: "Fazenda de Frutas", h: `<p>A <b>Fazenda de Frutas</b> fica dentro da <b>Minha Vila</b> (o cercado com os canteiros). Toque num canteiro no desenho ou use o quadro embaixo.</p>
       <p>🌱 <b>Plantar:</b> escolha a fruta e pague a semente. Ela cresce em horas de verdade (a fruta mais forte demora mais). 🧺 <b>Colher:</b> quando estiver pronta, as frutas vão para a cesta.</p>
       <p>🍽️ <b>Dar de comer:</b> escolha o Pokémon e a fruta; ele ganha experiência. Cada fruta é a preferida (❤️) de alguns tipos e rende ${Math.round(((S.cfg.fazenda?.gosta_mult ?? 1.5) - 1) * 100)}% a mais para eles. Os Pokémon comem até ${S.cfg.fazenda?.frutas_dia ?? 10} frutas por dia.</p>
@@ -7758,7 +7761,7 @@ const ACTIONS = {
     if (v === "extrato") return extratoOpen();   // arquivo 117
     if (v === "cartas") return cartasOpen();
     if (v === "pokebound") return pbOpen();
-    if (v === "praca") return pzOpen();
+    if (v === "praca") return toast("A Praça Central saiu do jogo. Para passear com a turma, use a 🧭 Aventura.");
     if (v === "aventura") return rpgOpen();
     if (v === "arena") return arenaOpen();
     if (v === "guerras") return warOpen();
@@ -8227,7 +8230,7 @@ const MENU_GROUPS = [
   ["pk", "🐾 Pokémon", ["arena", "batalhas", "cartas", "centro", "creche", "equipe", "leilao", "rocket", "treino", "trocas", "pkloja", "pokedex"]],
   ["vila", "🏰 Vila e lojas", ["extrato", "guerras", "loja", "mercado", "vila"]],
   ["comp", "🏆 Competir", ["aventura", "duelos", "expedicao", "liga", "pokebound", "presence", "ranking"]],
-  ["com", "💬 Comunidade", ["caixa", "chat", "correio", "praca"]],
+  ["com", "💬 Comunidade", ["caixa", "chat", "correio"]],
   ["ajuda", "❓ Ajuda", ["admin", "regras", "sac"]]
 ];
 const MENU_FAST = ["desafio", "pokedex", "aventura", "batalhas", "vila", "ranking"];
@@ -11062,7 +11065,7 @@ function grEndHTML(b) {
 // montado sozinho, e salva pelo admin_set_config de sempre (Auditoria). Sistema novo: ponha o *_cfg() dele no
 // admin_cfg_efetiva e os nomes em AJ_LABELS. "Grama de Treino": tempo extra para um jogador hoje + os números da Grama.
 // =================================================================
-const AJ_GROUPS = [["guerra", "⚔️ Guerra: vilas sem Quartel e esquadrões"], ["rocket_vila", "🚨 Ataque surpresa da Rocket às vilas"], ["rocket_bases", "🚀 Bases da Equipe Rocket"], ["extrato", "💰 Extrato de moedas"], ["ia", "🤖 Ataques dos Pokémon do jogo"], ["troca", "🔁 Trocas de Pokémon"], ["vale", "🥋 Vale do Treino"], ["fazenda", "🍓 Fazenda de Frutas"], ["exp", "⛏️ Expedições"], ["equip", "🛡️ Equipamentos"], ["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["praca", "⛲ Praça Central"], ["rpg", "🧭 Aventura (RPG)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
+const AJ_GROUPS = [["guerra", "⚔️ Guerra: vilas sem Quartel e esquadrões"], ["rocket_vila", "🚨 Ataque surpresa da Rocket às vilas"], ["rocket_bases", "🚀 Bases da Equipe Rocket"], ["extrato", "💰 Extrato de moedas"], ["ia", "🤖 Ataques dos Pokémon do jogo"], ["troca", "🔁 Trocas de Pokémon"], ["vale", "🥋 Vale do Treino"], ["fazenda", "🍓 Fazenda de Frutas"], ["exp", "⛏️ Expedições"], ["equip", "🛡️ Equipamentos"], ["herois", "🛡️ Heróis"], ["pausa", "⏸️ Pausar o jogo"], ["liga", "🏆 Liga Pokémon"], ["temporada", "🏁 Temporada nova"], ["desafio", "🎯 Desafio do dia"], ["creche", "🏡 Creche Pokémon"], ["teto", "📏 Teto de nível nas batalhas"], ["vila_bonus", "🏰 Bônus da vila no jogo"], ["tm_nivel", "📀 Nível mínimo das TMs"], ["quiz_auto", "❓ Quiz automático"], ["cartas", "🃏 Cartas Pokegames"], ["pokebound", "💥 PokeBound"], ["visual", "🖥️ Visual novo (computador)"], ["rpg", "🧭 Aventura (RPG)"], ["boas_vindas", "🎁 Boas-vindas (inicial e pacote)"], ["leilao", "🔨 Leilão de Pokémon"], ["treino", "🌿 Grama de Treino e Centro Pokémon"], ["pk", "🐾 Pokémon (encontros, captura, XP, batalhas)"], ["casas", "🗺️ Casas do mapa (mina, desafio, ladrão, fonte, treinador)"],
   ["itens", "🎒 Itens, TMs e HMs"], ["rocket", "🚀 Equipe Rocket"], ["war", "🏰 Vila e Guerras"]];
 const AJ_LABELS = {
   guerra: { sem_quartel_on: "Vilas sem Quartel podem ser atacadas", sem_quartel_semana: "Ataques por semana numa vila sem Quartel", defesa_pct: "Defesa vitoriosa: % das moedas do atacante para o defensor",
@@ -11112,7 +11115,8 @@ const AJ_LABELS = {
   visual: { on: "Painéis novos por cima do mapa", tela_cheia_padrao: "Começar com o menu lateral recolhido (quem nunca escolheu)", chat_fixo: "Chat fixo no canto da tela", herois_novos: "Heróis no estilo novo (desligado = pixel art antigo)", corrida: "Quadro da corrida (1º lugar e casas atrás) no mapa", mapa_novo: "Mapa com trilha marcada, mar em volta e moldura (recarregue a página)", vila_nova: "Minha Vila nova (desenho grande com a Fazenda; desligado = desenho antigo)", aventura_viva: "Bosque Sussurrante novo, Ginásio estufa e vagalumes na Aventura", tabuleiro_vivo: "Tabuleiro vivo (trilhas curvas, peças em relevo, água/nuvens vivas, prévia de casas, placas nas bifurcações e caminhada em pulinhos)", telas_compactas: "Menu e janelas compactos (grupos em 2 colunas, busca rápida, abas por categoria e moedas no topo)", aventura_iso: "Aventura em 3D diagonal (isométrica) com painéis RPG e Inventário na tela (desligado = visão 2D clássica)" },
   vale: { on: "Vale do Treino aberto para os jogadores", treinos_dia: "Treinos por dia (cada jogador)", exp_ref: "Força do treino (experiência de referência; 120 ≈ vencer um selvagem do mesmo nível)", xp_mult: "Multiplicador da experiência",
     afinidade_mult: "Bônus quando o tipo combina com a estação (1,5 = +50%)", nota_min: "Nota mínima para ganhar experiência", duracao_min_seg: "Segundos mínimos de um treino", duracao_max_min: "Minutos máximos (depois disso o treino vence sem XP)",
-    estacoes: "Estações (nome e tipos que combinam com cada uma)" },
+    estacoes: "Estações (nome e tipos que combinam com cada uma)", ranking: "🏆 Top 3 das estações e prêmio da temporada", "ranking.on": "Mostrar o Top 3 e premiar no fim da temporada",
+    "ranking.top": "Quantos aparecem e ganham em cada estação", "ranking.premios": "Moedas do 1º, 2º, 3º… de cada estação (separe por vírgula)" },
   fazenda: { on: "Fazenda aberta para os jogadores", canteiros: "Canteiros de começo", canteiros_pomar: "Canteiros a mais com o Pomar construído", canteiros_precos: "Preço dos canteiros extras (um por canteiro, em ordem)",
     frutas_dia: "Frutas que os Pokémon comem por dia (cada jogador)", xp_mult: "Multiplicador da experiência das frutas", gosta_mult: "Bônus da fruta preferida (1,5 = +50%)", regas_dia: "Regas por dia (cada jogador)",
     rega_pct: "Quanto cada rega adianta a planta (%)", regas_max: "Regas no máximo por canteiro", rega_fruta: "Frutas que quem rega ganha", frutas: "Frutas (nome, sabor, horas para crescer, preço da semente, quantas colhe, experiência e tipos que gostam)" },
@@ -12826,7 +12830,7 @@ function hxRender() {
   const se = S.today?.season, evo = S.pk?.mons?.some(m => evoReady(m).length || m.pending_moves?.length), fer = S.treino?.st?.feridos?.length || 0;
   const btn = (ic, t, act, v = "", sel = "", bdg = "") => `<button class="hx-rb ${sel}" data-act="${act}" data-v="${v}" title="${t}" aria-label="${t}">${ic}${bdg}</button>`;
   $("#hx-right").innerHTML = `<div class="hx-info"><button class="hx-moeda" data-act="go" data-v="extrato" title="Ver extrato de moedas">${coinSVG()}${(me.coins ?? 0).toLocaleString("pt-BR")}</button><i></i><span>Temporada <b>${se?.id ?? ""}</b></span><i></i><span>Casa <b>nº ${me.node}</b></span><i></i><span>${me.arrived_rank ? `<b>No Castelo</b>` : `Faltam <b>${no?.dist ?? 0}</b>`}</span><i></i><span>Região: <b>${esc(no?.region || "")}</b></span></div>
-    <div class="hx-rbs">${S.isAdmin || S.cfg.rpg?.on !== false ? btn("🧭", "Aventura (RPG)", "go", "aventura") : ""}${S.isAdmin || S.cfg.praca?.on !== false ? btn("⛲", "Praça Central", "go", "praca") : ""}${btn("🎒", "Mochila", "hx-inv", "", S.hx.inv ? "on" : "")}${btn(MENU.equipe[0], "Meus Pokémon", "go", "equipe", "", fer ? `<b class="mb red">${fer}</b>` : "")}${btn(MENU.pokedex[0], "Pokédex", "go", "pokedex", "", evo ? `<b class="mb red">!</b>` : "")}${btn(MENU.ranking[0], "Ranking", "go", "ranking")}${btn(MENU.regras[0], "Biblioteca", "go", "regras")}${btn(S.sound ? "🔊" : "🔇", S.sound ? "Desligar o som" : "Ligar o som", "sound")}</div>`;
+    <div class="hx-rbs">${S.isAdmin || S.cfg.rpg?.on !== false ? btn("🧭", "Aventura (RPG)", "go", "aventura") : ""}${btn("🎒", "Mochila", "hx-inv", "", S.hx.inv ? "on" : "")}${btn(MENU.equipe[0], "Meus Pokémon", "go", "equipe", "", fer ? `<b class="mb red">${fer}</b>` : "")}${btn(MENU.pokedex[0], "Pokédex", "go", "pokedex", "", evo ? `<b class="mb red">!</b>` : "")}${btn(MENU.ranking[0], "Ranking", "go", "ranking")}${btn(MENU.regras[0], "Biblioteca", "go", "regras")}${btn(S.sound ? "🔊" : "🔇", S.sound ? "Desligar o som" : "Ligar o som", "sound")}</div>`;
   hxChatRender(); hxInvRender();
 }
 // ---------- chat fixo ----------
@@ -13767,16 +13771,21 @@ const VALE_EST = {
   templo: { ic: "🧘", jogo: "memoria", cor: ["#241A3E", "#A98BE0"], txt: "Os cristais acendem numa ordem. Repita a ordem certinha. A cada rodada, um a mais.", ctrl: "Setas do teclado ou toque nos cristais" },
   lago: { ic: "🏊", jogo: "desvio", cor: ["#0E3550", "#5FB4E0"], txt: "Nade desviando das pedras e pegue as bolhas. Três batidas e o treino acaba.", ctrl: "← → ou toque nos lados da tela" },
   paredao: { ic: "🧗", jogo: "reflexo", cor: ["#3A2E22", "#B39270"], txt: "Toque rápido na pedra que brilhar para subir o paredão. Quanto mais rápido, mais alto.", ctrl: "Clique ou toque; no teclado, Q W E / A S D / Z X C" },
-  fogueira: { ic: "🔥", jogo: "folego", cor: ["#2A1208", "#F08A3A"], txt: "Segure para soprar a fogueira e solte para descansar: deixe a chama dentro da faixa o tempo todo.", ctrl: "Segure Espaço, o mouse ou o dedo" }
+  fogueira: { ic: "🔥", jogo: "folego", cor: ["#2A1208", "#F08A3A"], txt: "Segure para soprar a fogueira e solte para descansar: deixe a chama dentro da faixa o tempo todo.", ctrl: "Segure Espaço, o mouse ou o dedo" },
+  alvo: { ic: "🎯", jogo: "alvo", cor: ["#1E2A3A", "#E8D8A8"], txt: "A mira passeia sozinha pelo alvo, e o alvo também se mexe. Atire na hora em que a mira passar pelo centro. São 10 tiros.", ctrl: "Espaço, Enter ou toque na tela" },
+  frutas: { ic: "🧺", jogo: "frutas", cor: ["#21401E", "#F2C14E"], txt: "Pegue as frutas que caem da árvore com a cesta. A dourada vale mais; a podre (roxa) estraga a cesta.", ctrl: "← → (segure) ou toque onde a cesta deve ir" }
 };
+// arquivo 129: as 2 estações novas ficam aqui (a arte do Vale, rpg-vale.js, é gerada e tem só as 6 primeiras)
+const VALE_NOVAS = { alvo: [40, 4], frutas: [16, 14] };
+const valeEstPos = d => ({ ...(d?.pontos?.estacoes || {}), ...(d?.pontos ? VALE_NOVAS : {}) });
 const VALE_NPC = { nome: "Mestra Yuna", ch: { class: "clerigo", outfit: {} }, fala: ["Bem-vinda, bem-vindo ao Vale do Treino!", "Aqui os Pokémon ficam fortes treinando, sem precisar lutar no mato.", "Cada estação combina com alguns tipos (⭐). Treine cada Pokémon no lugar certo e ele rende mais.", "Você tem um número de treinos por dia. Capriche em cada um!"] };
 const valeTipos = k => (S.vale?.estacoes?.[k]?.tipos || []);
 const valeCombina = (sp, k) => { const p = S.pokeById?.[sp]; return !!p && valeTipos(k).some(t => t === p.g1_type1 || t === p.g1_type2); };
 function valePontos() {
   const d = AV.dados?.pontos || {}, lead = pkTeam()[0]?.species_id, out = [];
-  for (const [k, pos] of Object.entries(d.estacoes || {})) { const E = VALE_EST[k]; if (!E) continue;
+  for (const [k, pos] of Object.entries(valeEstPos(AV.dados))) { const E = VALE_EST[k]; if (!E) continue;
     out.push({ em: [pos], ic: E.ic, nome: `${S.vale?.estacoes?.[k]?.nome || k}${lead && valeCombina(lead, k) ? " ⭐" : ""}`, vale: k, alto: k === "paredao" ? 4.6 : k === "lago" ? 1.4 : 1.5 }); }
-  if (d.placa) out.push({ em: [d.placa], ic: "🪧", nome: "Placa", fala: ["🥋 Vale do Treino", "Seis estações: Pista de Corrida, Saco de Pancada, Templo da Meditação, Lago das Correntes, Paredão de Escalada e Fogueira do Fôlego.",
+  if (d.placa) out.push({ em: [d.placa], ic: "🪧", nome: "Placa", fala: ["🥋 Vale do Treino", "Oito estações: Pista de Corrida, Saco de Pancada, Templo da Meditação, Lago das Correntes, Paredão de Escalada, Fogueira do Fôlego, Estande de Pontaria e Pomar das Frutas.",
     "Chegue perto de uma estação e aperte E para treinar. A ⭐ no nome mostra onde o 1º Pokémon da sua equipe rende mais.", `Treinos por dia: ${S.vale?.treinos_dia ?? 8}. Quanto melhor a nota, mais experiência.`] });
   return out;
 }
@@ -13784,6 +13793,15 @@ async function valeEstado() { try { S.vale = await rpc("vale_estado"); } catch (
 // enfeites vivos no mapa: a chama da fogueira e o brilho do chafariz
 function valeDesenha(g, tile, cx, cy, now, dpr) {
   const d = AV.dados?.pontos; if (!d) return;
+  { const [ax, ay] = VALE_NOVAS.alvo, x = (ax + .5) * tile - cx, y = (ay + .2) * tile - cy, r = tile * .42;   // alvo num poste
+    g.fillStyle = "#6B4A2A"; g.fillRect(x - tile * .06, y, tile * .12, tile * .75); g.fillStyle = "rgba(0,0,0,.25)"; g.beginPath(); g.ellipse(x, y + tile * .78, tile * .3, tile * .1, 0, 0, 6.28); g.fill();
+    ["#F4EEDC", "#C8392E", "#F4EEDC", "#C8392E", "#F2C14E"].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(x, y, r * (1 - i * .19), 0, 6.28); g.fill(); });
+    g.strokeStyle = "#3A2A1A"; g.lineWidth = 1.5 * dpr; g.beginPath(); g.arc(x, y, r, 0, 6.28); g.stroke(); }
+  { const [fx, fy] = VALE_NOVAS.frutas, x = (fx + .5) * tile - cx, y = (fy + .3) * tile - cy;   // macieira com a cesta
+    g.fillStyle = "#6B4A2A"; g.fillRect(x - tile * .1, y - tile * .1, tile * .2, tile * .7);
+    g.fillStyle = "#2F7A34"; for (const [ox, oy, rr] of [[0, -.55, .55], [-.38, -.3, .4], [.38, -.3, .4]]) { g.beginPath(); g.arc(x + ox * tile, y + oy * tile, rr * tile, 0, 6.28); g.fill(); }
+    for (let i = 0; i < 7; i++) { g.fillStyle = i === 3 ? "#F2C14E" : "#D8352A"; g.beginPath(); g.arc(x + Math.cos(i * 2.1) * tile * .45, y - tile * .45 + Math.sin(i * 1.7) * tile * .3, tile * .07, 0, 6.28); g.fill(); }
+    g.fillStyle = "#B07A3A"; g.beginPath(); g.roundRect(x + tile * .35, y + tile * .35, tile * .5, tile * .3, 4 * dpr); g.fill(); g.strokeStyle = "#6B4A2A"; g.lineWidth = 1.5 * dpr; g.stroke(); }
   if (d.fogo) { const x = (d.fogo[0] + .5) * tile - cx, y = (d.fogo[1] + .75) * tile - cy, s = tile / 32;
     const lz = g.createRadialGradient(x, y - 10 * s, 0, x, y - 10 * s, tile * 1.8); lz.addColorStop(0, "rgba(255,170,60,.35)"); lz.addColorStop(1, "rgba(255,170,60,0)"); g.fillStyle = lz; g.fillRect(x - tile * 2, y - tile * 2.2, tile * 4, tile * 4);
     for (let k = 0; k < 3; k++) { const h = (16 + Math.sin(now / 120 + k * 2) * 4 + k * -3) * s, w = (10 - k * 2.5) * s;
@@ -13793,8 +13811,21 @@ function valeDesenha(g, tile, cx, cy, now, dpr) {
 }
 // ---------- a janela da estação: escolher o Pokémon e começar ----------
 const VJ = { on: false };
+// Top 3 da temporada na estação (arquivo 128)
+function valeRankHTML(k) {
+  const st = S.vale || {}; if (st.ranking_on === false || !st.ranking) return "";
+  const L = st.ranking[k] || [], me = st.meu_melhor?.[k], meId = S.session?.user?.id, med = ["🥇", "🥈", "🥉"], pr = st.premios || [];
+  const linha = r => `<div class="vale-rk-l ${r.user_id === meId ? "me" : ""}"><span class="vale-rk-p">${med[r.pos - 1] || r.pos + "º"}</span>
+    ${r.especie ? `<img src="${SPRITE(r.especie)}" alt="" loading="lazy">` : ""}<span class="vale-rk-n"><b>${esc(r.nome)}</b><small>${r.especie ? esc(pkName(r.especie)) : ""}${r.nivel ? ` Nv ${r.nivel}` : ""}</small></span><b class="vale-rk-v">${r.nota}</b></div>`;
+  const camp = (st.campeoes?.[k] || []);
+  return `<div class="vale-rk"><h3>🏆 Top 3 da temporada</h3>
+    ${L.length ? L.map(linha).join("") : `<p class="muted">Ninguém treinou aqui nesta temporada. O primeiro lugar está livre!</p>`}
+    <p class="muted vale-rk-me">${me ? `Sua melhor nota aqui: <b>${me.nota}</b>${me.especie ? ` (${esc(pkName(me.especie))})` : ""}` : "Você ainda não treinou aqui nesta temporada."}
+      ${pr.some(v => +v > 0) ? ` · No fim da temporada: ${pr.map((v, i) => +v > 0 ? `${med[i] || i + 1 + "º"} ${v} moedas` : "").filter(Boolean).join(", ")}` : ""}</p>
+    ${camp.length ? `<p class="muted vale-rk-me">Campeões da temporada ${st.campeoes_temporada}: ${camp.map(c => `${med[c.pos - 1] || c.pos + "º"} ${esc(c.nome)} (${c.nota})`).join(" · ")}</p>` : ""}</div>`;
+}
 async function valeAbrir(k) {
-  AV.keys.clear(); if (!S.vale) await valeEstado(); if (!S.vale) return;
+  AV.keys.clear(); await valeEstado(); if (!S.vale) return;   // sempre busca de novo: o Top 3 fica em dia
   if (!S.pk?.mons?.length) await guarded(loadPk);
   const E = VALE_EST[k], st = S.vale, Ek = st.estacoes?.[k] || {}, lead = pkTeam()[0];
   VJ.k = k; VJ.sel = VJ.sel && S.pk.mons.some(m => m.id === VJ.sel) ? VJ.sel : (lead?.id || S.pk.mons[0]?.id);
@@ -13807,6 +13838,7 @@ async function valeAbrir(k) {
     <h3>Quem vai treinar?</h3>
     <div class="vale-mons">${mons.map(m => { const c = valeCombina(m.species_id, k); return `<button class="vale-mon ${m.id === VJ.sel ? "on" : ""}" data-vmon="${m.id}" ${m.level >= 100 ? "disabled" : ""}>
       <img src="${SPRITE(m.species_id)}" alt="" loading="lazy"><span>${esc(pkName(m.species_id))}</span><small>Nv ${m.level}${m.team_slot ? " · equipe" : ""}</small>${c ? `<b class="vale-star" title="Combina com esta estação">⭐</b>` : ""}</button>`; }).join("")}</div>
+    ${valeRankHTML(k)}
     ${ultimo.length ? `<p class="muted vale-ult">Últimos aqui: ${ultimo.map(r => `${pkName(r.especie)} nota ${r.nota} (+${r.xp} XP)`).join(" · ")}</p>` : ""}
     <div class="act-btns"><button class="btn ghost" data-vfecha="1">Agora não</button><button class="btn big" data-vgo="1" ${resta && mons.length ? "" : "disabled"}>${resta ? "▶ Começar treino" : "Treinos de hoje acabaram"}</button></div>
     <p class="muted vale-pe">Começou, contou como um treino do dia. Quanto melhor a nota, mais experiência.</p></div>`;
@@ -13838,13 +13870,13 @@ function valeReabreJogo() {
 function valeParar() { VJ.on = false; VJ.pausa = false; cancelAnimationFrame(VJ.raf); valeSoltaEntrada(); closeModal(); }
 // ---------- o laço do minijogo ----------
 function valeJogo(tipo, semente) {
-  VJ.G = VALE_JOGOS[tipo](mulberry(semente >>> 0)); VJ.cont = 3000; VJ.last = performance.now(); VJ.fim = false; VJ.pausa = false;
+  VJ.G = VALE_JOGOS[tipo](mulberry(semente >>> 0)); VJ.cont = 3000; VJ.last = performance.now(); VJ.fim = false; VJ.pausa = false; VJ.ms = 0;
   valeLigaEntrada();
   const passo = now => {
     if (!VJ.on) return; VJ.raf = requestAnimationFrame(passo);
     const dt = Math.min(50, now - VJ.last); VJ.last = now; if (VJ.pausa) return;
     const cv = $("#vj-cv"); if (!cv) return; const g = cv.getContext("2d"), G = VJ.G;
-    if (VJ.cont > 0) { VJ.cont -= dt; } else if (!VJ.fim) { G.update(dt / 1000); if (G.acabou()) { VJ.fim = true; valeFim(); } }
+    if (VJ.cont > 0) { VJ.cont -= dt; } else if (!VJ.fim) { VJ.ms = (VJ.ms || 0) + dt; G.update(dt / 1000); if (G.acabou()) { VJ.fim = true; valeFim(); } }
     valeFundo(g, cv.width, cv.height, now); G.draw(g, cv.width, cv.height, now, rpgArt(VJ.mon.species_id));
     if (VJ.cont > 0) { g.fillStyle = "rgba(0,0,0,.45)"; g.fillRect(0, 0, cv.width, cv.height); g.font = "900 110px Inter, system-ui, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = "#FFE7A8"; g.fillText(String(Math.ceil(VJ.cont / 1000)), cv.width / 2, cv.height / 2); }
     const inf = $("#vj-info"); if (inf) inf.textContent = G.info();
@@ -13874,7 +13906,8 @@ async function valeFim() {
   sfx(nota >= 70 ? "fanfarra" : nota >= 40 ? "acerto" : "erro");
   const inf = $("#vj-info"); if (inf) inf.textContent = `Nota ${nota}`;
   if (falta > 0) { const d = $(".vale-dica"); if (d) d.textContent = "Seu Pokémon está recuperando o fôlego…"; await sleep(falta); }
-  let r; try { r = await rpc("vale_terminar", { _id: VJ.treino.id, _nota: nota }); } catch (e) { VJ.on = false; valeSoltaEntrada(); return toast(errMsg(e), true); }
+  const fina = Math.max(0, +(VJ.G.fina ? VJ.G.fina() : VJ.G.nota()) || 0);   // arquivo 129: só para o desempate do Top 3
+  let r; try { r = await rpc("vale_terminar", { _id: VJ.treino.id, _nota: nota, _fina: Math.round(fina * 1000) / 1000, _ms: Math.round(VJ.ms || 0) }); } catch (e) { VJ.on = false; valeSoltaEntrada(); return toast(errMsg(e), true); }
   VJ.on = false; cancelAnimationFrame(VJ.raf); valeSoltaEntrada(); S.vale = r.estado || S.vale; VJ.events = r.events || [];
   const E = VALE_EST[VJ.k], box = $("#modal-root .modal"); if (!box) return valeDepois();
   const est = nota >= 90 ? ["⭐⭐⭐", "Excelente!"] : nota >= 70 ? ["⭐⭐", "Muito bom!"] : nota >= 40 ? ["⭐", "Bom treino!"] : ["", "Continue treinando!"];
@@ -13888,7 +13921,7 @@ async function valeFim() {
 }
 // depois de fechar: avisos de nível, ataque e evolução
 async function valeDepois() { const ev = VJ.events || []; VJ.events = []; await guarded(loadPk); if (ev.length) await monEventsFlow(ev); if (AV.open) rpgPerto(); }
-// ---------- os 6 minijogos (desenho nosso; o Pokémon é a imagem pronta da PokeAPI) ----------
+// ---------- os 8 minijogos (desenho nosso; o Pokémon é a imagem pronta da PokeAPI) ----------
 const vjTexto = (g, t, x, y, px, cor = "#FFF4D6", al = "center") => { g.font = `900 ${px}px Inter, system-ui, sans-serif`; g.textAlign = al; g.textBaseline = "middle"; g.lineWidth = Math.max(3, px / 7); g.strokeStyle = "rgba(10,12,20,.85)"; g.strokeText(t, x, y); g.fillStyle = cor; g.fillText(t, x, y); };
 const vjPoke = (g, im, x, y, s, vira) => { if (!im?.complete || !im.naturalWidth) return; g.save(); g.translate(x, y); if (vira) g.scale(-1, 1); g.drawImage(im, -s / 2, -s, s, s); g.restore(); };
 const vjAviso = (A, t, cor) => { A.aviso = { t, cor, ate: performance.now() + 700 }; };
@@ -13922,14 +13955,15 @@ const VALE_JOGOS = {
         vjDesAviso(g, A, W, H); }
     };
   },
-  // 2. Saco de Pancada: sequência de setas
+  // 2. Saco de Pancada: sequência de setas (arquivo 129: mais difícil, com rodadas "ao contrário")
   combo(rnd) {
-    const LEN = [3, 4, 4, 5, 5, 6], SET = ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"], SIM = { ArrowUp: "▲", ArrowRight: "▶", ArrowDown: "▼", ArrowLeft: "◀" };
-    const A = { r: 0, pts: 0, seq: [], i: 0, lim: 0, t: 0, espera: 0, bate: 0 };
-    const nova = () => { const n = LEN[A.r]; A.seq = Array.from({ length: n }, () => SET[Math.floor(rnd() * 4)]); A.i = 0; A.lim = 2 + n * .5; A.t = 0; };
+    const LEN = [4, 5, 5, 6, 6, 7, 7, 8], SET = ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"], SIM = { ArrowUp: "▲", ArrowRight: "▶", ArrowDown: "▼", ArrowLeft: "◀" };
+    const OPO = { ArrowUp: "ArrowDown", ArrowDown: "ArrowUp", ArrowLeft: "ArrowRight", ArrowRight: "ArrowLeft" };
+    const A = { r: 0, pts: 0, seq: [], i: 0, lim: 0, t: 0, espera: 0, bate: 0, inv: false };
+    const nova = () => { const n = LEN[A.r]; A.seq = Array.from({ length: n }, () => SET[Math.floor(rnd() * 4)]); A.i = 0; A.inv = A.r >= 2 && rnd() < .45; A.lim = .9 + n * (A.inv ? .42 : .34); A.t = 0; };
     nova();
-    const fecha = ok => { const n = A.seq.length; A.pts += (A.i / n) * (ok ? .7 + .3 * Math.max(0, 1 - A.t / A.lim) : .8); vjAviso(A, ok ? (A.t < A.lim * .5 ? "Combo perfeito!" : "Combo!") : A.i ? "Quase!" : "Errou!", ok ? "#9CF29C" : "#FF9A8A"); sfx(ok ? "acerto" : "erro"); A.r++; A.espera = .6; };
-    const aperta = k => { if (A.espera > 0 || A.r >= LEN.length || !SET.includes(k)) return; if (k === A.seq[A.i]) { A.i++; A.bate = 1; sfx("tick"); if (A.i >= A.seq.length) fecha(true); } else fecha(false); };
+    const fecha = ok => { const n = A.seq.length; A.pts += ok ? .55 + .45 * Math.max(0, 1 - A.t / A.lim) : (A.i / n) * .5; vjAviso(A, ok ? (A.t < A.lim * .45 ? "Combo perfeito!" : "Combo!") : A.i ? "Quase!" : "Errou!", ok ? "#9CF29C" : "#FF9A8A"); sfx(ok ? "acerto" : "erro"); A.r++; A.espera = .6; };
+    const aperta = k => { if (A.espera > 0 || A.r >= LEN.length || !SET.includes(k)) return; const certo = A.inv ? OPO[A.seq[A.i]] : A.seq[A.i]; if (k === certo) { A.i++; A.bate = 1; sfx("tick"); if (A.i >= A.seq.length) fecha(true); } else fecha(false); };
     const BT = [["ArrowLeft", 170], ["ArrowUp", 270], ["ArrowDown", 370], ["ArrowRight", 470]];
     return { semRepetir: true,
       update(dt) { A.bate = Math.max(0, A.bate - dt * 4); if (A.espera > 0) { A.espera -= dt; if (A.espera <= 0 && A.r < LEN.length) nova(); return; } A.t += dt; if (A.t >= A.lim) fecha(false); },
@@ -13940,8 +13974,10 @@ const VALE_JOGOS = {
         const ang = Math.sin(now / 90) * A.bate * .35; g.save(); g.translate(470, 30); g.rotate(ang); g.strokeStyle = "#3A2A1A"; g.lineWidth = 4; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, 50); g.stroke();
         g.fillStyle = "#B23A2E"; g.beginPath(); g.roundRect(-36, 50, 72, 150, 26); g.fill(); g.fillStyle = "#D9574A"; g.fillRect(-28, 60, 12, 120); g.fillStyle = "#5A1E16"; g.fillRect(-36, 90, 72, 8); g.fillRect(-36, 160, 72, 8); g.restore();
         vjPoke(g, im, 300 + A.bate * 18, 250, 130, false);
-        if (A.r < LEN.length) { const n = A.seq.length, x0 = W / 2 - n * 34; A.seq.forEach((k, j) => { g.fillStyle = j < A.i ? "#54C46A" : "rgba(10,14,24,.8)"; g.beginPath(); g.roundRect(x0 + j * 68, 20, 60, 56, 10); g.fill(); vjTexto(g, SIM[k], x0 + j * 68 + 30, 49, 30, j < A.i ? "#0D2A12" : "#FFF4D6"); });
-          g.fillStyle = "rgba(10,14,24,.7)"; g.fillRect(W / 2 - 160, 86, 320, 10); g.fillStyle = A.t / A.lim > .7 ? "#E05A5A" : "#E5B92E"; g.fillRect(W / 2 - 160, 86, 320 * Math.max(0, 1 - A.t / A.lim), 10); }
+        if (A.r < LEN.length && A.espera <= 0) { const n = A.seq.length, x0 = W / 2 - n * 30;
+          A.seq.forEach((k, j) => { g.fillStyle = j < A.i ? "#54C46A" : A.inv ? "rgba(140,24,24,.92)" : "rgba(10,14,24,.8)"; g.beginPath(); g.roundRect(x0 + j * 60, 20, 54, 52, 10); g.fill(); vjTexto(g, SIM[k], x0 + j * 60 + 27, 47, 28, j < A.i ? "#0D2A12" : "#FFF4D6"); });
+          if (A.inv) vjTexto(g, "AO CONTRÁRIO! Aperte a seta oposta", W / 2, 108, 18, "#FFB0A0");
+          g.fillStyle = "rgba(10,14,24,.7)"; g.fillRect(W / 2 - 160, 80, 320, 10); g.fillStyle = A.t / A.lim > .7 ? "#E05A5A" : "#E5B92E"; g.fillRect(W / 2 - 160, 80, 320 * Math.max(0, 1 - A.t / A.lim), 10); }
         for (const [k, bx] of BT) { g.fillStyle = "rgba(10,14,24,.75)"; g.beginPath(); g.roundRect(bx, 300, 80, 50, 12); g.fill(); vjTexto(g, SIM[k], bx + 40, 326, 26); }
         vjDesAviso(g, A, W, H); }
     };
@@ -13979,30 +14015,39 @@ const VALE_JOGOS = {
         vjDesAviso(g, A, W, H); }
     };
   },
-  // 4. Lago das Correntes: desviar
+  // 4. Lago das Correntes: desviar (arquivo 129: 4 raias, mais rápido, correnteza que puxa e só 2 batidas)
   desvio(rnd) {
-    const DUR = 24, LX = [200, 320, 440], A = { t: 0, faixa: 1, px: 320, obs: [], prox: .8, bate: 0, inv: 0, bolhas: 0, fimEm: null };
-    const mexe = d => { A.faixa = Math.max(0, Math.min(2, A.faixa + d)); sfx("tick"); };
+    const DUR = 30, LX = [178, 274, 366, 462], VIDAS = 2, A = { t: 0, faixa: 1, px: 274, obs: [], prox: .7, bate: 0, inv: 0, bolhas: 0, fimEm: null, corr: 4 + rnd() * 2, avisoC: 0, dirC: 1 };
+    const mexe = d => { A.faixa = Math.max(0, Math.min(3, A.faixa + d)); sfx("tick"); };
+    const vel = () => 220 + A.t * 12;
     return {
       update(dt) { A.t += dt; A.px += (LX[A.faixa] - A.px) * Math.min(1, dt * 14); A.inv = Math.max(0, A.inv - dt);
-        const v = 190 + A.t * 9; A.prox -= dt;
-        if (A.prox <= 0 && A.t < DUR - 1.2) { const f = Math.floor(rnd() * 3); A.obs.push({ f, y: -30, tipo: rnd() < .22 ? "bolha" : "pedra" });
-          if (rnd() < Math.min(.45, A.t / 40)) A.obs.push({ f: (f + 1 + Math.floor(rnd() * 2)) % 3, y: -30, tipo: "pedra" }); A.prox = Math.max(.42, .85 - A.t * .018); }
-        for (const o of A.obs) { o.y += v * dt; if (!o.foi && Math.abs(o.y - 290) < 26 && Math.abs(LX[o.f] - A.px) < 40) {
+        // a correnteza avisa e, logo depois, puxa o Pokémon uma raia para o lado
+        A.corr -= dt; if (A.corr <= .8 && !A.avisoC && A.t < DUR - 1) { A.avisoC = 1; A.dirC = A.faixa === 0 ? 1 : A.faixa === 3 ? -1 : (rnd() < .5 ? -1 : 1); }
+        if (A.corr <= 0) { if (A.avisoC) { A.faixa = Math.max(0, Math.min(3, A.faixa + A.dirC)); vjAviso(A, "Correnteza!", "#9AD8FF"); } A.avisoC = 0; A.corr = Math.max(2.4, 5 - A.t * .08) + rnd() * 1.5; }
+        A.prox -= dt;
+        if (A.prox <= 0 && A.t < DUR - 1.2) { const f = Math.floor(rnd() * 4), usadas = [f]; A.obs.push({ f, y: -30, tipo: rnd() < .2 ? "bolha" : "pedra" });
+          const extra = (A.t > 6 && rnd() < Math.min(.65, A.t / 26)) + (A.t > 15 && rnd() < .3);   // nunca fecha as 4 raias
+          for (let e = 0; e < extra; e++) { let g2; do { g2 = Math.floor(rnd() * 4); } while (usadas.includes(g2)); usadas.push(g2); A.obs.push({ f: g2, y: -30 - e * 8, tipo: "pedra" }); }
+          A.prox = Math.max(.34, .8 - A.t * .02); }
+        for (const o of A.obs) { o.y += vel() * dt; if (!o.foi && Math.abs(o.y - 290) < 26 && Math.abs(LX[o.f] - A.px) < 36) {
           if (o.tipo === "bolha") { o.foi = true; A.bolhas++; sfx("moeda"); } else if (A.inv <= 0) { o.foi = true; A.bate++; A.inv = 1; sfx("erro"); vjAviso(A, "Ai!", "#FF9A8A"); } } }
         A.obs = A.obs.filter(o => o.y < 400 && !(o.tipo === "bolha" && o.foi));
-        if (A.bate >= 3 && A.fimEm == null) A.fimEm = A.t; },
+        if (A.bate >= VIDAS && A.fimEm == null) A.fimEm = A.t; },
       acabou: () => A.t >= DUR || (A.fimEm != null && A.t - A.fimEm > .6),
-      nota: () => { const vivo = Math.min(DUR, A.fimEm ?? A.t) / DUR; return vivo * 76 + Math.min(24, A.bolhas * 4) - A.bate * 8; },
-      info: () => `⏱ ${Math.max(0, Math.ceil(DUR - A.t))} s · 🫧 ${A.bolhas} · ❤️ ${Math.max(0, 3 - A.bate)}`,
-      key(k, d) { if (!d) return; if (k === "ArrowLeft" || k === "a") mexe(-1); if (k === "ArrowRight" || k === "d") mexe(1); }, tap(x, y, d) { if (d) mexe(x < 320 ? -1 : 1); },
+      fina: () => { const vivo = Math.min(DUR, A.fimEm ?? A.t) / DUR; return vivo * 76 + A.bolhas * 2 - A.bate * 10; },
+      nota: () => Math.min(100, Math.min(DUR, A.fimEm ?? A.t) / DUR * 76 + Math.min(24, A.bolhas * 2) - A.bate * 10),
+      info: () => `⏱ ${Math.max(0, Math.ceil(DUR - A.t))} s · 🫧 ${A.bolhas} · ❤️ ${Math.max(0, VIDAS - A.bate)}`,
+      key(k, d) { if (!d) return; if (k === "ArrowLeft" || k === "a") mexe(-1); if (k === "ArrowRight" || k === "d") mexe(1); }, tap(x, y, d) { if (d) mexe(x < A.px ? -1 : 1); },
       draw(g, W, H, now) {
         g.fillStyle = "#2F87BE"; g.fillRect(130, 0, 380, H); g.fillStyle = "#7BC264"; g.fillRect(0, 0, 130, H); g.fillRect(510, 0, 130, H);
-        for (let i = 0; i < 14; i++) { const y = ((i * 60 + A.t * (190 + A.t * 9)) % 420) - 30; g.strokeStyle = "rgba(255,255,255,.25)"; g.lineWidth = 2; g.beginPath(); g.moveTo(150 + (i * 97) % 330, y); g.quadraticCurveTo(170 + (i * 97) % 330, y + 8, 190 + (i * 97) % 330, y); g.stroke(); }
+        for (let i = 0; i < 16; i++) { const y = ((i * 60 + A.t * vel()) % 420) - 30; g.strokeStyle = "rgba(255,255,255,.25)"; g.lineWidth = 2; g.beginPath(); g.moveTo(150 + (i * 97) % 330, y); g.quadraticCurveTo(170 + (i * 97) % 330, y + 8, 190 + (i * 97) % 330, y); g.stroke(); }
+        for (const x of [226, 320, 414]) { g.strokeStyle = "rgba(255,255,255,.08)"; g.lineWidth = 2; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+        if (A.avisoC) { g.fillStyle = `rgba(200,240,255,${.35 + .35 * Math.sin(now / 70)})`; vjTexto(g, A.dirC < 0 ? "⟸ ⟸ ⟸" : "⟹ ⟹ ⟹", 320, 110, 34, "#CDEFFF"); }
         for (const o of A.obs) { const x = LX[o.f];
-          if (o.tipo === "bolha") { g.strokeStyle = "#E8FBFF"; g.lineWidth = 3; g.beginPath(); g.arc(x, o.y, 15, 0, 6.28); g.stroke(); g.fillStyle = "rgba(232,251,255,.3)"; g.fill(); g.fillStyle = "#FFF"; g.fillRect(x - 6, o.y - 8, 4, 4); }
-          else { g.fillStyle = "#5E6670"; g.beginPath(); g.ellipse(x, o.y, 30, 22, 0, 0, 6.28); g.fill(); g.fillStyle = "#8A929C"; g.beginPath(); g.ellipse(x - 6, o.y - 6, 16, 10, 0, 0, 6.28); g.fill(); } }
-        if (!(A.inv > 0 && Math.floor(now / 80) % 2)) { g.fillStyle = "rgba(255,255,255,.35)"; g.beginPath(); g.ellipse(A.px, 300, 44, 12, 0, 0, 6.28); g.fill(); vjPoke(g, VJ.im || rpgArt(VJ.mon.species_id), A.px, 312, 96, false); }
+          if (o.tipo === "bolha") { g.strokeStyle = "#E8FBFF"; g.lineWidth = 3; g.beginPath(); g.arc(x, o.y, 14, 0, 6.28); g.stroke(); g.fillStyle = "rgba(232,251,255,.3)"; g.fill(); g.fillStyle = "#FFF"; g.fillRect(x - 6, o.y - 8, 4, 4); }
+          else { g.fillStyle = "#5E6670"; g.beginPath(); g.ellipse(x, o.y, 27, 20, 0, 0, 6.28); g.fill(); g.fillStyle = "#8A929C"; g.beginPath(); g.ellipse(x - 6, o.y - 6, 14, 9, 0, 0, 6.28); g.fill(); } }
+        if (!(A.inv > 0 && Math.floor(now / 80) % 2)) { g.fillStyle = "rgba(255,255,255,.35)"; g.beginPath(); g.ellipse(A.px, 300, 40, 11, 0, 0, 6.28); g.fill(); vjPoke(g, VJ.im || rpgArt(VJ.mon.species_id), A.px, 312, 88, false); }
         vjDesAviso(g, A, W, H); }
     };
   },
@@ -14037,7 +14082,7 @@ const VALE_JOGOS = {
     return {
       update(dt) { A.t += dt; A.v += (A.seg ? 1.9 : -1.5) * dt; A.v = Math.max(-1, Math.min(1, A.v)); A.f += A.v * dt; if (A.f < 0) { A.f = 0; A.v = 0; } if (A.f > 1) { A.f = 1; A.v = 0; }
         if (Math.abs(A.f - alvo(A.t)) <= larg(A.t) / 2) A.den += dt; },
-      acabou: () => A.t >= DUR, nota: () => Math.min(100, A.den / DUR * 112), info: () => `⏱ ${Math.max(0, Math.ceil(DUR - A.t))} s · na faixa ${Math.round(A.den / Math.max(.1, A.t) * 100)}%`,
+      acabou: () => A.t >= DUR, nota: () => Math.min(100, A.den / DUR * 112), fina: () => A.den / DUR * 112, info: () => `⏱ ${Math.max(0, Math.ceil(DUR - A.t))} s · na faixa ${Math.round(A.den / Math.max(.1, A.t) * 100)}%`,
       key(k, d) { if (k === " " || k === "Enter" || k === "ArrowUp") A.seg = d; }, tap(x, y, d) { A.seg = d; },
       draw(g, W, H, now, im) {
         g.fillStyle = "#3A2A1E"; g.fillRect(0, 290, W, 70);
@@ -14052,6 +14097,66 @@ const VALE_JOGOS = {
         g.fillStyle = "#54C46A"; g.fillRect(gx, gy + gh * (1 - al - lw / 2), 32, gh * lw);
         g.fillStyle = "#FFF"; g.fillRect(gx - 8, gy + gh * (1 - A.f) - 3, 48, 6);
         vjTexto(g, A.seg ? "Soprando…" : "Segure para soprar", 280, 340, 18, "#FFE7A8"); }
+    };
+  },
+  // 7. Estande de Pontaria (arquivo 129): a mira passeia sozinha; atire quando ela passar pelo centro do alvo
+  alvo(rnd) {
+    const N = 10, R0 = 84, A = { i: 0, t: 0, tt: 0, lim: 3.4, pts: 0, espera: .5, marcas: [], ph: [rnd() * 6, rnd() * 6, rnd() * 6, rnd() * 6], tiro: 0 };
+    const centro = () => { const a = 40 + A.i * 13; return [320 + Math.sin(A.tt * (.7 + A.i * .06) + A.ph[0]) * a, 185 + Math.cos(A.tt * (.55 + A.i * .05) + A.ph[1]) * a * .45]; };
+    const mira = () => { const [cx, cy] = centro(), r = 62 + A.i * 5, w = 1.7 + A.i * .2; return [cx + Math.sin(A.t * w + A.ph[2]) * r, cy + Math.sin(A.t * w * 1.37 + A.ph[3]) * r * .8]; };
+    const atira = () => { if (A.espera > 0 || A.i >= N) return; const [cx, cy] = centro(), [mx, my] = mira(), d = Math.hypot(mx - cx, my - cy), p = Math.max(0, 10 * (1 - d / R0));
+      A.pts += p; A.marcas.push([mx - cx, my - cy]); A.tiro = 1; sfx(p >= 8 ? "acerto" : p > 0 ? "tick" : "erro"); vjAviso(A, p >= 9 ? "Na mosca!" : p >= 6 ? "Boa!" : p > 0 ? "Raspou…" : "Fora!", p >= 6 ? "#9CF29C" : "#FFE27A");
+      A.i++; A.espera = .6; A.t = 0; };
+    return { semRepetir: true,
+      update(dt) { A.tt += dt; A.tiro = Math.max(0, A.tiro - dt * 3); if (A.espera > 0) { A.espera -= dt; return; } A.t += dt;
+        if (A.t > A.lim) { vjAviso(A, "Demorou!", "#FF9A8A"); sfx("erro"); A.i++; A.espera = .6; A.t = 0; } },
+      acabou: () => A.i >= N && A.espera <= 0, nota: () => A.pts / N * 10, info: () => `Tiro ${Math.min(A.i + 1, N)} de ${N}`,
+      key(k, d) { if (d && (k === " " || k === "Enter" || k === "ArrowUp")) atira(); }, tap(x, y, d) { if (d) atira(); },
+      draw(g, W, H, now, im) {
+        g.fillStyle = "#3C5A2E"; g.fillRect(0, 300, W, 60); g.fillStyle = "#6B4A2A"; g.fillRect(0, 296, W, 6);
+        const [cx, cy] = centro();
+        ["#F4EEDC", "#C8392E", "#F4EEDC", "#C8392E", "#F2C14E"].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(cx, cy, R0 * (1 - i * .19), 0, 6.28); g.fill(); });
+        g.strokeStyle = "#2A1A0A"; g.lineWidth = 3; g.beginPath(); g.arc(cx, cy, R0, 0, 6.28); g.stroke();
+        for (const [ox, oy] of A.marcas.slice(-4)) { g.fillStyle = "#1A1010"; g.beginPath(); g.arc(cx + ox, cy + oy, 4, 0, 6.28); g.fill(); }
+        vjPoke(g, im, 70, 330, 96, true);
+        if (A.espera <= 0 && A.i < N) { const [mx, my] = mira(); g.strokeStyle = "#0A1A10"; g.lineWidth = 5; g.beginPath(); g.arc(mx, my, 15, 0, 6.28); g.moveTo(mx - 26, my); g.lineTo(mx + 26, my); g.moveTo(mx, my - 26); g.lineTo(mx, my + 26); g.stroke();
+          g.strokeStyle = "#7CFF9A"; g.lineWidth = 2.5; g.stroke();
+          g.fillStyle = "rgba(10,14,24,.7)"; g.fillRect(W / 2 - 120, 18, 240, 8); g.fillStyle = A.t / A.lim > .7 ? "#E05A5A" : "#E5B92E"; g.fillRect(W / 2 - 120, 18, 240 * Math.max(0, 1 - A.t / A.lim), 8); }
+        if (A.tiro > 0) { g.fillStyle = `rgba(255,240,180,${A.tiro * .35})`; g.fillRect(0, 0, W, H); }
+        vjDesAviso(g, A, W, H); }
+    };
+  },
+  // 8. Pomar das Frutas (arquivo 129): pegar as frutas com a cesta e fugir das podres
+  frutas(rnd) {
+    const DUR = 25, A = { t: 0, x: 320, alvo: null, esq: false, dir: false, itens: [], prox: .5, bons: 0, total: 0, ouro: 0, podres: 0, treme: 0 };
+    return {
+      update(dt) { A.t += dt; A.treme = Math.max(0, A.treme - dt * 3);
+        const v = 440; if (A.esq) { A.x -= v * dt; A.alvo = null; } if (A.dir) { A.x += v * dt; A.alvo = null; }
+        if (A.alvo != null) { const d = A.alvo - A.x; A.x += Math.sign(d) * Math.min(Math.abs(d), v * dt); }
+        A.x = Math.max(70, Math.min(570, A.x));
+        A.prox -= dt;
+        if (A.prox <= 0 && A.t < DUR - 1.5) { const r = rnd(), tipo = r < .08 ? "ouro" : r < .08 + Math.min(.3, .12 + A.t * .008) ? "podre" : "boa";
+          A.itens.push({ x: 60 + rnd() * 520, y: 30, tipo, vy: 150 + A.t * 9 + rnd() * 50, vx: (rnd() - .5) * (A.t > 12 ? 90 : 30) }); if (tipo !== "podre") A.total += tipo === "ouro" ? 3 : 1;
+          A.prox = Math.max(.32, .72 - A.t * .017); }
+        for (const o of A.itens) { o.y += o.vy * dt; o.x += o.vx * dt; if (o.x < 50 || o.x > 590) o.vx *= -1;
+          if (!o.foi && o.y > 288 && o.y < 318 && Math.abs(o.x - A.x) < 46) { o.foi = true;
+            if (o.tipo === "podre") { A.podres++; A.treme = 1; sfx("erro"); vjAviso(A, "Podre!", "#C79BFF"); } else { A.bons += o.tipo === "ouro" ? 3 : 1; if (o.tipo === "ouro") { A.ouro++; vjAviso(A, "Dourada!", "#FFE27A"); } sfx(o.tipo === "ouro" ? "moeda" : "tick"); } } }
+        A.itens = A.itens.filter(o => !o.foi && o.y < 380); },
+      acabou: () => A.t >= DUR,
+      fina: () => A.total ? A.bons / A.total * 100 - A.podres * 8 + A.ouro : 0,
+      nota: () => Math.min(100, A.total ? A.bons / A.total * 100 - A.podres * 8 : 0),
+      info: () => `⏱ ${Math.max(0, Math.ceil(DUR - A.t))} s · 🍎 ${A.bons} · 🟣 ${A.podres}`,
+      key(k, d) { if (k === "ArrowLeft" || k === "a") A.esq = d; if (k === "ArrowRight" || k === "d") A.dir = d; }, tap(x, y, d) { if (d) A.alvo = x; },
+      draw(g, W, H, now, im) {
+        g.fillStyle = "#2F7A34"; for (let i = 0; i < 7; i++) { g.beginPath(); g.arc(40 + i * 95, 10, 70, 0, 6.28); g.fill(); }
+        g.fillStyle = "#5E9A3A"; g.fillRect(0, 320, W, 40);
+        for (const o of A.itens) { g.fillStyle = o.tipo === "podre" ? "#7A4AA8" : o.tipo === "ouro" ? "#F2C14E" : "#D8352A"; g.beginPath(); g.arc(o.x, o.y, o.tipo === "ouro" ? 13 : 15, 0, 6.28); g.fill();
+          g.fillStyle = "#3A7A2A"; g.fillRect(o.x - 2, o.y - 20, 4, 7); if (o.tipo === "ouro") { g.fillStyle = "#FFF6C8"; g.fillRect(o.x - 5, o.y - 6, 4, 4); } }
+        const bx = A.x + Math.sin(now / 30) * 4 * A.treme;
+        vjPoke(g, im, bx, 300, 70, false);
+        g.fillStyle = "#B07A3A"; g.beginPath(); g.moveTo(bx - 48, 296); g.lineTo(bx + 48, 296); g.lineTo(bx + 38, 330); g.lineTo(bx - 38, 330); g.closePath(); g.fill();
+        g.strokeStyle = "#6B4A2A"; g.lineWidth = 3; g.stroke(); for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(bx + i * 16, 298); g.lineTo(bx + i * 13, 328); g.stroke(); }
+        vjDesAviso(g, A, W, H); }
     };
   }
 };
@@ -14385,7 +14490,7 @@ function rpgPontosDe(r = AV.r) {
   if (r === AV.r) return rpgPontos();
   if (r === "vila") return AV_PONTOS;
   const d = AV.dc?.[r]; if (!d || RPG_REG[r]?.gym || RPG_REG[r]?.elite || RPG_REG[r]?.mina) return [];
-  if (RPG_REG[r]?.vale) return Object.entries(d.pontos?.estacoes || {}).map(([k, pos]) => ({ em: [pos], ic: VALE_EST[k]?.ic || "🥋", nome: S.vale?.estacoes?.[k]?.nome || k, vale: k }));
+  if (RPG_REG[r]?.vale) return Object.entries(valeEstPos(d)).map(([k, pos]) => ({ em: [pos], ic: VALE_EST[k]?.ic || "🥋", nome: S.vale?.estacoes?.[k]?.nome || k, vale: k }));
   const out = [], gp = rpgGymPos(r), L = rpgLider(r);
   if (gp && L) out.push({ em: [gp], ic: "🏟️", nome: `Ginásio · ${L.nome}`, vai: "gym_" + r });
   if (d.pontos?.placa) out.push({ em: [d.pontos.placa], ic: "🪧", nome: "Placa" });
@@ -14546,7 +14651,7 @@ function rpgDestinosLocais(r = AV.r) {
     const [px, py] = p.em[0], d = r === AV.r ? (rpgAchaCaminho(AV.x, AV.y, px, py, r)?.length ?? Math.hypot(px - AV.x, py - AV.y) | 0) : null;
     if (p.vai && !p.vai.startsWith("gym_")) {
       const R = RPG_REG[p.vai];
-      saidas.push({ x: px, y: py, ic: p.ic, nome: p.nome, sub: rpgFaixa(p.vai) || (R?.vale ? "6 estações sem batalha" : "Passagem"), para: p.vai, passos: d });
+      saidas.push({ x: px, y: py, ic: p.ic, nome: p.nome, sub: rpgFaixa(p.vai) || (R?.vale ? "8 estações sem batalha" : "Passagem"), para: p.vai, passos: d });
     } else {
       const desc = p.win === "pkloja" ? "Bolas, poções, pedras e TMs" : p.win === "loja" ? "Roupas, capas, chapéus e ajudas" : p.win === "centro" ? "Cura imediata dos seus Pokémon"
         : p.win === "creche" ? "Sobe nível enquanto você descansa" : p.win === "leilao" ? "Leilões de Pokémon da turma" : p.win === "mercado" ? "Mercado de itens e cartas"
@@ -14679,7 +14784,7 @@ async function rpgMapaMundoDesenha() {
     g.fillText(`${R.ic} ${R.nome}`, x + 9, y + 22, CW - 18);
     g.fillStyle = R.elite ? "#E5C6FF" : R.vale ? "#9CF2B0" : r === "vila" ? "#FFE37A" : "#9FD8FF";
     g.font = "700 11.5px Inter, system-ui, sans-serif";
-    const sub = R.elite ? "Elite 4 + Campeão" : R.vale ? "6 estações · sem luta" : r === "vila" ? "Lojas · Centro · Feira" : rpgFaixa(r);
+    const sub = R.elite ? "Elite 4 + Campeão" : R.vale ? "8 estações · sem luta" : r === "vila" ? "Lojas · Centro · Feira" : rpgFaixa(r);
     g.fillText(sub, x + 9, y + 41, CW - 18);
     if (rpgLider(r)) {
       g.fillStyle = ins ? "#7CEB9E" : "#FFD98A"; g.font = "700 11px Inter, system-ui, sans-serif";
@@ -14734,7 +14839,7 @@ function rpgMapaHTML(aba = AV.mapTab || "local") {
           <p>Como chegar: ${esc(RS.como || "ponto inicial")}.</p>
           ${rpgLider(sel) ? `<p>🏟️ Ginásio: <b>${esc(rpgLider(sel).nome)}</b> (${esc(rpgLider(sel).tipo || "")} · ${rpgLider(sel).n} Pokémon) ${rpgInsig().includes(sel) ? "· ✅ <b>Insígnia ganha</b>" : ""}</p>` : ""}
           ${RS.elite ? `<p>🏛️ Elite 4 + Campeão (pede as ${AV.st?.elite?.insignias_min ?? 8} insígnias).${AV.st?.elite?.campeao ? " 👑 Você já é Campeão!" : ""}</p>` : ""}
-          ${RS.vale ? `<p>🥋 6 estações onde seus Pokémon ganham experiência sem gastar lutas do dia.</p>` : ""}
+          ${RS.vale ? `<p>🥋 8 estações onde seus Pokémon ganham experiência sem gastar lutas do dia.</p>` : ""}
           ${Object.values(RS.z || {}).map(k => { const z = rpgZonaInfo(k); return z ? `<p>• <b>${esc(z.nome)}</b> (Nv ${z.min}–${z.max}): ${esc(rpgTipos(z))}</p>` : ""; }).join("")}
           ${sel !== aqui ? `<div class="rmap-caminho">🧭 Caminho: ${rota.map(r => `${RPG_REG[r]?.ic || ""} ${esc(RPG_REG[r]?.nome || r)}`).join(" ➔ ")}</div>
             <div class="rmap-acts"><button class="btn small" data-rmap-reg="${sel}" data-rmap-go="1">🚶 Começar a ir</button><button class="btn ghost small" data-rmap-reg="${sel}">🧭 Marcar trilha até lá</button></div>`
@@ -17970,6 +18075,15 @@ function postCard(p, isNew) {
 // ---------- novidades prontas para o admin publicar (cada mudança do jogo ganha uma entrada aqui) ----------
 // Regra do projeto: toda mudança que os jogadores veem ganha uma entrada nova em NOVIDADES, com o texto pronto.
 const NOVIDADES = [
+  { id: "vale-8-2026-11-19", sql: "129", title: "🥋 Vale do Treino: 8 estações, treinos mais difíceis e desempate", body: () => `O Vale do Treino cresceu e ficou mais puxado!
+• Duas estações novas: 🎯 Estande de Pontaria (acerte o centro do alvo, que se mexe cada vez mais) e 🧺 Pomar das Frutas (pegue as frutas que caem e fuja das podres).
+• 🏊 Lago das Correntes mais difícil: quatro raias, a correnteza acelera, vêm mais pedras juntas e só dá para bater 2 vezes.
+• 🥊 Saco de Pancada mais difícil: sequências maiores, menos tempo e rodadas "ao contrário", em que você aperta a seta oposta.
+• Desempate no Top 3: com a mesma nota, fica na frente quem jogou melhor (a pontuação exata do exercício); se ainda empatar, quem fez mais rápido; e por último quem fez primeiro.` },
+  { id: "vale-ranking-2026-11-19", sql: "128", title: "🏆 Vale do Treino: Top 3 de cada estação e prêmio na temporada", body: () => `O Vale do Treino agora tem ranking! Em cada uma das 6 estações (Pista, Saco de Pancada, Templo, Lago, Paredão e Fogueira do Fôlego) aparece o Top 3 da temporada: os jogadores com a melhor nota e o Pokémon que treinou.
+• Vale a sua melhor nota em cada estação na temporada. Empate: fica na frente quem fez primeiro.
+• No fim da temporada, o Top 3 de cada estação ganha moedas (1º 150, 2º 100, 3º 50), com o presente no Correio.
+• A Praça Central saiu do jogo. Para passear e encontrar a turma, use a Aventura.` },
   { id: "quiz-logica-2026-11-19", sql: "127", title: "🧠 Quiz novo: perguntas de lógica com explicação", body: () => `As perguntas do Quiz mudaram! Saem as perguntas absurdas e entram mais de 100 perguntas de lógica com os dados dos próprios Pokémon: altura e peso da Pokédex, atributos de batalha, poder dos golpes e o que eles fariam no nosso mundo.
 • Exemplo: "Quantos Onix empilhados alcançam o topo da Torre Eiffel (330 m)?"
 • O número do mundo real vem na pergunta: pense no tamanho do Pokémon e faça a conta, nada de chute!
